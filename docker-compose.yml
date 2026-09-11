@@ -1,0 +1,169 @@
+# Culinary Blog – Development stack (SRS §6.5)
+# 8 services: nginx, api, frontend, postgres, redis, minio, hangfire, seq  (+ mailhog: profile "dev")
+# Chạy:   cp .env.example .env  &&  docker compose --profile dev up -d --build
+
+name: culinaryblog
+
+x-api-env: &api-env
+  ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+  ConnectionStrings__Redis: redis:6379
+  Jwt__SigningKey: ${JWT_SIGNING_KEY}
+  Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
+  Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
+  MinIO__Endpoint: http://minio:9000
+  MinIO__PublicBaseUrl: ${MINIO_PUBLIC_URL}/culinary-blog
+  MinIO__AccessKey: ${MINIO_ROOT_USER}
+  MinIO__SecretKey: ${MINIO_ROOT_PASSWORD}
+  MinIO__BucketName: culinary-blog
+  Smtp__Host: ${SMTP_HOST:-mailhog}
+  Smtp__Port: ${SMTP_PORT:-1025}
+  Smtp__UseSsl: ${SMTP_USE_SSL:-false}
+  Seq__ServerUrl: http://seq:80
+  OpenTelemetry__OtlpEndpoint: http://seq:80/ingest/otlp
+  Cors__AllowedOrigins__0: ${SITE_URL:-http://localhost:3000}
+  Smtp__SiteUrl: ${SITE_URL:-http://localhost:3000}
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+      - frontend
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: culinaryblog-api
+    ports:
+      - "5000:8080"
+    environment:
+      <<: *api-env
+      Hangfire__WorkerOnly: "false"
+      # Job do container "hangfire" xử lý; API chỉ enqueue
+      Hangfire__ServerEnabled: "false"
+      Database__MigrateOnStartup: "true"
+      Seed__Enabled: "true"
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
+      Seed__AuthorPassword: ${SEED_AUTHOR_PASSWORD}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      minio: { condition: service_healthy }
+    restart: unless-stopped
+
+  # Hangfire worker: cùng image API, chỉ chạy BackgroundJobServer (SRS §3.6, NFR-SCALE-001)
+  hangfire:
+    image: culinaryblog-api
+    environment:
+      <<: *api-env
+      Hangfire__WorkerOnly: "true"
+    depends_on:
+      api: { condition: service_started }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-http://localhost:5000/api/v1}
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
+    image: culinaryblog-web
+    ports:
+      - "3000:3000"
+    environment:
+      API_INTERNAL_BASE_URL: http://api:8080/api/v1
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_GOOGLE_ID: ${GOOGLE_CLIENT_ID}
+      AUTH_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET}
+      AUTH_TRUST_HOST: "true"
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  seq:
+    image: datalust/seq:latest
+    ports:
+      - "5341:80"
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
+    volumes:
+      - seqdata:/data
+    restart: unless-stopped
+
+  # Dev only – SMTP test cho FR-JOB-001 (UI :8025)
+  mailhog:
+    image: mailhog/mailhog
+    profiles: ["dev"]
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:
+  seqdata:
