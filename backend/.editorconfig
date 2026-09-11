@@ -1,0 +1,71 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,xml,csproj,props,targets}]
+indent_size = 2
+
+[*.cs]
+# ---- Naming conventions ----
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel.capitalization = camel_case
+dotnet_naming_style.underscore_camel.required_prefix = _
+
+dotnet_naming_rule.interfaces_i.symbols = interfaces
+dotnet_naming_rule.interfaces_i.style = prefix_i
+dotnet_naming_rule.interfaces_i.severity = warning
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_style.prefix_i.capitalization = pascal_case
+dotnet_naming_style.prefix_i.required_prefix = I
+
+# ---- Code style ----
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_prefer_braces = true:warning
+
+# ---- StyleCop: tắt các rule xung đột với convention của team ----
+dotnet_diagnostic.SA1101.severity = none   # prefix this.
+dotnet_diagnostic.SA1309.severity = none   # field bắt đầu bằng _
+dotnet_diagnostic.SA1200.severity = none   # using trong namespace
+dotnet_diagnostic.SA1600.severity = none   # bắt buộc XML doc mọi element
+dotnet_diagnostic.SA1601.severity = none
+dotnet_diagnostic.SA1602.severity = none
+dotnet_diagnostic.SA1633.severity = none   # file header copyright
+dotnet_diagnostic.SA1611.severity = none   # bắt buộc doc từng parameter (theo SA1600 đã tắt)
+dotnet_diagnostic.SA1614.severity = none
+dotnet_diagnostic.SA1615.severity = none   # bắt buộc doc return value
+dotnet_diagnostic.SA1618.severity = none
+dotnet_diagnostic.SA1619.severity = none
+dotnet_diagnostic.SA1623.severity = none   # summary property phải bắt đầu "Gets" (tài liệu viết tiếng Việt)
+dotnet_diagnostic.SA1201.severity = none   # thứ tự loại type trong file (gom record/interface cùng feature)
+dotnet_diagnostic.SA1204.severity = none   # static trước instance (LoggerMessage partial đặt cuối class)
+dotnet_diagnostic.SA1413.severity = none   # trailing comma
+dotnet_diagnostic.SA1649.severity = none   # tên file = tên type đầu tiên (records gom nhóm CQRS)
+dotnet_diagnostic.SA1402.severity = none   # nhiều type / file (Command + Handler + Validator)
+dotnet_diagnostic.SA1010.severity = none   # collection expression [ ]
+dotnet_diagnostic.SA1000.severity = none   # new() target-typed
+
+# Top-level statements (Program.cs) và test method naming
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1515.severity = none
+
+# Domain entities: private setter được EF Core gán qua reflection khi materialize
+[**/CulinaryBlog.Domain/Entities/*.cs]
+dotnet_diagnostic.S1144.severity = none
+
+# EF Core migrations là code sinh tự động
+[**/Migrations/*.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none

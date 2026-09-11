@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "File mẫu cấu hình không chứa secret thật"
+paths = ['''\.env\.example$''', '''\.env\.local\.example$''', '''appsettings\.Development\.json$''']

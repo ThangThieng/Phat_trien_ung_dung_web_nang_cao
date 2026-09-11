@@ -1,0 +1,13 @@
+#!/bin/sh
+# NFR-SEC-007: quét secret trước khi commit bằng gitleaks (chạy qua Docker, không cần cài local)
+if ! docker info >/dev/null 2>&1; then
+  echo "[gitleaks] Docker chưa chạy – bỏ qua quét secret. Hãy bật Docker Desktop." >&2
+  exit 0
+fi
+docker run --rm -v "$(pwd):/repo" -w /repo zricethezav/gitleaks:latest \
+  git --staged --redact --no-banner --config /repo/.gitleaks.toml
+status=$?
+if [ $status -ne 0 ]; then
+  echo "[gitleaks] Phát hiện secret trong thay đổi đã stage – commit bị chặn." >&2
+fi
+exit $status

@@ -1,0 +1,36 @@
+# Secrets (NFR-SEC-007)
+.env
+.env.*
+!.env.example
+!.env.local.example
+*.pfx
+*.key
+ssl/
+
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+coverage*.xml
+backend/**/logs/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
