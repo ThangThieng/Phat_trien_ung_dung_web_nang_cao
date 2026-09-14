@@ -6,7 +6,8 @@ name: culinaryblog
 
 x-api-env: &api-env
   ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
-  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+  # GSS Encryption Mode=Disable: không dùng Kerberos, tránh Npgsql tìm libgssapi_krb5 (không có trong image aspnet)
+  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};GSS Encryption Mode=Disable
   ConnectionStrings__Redis: redis:6379
   Jwt__SigningKey: ${JWT_SIGNING_KEY}
   Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
@@ -52,6 +53,8 @@ services:
       Seed__Enabled: "true"
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
       Seed__AuthorPassword: ${SEED_AUTHOR_PASSWORD}
+    volumes:
+      - dpkeys:/home/app/dpkeys
     depends_on:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
@@ -64,6 +67,8 @@ services:
     environment:
       <<: *api-env
       Hangfire__WorkerOnly: "true"
+    volumes:
+      - dpkeys:/home/app/dpkeys
     depends_on:
       api: { condition: service_started }
       postgres: { condition: service_healthy }
@@ -104,7 +109,8 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      # -h 127.0.0.1: kiểm tra qua TCP; lúc chạy init.sql Postgres chỉ mở unix socket nên chưa được coi là healthy
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -167,3 +173,4 @@ volumes:
   redisdata:
   miniodata:
   seqdata:
+  dpkeys:

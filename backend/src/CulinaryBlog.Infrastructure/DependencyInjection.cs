@@ -17,6 +17,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -45,9 +46,15 @@ public static class DependencyInjection
     private static void AddPersistence(IServiceCollection services, string connectionString)
     {
         services.AddSingleton<AuditInterceptor>();
+
+        // EnableRetryOnFailure: Postgres khởi động chậm hơn API (57P03) hoặc mất kết nối tạm thời → retry thay vì crash.
+        // Ignore 20606: RecipeNutrition là optional dependent có chủ đích (§7.2.1) – mọi cột Nutrition_* null ⇒ Nutrition = null.
         services.AddDbContext<CulinaryBlogDbContext>((sp, options) =>
             options
-                .UseNpgsql(connectionString, npgsql => npgsql.MigrationsHistoryTable("__EFMigrationsHistory"))
+                .UseNpgsql(connectionString, npgsql => npgsql
+                    .MigrationsHistoryTable("__EFMigrationsHistory")
+                    .EnableRetryOnFailure(maxRetryCount: 6, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null))
+                .ConfigureWarnings(w => w.Ignore(RelationalEventId.OptionalDependentWithoutIdentifyingPropertyWarning))
                 .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CulinaryBlogDbContext>());
