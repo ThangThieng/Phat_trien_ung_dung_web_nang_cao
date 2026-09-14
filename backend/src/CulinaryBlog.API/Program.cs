@@ -8,6 +8,7 @@ using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Infrastructure;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Seed;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -18,6 +19,13 @@ var workerOnly = builder.Configuration.GetValue<bool>("Hangfire:WorkerOnly");
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// Khóa DataProtection lưu bền trên volume dùng chung cho api + hangfire (không mất khi tạo lại container)
+var dataProtection = builder.Services.AddDataProtection().SetApplicationName("CulinaryBlog");
+if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath)
+{
+    dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+}
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
@@ -39,6 +47,9 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .WithHeaders("Content-Type", "Authorization", "X-Correlation-ID")));
 
 var app = builder.Build();
+
+// API (migrate) và worker Hangfire (tạo schema) đều cần DB – chờ DB thay vì crash khi Docker khởi động song song
+await app.Services.WaitForDatabaseAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
 
 if (workerOnly)
 {
