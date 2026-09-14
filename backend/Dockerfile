@@ -17,10 +17,14 @@ RUN dotnet publish src/CulinaryBlog.API/CulinaryBlog.API.csproj -c Release -o /a
 # ---------- runtime ----------
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
-ENV ASPNETCORE_URLS=http://+:8080 \
+# ASPNETCORE_HTTP_PORTS thay cho ASPNETCORE_URLS để không đè cấu hình cổng mặc định của image .NET
+ENV ASPNETCORE_HTTP_PORTS=8080 \
     ASPNETCORE_ENVIRONMENT=Production \
-    DOTNET_RUNNING_IN_CONTAINER=true
+    DOTNET_RUNNING_IN_CONTAINER=true \
+    DataProtection__KeysPath=/home/app/dpkeys
 COPY --from=build /app/publish .
+# Thư mục khóa DataProtection thuộc user "app" để volume mount vào kế thừa quyền ghi
+RUN mkdir -p /home/app/dpkeys && chown app:app /home/app/dpkeys
 # Image aspnet có sẵn user non-root "app"
 USER app
 EXPOSE 8080

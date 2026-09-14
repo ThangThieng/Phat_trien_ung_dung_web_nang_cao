@@ -195,6 +195,25 @@
 | Email chào mừng "không đến" | Hangfire.PostgreSql quét hàng đợi mỗi 15 giây | Không phải lỗi; email đến sau vài giây |
 | Lỗi StyleCop / Sonar | Rule xung đột với EF Core (private setter), tài liệu tiếng Việt, gom type CQRS | Tắt có chọn lọc trong `.editorconfig`, có ghi chú lý do |
 
+### 5.1 Rà soát sau khi commit (14/09/2026, Docker bật) – nhánh `fix/b1-runtime-hardening`
+
+Kiểm tra lại từ bản clone sạch trên GitHub: gitleaks toàn lịch sử **không có secret**; backend build 0 warning, 44/44 test; frontend lint, `tsc`, Jest 15/15, `next build` đều đạt. Các lỗi dưới đây chỉ xuất hiện **khi chạy container**:
+
+| # | Lỗi | Nguyên nhân gốc | Cách sửa | Kiểm chứng |
+|---|---|---|---|---|
+| 1 | API crash `57P03 the database system is starting up` / `Name or service not known` | Docker Desktop khởi động lại thì mọi container `restart: unless-stopped` chạy song song, bỏ qua `depends_on`. API migrate khi Postgres chưa sẵn sàng; lỗi DNS không được retry của EF coi là tạm thời | `DatabaseReadiness.WaitForDatabaseAsync` (chờ tối đa 2 phút) chạy trước migrate và trước worker Hangfire; bật `EnableRetryOnFailure` cho lỗi tạm thời lúc runtime; healthcheck `pg_isready -h 127.0.0.1` (kiểm qua TCP) | Bật api + hangfire khi Postgres tắt, 20s sau mới bật Postgres → cả hai chờ rồi chạy, **RestartCount 0 → 0** |
+| 2 | Nginx trả **502** cho `/api/*` sau khi tạo lại container api | `upstream { server api:8080; }` chỉ phân giải DNS lúc Nginx khởi động → giữ IP cũ | `resolver 127.0.0.11 valid=10s` + `proxy_pass` qua biến | api đổi IP 172.30.2.3 → 172.30.2.2, Nginx **không restart** vẫn trả 200 |
+| 3 | `libgssapi_krb5.so.2: cannot open shared object file` | Npgsql mặc định thử mã hóa GSS/Kerberos, image aspnet không có thư viện | Connection string thêm `GSS Encryption Mode=Disable` (dự án không dùng Kerberos) | Log sạch |
+| 4 | `Overriding HTTP_PORTS '8080'… URLS` | Dockerfile đặt `ASPNETCORE_URLS` đè `ASPNETCORE_HTTP_PORTS` của image | Dùng `ASPNETCORE_HTTP_PORTS=8080` | Log sạch |
+| 5 | Khóa DataProtection chỉ nằm trong container | Mất khóa khi tạo lại container; api và hangfire mỗi bên một khóa | `PersistKeysToFileSystem` + volume `dpkeys` dùng chung, `SetApplicationName("CulinaryBlog")` | api và hangfire cùng một file `key-*.xml` |
+| 6 | EF cảnh báo `20606` RecipeNutrition optional dependent | Thiết kế có chủ đích: không nhập dinh dưỡng → `Nutrition = null` | Khai báo tường minh `ConfigureWarnings(Ignore(OptionalDependentWithoutIdentifyingPropertyWarning))`, không đổi schema | Log sạch, không cần migration |
+| 7 | Container `hangfire` chạy image cũ | Image `culinaryblog-api` build lại nhưng hangfire không được tạo lại | `docker compose up -d` tạo lại cả api và hangfire | Cùng image ID |
+| 8 | Pre-commit hook gitleaks **chặn mọi commit trên Windows** khi Docker bật, kèm thông báo sai "Phát hiện secret" | Git Bash đổi `-w /repo` thành `C:/Program Files/Git/repo` → `docker run` lỗi 125; hook coi mọi mã khác 0 là có secret. Buổi 1 không lộ lỗi vì Docker tắt nên hook bỏ qua | `MSYS_NO_PATHCONV=1`, đường dẫn host lấy bằng `pwd -W`; tách thông báo "có secret" (exit 1) với "không chạy được gitleaks" | Hook chạy thật trên commit sửa lỗi này: gitleaks quét phần stage, không có secret, commit thành công |
+
+Trong lúc Postgres **thực sự không truy cập được**, log api/hangfire vẫn có các dòng `A transient exception occurred… will be retried` kèm `Name or service not known` – đó là log của cơ chế retry, đúng hành vi mong muốn, tự hết khi DB lên.
+
+Còn lại một cảnh báo **chấp nhận được ở môi trường dev**: `XmlKeyManager[35] No XML encryptor configured` – khóa DataProtection lưu dạng không mã hóa trên volume. Production cần `ProtectKeysWithCertificate` (Buổi 6, cùng HTTPS).
+
 ---
 
 ## 6. Việc tồn đọng chuyển sang Buổi 2+
@@ -205,12 +224,122 @@
 - Integration test (WebApplicationFactory + Testcontainers) cho các endpoint Buổi 1 (Buổi 6).
 - ~~Commit Git theo thông điệp của 4 dev~~ → đã hoàn thành: 1 commit bootstrap + 4 commit dev trên 4 nhánh `feature/b1-dev{k}-*`, merge `--no-ff` vào `develop` theo thứ tự Dev4 → Dev1 → Dev3 → Dev2, rồi merge vào `main`. Vì code được viết cùng lúc (xem §4.7), chỉ trạng thái cuối trên `main` là build xanh; các commit trung gian không độc lập biên dịch được.
 
-## 7. Thông điệp commit đề xuất
+## 7. Lịch sử Git và chi tiết commit theo từng thành viên
+
+Repo: https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao
+
+### 7.1 Vai trò các nhánh (kế hoạch §1.4)
+
+| Nhánh | Vai trò | Ai được đẩy code |
+|---|---|---|
+| `main` | Nhánh ổn định, **luôn build xanh**. Chỉ nhận merge từ `develop` khi hết một buổi và toàn bộ Definition of Done đạt. Là nhánh mặc định trên GitHub, dùng để nộp/chấm | Không commit trực tiếp; chỉ merge `develop` |
+| `develop` | Nhánh **tích hợp**: gom code của 4 dev trong buổi, là nơi phát hiện xung đột (migration, `Program.cs`, DI) trước khi lên `main` | Không commit trực tiếp; nhận merge `--no-ff` từ các nhánh `feature/*` |
+| `feature/b1-dev4-infra-file` | Nhánh riêng của **Dev 4** – Buổi 1: hạ tầng Docker + FR-FILE-001/002 | Nguyễn Thăng Thiêng |
+| `feature/b1-dev1-auth-001-002` | Nhánh riêng của **Dev 1** – Buổi 1: FR-AUTH-001/002 | Hoàng Bình Quân |
+| `feature/b1-dev3-cat-001-002` | Nhánh riêng của **Dev 3** – Buổi 1: FR-CAT-001/002 | Đoàn Hồng Tiến |
+| `feature/b1-dev2-rcp-001-002` | Nhánh riêng của **Dev 2** – Buổi 1: FR-RCP-001/002 | Nguyễn Hồng Phúc Thọ |
+
+Quy ước tên: `feature/b{buổi}-dev{số}-{mã FR}`. Buổi 2 tạo nhánh mới từ `develop` (ví dụ `feature/b2-dev1-auth-003-005`). Nhánh `feature/b1-*` đã merge nên chỉ còn giá trị lịch sử và có thể xóa.
+
+Cột **Behind/Ahead** trên GitHub so với `main`: mọi nhánh đều **Ahead 0** (không còn commit nào chưa merge). **Behind** là số commit `main` có mà nhánh đó chưa có – nhánh merge càng sớm thì Behind càng lớn (Dev 4: 8, Dev 1: 6, Dev 3: 4, Dev 2: 2, `develop`: 1 – chính là commit merge `develop → main`). Đây là trạng thái bình thường.
 
 ```
-chore: bootstrap clean architecture solution & nextjs app
-feat(infra): complete docker compose setup and FR-FILE minio upload component
-feat(auth): complete FR-AUTH-001 & 002 register login flow
-feat(category): complete FR-CAT-001 & 002 public categories API and UI
-feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view
+main     ●──────────────────────────────────────────●  d2d8243 merge develop → main
+         │                                          │
+develop  └─●────────●────────●────────●─────────────┘
+           │        │        │        │
+           │        │        │        └─ 0fc95d1 feat(recipe)    – Nguyễn Hồng Phúc Thọ
+           │        │        └────────── fd27a71 feat(category)  – Đoàn Hồng Tiến
+           │        └─────────────────── 3d40be6 feat(auth)      – Hoàng Bình Quân
+           └──────────────────────────── 9dc3d81 feat(infra)     – Nguyễn Thăng Thiêng
+b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 ```
+
+### 7.2 Tổng quan
+
+| Thành viên | Vai trò | Commit | Nhánh | File | Dòng thêm |
+|---|---|---|---|---|---|
+| Nguyễn Thăng Thiêng | Dev 4 + trưởng nhóm | `b058654` bootstrap, `9dc3d81` feat(infra) | `main`, `feature/b1-dev4-infra-file` | 70 + 22 | 18.279 + 3.438 |
+| Hoàng Bình Quân | Dev 1 | `3d40be6` feat(auth) | `feature/b1-dev1-auth-001-002` | 24 | 1.343 |
+| Đoàn Hồng Tiến | Dev 3 | `fd27a71` feat(category) | `feature/b1-dev3-cat-001-002` | 15 | 536 |
+| Nguyễn Hồng Phúc Thọ | Dev 2 | `0fc95d1` feat(recipe) | `feature/b1-dev2-rcp-001-002` | 30 | 1.872 |
+
+> Số dòng của bootstrap lớn vì gồm `package-lock.json` (~12.000 dòng) và tài liệu SPEC. 5 commit merge (`--no-ff`) do chủ repo thực hiện.
+
+### 7.3 Nguyễn Thăng Thiêng – Dev 4 (hạ tầng) và trưởng nhóm
+
+**Commit `b058654` – `chore: bootstrap clean architecture solution & nextjs app`** (trên `main`, là gốc cho 4 nhánh dev)
+
+| Nhóm | Nội dung |
+|---|---|
+| Cấu hình repo | `.gitignore` (chặn `.env`), `.gitattributes`, `.gitleaks.toml` + `.githooks/pre-commit` quét secret, `.env.example`, `README.md` |
+| Tài liệu | `SPEC/`: SRS v1.0.0, kế hoạch 6 buổi, bảng công nghệ – phiên bản, báo cáo buổi 1 |
+| Solution .NET | `CulinaryBlog.sln`, `global.json` (SDK 10), `Directory.Build.props` (TreatWarningsAsErrors, StyleCop, Sonar), `.editorconfig`, csproj 4 tầng + 4 project test |
+| Domain | `BaseEntity` (Id, CreatedAt, UpdatedAt, IsDeleted, RowVersion), `DomainException` |
+| Application | 4 Pipeline Behavior: `LoggingBehavior`, `ValidationBehavior`, `CachingBehavior`, `CacheInvalidationBehavior`; `AppException`, `ErrorCodes` (Phụ lục B); `ICacheService`, `ICacheable`, `ICurrentUser`, `IUnitOfWork`; `PagedResult<T>`; `DependencyInjection` |
+| Infrastructure | `CulinaryBlogDbContext`, `AuditInterceptor` (tự điền CreatedAt/UpdatedAt), `BaseEntityConfiguration`, `DependencyInjection` |
+| API | `Program.cs` (Minimal API, CORS, OpenAPI + Scalar), `GlobalExceptionMiddleware` (RFC 7807), `CurrentUser`, `appsettings*.json` |
+| Test | `LayerDependencyTests` (ArchUnit.NET kiểm tra Dependency Rule) |
+| Frontend | Next.js 15 App Router: `package.json`, ESLint Airbnb, Prettier, Jest, `tsconfig`; `layout.tsx`, `providers.tsx` (TanStack Query), `page.tsx`, `not-found.tsx`; `lib/api-client.ts`, `lib/config.ts`, `lib/query-client.ts`; `types/api.ts` |
+
+**Commit `9dc3d81` – `feat(infra): complete docker compose setup and FR-FILE minio upload component`**
+
+| Chức năng | File |
+|---|---|
+| Docker Compose 8 service SRS + mailhog | `docker-compose.yml`, `backend/Dockerfile`, `frontend/Dockerfile` (multi-stage, non-root) |
+| PostgreSQL | `docker/postgres/init.sql` (unaccent, pg_trgm, `vietnamese_unaccent`); migration `B1_InitialSchema` + model snapshot |
+| Reverse proxy | `nginx/nginx.conf` (rate limit 100 req/phút, security header, giới hạn 5MB) |
+| FR-FILE-001 Upload ảnh | `UploadFileCommand`, `ImageFileInspector` (kiểm magic bytes JPEG/PNG/WebP/AVIF), `PrefixedReadStream`, `IFileStorageService`, `MinioFileStorageService`, `MinioOptions`, `MinioBucketInitializer` |
+| FR-FILE-002 Xóa ảnh | `DeleteFileCommand` (idempotent, chống path traversal, chỉ chủ file được xóa) |
+| API | `FilesEndpoints`: `POST /api/v1/files/upload`, `DELETE /api/v1/files/{**fileId}` |
+| FR-JOB-001 (làm sớm) | `MailKitEmailService`, `WelcomeEmailJob` (Hangfire) |
+| Frontend | `ImageUploader.tsx` (kéo-thả, preview, progress %, ARIA), trang `/dashboard/media` |
+| Test | `ImageFileInspectorTests` |
+
+### 7.4 Hoàng Bình Quân – Dev 1 (xác thực)
+
+**Commit `3d40be6` – `feat(auth): complete FR-AUTH-001 & 002 register login flow`**
+
+| Chức năng | File |
+|---|---|
+| FR-AUTH-001 Đăng ký | `RegisterUserCommand` + Validator + Handler (gán role Author, enqueue email chào mừng), `PasswordRules` |
+| FR-AUTH-002 Đăng nhập | `LoginUserCommand` + Validator + Handler (khóa 15 phút sau 5 lần sai, thông báo lỗi chung chống user enumeration) |
+| Phát hành token | `AuthResponseFactory`, `AuthContracts` (`IIdentityService`, `ITokenService`, `IRefreshTokenRepository`, `IWelcomeEmailScheduler`), `JwtTokenService`, `JwtOptions` (access 15 phút / refresh 7 ngày) |
+| Identity | `ApplicationUser` (DisplayName, AvatarUrl, Bio, IsActive), `IdentityService` (UserManager, PBKDF2 100.000 vòng), `IdentityConfigurations` |
+| Refresh token | Entity `RefreshToken` (chỉ lưu SHA-256), `RefreshTokenRepository` |
+| API | `AuthEndpoints`: `POST /api/v1/auth/register`, `POST /api/v1/auth/login`; `AuthenticationExtensions` (JWT Bearer, `AuthorPolicy`) |
+| Frontend | `auth-context.tsx` (`AuthProvider`/`useAuth`), `LoginForm`, `RegisterForm`, `AuthCard`, `schemas.ts` (Zod), trang `/auth/login`, `/auth/register`, `SiteHeader` (hiện user đăng nhập), `FormField` |
+| Test | `schemas.test.ts` (Jest) |
+
+### 7.5 Đoàn Hồng Tiến – Dev 3 (danh mục)
+
+**Commit `fd27a71` – `feat(category): complete FR-CAT-001 & 002 public categories API and UI`**
+
+| Chức năng | File |
+|---|---|
+| FR-CAT-001 Danh sách danh mục | `GetCategoriesQuery : ICacheable` (Redis key `categories:all`, TTL 60 phút), `CategoryDtos` |
+| FR-CAT-002 Chi tiết danh mục | `GetCategoryBySlugQuery` + Validator (kèm công thức phân trang, 404 `CATEGORY_NOT_FOUND`) |
+| Domain | Entity `Category`, `SlugHelper` (bỏ dấu tiếng Việt, đ → d, hậu tố -2, -3 khi trùng) |
+| Dữ liệu | `CategoryConfiguration` (Name/Slug UNIQUE), `CategoryReadRepository` |
+| Cache | `RedisCacheService` (IDistributedCache + JSON, Redis lỗi → fallback DB) |
+| API | `CategoriesEndpoints`: `GET /api/v1/categories`, `GET /api/v1/categories/{slug}` |
+| Frontend | `/categories` (lưới `CategoryCard` + `loading.tsx`), `/categories/[slug]`, `features/categories/api.ts` |
+| Test | `SlugHelperTests` |
+
+### 7.6 Nguyễn Hồng Phúc Thọ – Dev 2 (công thức)
+
+**Commit `0fc95d1` – `feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view`**
+
+| Chức năng | File |
+|---|---|
+| FR-RCP-001 Danh sách công thức | `GetRecipesQuery` + Validator (lọc độ khó/thời gian, phân trang), `RecipeSortParser` (whitelist sắp xếp), phân quyền xem Draft theo Guest/Author/Admin |
+| FR-RCP-002 Chi tiết công thức | `GetRecipeBySlugQuery` (Draft → 403 nếu không phải chủ hoặc Admin) |
+| Domain | Aggregate `Recipe`, `RecipeStep`, `RecipeIngredient`, `RecipeImage`, owned `RecipeNutrition`, enum `RecipeDifficulty`, `RecipeStatus` |
+| Dữ liệu | `RecipeConfiguration` (check constraint, 8 index, partial unique ảnh chính), `IRecipeReadRepository`, `RecipeReadRepository` (projection AsNoTracking), `RecipeDtos` |
+| Dữ liệu mẫu | `DatabaseSeeder` (Bogus: 50 công thức, 5 tác giả, 8 danh mục) |
+| API + cache | `RecipesEndpoints`: `GET /api/v1/recipes`, `GET /api/v1/recipes/{slug}`; `OutputCachePolicies` (RecipeList 15 phút, RecipeDetail 60 phút) |
+| Frontend | `/recipes` (SSR + `loading.tsx`), `/recipes/[slug]` (ISR 300s), `RecipeCard`, `NutritionTable`, `StepChecklist`, `Pagination`, `RecipeGridSkeleton`, `format.ts`, `features/recipes/api.ts` |
+| Test | `RecipeTests`, `ValidatorTests` (validator đăng ký + danh sách công thức), `format.test.ts` |
+
+
+

@@ -4,10 +4,20 @@ if ! docker info >/dev/null 2>&1; then
   echo "[gitleaks] Docker chưa chạy – bỏ qua quét secret. Hãy bật Docker Desktop." >&2
   exit 0
 fi
-docker run --rm -v "$(pwd):/repo" -w /repo zricethezav/gitleaks:latest \
+
+# Git Bash (Windows) tự đổi đường dẫn dạng /repo thành C:/Program Files/Git/repo → tắt chuyển đổi.
+# Đường dẫn host: "pwd -W" trả D:/... trên Git Bash; Linux/macOS không có -W nên dùng pwd thường.
+export MSYS_NO_PATHCONV=1
+repo_dir=$(pwd -W 2>/dev/null || pwd)
+
+docker run --rm -v "$repo_dir:/repo" -w /repo zricethezav/gitleaks:latest \
   git --staged --redact --no-banner --config /repo/.gitleaks.toml
 status=$?
-if [ $status -ne 0 ]; then
+
+# gitleaks trả 1 khi tìm thấy secret; mã khác (125/126/127…) là lỗi chạy Docker/gitleaks
+if [ $status -eq 1 ]; then
   echo "[gitleaks] Phát hiện secret trong thay đổi đã stage – commit bị chặn." >&2
+elif [ $status -ne 0 ]; then
+  echo "[gitleaks] Không chạy được gitleaks (mã lỗi $status) – commit bị chặn. Kiểm tra Docker rồi thử lại." >&2
 fi
 exit $status
