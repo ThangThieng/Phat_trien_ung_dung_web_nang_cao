@@ -1,6 +1,6 @@
 # Culinary Blog – Nhóm 20
 
-Blog ẩm thực & nấu ăn theo `SPEC/SRS_Culinary_Blog_v1.0.0.pdf`. Kế hoạch 6 buổi: `SPEC/KE_HOACH_PHAT_TRIEN_6_BUOI.md`.
+Blog ẩm thực & nấu ăn theo `SPEC/SRS_Culinary_Blog_v1.2.0.md` (bản gốc: `SPEC/SRS_Culinary_Blog_v1.0.0.pdf`). Kế hoạch 7 buổi: `SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md`.
 
 ## Yêu cầu môi trường
 | Công cụ | Phiên bản |
