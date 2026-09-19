@@ -4,6 +4,7 @@ using CulinaryBlog.API.Extensions;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Services;
 using CulinaryBlog.Application;
+using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Infrastructure;
 using CulinaryBlog.Infrastructure.Persistence;
@@ -29,7 +30,15 @@ if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
+{
+    // Body vượt RequestSizeLimit (> 10MB) bị chặn trước khi tới handler → vẫn trả Application Error Code (Phụ lục B)
+    if (ctx.ProblemDetails.Status == StatusCodes.Status413PayloadTooLarge)
+    {
+        ctx.ProblemDetails.Type = ErrorCodes.FileSizeExceeded;
+        ctx.ProblemDetails.Detail = "Kích thước file vượt quá giới hạn 5MB.";
+    }
+});
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCulinaryOutputCache(builder.Configuration);
 builder.Services.AddOpenApi();
