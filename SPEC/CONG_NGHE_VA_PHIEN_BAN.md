@@ -236,7 +236,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Lý do:** (1) Khi `next build` image Docker, backend chưa chạy, nên prerender `/categories` lúc build sẽ lỗi. (2) `/categories/[slug]` đọc `?page=` (searchParams), nên Next bắt buộc render động. Cả hai vẫn đạt mục tiêu "tái sinh dữ liệu theo chu kỳ".
 
 ### 6.9 Các điểm SRS tự mâu thuẫn
-Xem bảng §1.3 trong `SPEC/KE_HOACH_PHAT_TRIEN_6_BUOI.md` (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện publish, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào.
+Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện publish, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md`.
 
 ---
 

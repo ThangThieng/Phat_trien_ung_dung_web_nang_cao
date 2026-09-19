@@ -1,6 +1,7 @@
 # BÁO CÁO KẾT QUẢ BUỔI 1 – CULINARY BLOG
 
-> Ngày thực hiện: 11/09/2026 · Căn cứ: `SRS_Culinary_Blog_v1.0.0.pdf`, `KE_HOACH_PHAT_TRIEN_6_BUOI.md`
+> Ngày thực hiện: 11/09/2026 · Căn cứ lúc thực hiện: `SRS_Culinary_Blog_v1.0.0.pdf`, `KE_HOACH_PHAT_TRIEN_6_BUOI.md` (nay chỉ còn trong lịch sử git)
+> Đối chiếu lại: 20/09/2026 với `KE_HOACH_PHAT_TRIEN_7_BUOI.md` (mục Buổi 1) và `SRS_Culinary_Blog_v1.2.0.md` – xem §8
 > Trạng thái: **HOÀN THÀNH** – toàn bộ 4 phần việc chạy end-to-end trên PostgreSQL 16, Redis 7, MinIO thật (Docker Compose), **đã commit Git theo quy trình §1.4** (`main` ← `develop` ← 4 nhánh `feature/b1-dev{k}-*`).
 
 ---
@@ -214,6 +215,18 @@ Trong lúc Postgres **thực sự không truy cập được**, log api/hangfire
 
 Còn lại một cảnh báo **chấp nhận được ở môi trường dev**: `XmlKeyManager[35] No XML encryptor configured` – khóa DataProtection lưu dạng không mã hóa trên volume. Production cần `ProtectKeysWithCertificate` (Buổi 6, cùng HTTPS).
 
+### 5.2 Rà soát lần 2 (20/09/2026, Docker bật) – commit `6137d3e` trên nhánh `feature/b1-dev4-infra-file`
+
+Kiểm tra toàn bộ: backend build 0 warning / 0 error, 44/44 test; frontend ESLint, `tsc`, Jest 15/15, `next build` đạt; chạy lại stack Docker và thử từng endpoint Buổi 1 (đăng ký/đăng nhập, danh sách/chi tiết công thức và danh mục, upload/xóa file, file giả mạo, path traversal, quyền xóa, CORS, 404). Phát hiện và sửa:
+
+| # | Lỗi | Nguyên nhân gốc | Cách sửa | Kiểm chứng |
+|---|---|---|---|---|
+| 1 | Ảnh **hợp lệ** gần 5MB upload qua Nginx (`:80/api/...`) bị từ chối **413 trang HTML**; ảnh 6MB cũng nhận HTML thay vì `FILE_SIZE_EXCEEDED` | `client_max_body_size 5m` tính trên **cả body multipart** (file + boundary + header), nên file ≤ 5MB vẫn vượt; trang lỗi mặc định của Nginx là HTML nên Frontend không đọc được | `client_max_body_size 10m` (khớp `RequestSizeLimit` của `/files/upload`); kiểm tra 5MB chính xác vẫn nằm ở API; body > 10MB trả JSON RFC 7807 qua `error_page 413 @payload_too_large` | Qua Nginx: 5MB−100B → **201**; 6MB → **400 `FILE_SIZE_EXCEEDED`**; 11MB → **413 JSON `FILE_SIZE_EXCEEDED`** |
+| 2 | Gọi thẳng API với body > 10MB trả 413 có `type` chung chung (`rfc9110#section-15.5.14`) | Request bị chặn ở tầng binding trước handler; `UseStatusCodePages` sinh ProblemDetails mặc định | `AddProblemDetails(CustomizeProblemDetails)`: status 413 → `type = FILE_SIZE_EXCEEDED` (Phụ lục B) | 11MB → 413 `FILE_SIZE_EXCEEDED` |
+| 3 | Mỗi lần khởi động khi Postgres chưa sẵn sàng, log api/hangfire tràn **stack trace** `A transient exception occurred…` | `DatabaseReadiness` gọi `DbContext.Database.CanConnectAsync` – chạy **bên trong** execution strategy `EnableRetryOnFailure`, nên mỗi lần thử tự retry thêm 6 lần và ghi đầy đủ exception | Thăm dò bằng `NpgsqlConnection.OpenAsync` trực tiếp (không qua retry của EF); retry lúc runtime giữ nguyên | Tắt Postgres, restart api: log chỉ còn `not reachable yet (attempt 1..3)` → `ready after 4 attempt(s) in 19s`, **RestartCount 0** |
+
+Các điểm lệch SRS v1.2.0 khác (422, lọc Draft theo danh tính, Output Cache, TTL…) **không sửa ở đây** – chúng là nợ kỹ thuật D-1 → D-18 đã được gán chủ và buổi retrofit trong `KE_HOACH_PHAT_TRIEN_7_BUOI.md` §4.1.
+
 ---
 
 ## 6. Việc tồn đọng chuyển sang Buổi 2+
@@ -239,19 +252,32 @@ Repo: https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao
 | `feature/b1-dev3-cat-001-002` | Nhánh riêng của **Dev 3** – Buổi 1: FR-CAT-001/002 | Đoàn Hồng Tiến |
 | `feature/b1-dev2-rcp-001-002` | Nhánh riêng của **Dev 2** – Buổi 1: FR-RCP-001/002 | Nguyễn Hồng Phúc Thọ |
 
-Quy ước tên: `feature/b{buổi}-dev{số}-{mã FR}`. Buổi 2 tạo nhánh mới từ `develop` (ví dụ `feature/b2-dev1-auth-003-005`). Nhánh `feature/b1-*` đã merge nên chỉ còn giá trị lịch sử và có thể xóa.
+**Quy ước tên nhánh (áp dụng từ Buổi 2):** `{mssv}_{tên}_buoi{số}` – MSSV, tên gọi viết thường không dấu, số buổi. Nhánh `feature/b1-*` của Buổi 1 giữ nguyên tên cũ làm lịch sử (đã merge xong, không đổi tên để khỏi hỏng link GitHub); từ Buổi 2 mỗi dev tạo nhánh mới từ `develop` theo tên dưới đây:
 
-Cột **Behind/Ahead** trên GitHub so với `main`: mọi nhánh đều **Ahead 0** (không còn commit nào chưa merge). **Behind** là số commit `main` có mà nhánh đó chưa có – nhánh merge càng sớm thì Behind càng lớn (Dev 4: 8, Dev 1: 6, Dev 3: 4, Dev 2: 2, `develop`: 1 – chính là commit merge `develop → main`). Đây là trạng thái bình thường.
+| Thành viên | MSSV | Nhánh Buổi 1 (đã merge, giữ nguyên) | Nhánh Buổi 2 trở đi |
+|---|---|---|---|
+| Nguyễn Thăng Thiêng (Dev 4) | 2312755 | `feature/b1-dev4-infra-file` | `2312755_thieng_buoi2` |
+| Hoàng Bình Quân (Dev 1) | 2314236 | `feature/b1-dev1-auth-001-002` | `2314236_quan_buoi2` |
+| Đoàn Hồng Tiến (Dev 3) | 2314291 | `feature/b1-dev3-cat-001-002` | `2314291_tien_buoi2` |
+| Nguyễn Hồng Phúc Thọ (Dev 2) | 2312758 | `feature/b1-dev2-rcp-001-002` | `2312758_tho_buoi2` |
+
+Các buổi sau chỉ đổi hậu tố: `2312755_thieng_buoi3`, `2312755_thieng_buoi4`…
+
+> **Cập nhật 20/09/2026:** đã **xóa** 3 nhánh `feature/b1-dev1-auth-001-002`, `feature/b1-dev3-cat-001-002`, `feature/b1-dev2-rcp-001-002` (cả local lẫn GitHub) để Dev 1, 2, 3 tự tạo nhánh của mình theo quy ước trên và tự commit phần việc từ Buổi 2. Commit của các nhánh này **không mất** – đã merge vào `develop`/`main`, xem qua link commit ở §7.4–7.6. Nhánh `feature/b1-dev4-infra-file` được giữ lại và đưa lên ngang `main` để nhận commit sửa lỗi `6137d3e` (§5.2). Bảng vai trò nhánh ở trên và số Behind dưới đây phản ánh thời điểm 14/09.
+
+Cột **Behind/Ahead** trên GitHub so với `main`: mọi nhánh đều **Ahead 0** (không còn commit nào chưa merge). **Behind** là số commit `main` có mà nhánh đó chưa có – nhánh merge càng sớm thì Behind càng lớn. Số liệu sau lần merge `fix/b1-runtime-hardening` (commit `f313e95`): Dev 4: 11, Dev 1: 9, Dev 3: 7, Dev 2: 5, `fix/b1-runtime-hardening`: 3, `develop`: 2 – chính là 2 commit merge `develop → main` (`d2d8243`, `f313e95`). Đây là trạng thái bình thường.
 
 ```
-main     ●──────────────────────────────────────────●  d2d8243 merge develop → main
-         │                                          │
-develop  └─●────────●────────●────────●─────────────┘
-           │        │        │        │
-           │        │        │        └─ 0fc95d1 feat(recipe)    – Nguyễn Hồng Phúc Thọ
-           │        │        └────────── fd27a71 feat(category)  – Đoàn Hồng Tiến
-           │        └─────────────────── 3d40be6 feat(auth)      – Hoàng Bình Quân
-           └──────────────────────────── 9dc3d81 feat(infra)     – Nguyễn Thăng Thiêng
+                 d2d8243                          f313e95
+main     ●──────────●────────────────────────────────●   (merge develop → main: lần 1 các FR, lần 2 hardening)
+         │          │                                │
+develop  └─●──●──●──┴──●─────────────────────────────┘
+           │  │  │  │  │
+           │  │  │  │  └─ 064f582 fix(infra) hardening – Nguyễn Thăng Thiêng  [fix/b1-runtime-hardening]
+           │  │  │  └──── 0fc95d1 feat(recipe)   – Nguyễn Hồng Phúc Thọ  [feature/b1-dev2-rcp-001-002]
+           │  │  └─────── fd27a71 feat(category) – Đoàn Hồng Tiến        [feature/b1-dev3-cat-001-002]
+           │  └────────── 3d40be6 feat(auth)     – Hoàng Bình Quân       [feature/b1-dev1-auth-001-002]
+           └───────────── 9dc3d81 feat(infra)    – Nguyễn Thăng Thiêng   [feature/b1-dev4-infra-file]
 b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 ```
 
@@ -259,7 +285,7 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 
 | Thành viên | Vai trò | Commit | Nhánh | File | Dòng thêm |
 |---|---|---|---|---|---|
-| Nguyễn Thăng Thiêng | Dev 4 + trưởng nhóm | `b058654` bootstrap, `9dc3d81` feat(infra) | `main`, `feature/b1-dev4-infra-file` | 70 + 22 | 18.279 + 3.438 |
+| Nguyễn Thăng Thiêng | Dev 4 + trưởng nhóm | `b058654` bootstrap, `9dc3d81` feat(infra), `064f582` fix(infra), `6137d3e` fix(infra) | `main`, `feature/b1-dev4-infra-file`, `fix/b1-runtime-hardening` | 70 + 22 (+ 2 commit sửa lỗi) | 18.279 + 3.438 (+ sửa lỗi) |
 | Hoàng Bình Quân | Dev 1 | `3d40be6` feat(auth) | `feature/b1-dev1-auth-001-002` | 24 | 1.343 |
 | Đoàn Hồng Tiến | Dev 3 | `fd27a71` feat(category) | `feature/b1-dev3-cat-001-002` | 15 | 536 |
 | Nguyễn Hồng Phúc Thọ | Dev 2 | `0fc95d1` feat(recipe) | `feature/b1-dev2-rcp-001-002` | 30 | 1.872 |
@@ -296,9 +322,15 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 | Frontend | `ImageUploader.tsx` (kéo-thả, preview, progress %, ARIA), trang `/dashboard/media` |
 | Test | `ImageFileInspectorTests` |
 
+**Commit `064f582` – `fix(infra): harden runtime startup, nginx upstream DNS and gitleaks hook`** (nhánh `fix/b1-runtime-hardening`, 14/09) – chi tiết §5.1.
+
+**Commit `6137d3e` – `fix(infra): accept near-5MB uploads through nginx and quiet DB readiness logs`** (nhánh `feature/b1-dev4-infra-file`, 20/09) – chi tiết §5.2.
+
+Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/b058654) · [9dc3d81](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/9dc3d81) · [064f582](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/064f582) · [6137d3e](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/6137d3e). Báo cáo Lab cá nhân (Word, kèm ảnh chụp commit): `SPEC/BAO_CAO_LAB_01_2312755_NguyenThangThieng.docx`.
+
 ### 7.4 Hoàng Bình Quân – Dev 1 (xác thực)
 
-**Commit `3d40be6` – `feat(auth): complete FR-AUTH-001 & 002 register login flow`**
+**Commit [`3d40be6`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) – `feat(auth): complete FR-AUTH-001 & 002 register login flow`**
 
 | Chức năng | File |
 |---|---|
@@ -313,7 +345,7 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 
 ### 7.5 Đoàn Hồng Tiến – Dev 3 (danh mục)
 
-**Commit `fd27a71` – `feat(category): complete FR-CAT-001 & 002 public categories API and UI`**
+**Commit [`fd27a71`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/fd27a71) – `feat(category): complete FR-CAT-001 & 002 public categories API and UI`**
 
 | Chức năng | File |
 |---|---|
@@ -328,7 +360,7 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 
 ### 7.6 Nguyễn Hồng Phúc Thọ – Dev 2 (công thức)
 
-**Commit `0fc95d1` – `feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view`**
+**Commit [`0fc95d1`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/0fc95d1) – `feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view`**
 
 | Chức năng | File |
 |---|---|
@@ -341,5 +373,28 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 | Frontend | `/recipes` (SSR + `loading.tsx`), `/recipes/[slug]` (ISR 300s), `RecipeCard`, `NutritionTable`, `StepChecklist`, `Pagination`, `RecipeGridSkeleton`, `format.ts`, `features/recipes/api.ts` |
 | Test | `RecipeTests`, `ValidatorTests` (validator đăng ký + danh sách công thức), `format.test.ts` |
 
+## 8. Đối chiếu Buổi 1 với kế hoạch 7 buổi (rà soát 20/09/2026)
 
+Đối chiếu từng bước ở mục **BUỔI 1** của `KE_HOACH_PHAT_TRIEN_7_BUOI.md` với code trên `main`. Kết luận: **Buổi 1 đạt kế hoạch** – cả 4 lát cắt dọc (DB → API → UI) chạy end-to-end, build/test xanh; các khác biệt đều đã được kế hoạch ghi nhận (khung "Khác biệt giữa kế hoạch và thực tế Buổi 1" hoặc bảng nợ §4.1), trừ 3 hạng mục nhỏ đánh dấu ⚠️ dưới đây.
+
+| Dev | Bước kế hoạch | Thực tế | Kết quả |
+|---|---|---|---|
+| Dev 4 | Bootstrap 30 phút đầu (solution 4 tầng, `BaseEntity`, DbContext, `AuditInterceptor`, 4 behavior, middleware, `PagedResult`, Next.js + `api-client`) | Commit `b058654` đủ các thành phần | ✅ |
+| Dev 4 | Docker Compose 8 service + mailhog, volume, `init.sql`, `.env.example`, User Secrets, README < 5 phút | Đủ; thêm volume `dpkeys` (§5.1) | ✅ |
+| Dev 4 | `IFileStorageService`, `MinioFileStorageService` (AWSSDK.S3, path-style), bucket tự tạo + public-read, tên `{folder}/{Guid}{ext}`, xóa idempotent | Đủ | ✅ |
+| Dev 4 | Validation ≤ 5MB, MIME whitelist, magic bytes; unit test magic bytes | `ImageFileInspector` + `ImageFileInspectorTests` | ✅ |
+| Dev 4 | API tạm `POST /api/v1/files`, `DELETE /api/v1/files` | `POST /files/upload`, `DELETE /files/{**fileId}` – SRS v1.2.0 đã chính thức hóa đúng 2 đường dẫn này (MT-43) | ✅ (khác tên, đã chuẩn hóa) |
+| Dev 4 | `ImageUploader` kéo-thả, preview, progress %, callback | Đủ + trang `/dashboard/media` | ✅ |
+| Dev 1 | Identity, `RefreshToken`, lockout 5 lần/15 phút, PBKDF2; JWT 15′/7 ngày; register/login 201/200/409/401/423 | Đủ | ✅ (512-bit → nợ D-2) |
+| Dev 1 | `IWelcomeEmailScheduler` stub no-op | Đã cắm Hangfire thật (FR-JOB-001 làm sớm) | ✅ vượt kế hoạch |
+| Dev 1 | UI login/register RHF + Zod; access token in-memory | Lưu `localStorage` | Nợ **D-12** (B3) |
+| Dev 1 | xUnit validator **+ integration test register/login** | Có test validator; project `API.IntegrationTests` còn **rỗng** | ⚠️ Viết khi có harness Buổi 2 (Dev 4) |
+| Dev 2 | Schema Recipe đầy đủ, seed 50 recipe/5 tác giả, `GetRecipesQuery`, `GetRecipeBySlugQuery`, Output Cache, UI SSR/ISR 300 | Đủ | ✅ (nợ D-3, D-4, D-6, D-8) |
+| Dev 3 | `Category` + seed 8, `RedisCacheService` fallback DB, 2 query, 2 endpoint, UI | Đủ | ✅ (nợ D-5, D-7, D-13) |
+| Dev 3 | **Value Object `Slug`** + `SlugHelper` + unit test | Có `SlugHelper` + `SlugHelperTests`; **chưa có VO `Slug`** | ⚠️ Bổ sung khi sinh slug Recipe (Buổi 2) |
+| Dev 3 | Component **`CategoryNav`** cho header | Header chỉ có link "Danh mục" | ⚠️ Bổ sung Buổi 2 (Dev 3, cùng CRUD danh mục) |
+| Chung | Mỗi dev một migration `B1_{Module}` | Một migration `B1_InitialSchema` | Đã ghi §4.7 |
+| Chung | Thông điệp commit theo kế hoạch | Cùng loại/phạm vi, câu chữ ngắn hơn (ví dụ `feat(auth): complete FR-AUTH-001 & 002 register login flow`) | Không ảnh hưởng |
+
+**Tài liệu SPEC sau rà soát:** `SRS_Culinary_Blog_v1.1.0.md` đã xóa – SRS v1.2.0 kế thừa toàn bộ v1.1.0 và đánh dấu mọi thay đổi `[CR-2026-02 / MT-xx]` tại chỗ, nên bản v1.1.0 riêng không còn tác dụng; các tham chiếu tới nó trong SRS v1.2.0, `SRS_MAU_THUAN_VA_GIAI_PHAP.md`, kế hoạch 7 buổi và README đã được sửa. `Mau_Nop_Bao_Cao_Lab_Ca_Nhan_2026.pdf` là mẫu báo cáo Lab cá nhân để các thành viên tự điền.
 
