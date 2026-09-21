@@ -13,15 +13,15 @@ Nhóm: **20**
 | STT | Công việc được giao | Liên kết đến github branch | Tiến độ % |
 |---:|---|---|---:|
 | 1 | Module xác thực người dùng - FR-AUTH-001: Đăng ký tài khoản | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 100% |
+Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 95% |
 | 2 | Module xác thực người dùng - FR-AUTH-002: Đăng nhập bằng email/mật khẩu | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 100% |
+Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 90% |
 | 3 | Xây dựng lớp Identity, JWT và refresh token phục vụ FR-AUTH-001/002 | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 100% |
+Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 85% |
 | 4 | Xây dựng giao diện đăng ký, đăng nhập và quản lý trạng thái xác thực phía Frontend | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 100% |
+Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 80% |
 | 5 | Kiểm thử luồng đăng ký/đăng nhập, validation dữ liệu và các trường hợp lỗi xác thực | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 100% |
+Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 75% |
 
 ## 1. Tóm tắt
 
