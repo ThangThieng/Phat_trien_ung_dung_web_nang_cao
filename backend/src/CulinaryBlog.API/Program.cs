@@ -10,8 +10,10 @@ using CulinaryBlog.Infrastructure;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +73,19 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
 {
     await using var scope = app.Services.CreateAsyncScope();
     await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>().Database.MigrateAsync().ConfigureAwait(false);
-    await scope.ServiceProvider.GetRequiredService<DatabaseSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false);
+    if (await scope.ServiceProvider.GetRequiredService<DatabaseSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false))
+    {
+        // Dữ liệu mẫu vừa được bổ sung/sửa → bỏ response công thức đang nằm trong Output Cache (tag "recipes")
+        try
+        {
+            await scope.ServiceProvider.GetRequiredService<IOutputCacheStore>()
+                .EvictByTagAsync(OutputCachePolicies.RecipesTag, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (RedisException)
+        {
+            // NFR-REL-002: Redis lỗi không được chặn API khởi động; cache cũ tự hết hạn theo TTL.
+        }
+    }
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();

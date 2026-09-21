@@ -50,7 +50,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | MediatR | **12.5.0** | CQRS + MediatR (CONS-002) | 📌 xem 6.1 |
 | FluentValidation | 12.1.1 | CONS-008 | ✅ |
 | FluentValidation.DependencyInjectionExtensions | 12.1.1 | CONS-008 | ✅ |
-| Microsoft.Extensions.Logging.Abstractions | 10.0.12 | ILogger cho LoggingBehavior (SRS §6.3) | ✅ *(thêm ở Buổi 1)* |
+| Microsoft.Extensions.Logging.Abstractions | 10.0.12 | ILogger cho LoggingBehavior (SRS §6.3) | ✅ *(thêm ở Buổi 2)* |
 | Microsoft.Extensions.Identity.Stores | 10.0.12 | ASP.NET Core Identity (UserManager trong handler) | ✅ |
 
 ### 2.3 Tầng Infrastructure
@@ -67,7 +67,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Hangfire.Core | 1.8.25 | Background jobs (§3.6) | ✅ |
 | Hangfire.PostgreSql | 1.21.1 | Hangfire storage trên PostgreSQL | ✅ |
 | Bogus | 35.6.5 | Seed 50 recipe / 5 tác giả (§2.6.1) | ✅ |
-| Hangfire.AspNetCore | 1.8.25 | Đăng ký `AddHangfire` / `AddHangfireServer` trong DI Infrastructure | ✅ *(thêm ở Buổi 1)* |
+| Hangfire.AspNetCore | 1.8.25 | Đăng ký `AddHangfire` / `AddHangfireServer` trong DI Infrastructure | ✅ *(thêm ở Buổi 2)* |
 | AspNetCore.HealthChecks.NpgSql | 9.0.0 | FR-OBS-001 | ✅ |
 | AspNetCore.HealthChecks.Redis | 9.0.0 | FR-OBS-001 | ✅ |
 | SixLabors.ImageSharp | **3.1.12** | Resize ảnh 800×600 / 300×300 (FR-JOB-002) | ➕📌 xem 6.2 |
@@ -78,7 +78,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.12 | JWT Bearer | ✅ |
 | Microsoft.AspNetCore.OpenApi | 10.0.12 | OpenAPI document | ✅ |
 | Scalar.AspNetCore | 2.17.3 | Scalar UI tại `/scalar` | ✅ |
-| Microsoft.AspNetCore.OutputCaching.StackExchangeRedis | 10.0.12 | Output Cache "RecipeList"/"RecipeDetail" (FR-RCP-001/002) lưu trên Redis – distributed (NFR-SCALE-001) | ✅ *(thêm ở Buổi 1)* |
+| Microsoft.AspNetCore.OutputCaching.StackExchangeRedis | 10.0.12 | Output Cache "RecipeList"/"RecipeDetail" (FR-RCP-001/002) lưu trên Redis – distributed (NFR-SCALE-001) | ✅ *(thêm ở Buổi 2)* |
 | Hangfire.AspNetCore | 1.8.25 | Dashboard `/hangfire` | ✅ |
 | Serilog.AspNetCore | 10.0.0 | Structured logging (CONS-010), gồm Console + File sink | ✅ |
 | Serilog.Sinks.Seq | 9.1.0 | Seq (dev) | ✅ |
@@ -176,7 +176,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Secret khi `dotnet run` | **ASP.NET Core User Secrets** (connection string, JWT key, MinIO key). `appsettings*.json` không chứa mật khẩu |
 | Mẫu cấu hình | `.env.example`, `frontend/.env.local.example` (không có giá trị thật) |
 | Quét secret | Pre-commit hook `.githooks/pre-commit` chạy **gitleaks** qua Docker (`zricethezav/gitleaks`), cấu hình `.gitleaks.toml` |
-| Chưa cấu hình | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` – cần tạo trên Google Cloud Console trước Buổi 2 |
+| Chưa cấu hình | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` – cần tạo trên Google Cloud Console trước Buổi 3 |
 
 ---
 
@@ -209,7 +209,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 ### 6.4 Health check MinIO – tự viết `IHealthCheck` ⚠️
 - **SRS (FR-OBS-001)** ghi package `AspNetCore.HealthChecks.Minio`.
 - **Thực tế:** tra NuGet ngày 11/09/2026 thì package này **không tồn tại** (0 kết quả).
-- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (ListBuckets) ở Buổi 4. `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
+- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (ListBuckets) ở Buổi 5. `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
 - **Đây là thay đổi duy nhất bắt buộc phải khác SRS.**
 
 ### 6.5 Lockfile npm sinh bằng npm 10 📌
@@ -226,7 +226,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Rule đã tắt** (trong `.editorconfig`): `SA1101` (bắt buộc `this.`), `SA1309` (cấm `_field`), `SA1200`, `SA1600–1602` (bắt buộc XML doc mọi element), `SA1633` (file header), `SA1402/SA1649` (1 type / file), `SA1413`, `SA1010`, `SA1000`.
 - **Lý do:** các rule này xung đột với convention của team (`_camelCase` field, gom Command + Handler + Validator trong 1 file CQRS, collection expression C# 12+). StyleCop vẫn được dùng đúng như NFR-MAINT-001; phần còn lại của bộ rule vẫn bật và **coi warning là lỗi**.
 
-### 6.10 Cổng PostgreSQL phía host cấu hình được (Buổi 1)
+### 6.10 Cổng PostgreSQL phía host cấu hình được (Buổi 2)
 - **Vấn đề:** máy phát triển đã có service Windows `postgresql-x64-18` chiếm `0.0.0.0:5432`, và container `lms-postgres-dwh` chiếm 5433. Kết nối `localhost:5432` rơi vào Postgres của Windows nên xác thực thất bại.
 - **Thay đổi:** `docker-compose.yml` map `${POSTGRES_HOST_PORT:-5432}:5432`. Mặc định vẫn 5432 đúng SRS §6.5; `.env` của máy này đặt `5434`. Container và các service nội bộ vẫn dùng 5432. Không tắt hay sửa service của người dùng.
 
@@ -236,7 +236,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Lý do:** (1) Khi `next build` image Docker, backend chưa chạy, nên prerender `/categories` lúc build sẽ lỗi. (2) `/categories/[slug]` đọc `?page=` (searchParams), nên Next bắt buộc render động. Cả hai vẫn đạt mục tiêu "tái sinh dữ liệu theo chu kỳ".
 
 ### 6.9 Các điểm SRS tự mâu thuẫn
-Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện publish, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md`.
+Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện publish, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`.
 
 ---
 

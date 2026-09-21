@@ -1,0 +1,674 @@
+[
+  {
+    "title": "Cơm chiên Dương Châu",
+    "category": "Cơm & Xôi",
+    "description": "Cơm nguội chiên tơi cùng lạp xưởng, tôm, trứng, đậu Hà Lan và cà rốt, hạt cơm săn vàng đều.",
+    "prep": 20, "cook": 15, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Cơm nguội", 600, "gram", "để tủ lạnh qua đêm"],
+      ["Lạp xưởng", 2, "cây", "thái hạt lựu"],
+      ["Tôm nõn", 150, "gram"],
+      ["Trứng gà", 3, "quả"],
+      ["Đậu Hà Lan hạt", 80, "gram"],
+      ["Cà rốt", 1, "củ", "thái hạt lựu"],
+      ["Bắp ngọt hạt", 80, "gram"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Hành lá", 3, "cây", "thái nhỏ"],
+      ["Nước tương", 1, "thìa canh"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Dầu ăn", 3, "thìa canh"]
+    ],
+    "steps": [
+      ["Chuẩn bị cơm", "Bóp tơi cơm nguội, trộn cơm với 1 lòng đỏ trứng để hạt cơm vàng đều khi chiên.", 5],
+      ["Chần rau củ", "Chần cà rốt, đậu Hà Lan và bắp qua nước sôi 1 phút, để ráo.", 3],
+      ["Xào nhân", "Xào lạp xưởng cho ra mỡ, thêm hành tím và tôm xào chín, cho rau củ vào đảo đều rồi múc ra.", 5],
+      ["Chiên trứng", "Đánh tan 2 quả trứng còn lại, chiên thành trứng tơi trong chảo.", 2],
+      ["Chiên cơm", "Cho dầu và cơm vào chảo nóng, đảo đều trên lửa lớn đến khi hạt cơm săn và tơi.", 5],
+      ["Hoàn thiện", "Cho nhân và trứng vào, nêm nước tương và hạt nêm, rắc hành lá, đảo thêm 1 phút.", 1]
+    ]
+  },
+  {
+    "title": "Xôi gà",
+    "category": "Cơm & Xôi",
+    "description": "Xôi nếp dẻo thơm nấu nước luộc gà, phủ gà xé xào nấm, hành phi, pate và nước sốt xì dầu.",
+    "prep": 30, "cook": 60, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Gạo nếp cái hoa vàng", 500, "gram", "ngâm 6 giờ"],
+      ["Đùi gà", 2, "cái"],
+      ["Nấm hương", 6, "cái", "ngâm nở, thái sợi"],
+      ["Lạp xưởng", 2, "cây", "thái lát"],
+      ["Hành tím", 6, "củ", "thái mỏng làm hành phi"],
+      ["Xì dầu", 2, "thìa canh"],
+      ["Dầu hào", 1, "thìa canh"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Mỡ gà", 2, "thìa canh"],
+      ["Dưa leo", 1, "quả", "ăn kèm"],
+      ["Ruốc thịt heo", 50, "gram"],
+      ["Tiêu xay", 0.5, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Luộc gà", "Luộc đùi gà với muối và gừng khoảng 25 phút, vớt ra xé sợi, giữ lại nước luộc.", 25],
+      ["Đồ xôi", "Để ráo gạo nếp, trộn với chút muối, đồ trong xửng 20 phút, rưới 150 ml nước luộc gà và mỡ gà, đảo đều, đồ tiếp 15 phút.", 35],
+      ["Làm hành phi", "Phi hành tím trong dầu lửa vừa đến khi vàng giòn, vớt ra để ráo.", 8],
+      ["Xào nhân gà", "Xào lạp xưởng, thêm nấm hương và gà xé, nêm xì dầu, dầu hào và tiêu, đảo đến khi ngấm.", 5],
+      ["Trình bày", "Xới xôi ra đĩa, phủ nhân gà, ruốc và hành phi, ăn kèm dưa leo.", null]
+    ]
+  },
+  {
+    "title": "Cơm gà Hội An",
+    "category": "Cơm & Xôi",
+    "description": "Cơm vàng nghệ nấu nước luộc gà, gà ta xé trộn rau răm hành tây, ăn kèm đu đủ bóp và nước sốt gừng.",
+    "prep": 30, "cook": 50, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Gà ta", 1.2, "kg"],
+      ["Gạo tẻ", 500, "gram"],
+      ["Bột nghệ", 1, "thìa cà phê"],
+      ["Mỡ gà", 2, "thìa canh"],
+      ["Hành tây", 1, "củ", "thái mỏng"],
+      ["Rau răm", 50, "gram"],
+      ["Đu đủ xanh", 200, "gram", "bào sợi"],
+      ["Gừng", 30, "gram"],
+      ["Chanh", 2, "quả"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường", 1, "thìa canh"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Muối, tiêu", null, null, "vừa đủ"]
+    ],
+    "steps": [
+      ["Luộc gà", "Luộc gà với gừng, hành tím và muối, sôi 20 phút thì tắt bếp ủ thêm 15 phút, giữ lại nước luộc.", 35],
+      ["Nấu cơm vàng", "Phi tỏi với mỡ gà, cho gạo và bột nghệ vào xào đến khi hạt gạo săn, nấu cơm bằng nước luộc gà.", 25],
+      ["Trộn gà xé", "Xé gà thành sợi, trộn với hành tây, rau răm, nước cốt chanh, chút muối, tiêu và đường.", 10],
+      ["Làm đu đủ bóp", "Bóp đu đủ với muối, rửa lại, trộn với chút đường, giấm và rau răm.", 5],
+      ["Làm nước chấm gừng", "Giã gừng với tỏi, ớt, pha cùng nước mắm, đường và chanh.", 5],
+      ["Trình bày", "Xới cơm ra đĩa, xếp gà xé lên trên, dọn cùng đu đủ bóp, chén canh nước luộc gà và nước chấm.", null]
+    ]
+  },
+  {
+    "title": "Xôi xéo",
+    "category": "Cơm & Xôi",
+    "description": "Xôi nếp vàng nghệ phủ đậu xanh thái mỏng như xéo, rưới mỡ nước và rắc hành phi, món sáng Hà Nội.",
+    "prep": 20, "cook": 60, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Gạo nếp", 500, "gram", "ngâm 6 giờ"],
+      ["Nghệ tươi", 1, "củ", "giã lấy nước"],
+      ["Đậu xanh cà vỏ", 150, "gram", "ngâm 2 giờ"],
+      ["Hành tím", 8, "củ", "thái mỏng làm hành phi"],
+      ["Mỡ gà", 3, "thìa canh"],
+      ["Dầu ăn", 150, "ml"],
+      ["Muối", 1.5, "thìa cà phê"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Ruốc thịt heo", 50, "gram", "ăn kèm"],
+      ["Dưa góp", 100, "gram", "ăn kèm"]
+    ],
+    "steps": [
+      ["Ngâm nếp với nghệ", "Ngâm gạo nếp với nước cốt nghệ và 1 thìa cà phê muối ít nhất 6 giờ cho hạt nếp vàng đều.", 360],
+      ["Đồ đậu xanh", "Đồ chín đậu xanh 20 phút, giã nhuyễn với chút muối và đường, nắm thành nắm tròn chắc tay.", 25],
+      ["Đồ xôi", "Để ráo nếp, đồ 20 phút, rưới mỡ gà, đảo đều rồi đồ thêm 15 phút đến khi dẻo.", 35],
+      ["Làm hành phi", "Phi hành tím lửa vừa đến khi vàng giòn, giữ lại dầu hành.", 10],
+      ["Trình bày", "Xới xôi, dùng dao thái đậu xanh thành lát mỏng phủ lên, rưới dầu hành và rắc hành phi, ăn kèm ruốc và dưa góp.", null]
+    ]
+  },
+  {
+    "title": "Lẩu gà lá é",
+    "category": "Lẩu",
+    "description": "Lẩu gà ta nấu măng chua, ớt xiêm xanh và lá é thơm đặc trưng Đà Lạt, nước lẩu chua cay thanh.",
+    "prep": 30, "cook": 45, "servings": 5, "difficulty": "Medium",
+    "ingredients": [
+      ["Gà ta", 1.5, "kg", "chặt miếng"],
+      ["Lá é", 100, "gram"],
+      ["Măng chua", 300, "gram"],
+      ["Ớt xiêm xanh", 10, "quả", "đập dập"],
+      ["Sả", 4, "cây", "đập dập"],
+      ["Cà chua", 2, "quả"],
+      ["Nấm rơm", 200, "gram"],
+      ["Hành tím", 4, "củ"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường phèn", 1, "thìa canh"],
+      ["Bún tươi", 800, "gram"],
+      ["Muối tiêu chanh lá é", null, null, "chấm kèm"]
+    ],
+    "steps": [
+      ["Sơ chế gà", "Rửa gà với muối và gừng, chặt miếng vừa ăn, ướp với chút nước mắm và hành tím băm 15 phút.", 15],
+      ["Xào gà", "Phi thơm hành tím và sả, cho gà vào xào săn.", 5],
+      ["Nấu nước lẩu", "Đổ 2,5 lít nước vào nồi gà, thêm măng chua, cà chua và ớt xiêm, nấu lửa nhỏ 30 phút đến khi gà mềm.", 30],
+      ["Nêm nếm", "Nêm nước mắm và đường phèn cho vị chua cay hài hòa.", 3],
+      ["Thưởng thức", "Đặt nồi lên bếp lẩu, thả lá é và nấm rơm khi nước sôi, ăn kèm bún và muối tiêu chanh lá é.", null]
+    ]
+  },
+  {
+    "title": "Lẩu cá kèo",
+    "category": "Lẩu",
+    "description": "Lẩu cá kèo miền Tây nấu me chua với rau đắng, bông điên điển, cá kèo tươi thả sống vào nồi.",
+    "prep": 30, "cook": 30, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Cá kèo tươi", 700, "gram"],
+      ["Me chua", 60, "gram", "dầm lấy nước"],
+      ["Sả", 3, "cây", "đập dập"],
+      ["Cà chua", 2, "quả"],
+      ["Thơm (dứa)", 0.5, "quả", "thái lát"],
+      ["Rau đắng", 300, "gram"],
+      ["Bông điên điển", 200, "gram"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Ớt hiểm", 3, "quả"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Bún tươi", 700, "gram"]
+    ],
+    "steps": [
+      ["Sơ chế cá", "Rửa cá kèo nhiều lần với nước muối cho sạch nhớt, để trong thau có nắp.", 10],
+      ["Nấu nước lẩu", "Phi tỏi, xào cà chua và thơm, đổ 2 lít nước cùng sả vào nấu sôi 10 phút.", 15],
+      ["Nêm chua ngọt", "Cho nước me dầm vào, nêm nước mắm, đường cho vị chua ngọt cân bằng, thêm ớt hiểm.", 3],
+      ["Chuẩn bị rau", "Nhặt rau đắng, bông điên điển, rửa sạch để ráo và xếp ra đĩa.", 10],
+      ["Thưởng thức", "Khi nồi lẩu sôi, thả cá kèo vào nấu 3 phút, nhúng rau đắng và bông điên điển, ăn kèm bún.", null]
+    ]
+  },
+  {
+    "title": "Lẩu riêu cua bắp bò",
+    "category": "Lẩu",
+    "description": "Nước lẩu riêu cua chua dịu, nhúng bắp bò thái mỏng, sườn sụn, đậu phụ rán và rau muống chẻ.",
+    "prep": 45, "cook": 60, "servings": 5, "difficulty": "Hard",
+    "ingredients": [
+      ["Cua đồng xay", 500, "gram"],
+      ["Bắp bò", 400, "gram", "thái mỏng"],
+      ["Sườn sụn", 400, "gram"],
+      ["Đậu phụ", 4, "bìa", "rán vàng"],
+      ["Cà chua", 5, "quả"],
+      ["Giấm bỗng", 3, "thìa canh"],
+      ["Hành tím", 5, "củ"],
+      ["Dầu điều", 2, "thìa canh"],
+      ["Mắm tôm", 1, "thìa canh"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Rau muống chẻ, hoa chuối", 500, "gram"],
+      ["Bún tươi", 800, "gram"]
+    ],
+    "steps": [
+      ["Ninh sườn sụn", "Chần sườn sụn rồi ninh với 2,5 lít nước trong 45 phút làm nước dùng.", 45],
+      ["Lọc cua và nấu riêu", "Lọc cua lấy nước, đổ vào nồi nước sườn, đun lửa vừa và khuấy nhẹ đến khi riêu đóng tảng.", 15],
+      ["Xào cà chua", "Phi hành tím với dầu điều, xào cà chua rồi cho vào nồi cùng đậu phụ rán và giấm bỗng.", 10],
+      ["Nêm nếm", "Nêm nước mắm và chút mắm tôm cho dậy vị, giữ lửa nhỏ để riêu không vỡ.", 3],
+      ["Thưởng thức", "Chuyển nồi lên bếp lẩu, nhúng bắp bò tái vừa chín, ăn kèm rau muống, hoa chuối và bún.", null]
+    ]
+  },
+  {
+    "title": "Lẩu mắm miền Tây",
+    "category": "Lẩu",
+    "description": "Lẩu mắm cá linh, cá sặc đậm đà, ăn cùng cá, tôm, mực, thịt ba chỉ và hàng chục loại rau đồng.",
+    "prep": 45, "cook": 45, "servings": 6, "difficulty": "Hard",
+    "ingredients": [
+      ["Mắm cá linh", 200, "gram"],
+      ["Mắm cá sặc", 200, "gram"],
+      ["Xương heo", 1, "kg"],
+      ["Sả", 6, "cây", "băm nhỏ"],
+      ["Tỏi", 1, "củ", "băm nhỏ"],
+      ["Thịt ba chỉ", 300, "gram", "thái mỏng"],
+      ["Cá basa", 400, "gram", "cắt miếng"],
+      ["Tôm sú", 300, "gram"],
+      ["Mực ống", 300, "gram"],
+      ["Cà tím", 2, "quả"],
+      ["Đường", 2, "thìa canh"],
+      ["Rau đồng các loại", 800, "gram", "bông súng, điên điển, rau muống"],
+      ["Bún tươi", 800, "gram"]
+    ],
+    "steps": [
+      ["Ninh nước dùng", "Chần xương heo, ninh với 3 lít nước trong 40 phút.", 40],
+      ["Nấu mắm", "Nấu mắm cá linh, cá sặc với 1 lít nước đến khi rã xương, lọc lấy nước cốt, bỏ xương.", 20],
+      ["Phi sả tỏi", "Phi thơm sả và tỏi, đổ vào nồi cùng nước mắm đã lọc và nước dùng xương.", 5],
+      ["Nêm và thêm cà tím", "Thêm cà tím cắt khúc, nêm đường cho vị mắm dịu lại, đun sôi 10 phút.", 10],
+      ["Chuẩn bị đồ nhúng", "Làm sạch cá, tôm, mực, thái thịt ba chỉ, xếp ra đĩa cùng rau đồng.", 20],
+      ["Thưởng thức", "Nhúng thịt, hải sản và rau vào nồi lẩu sôi, ăn kèm bún tươi.", null]
+    ]
+  },
+  {
+    "title": "Lẩu nấm chay",
+    "category": "Lẩu",
+    "description": "Nước lẩu ngọt thanh ninh từ rau củ, nhúng nấm các loại, đậu hũ, tàu hũ ky và rau xanh, hoàn toàn thuần chay.",
+    "prep": 30, "cook": 60, "servings": 5, "difficulty": "Easy",
+    "ingredients": [
+      ["Củ cải trắng", 1, "củ"],
+      ["Cà rốt", 2, "củ"],
+      ["Bắp ngọt", 2, "bắp"],
+      ["Su hào", 1, "củ"],
+      ["Nấm đùi gà, nấm kim châm, nấm hương", 600, "gram"],
+      ["Đậu hũ non", 2, "bìa"],
+      ["Tàu hũ ky", 100, "gram", "chiên giòn"],
+      ["Cải thảo, tần ô", 500, "gram"],
+      ["Hạt nêm chay", 1, "thìa canh"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Gừng", 20, "gram"],
+      ["Mì trứng chay hoặc bún", 600, "gram"]
+    ],
+    "steps": [
+      ["Ninh nước dùng", "Ninh củ cải, cà rốt, bắp ngọt, su hào và gừng với 3 lít nước lửa nhỏ trong 50 phút, lọc lấy nước trong.", 50],
+      ["Nêm nước lẩu", "Nêm hạt nêm chay và muối cho nước lẩu ngọt thanh, có thể thêm vài lát cà rốt tỉa hoa.", 3],
+      ["Sơ chế nấm", "Rửa nấm với nước muối, cắt gốc nấm kim châm, khía hoa nấm hương.", 10],
+      ["Chuẩn bị đồ nhúng", "Cắt đậu hũ, chiên tàu hũ ky, rửa rau cải, xếp tất cả ra đĩa.", 15],
+      ["Thưởng thức", "Nhúng nấm và đậu hũ trước, rau sau, ăn kèm mì hoặc bún và nước tương ớt.", null]
+    ]
+  },
+  {
+    "title": "Cua rang me",
+    "category": "Hải sản",
+    "description": "Cua thịt chiên sơ rồi đảo trong sốt me chua ngọt sánh đặc, thơm mùi tỏi phi và mè rang.",
+    "prep": 30, "cook": 25, "servings": 3, "difficulty": "Medium",
+    "ingredients": [
+      ["Cua thịt", 1, "kg", "khoảng 3 con"],
+      ["Me chua", 80, "gram", "dầm lấy nước cốt"],
+      ["Đường", 3, "thìa canh"],
+      ["Nước mắm", 1.5, "thìa canh"],
+      ["Tỏi", 6, "tép", "băm nhỏ"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Ớt tươi", 2, "quả", "băm nhỏ"],
+      ["Bột năng", 2, "thìa canh"],
+      ["Bơ lạt", 20, "gram"],
+      ["Dầu ăn", 300, "ml"],
+      ["Mè rang", 1, "thìa canh"],
+      ["Rau răm, dưa leo", 100, "gram"]
+    ],
+    "steps": [
+      ["Sơ chế cua", "Chà rửa sạch cua, tách mai, bỏ yếm và phổi, chặt làm 4, đập dập càng.", 15],
+      ["Chiên cua", "Lăn cua qua bột năng, chiên trong dầu nóng 5 phút đến khi vỏ đỏ, vớt ra để ráo.", 6],
+      ["Làm sốt me", "Phi thơm tỏi và hành tím với bơ, cho nước cốt me, đường, nước mắm, ớt vào đun đến khi sốt sánh.", 6],
+      ["Rang cua", "Cho cua vào đảo đều trong sốt me trên lửa vừa đến khi sốt bám kín vỏ cua.", 5],
+      ["Trình bày", "Rắc mè rang, dọn cùng rau răm, dưa leo và bánh mì.", null]
+    ]
+  },
+  {
+    "title": "Ốc hương xào bơ tỏi",
+    "category": "Hải sản",
+    "description": "Ốc hương giòn ngọt xào bơ tỏi và sả, thơm béo, chấm bánh mì với nước sốt là tuyệt nhất.",
+    "prep": 30, "cook": 15, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Ốc hương", 700, "gram"],
+      ["Bơ lạt", 50, "gram"],
+      ["Tỏi", 1, "củ", "băm nhỏ"],
+      ["Sả", 2, "cây", "băm nhỏ"],
+      ["Ớt tươi", 2, "quả", "băm nhỏ"],
+      ["Sữa đặc", 1, "thìa canh"],
+      ["Nước mắm", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Rau răm", 20, "gram"],
+      ["Lá chanh", 5, "lá", "thái chỉ"],
+      ["Bánh mì", 2, "ổ", "ăn kèm"]
+    ],
+    "steps": [
+      ["Ngâm ốc", "Ngâm ốc hương trong nước vo gạo có ớt cắt lát ít nhất 2 giờ cho nhả hết cát, chà rửa sạch vỏ.", 120],
+      ["Luộc sơ ốc", "Luộc ốc với sả đập dập 5 phút, vớt ra để ráo.", 5],
+      ["Phi bơ tỏi", "Đun chảy bơ, phi tỏi và sả băm đến khi vàng thơm.", 3],
+      ["Xào ốc", "Cho ốc vào đảo đều, nêm nước mắm, đường, hạt nêm và sữa đặc, xào lửa lớn 3 phút đến khi sốt sệt bám vỏ.", 3],
+      ["Hoàn thiện", "Thêm ớt, rau răm và lá chanh, đảo nhanh rồi tắt bếp, dọn cùng bánh mì.", 1]
+    ]
+  },
+  {
+    "title": "Tôm càng rim nước dừa",
+    "category": "Hải sản",
+    "description": "Tôm càng xanh rim nước dừa tươi, gạch tôm béo ngậy quyện vào nước sốt mặn ngọt sánh bóng.",
+    "prep": 20, "cook": 25, "servings": 3, "difficulty": "Medium",
+    "ingredients": [
+      ["Tôm càng xanh", 600, "gram"],
+      ["Nước dừa tươi", 300, "ml"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường", 1, "thìa canh"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Hành tím", 3, "củ", "băm nhỏ"],
+      ["Tiêu xay", 1, "thìa cà phê"],
+      ["Ớt tươi", 1, "quả"],
+      ["Dầu ăn", 2, "thìa canh"],
+      ["Hành lá", 2, "cây", "cắt khúc"],
+      ["Ngò rí", 10, "gram"]
+    ],
+    "steps": [
+      ["Sơ chế tôm", "Cắt râu, cắt phần đầu nhọn tránh túi đất, giữ lại gạch, rửa sạch tôm và để ráo.", 10],
+      ["Ướp tôm", "Ướp tôm với nước mắm, đường, một nửa hành tỏi và tiêu trong 15 phút.", 15],
+      ["Phi thơm", "Phi hành tỏi còn lại với dầu ăn đến khi vàng thơm, cho tôm vào đảo đến khi đỏ đều.", 4],
+      ["Rim nước dừa", "Đổ nước dừa và nước ướp vào, rim lửa vừa, thỉnh thoảng trở tôm đến khi nước sốt còn khoảng 1/4 và sánh lại.", 18],
+      ["Hoàn thiện", "Thêm hành lá, ớt và tiêu, rắc ngò rí rồi dọn nóng với cơm trắng.", 1]
+    ]
+  },
+  {
+    "title": "Sò điệp nướng mỡ hành",
+    "category": "Hải sản",
+    "description": "Sò điệp nửa vỏ nướng than, phủ mỡ hành và đậu phộng rang, thịt sò ngọt mềm béo thơm.",
+    "prep": 20, "cook": 10, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Sò điệp nửa vỏ", 12, "con"],
+      ["Hành lá", 6, "cây", "thái nhỏ"],
+      ["Dầu ăn", 4, "thìa canh"],
+      ["Đậu phộng rang", 40, "gram", "giã dập"],
+      ["Hành phi", 2, "thìa canh"],
+      ["Nước mắm", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Muối", 0.5, "thìa cà phê"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Muối tiêu chanh", null, null, "chấm kèm"],
+      ["Rau răm", 20, "gram"]
+    ],
+    "steps": [
+      ["Sơ chế sò điệp", "Chà rửa vỏ sò, cắt bỏ phần màng đen, rửa lại thịt sò nhẹ tay.", 10],
+      ["Làm mỡ hành", "Đun dầu thật nóng, rưới lên hành lá thái nhỏ trộn chút muối, đường và nước mắm.", 3],
+      ["Nướng sò", "Xếp sò lên vỉ nướng trên than hồng, nướng đến khi nước trong sò sôi lăn tăn.", 5],
+      ["Phủ mỡ hành", "Múc mỡ hành lên từng con sò, nướng thêm 1–2 phút cho mỡ hành thấm vào thịt.", 2],
+      ["Trình bày", "Rắc đậu phộng, hành phi và tiêu, dọn cùng muối tiêu chanh và rau răm.", null]
+    ]
+  },
+  {
+    "title": "Gỏi gà bắp cải",
+    "category": "Gỏi & Salad",
+    "description": "Gà ta xé trộn bắp cải, hành tây, cà rốt và rau răm, nước trộn chua ngọt, rắc đậu phộng rang giòn.",
+    "prep": 30, "cook": 25, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Đùi gà", 2, "cái"],
+      ["Bắp cải trắng", 300, "gram", "thái sợi"],
+      ["Bắp cải tím", 100, "gram", "thái sợi"],
+      ["Cà rốt", 1, "củ", "bào sợi"],
+      ["Hành tây", 1, "củ", "thái mỏng"],
+      ["Rau răm", 30, "gram"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường", 3, "thìa canh"],
+      ["Chanh", 2, "quả"],
+      ["Tỏi, ớt", 1, "thìa canh", "băm nhỏ"],
+      ["Đậu phộng rang", 50, "gram"],
+      ["Hành phi", 2, "thìa canh"]
+    ],
+    "steps": [
+      ["Luộc gà", "Luộc đùi gà với gừng và muối khoảng 20 phút, ngâm nước lạnh rồi xé sợi.", 25],
+      ["Sơ chế rau", "Ngâm bắp cải và cà rốt vào nước đá cho giòn, ngâm hành tây với giấm cho bớt hăng, để ráo.", 15],
+      ["Pha nước trộn", "Hòa tan đường vào nước mắm, thêm nước cốt chanh, tỏi và ớt băm.", 5],
+      ["Trộn gỏi", "Trộn gà xé với rau củ và rau răm, rưới nước trộn, trộn đều và để ngấm 5 phút.", 5],
+      ["Trình bày", "Cho gỏi ra đĩa, rắc đậu phộng rang và hành phi, ăn kèm bánh phồng tôm.", null]
+    ]
+  },
+  {
+    "title": "Gỏi bò bóp thấu",
+    "category": "Gỏi & Salad",
+    "description": "Thịt bò tái chanh bóp cùng khế chua, chuối chát, hành tây và rau thơm, nước trộn chua cay đậm vị.",
+    "prep": 30, "cook": 5, "servings": 3, "difficulty": "Medium",
+    "ingredients": [
+      ["Thịt bò thăn", 300, "gram", "thái thật mỏng"],
+      ["Chanh", 3, "quả"],
+      ["Khế chua", 1, "quả", "thái lát mỏng"],
+      ["Chuối chát", 1, "quả", "thái mỏng, ngâm nước muối"],
+      ["Hành tây", 1, "củ", "thái mỏng"],
+      ["Rau răm, húng lủi, tía tô", 80, "gram"],
+      ["Sả", 2, "cây", "thái lát mỏng"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường", 1.5, "thìa canh"],
+      ["Tỏi, ớt", 1, "thìa canh", "băm nhỏ"],
+      ["Đậu phộng rang", 50, "gram"],
+      ["Mè rang", 1, "thìa canh"]
+    ],
+    "steps": [
+      ["Tái bò", "Ngâm thịt bò thái mỏng trong nước cốt chanh 5 phút đến khi thịt chuyển màu hồng nhạt, vắt ráo nước chanh.", 5],
+      ["Sơ chế rau củ", "Ngâm chuối chát trong nước muối pha chanh để không thâm, ngâm hành tây nước đá.", 10],
+      ["Pha nước trộn", "Hòa đường với nước mắm, thêm tỏi ớt băm và 1 thìa nước cốt chanh.", 5],
+      ["Bóp thấu", "Cho bò, khế, chuối, hành tây, sả và rau thơm vào tô, rưới nước trộn và bóp nhẹ tay cho ngấm.", 5],
+      ["Trình bày", "Cho gỏi ra đĩa, rắc đậu phộng và mè rang, ăn kèm bánh đa nướng.", null]
+    ]
+  },
+  {
+    "title": "Salad ức gà sốt mè rang",
+    "category": "Gỏi & Salad",
+    "description": "Ức gà áp chảo thái lát cùng xà lách, cà chua bi, dưa leo, bắp ngọt, rưới sốt mè rang kiểu Nhật.",
+    "prep": 20, "cook": 15, "servings": 2, "difficulty": "Easy",
+    "ingredients": [
+      ["Ức gà", 300, "gram"],
+      ["Xà lách lolo", 150, "gram"],
+      ["Cà chua bi", 150, "gram", "cắt đôi"],
+      ["Dưa leo", 1, "quả", "thái lát"],
+      ["Bắp ngọt hạt", 80, "gram"],
+      ["Trứng gà", 2, "quả", "luộc chín"],
+      ["Mè trắng rang", 2, "thìa canh"],
+      ["Mayonnaise", 3, "thìa canh"],
+      ["Nước tương Nhật", 1, "thìa canh"],
+      ["Giấm gạo", 1, "thìa canh"],
+      ["Mật ong", 1, "thìa canh"],
+      ["Dầu ô liu", 1, "thìa canh"],
+      ["Muối, tiêu đen", null, null, "vừa đủ"]
+    ],
+    "steps": [
+      ["Ướp gà", "Dần mỏng ức gà, ướp với muối, tiêu và dầu ô liu 10 phút.", 10],
+      ["Áp chảo gà", "Áp chảo ức gà lửa vừa mỗi mặt 5 phút đến khi chín vàng, để nghỉ 5 phút rồi thái lát.", 15],
+      ["Làm sốt mè rang", "Giã dập mè rang, trộn với mayonnaise, nước tương, giấm gạo và mật ong đến khi mịn.", 5],
+      ["Chuẩn bị rau", "Rửa sạch và để thật ráo xà lách, cà chua bi, dưa leo; bổ trứng luộc làm tư.", 5],
+      ["Trình bày", "Xếp rau, bắp, trứng và gà ra đĩa, rưới sốt mè rang ngay trước khi ăn.", null]
+    ]
+  },
+  {
+    "title": "Gỏi xoài tôm khô",
+    "category": "Gỏi & Salad",
+    "description": "Xoài xanh bào sợi chua giòn trộn tôm khô, khô mực nướng xé và rau răm, nước trộn chua cay ngọt.",
+    "prep": 25, "cook": 5, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Xoài xanh", 2, "quả", "bào sợi"],
+      ["Tôm khô", 50, "gram", "ngâm mềm"],
+      ["Khô mực", 1, "con", "nướng, xé sợi"],
+      ["Cà rốt", 0.5, "củ", "bào sợi"],
+      ["Hành tím", 3, "củ", "thái mỏng"],
+      ["Rau răm", 30, "gram"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Tỏi", 2, "tép", "băm nhỏ"],
+      ["Ớt tươi", 2, "quả", "băm nhỏ"],
+      ["Đậu phộng rang", 40, "gram"],
+      ["Hành phi", 1, "thìa canh"]
+    ],
+    "steps": [
+      ["Sơ chế xoài", "Gọt vỏ xoài, bào sợi, ngâm nước muối loãng 5 phút cho bớt nhựa rồi vắt ráo.", 10],
+      ["Chuẩn bị tôm và mực", "Ngâm tôm khô cho mềm, xào sơ với chút dầu; nướng khô mực rồi xé sợi.", 10],
+      ["Pha nước trộn", "Khuấy tan đường với nước mắm, thêm tỏi và ớt băm.", 3],
+      ["Trộn gỏi", "Trộn xoài, cà rốt, hành tím, tôm khô, khô mực và rau răm với nước trộn.", 3],
+      ["Trình bày", "Cho gỏi ra đĩa, rắc đậu phộng và hành phi, ăn kèm bánh phồng tôm.", null]
+    ]
+  },
+  {
+    "title": "Bò bía",
+    "category": "Món cuốn",
+    "description": "Bò bía Sài Gòn cuốn củ sắn xào, lạp xưởng, trứng chiên, tôm khô, chấm tương đậu phộng béo bùi.",
+    "prep": 40, "cook": 20, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Bánh tráng cuốn", 20, "lá"],
+      ["Củ sắn (củ đậu)", 500, "gram", "thái sợi"],
+      ["Cà rốt", 1, "củ", "thái sợi"],
+      ["Lạp xưởng", 3, "cây", "chiên, thái sợi"],
+      ["Trứng gà", 3, "quả", "chiên mỏng, thái sợi"],
+      ["Tôm khô", 50, "gram", "ngâm mềm"],
+      ["Xà lách, húng quế", 150, "gram"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Tương đen (hoisin)", 4, "thìa canh"],
+      ["Bơ đậu phộng", 2, "thìa canh"],
+      ["Đậu phộng rang", 40, "gram"],
+      ["Tương ớt", 2, "thìa canh"]
+    ],
+    "steps": [
+      ["Xào củ sắn", "Phi tỏi, xào củ sắn và cà rốt với chút muối đến khi vừa chín, còn giòn.", 8],
+      ["Chuẩn bị nhân", "Chiên lạp xưởng, tráng trứng mỏng rồi thái sợi, xào sơ tôm khô.", 10],
+      ["Cuốn bò bía", "Nhúng bánh tráng, xếp xà lách, húng quế, củ sắn, lạp xưởng, trứng và tôm khô, cuốn chặt tay.", 20],
+      ["Làm tương chấm", "Phi tỏi, cho tương đen, bơ đậu phộng và chút nước đun sánh, rắc đậu phộng và thêm tương ớt khi ăn.", 5],
+      ["Thưởng thức", "Cắt đôi cuốn bò bía, xếp ra đĩa, dọn cùng tương chấm.", null]
+    ]
+  },
+  {
+    "title": "Phở cuốn",
+    "category": "Món cuốn",
+    "description": "Bánh phở lá cuốn thịt bò xào tỏi và rau thơm, chấm nước mắm chua ngọt, đặc sản Ngũ Xã Hà Nội.",
+    "prep": 30, "cook": 10, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Bánh phở lá", 500, "gram", "cắt miếng 15x20 cm"],
+      ["Thịt bò thăn", 300, "gram", "thái mỏng"],
+      ["Tỏi", 5, "tép", "băm nhỏ"],
+      ["Dầu hào", 1, "thìa canh"],
+      ["Nước mắm", 4, "thìa canh"],
+      ["Đường", 3, "thìa canh"],
+      ["Giấm gạo", 2, "thìa canh"],
+      ["Xà lách", 1, "cây"],
+      ["Rau mùi, kinh giới, húng", 100, "gram"],
+      ["Dưa leo", 1, "quả", "thái que"],
+      ["Đu đủ, cà rốt ngâm chua", 100, "gram"],
+      ["Ớt tươi", 1, "quả"]
+    ],
+    "steps": [
+      ["Ướp bò", "Ướp thịt bò với 1 thìa nước mắm, dầu hào, tỏi băm và tiêu trong 10 phút.", 10],
+      ["Xào bò", "Phi tỏi, xào bò nhanh trên lửa lớn khoảng 1–2 phút cho thịt vừa chín, còn mềm.", 2],
+      ["Chuẩn bị rau", "Rửa sạch xà lách, rau thơm, dưa leo, để thật ráo.", 10],
+      ["Cuốn phở", "Trải bánh phở, xếp xà lách, rau thơm, dưa leo và thịt bò, cuộn chặt tay.", 15],
+      ["Pha nước chấm", "Pha nước mắm, đường, giấm với nước ấm, thêm tỏi ớt và đồ chua, dọn cùng phở cuốn.", 5]
+    ]
+  },
+  {
+    "title": "Bánh tráng cuốn thịt heo",
+    "category": "Món cuốn",
+    "description": "Thịt heo luộc thái mỏng cuốn bánh tráng phơi sương với rau rừng, chuối chát, chấm mắm nêm Đà Nẵng.",
+    "prep": 40, "cook": 30, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Thịt heo đùi hoặc ba chỉ", 600, "gram"],
+      ["Bánh tráng phơi sương", 20, "lá"],
+      ["Chuối chát", 1, "quả", "thái mỏng"],
+      ["Khế chua", 1, "quả", "thái lát"],
+      ["Dưa leo", 1, "quả"],
+      ["Rau sống các loại", 300, "gram", "xà lách, diếp cá, húng, tía tô"],
+      ["Mắm nêm", 4, "thìa canh"],
+      ["Thơm (dứa)", 100, "gram", "băm nhỏ"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Ớt tươi", 2, "quả", "băm nhỏ"],
+      ["Đường", 2, "thìa canh"],
+      ["Chanh", 1, "quả"]
+    ],
+    "steps": [
+      ["Luộc thịt", "Luộc thịt heo với muối và hành tím khoảng 25–30 phút, ngâm nước đá cho thịt trắng và săn rồi thái mỏng.", 30],
+      ["Chuẩn bị rau", "Rửa rau sống, ngâm chuối chát trong nước muối chanh, thái khế và dưa leo.", 15],
+      ["Pha mắm nêm", "Trộn mắm nêm với thơm băm, đường, tỏi, ớt, nước cốt chanh và chút nước ấm, khuấy tan đều.", 5],
+      ["Bày món", "Xếp thịt, bánh tráng, rau và trái cây ra mâm để mọi người tự cuốn.", 5],
+      ["Thưởng thức", "Cuốn thịt với rau, chuối, khế trong bánh tráng, chấm mắm nêm.", null]
+    ]
+  },
+  {
+    "title": "Cuốn diếp tôm thịt",
+    "category": "Món cuốn",
+    "description": "Lá cải diếp cuốn tôm, thịt, bún, hẹ và rau thơm thay cho bánh tráng, thanh mát và ít tinh bột.",
+    "prep": 35, "cook": 20, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Lá cải diếp (cải bẹ xanh non)", 20, "lá"],
+      ["Tôm thẻ", 300, "gram"],
+      ["Thịt ba chỉ", 250, "gram"],
+      ["Bún tươi", 200, "gram"],
+      ["Hẹ", 1, "bó"],
+      ["Húng quế, rau thơm", 80, "gram"],
+      ["Dưa leo", 1, "quả", "thái que"],
+      ["Cà rốt", 1, "củ", "thái que"],
+      ["Tương đen", 3, "thìa canh"],
+      ["Bơ đậu phộng", 1, "thìa canh"],
+      ["Đậu phộng rang", 30, "gram"],
+      ["Tỏi", 2, "tép", "băm nhỏ"]
+    ],
+    "steps": [
+      ["Luộc tôm thịt", "Luộc thịt ba chỉ 20 phút rồi thái mỏng; luộc tôm 3 phút, bóc vỏ, chẻ đôi.", 20],
+      ["Trụng lá diếp", "Trụng lá cải diếp qua nước sôi 5 giây cho mềm, ngâm nước lạnh rồi để ráo.", 3],
+      ["Cuốn", "Đặt lá diếp, xếp bún, dưa leo, cà rốt, rau thơm, thịt và tôm, cuộn chặt, buộc bằng cọng hẹ.", 20],
+      ["Làm tương chấm", "Phi tỏi, thêm tương đen, bơ đậu phộng và nước, đun sánh rồi rắc đậu phộng rang.", 5],
+      ["Thưởng thức", "Xếp cuốn diếp ra đĩa, dọn cùng chén tương chấm.", null]
+    ]
+  },
+  {
+    "title": "Cá diêu hồng hấp xì dầu",
+    "category": "Món hấp",
+    "description": "Cá diêu hồng hấp cách thủy với gừng hành, rưới xì dầu và dầu nóng, thịt cá trắng ngọt mềm mịn.",
+    "prep": 20, "cook": 20, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Cá diêu hồng", 1, "con", "khoảng 800 gram"],
+      ["Gừng", 40, "gram", "thái sợi"],
+      ["Hành lá", 5, "cây", "thái sợi"],
+      ["Ngò rí", 20, "gram"],
+      ["Xì dầu", 4, "thìa canh"],
+      ["Dầu hào", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Rượu Thiệu Hưng", 1, "thìa canh"],
+      ["Dầu mè", 1, "thìa cà phê"],
+      ["Dầu ăn", 3, "thìa canh"],
+      ["Ớt đỏ", 1, "quả", "thái sợi"],
+      ["Muối", 0.5, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Sơ chế cá", "Làm sạch cá, khứa 2–3 đường mỗi bên, xát muối và rượu Thiệu Hưng rồi rửa lại, thấm khô.", 10],
+      ["Xếp cá lên đĩa", "Lót vài lát gừng và hành lá dưới đáy đĩa, đặt cá lên, nhét gừng vào bụng và các vết khứa.", 5],
+      ["Hấp cá", "Hấp cá trên nồi nước sôi mạnh khoảng 12–15 phút đến khi thịt cá trắng đục, chắt bỏ nước đọng trong đĩa.", 15],
+      ["Pha sốt", "Đun xì dầu, dầu hào, đường với 3 thìa nước đến khi sôi, rưới đều lên cá.", 2],
+      ["Rưới dầu nóng", "Rải gừng sợi, hành sợi, ớt sợi lên cá, đun dầu ăn và dầu mè thật nóng rồi rưới lên trên cho dậy mùi, trang trí ngò rí.", 2]
+    ]
+  },
+  {
+    "title": "Gà hấp hành",
+    "category": "Món hấp",
+    "description": "Gà ta hấp chín tới da vàng mịn, rưới dầu hành gừng thơm, chấm muối tiêu chanh lá chanh.",
+    "prep": 20, "cook": 40, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Gà ta", 1.2, "kg"],
+      ["Hành lá", 1, "bó"],
+      ["Gừng", 50, "gram", "băm nhỏ"],
+      ["Hành tím", 3, "củ"],
+      ["Muối", 1.5, "thìa cà phê"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Dầu ăn", 4, "thìa canh"],
+      ["Rượu trắng", 2, "thìa canh"],
+      ["Lá chanh", 10, "lá", "thái chỉ"],
+      ["Chanh, tiêu", null, null, "pha muối tiêu chanh"]
+    ],
+    "steps": [
+      ["Sơ chế gà", "Xát gà với muối và rượu trắng, rửa sạch, để ráo, xoa muối và hạt nêm cả trong lẫn ngoài.", 10],
+      ["Chuẩn bị xửng hấp", "Lót hành lá nguyên cây và hành tím đập dập dưới xửng, đặt gà lên, nhét thêm hành vào bụng gà.", 5],
+      ["Hấp gà", "Hấp gà trên lửa lớn khoảng 35–40 phút; xiên vào đùi thấy nước trong là gà đã chín.", 40],
+      ["Làm dầu hành gừng", "Đun dầu thật nóng, rưới lên hỗn hợp hành lá thái nhỏ, gừng băm và chút muối.", 3],
+      ["Trình bày", "Chặt gà thành miếng, xếp ra đĩa, rưới dầu hành gừng và rắc lá chanh, dọn cùng muối tiêu chanh.", null]
+    ]
+  },
+  {
+    "title": "Chả trứng hấp",
+    "category": "Món hấp",
+    "description": "Chả trứng hấp nhân thịt xay, miến, mộc nhĩ, mặt phủ lòng đỏ vàng óng, món ăn kèm cơm tấm.",
+    "prep": 20, "cook": 35, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Thịt heo xay", 300, "gram"],
+      ["Trứng gà", 5, "quả", "tách riêng 2 lòng đỏ"],
+      ["Miến dong", 30, "gram", "ngâm mềm, cắt ngắn"],
+      ["Mộc nhĩ", 5, "tai", "ngâm nở, băm nhỏ"],
+      ["Nấm hương", 3, "cái", "ngâm nở, băm nhỏ"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Hành lá", 2, "cây", "thái nhỏ"],
+      ["Nước mắm", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Dầu ăn", 1, "thìa canh", "quét khuôn"]
+    ],
+    "steps": [
+      ["Trộn hỗn hợp", "Trộn thịt xay với miến, mộc nhĩ, nấm hương, hành tím, hành lá, 3 quả trứng, nước mắm, đường và tiêu.", 10],
+      ["Cho vào khuôn", "Quét dầu vào khuôn, cho hỗn hợp vào dàn phẳng, ấn nhẹ cho chặt mặt.", 5],
+      ["Hấp chả", "Hấp cách thủy lửa vừa khoảng 25 phút đến khi chả chín và săn lại.", 25],
+      ["Phủ lòng đỏ", "Đánh tan 2 lòng đỏ với chút dầu, quét lên mặt chả, hấp thêm 5 phút đến khi mặt vàng óng.", 5],
+      ["Trình bày", "Để chả nguội bớt rồi cắt miếng vuông, dọn cùng cơm và nước mắm.", null]
+    ]
+  },
+  {
+    "title": "Nghêu hấp sả",
+    "category": "Món hấp",
+    "description": "Nghêu hấp sả, gừng, lá chanh và ớt, nước hấp ngọt thanh, chấm muối tiêu chanh cay nồng.",
+    "prep": 20, "cook": 10, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Nghêu", 1, "kg", "ngâm cho nhả cát"],
+      ["Sả", 5, "cây", "đập dập, cắt khúc"],
+      ["Gừng", 20, "gram", "thái sợi"],
+      ["Lá chanh", 8, "lá"],
+      ["Ớt tươi", 3, "quả", "đập dập"],
+      ["Tỏi", 3, "tép", "đập dập"],
+      ["Rượu trắng", 1, "thìa canh"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Rau răm", 20, "gram"],
+      ["Muối tiêu chanh", null, null, "chấm kèm"]
+    ],
+    "steps": [
+      ["Ngâm nghêu", "Ngâm nghêu trong nước vo gạo pha muối và ớt ít nhất 2 giờ cho nhả sạch cát, chà rửa vỏ.", 120],
+      ["Chuẩn bị nồi hấp", "Lót sả, gừng, tỏi, lá chanh và ớt dưới đáy nồi, thêm 100 ml nước và rượu trắng.", 5],
+      ["Hấp nghêu", "Cho nghêu vào, đậy kín nắp, hấp lửa lớn khoảng 5–7 phút đến khi nghêu mở miệng.", 7],
+      ["Đảo đều", "Mở nắp đảo nhẹ để nghêu thấm nước hấp, loại bỏ những con không mở miệng.", 1],
+      ["Thưởng thức", "Múc nghêu cùng nước hấp ra tô, rắc rau răm, dọn cùng muối tiêu chanh.", null]
+    ]
+  }
+]

@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using Bogus;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Features.Categories;
 using CulinaryBlog.Domain.Common;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
@@ -28,81 +29,59 @@ public sealed class SeedOptions
 }
 
 /// <summary>
-/// Seed dữ liệu theo SRS §2.6.1: 50 recipe mẫu, 5 tác giả mẫu (Bogus) + roles Author/Admin (§2.3) + danh mục.
-/// Idempotent: chỉ seed phần chưa có.
+/// Seed dữ liệu theo SRS §2.6.1 (CR-2026-03): roles Author/Admin (§2.3), 5 tác giả mẫu (Bogus),
+/// ≥ 20 danh mục và ≥ 100 công thức lấy từ <see cref="RecipeSeedCatalog"/>, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước.
+/// Idempotent và tự bù: chỉ thêm phần còn thiếu; công thức mẫu cũ (chưa từng bị sửa, thiếu nguyên liệu/bước)
+/// được thay bằng nội dung đúng trong catalog. Không động vào dữ liệu người dùng tạo hoặc đã chỉnh sửa.
 /// </summary>
 public sealed partial class DatabaseSeeder(
     CulinaryBlogDbContext db,
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     IOptions<SeedOptions> options,
+    ICacheService cache,
     TimeProvider timeProvider,
     ILogger<DatabaseSeeder> logger)
 {
-    private static readonly (string Name, string Description)[] CategorySeeds =
-    [
-        ("Món khai vị", "Món ăn nhẹ mở đầu bữa ăn: gỏi, chả giò, nộm..."),
-        ("Món chính", "Các món ăn chính cho bữa cơm gia đình."),
-        ("Canh & Súp", "Canh, súp thanh mát và bổ dưỡng."),
-        ("Món chay", "Món ăn thuần chay, tốt cho sức khỏe."),
-        ("Món nướng", "Thịt, hải sản và rau củ nướng thơm lừng."),
-        ("Bún & Phở", "Các món nước truyền thống của Việt Nam."),
-        ("Bánh", "Bánh mặn, bánh ngọt, bánh truyền thống."),
-        ("Tráng miệng & Đồ uống", "Chè, kem, sinh tố và các loại nước giải khát."),
-    ];
+    private const int SeedAuthorCount = 5;
 
-    private static readonly (string Title, string Category)[] DishSeeds =
-    [
-        ("Phở bò Hà Nội", "Bún & Phở"), ("Phở gà", "Bún & Phở"), ("Bún chả Hà Nội", "Bún & Phở"), ("Bún bò Huế", "Bún & Phở"),
-        ("Bún riêu cua", "Bún & Phở"), ("Hủ tiếu Nam Vang", "Bún & Phở"), ("Mì Quảng", "Bún & Phở"), ("Cao lầu Hội An", "Bún & Phở"),
-        ("Gỏi cuốn tôm thịt", "Món khai vị"), ("Chả giò rế", "Món khai vị"), ("Nộm đu đủ bò khô", "Món khai vị"), ("Gỏi ngó sen tôm thịt", "Món khai vị"),
-        ("Bánh khọt Vũng Tàu", "Món khai vị"), ("Nem chua rán", "Món khai vị"),
-        ("Cá kho tộ", "Món chính"), ("Thịt kho trứng", "Món chính"), ("Gà kho gừng", "Món chính"), ("Sườn xào chua ngọt", "Món chính"),
-        ("Bò lúc lắc", "Món chính"), ("Cơm tấm sườn bì chả", "Món chính"), ("Tôm rim mặn ngọt", "Món chính"), ("Mực xào sa tế", "Món chính"),
-        ("Canh chua cá lóc", "Canh & Súp"), ("Canh bí đỏ nấu tôm", "Canh & Súp"), ("Súp cua trứng bắc thảo", "Canh & Súp"), ("Canh rau ngót thịt băm", "Canh & Súp"),
-        ("Lẩu thái hải sản", "Canh & Súp"), ("Súp gà ngô non", "Canh & Súp"),
-        ("Đậu hũ sốt cà chua", "Món chay"), ("Nấm kho tiêu", "Món chay"), ("Rau củ xào thập cẩm", "Món chay"), ("Canh nấm chay", "Món chay"),
-        ("Cà tím nướng mỡ hành", "Món chay"), ("Bún xào chay", "Món chay"),
-        ("Thịt heo nướng sả", "Món nướng"), ("Gà nướng mật ong", "Món nướng"), ("Bò nướng lá lốt", "Món nướng"), ("Cá nướng giấy bạc", "Món nướng"),
-        ("Sườn nướng BBQ", "Món nướng"), ("Tôm nướng muối ớt", "Món nướng"),
-        ("Bánh xèo miền Tây", "Bánh"), ("Bánh cuốn nóng", "Bánh"), ("Bánh bèo chén", "Bánh"), ("Bánh flan caramel", "Bánh"),
-        ("Bánh mì thịt nguội", "Bánh"), ("Bánh chuối nướng", "Bánh"),
-        ("Chè ba màu", "Tráng miệng & Đồ uống"), ("Chè bưởi", "Tráng miệng & Đồ uống"), ("Sinh tố bơ", "Tráng miệng & Đồ uống"), ("Cà phê trứng", "Tráng miệng & Đồ uống"),
-    ];
-
-    private static readonly string[] IngredientNames =
-    [
-        "Thịt bò thăn", "Thịt heo ba chỉ", "Đùi gà", "Tôm sú", "Mực ống", "Cá lóc", "Trứng gà", "Đậu hũ non", "Nấm rơm", "Hành tím",
-        "Tỏi", "Gừng", "Sả", "Ớt", "Hành lá", "Rau mùi", "Nước mắm", "Đường", "Muối", "Tiêu", "Dầu ăn", "Nước cốt dừa", "Cà chua",
-        "Bánh phở", "Bún tươi", "Gạo tẻ", "Bột gạo", "Đậu xanh", "Chanh", "Me chua",
-    ];
-
-    private static readonly string[] Units = ["gram", "ml", "thìa canh", "thìa cà phê", "quả", "củ", "nhánh", "bó"];
-
-    private static readonly string[] StepTitles =
-    [
-        "Sơ chế nguyên liệu", "Ướp gia vị", "Chuẩn bị nước dùng", "Chế biến chính", "Nêm nếm lại", "Trình bày và thưởng thức",
-    ];
-
-    public async Task SeedAsync(CancellationToken cancellationToken)
+    /// <summary>Trả về true khi có danh mục/công thức được thêm hoặc sửa – nơi gọi dùng để xóa Output Cache công thức.</summary>
+    public async Task<bool> SeedAsync(CancellationToken cancellationToken)
     {
         if (!options.Value.Enabled)
         {
-            return;
+            return false;
         }
 
         await SeedRolesAsync().ConfigureAwait(false);
         await SeedAdminAsync().ConfigureAwait(false);
-        var categories = await SeedCategoriesAsync(cancellationToken).ConfigureAwait(false);
+        var authors = await SeedAuthorsAsync().ConfigureAwait(false);
 
-        if (await db.Recipes.IgnoreQueryFilters().AnyAsync(cancellationToken).ConfigureAwait(false))
+        var strategy = db.Database.CreateExecutionStrategy();
+        var (categoriesAdded, recipesChanged) = await strategy.ExecuteAsync(
+            async ct =>
+            {
+                db.ChangeTracker.Clear();
+                await using var transaction = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
+
+                var (categories, added) = await SeedCategoriesAsync(ct).ConfigureAwait(false);
+                var (created, repaired) = authors.Count == 0
+                    ? (0, 0)
+                    : await SeedRecipesAsync(categories, authors, ct).ConfigureAwait(false);
+
+                await transaction.CommitAsync(ct).ConfigureAwait(false);
+                LogSeeded(logger, categories.Count, authors.Count, created, repaired);
+                return (added > 0, created + repaired > 0);
+            },
+            cancellationToken).ConfigureAwait(false);
+
+        // Danh sách danh mục được cache Redis 60 phút (FR-CAT-001) – bỏ bản cũ để thấy ngay danh mục vừa thêm.
+        if (categoriesAdded)
         {
-            return;
+            await cache.RemoveAsync(CategoryCacheKeys.All, cancellationToken).ConfigureAwait(false);
         }
 
-        var authors = await SeedAuthorsAsync().ConfigureAwait(false);
-        var count = await SeedRecipesAsync(categories, authors, cancellationToken).ConfigureAwait(false);
-        LogSeeded(logger, categories.Count, authors.Count, count);
+        return categoriesAdded || recipesChanged;
     }
 
     private async Task SeedRolesAsync()
@@ -134,20 +113,29 @@ public sealed partial class DatabaseSeeder(
         }
     }
 
-    private async Task<List<Category>> SeedCategoriesAsync(CancellationToken cancellationToken)
+    /// <summary>Thêm danh mục còn thiếu (so theo tên và slug, kể cả bản ghi đã xóa mềm để không vi phạm UNIQUE). Trả về danh mục đang hoạt động theo tên.</summary>
+    private async Task<(Dictionary<string, Category> Active, int Added)> SeedCategoriesAsync(CancellationToken cancellationToken)
     {
-        var existing = await db.Categories.ToListAsync(cancellationToken).ConfigureAwait(false);
-        var order = existing.Count;
+        var existing = await db.Categories.IgnoreQueryFilters().ToListAsync(cancellationToken).ConfigureAwait(false);
+        var order = existing.Count == 0 ? 0 : existing.Max(c => c.OrderIndex) + 1;
+        var added = 0;
 
-        foreach (var (name, description) in CategorySeeds.Where(s => existing.TrueForAll(c => c.Name != s.Name)))
+        foreach (var seed in RecipeSeedCatalog.Categories)
         {
-            var category = Category.Create(name, SlugHelper.Generate(name), description, orderIndex: order++);
+            var slug = SlugHelper.Generate(seed.Name);
+            if (existing.Exists(c => c.Name == seed.Name || c.Slug == slug))
+            {
+                continue;
+            }
+
+            var category = Category.Create(seed.Name, slug, seed.Description, orderIndex: order++);
             existing.Add(category);
             db.Categories.Add(category);
+            added++;
         }
 
         await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return existing;
+        return (existing.Where(c => !c.IsDeleted).ToDictionary(c => c.Name, StringComparer.Ordinal), added);
     }
 
     private async Task<List<ApplicationUser>> SeedAuthorsAsync()
@@ -155,15 +143,17 @@ public sealed partial class DatabaseSeeder(
         var faker = new Faker("vi") { Random = new Randomizer(2026) };
         var authors = new List<ApplicationUser>();
 
-        for (var i = 1; i <= 5; i++)
+        for (var i = 1; i <= SeedAuthorCount; i++)
         {
+            var fullName = faker.Name.FullName();
+            var region = faker.PickRandom("miền Bắc", "miền Trung", "miền Nam");
             var email = $"author{i}@culinaryblog.local";
             var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
             if (user is null)
             {
-                user = ApplicationUser.Create(faker.Name.FullName(), email, $"author{i}", timeProvider.GetUtcNow().UtcDateTime);
+                user = ApplicationUser.Create(fullName, email, $"author{i}", timeProvider.GetUtcNow().UtcDateTime);
                 user.EmailConfirmed = true;
-                user.Bio = $"Đầu bếp tại gia, đam mê ẩm thực {faker.PickRandom("miền Bắc", "miền Trung", "miền Nam")}.";
+                user.Bio = $"Đầu bếp tại gia, đam mê ẩm thực {region}.";
 
                 var password = string.IsNullOrWhiteSpace(options.Value.AuthorPassword)
                     ? $"Aa1!{Convert.ToBase64String(RandomNumberGenerator.GetBytes(18))}"
@@ -184,64 +174,142 @@ public sealed partial class DatabaseSeeder(
         return authors;
     }
 
-    private async Task<int> SeedRecipesAsync(List<Category> categories, List<ApplicationUser> authors, CancellationToken cancellationToken)
+    private async Task<(int Created, int Repaired)> SeedRecipesAsync(
+        Dictionary<string, Category> categories,
+        List<ApplicationUser> authors,
+        CancellationToken cancellationToken)
     {
-        if (authors.Count == 0)
-        {
-            return 0;
-        }
+        var seedAuthorIds = authors.Select(a => a.Id).ToHashSet(StringComparer.Ordinal);
+        var existing = await db.Recipes.IgnoreQueryFilters()
+            .Select(r => new ExistingRecipe(r.Id, r.Slug, r.AuthorId, r.UpdatedAt, r.Ingredients.Count, r.Steps.Count))
+            .ToDictionaryAsync(r => r.Slug, StringComparer.Ordinal, cancellationToken)
+            .ConfigureAwait(false);
 
+        // Bogus với seed cố định: mỗi món luôn rút cùng một chuỗi số ngẫu nhiên → dữ liệu ổn định giữa các lần chạy.
         var faker = new Faker("vi") { Random = new Randomizer(20260611) };
         var now = timeProvider.GetUtcNow().UtcDateTime;
+        var created = 0;
+        var repaired = 0;
 
-        foreach (var (title, categoryName) in DishSeeds)
+        foreach (var seed in RecipeSeedCatalog.Recipes)
         {
-            var category = categories.First(c => c.Name == categoryName);
-            var recipe = Recipe.Create(
-                title,
-                SlugHelper.Generate(title),
-                $"{title} – công thức chuẩn vị, dễ làm tại nhà. {faker.Lorem.Sentence(12)}",
-                category.Id,
-                faker.PickRandom(authors).Id,
-                prepTimeMinutes: faker.Random.Int(10, 45),
-                cookTimeMinutes: faker.Random.Int(0, 120),
-                servings: faker.Random.Int(1, 8),
-                difficulty: faker.PickRandom<RecipeDifficulty>(),
-                instructions: "Xem chi tiết từng bước bên dưới.");
+            var author = faker.PickRandom(authors);
+            var publish = faker.Random.Bool(0.85f);
+            var publishedAt = now.AddDays(-faker.Random.Int(0, 180)).AddMinutes(-faker.Random.Int(0, 1440));
+            var nutrition = NutritionFor(seed.Category, faker);
 
-            foreach (var name in faker.PickRandom(IngredientNames, faker.Random.Int(4, 9)))
+            if (!categories.TryGetValue(seed.Category, out var category))
             {
-                recipe.AddIngredient(name, faker.Random.Bool(0.85f) ? faker.Random.Int(1, 50) * 10 : null, faker.PickRandom(Units), faker.Random.Bool(0.3f) ? "thái lát mỏng" : null);
+                continue;
             }
 
-            foreach (var stepTitle in StepTitles.Take(faker.Random.Int(3, StepTitles.Length)))
+            var slug = SlugHelper.Generate(seed.Title);
+            if (!existing.TryGetValue(slug, out var current))
             {
-                recipe.AddStep(stepTitle, faker.Lorem.Paragraph(2), faker.Random.Bool(0.6f) ? faker.Random.Int(2, 30) : null);
+                var recipe = Recipe.Create(
+                    seed.Title,
+                    slug,
+                    seed.Description,
+                    category.Id,
+                    author.Id,
+                    seed.PrepTimeMinutes,
+                    seed.CookTimeMinutes,
+                    seed.Servings,
+                    seed.Difficulty,
+                    RecipeSeedCatalog.InstructionsSummary(seed));
+                AddContent(recipe, seed);
+                recipe.SetNutrition(nutrition);
+
+                // ~85% Published, còn lại Draft để kiểm thử phân quyền xem Draft
+                if (publish)
+                {
+                    recipe.Publish(publishedAt);
+                }
+
+                db.Recipes.Add(recipe);
+                created++;
             }
-
-            recipe.SetNutrition(new RecipeNutrition
+            else if (NeedsRepair(current, seedAuthorIds))
             {
-                Calories = faker.Random.Decimal(120, 850),
-                Protein = faker.Random.Decimal(2, 60),
-                Carbohydrates = faker.Random.Decimal(5, 120),
-                Fat = faker.Random.Decimal(1, 45),
-                Fiber = faker.Random.Decimal(0, 15),
-                Sodium = faker.Random.Decimal(50, 1800),
-            });
-
-            // ~85% Published, còn lại Draft để kiểm thử phân quyền xem Draft
-            if (faker.Random.Bool(0.85f))
-            {
-                recipe.Publish(now.AddDays(-faker.Random.Int(0, 180)).AddMinutes(-faker.Random.Int(0, 1440)));
+                await RepairAsync(current.Id, seed, nutrition, cancellationToken).ConfigureAwait(false);
+                repaired++;
             }
-
-            db.Recipes.Add(recipe);
         }
 
         await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return DishSeeds.Length;
+        return (created, repaired);
     }
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Database seeded: {Categories} categories, {Authors} authors, {Recipes} recipes")]
-    private static partial void LogSeeded(ILogger logger, int categories, int authors, int recipes);
+    /// <summary>
+    /// Chỉ sửa công thức mẫu do seeder tạo (tác giả mẫu), chưa từng được ai chỉnh sửa (UpdatedAt null)
+    /// và chưa đạt ngưỡng nguyên liệu/bước – tức bản seed cũ 50 món với nội dung sinh ngẫu nhiên.
+    /// </summary>
+    private static bool NeedsRepair(ExistingRecipe recipe, HashSet<string> seedAuthorIds) =>
+        seedAuthorIds.Contains(recipe.AuthorId)
+        && recipe.UpdatedAt is null
+        && (recipe.IngredientCount < RecipeSeedCatalog.MinIngredientsPerRecipe || recipe.StepCount < RecipeSeedCatalog.MinStepsPerRecipe);
+
+    private async Task RepairAsync(Guid recipeId, SeedRecipe seed, RecipeNutrition nutrition, CancellationToken cancellationToken)
+    {
+        // Xóa nội dung sinh ngẫu nhiên cũ rồi nạp lại từ catalog; StepNumber đánh lại từ 1 (SRS FR-RCP-010).
+        await db.Set<RecipeIngredient>().IgnoreQueryFilters().Where(i => i.RecipeId == recipeId)
+            .ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
+        await db.Set<RecipeStep>().IgnoreQueryFilters().Where(s => s.RecipeId == recipeId)
+            .ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
+
+        var recipe = await db.Recipes.IgnoreQueryFilters().SingleAsync(r => r.Id == recipeId, cancellationToken).ConfigureAwait(false);
+        var entry = db.Entry(recipe);
+        entry.Property(r => r.Description).CurrentValue = seed.Description;
+        entry.Property(r => r.Instructions).CurrentValue = RecipeSeedCatalog.InstructionsSummary(seed);
+        entry.Property(r => r.PrepTimeMinutes).CurrentValue = seed.PrepTimeMinutes;
+        entry.Property(r => r.CookTimeMinutes).CurrentValue = seed.CookTimeMinutes;
+        entry.Property(r => r.Servings).CurrentValue = seed.Servings;
+        entry.Property(r => r.Difficulty).CurrentValue = seed.Difficulty;
+        recipe.SetNutrition(nutrition);
+
+        AddContent(recipe, seed);
+    }
+
+    private void AddContent(Recipe recipe, SeedRecipe seed)
+    {
+        foreach (var ingredient in seed.Ingredients)
+        {
+            db.Add(recipe.AddIngredient(ingredient.Name, ingredient.Quantity, ingredient.Unit, ingredient.Notes));
+        }
+
+        foreach (var step in seed.Steps)
+        {
+            db.Add(recipe.AddStep(step.Title, step.Description, step.TimerMinutes));
+        }
+    }
+
+    /// <summary>Dinh dưỡng ước lượng cho 1 khẩu phần, theo khoảng hợp lý của từng nhóm món (SRS §7.2.1).</summary>
+    private static RecipeNutrition NutritionFor(string category, Faker faker)
+    {
+        var (calories, protein, carbs, fat, fiber, sodium) = category switch
+        {
+            "Tráng miệng & Đồ uống" => ((120, 450), (2, 10), (20, 70), (3, 20), (0, 5), (20, 200)),
+            "Món chay" => ((150, 450), (8, 25), (15, 60), (5, 20), (3, 12), (300, 900)),
+            "Gỏi & Salad" => ((150, 400), (10, 30), (10, 35), (5, 20), (3, 10), (400, 1000)),
+            _ => ((250, 750), (15, 45), (10, 80), (8, 35), (1, 8), (500, 1500)),
+        };
+
+        return new RecipeNutrition
+        {
+            Calories = Pick(faker, calories),
+            Protein = Pick(faker, protein),
+            Carbohydrates = Pick(faker, carbs),
+            Fat = Pick(faker, fat),
+            Fiber = Pick(faker, fiber),
+            Sodium = Pick(faker, sodium),
+        };
+
+        static decimal Pick(Faker faker, (int Min, int Max) range) =>
+            Math.Round(faker.Random.Decimal(range.Min, range.Max), 1);
+    }
+
+    private sealed record ExistingRecipe(Guid Id, string Slug, string AuthorId, DateTime? UpdatedAt, int IngredientCount, int StepCount);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Database seeded: {Categories} categories, {Authors} authors, {Created} recipes created, {Repaired} recipes repaired")]
+    private static partial void LogSeeded(ILogger logger, int categories, int authors, int created, int repaired);
 }

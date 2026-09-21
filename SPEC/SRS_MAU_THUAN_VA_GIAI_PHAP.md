@@ -1,10 +1,10 @@
 # PHÂN TÍCH MÂU THUẪN TRONG SRS & ĐỀ XUẤT GIẢI PHÁP
 
-**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.0.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_1.md` — lượt 4
-**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4)
-**Phạm vi:** Toàn bộ 8 chương + các phụ lục; lượt 4 mở rộng sang **hệ thống đang chạy** (code, cấu hình Docker/Nginx, báo cáo Buổi 1)
-**Kết quả:** **57 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm) và 16 mục ở lượt 4. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 1 và SRS (§4) cùng 5 điểm xung đột giữa lộ trình phát triển và SRS (§5).
-**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026).
+**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.1.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
+**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5)
+**Phạm vi:** Toàn bộ 8 chương + các phụ lục; lượt 4 mở rộng sang **hệ thống đang chạy** (code, cấu hình Docker/Nginx, báo cáo Buổi 2)
+**Kết quả:** **58 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4 và 1 mục ở lượt 5. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 5 điểm xung đột giữa lộ trình phát triển và SRS (§5).
+**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026).
 
 **Lịch sử rà soát**
 
@@ -13,11 +13,12 @@
 | 1 | Đối chiếu chéo Chương 3 ↔ 7 ↔ 8 ↔ Phụ lục (hợp đồng API, schema, mã lỗi) | MT-01 → MT-20 |
 | 2 | Đối chiếu Chương 1–2 (phạm vi, ràng buộc, phân quyền) ↔ Chương 4–6 (NFR, UI, kiến trúc); rà "yêu cầu mồ côi" — thứ tồn tại ở một nơi nhưng không có dữ liệu/API/FR tương ứng | MT-21 → MT-33 |
 | 3 | Rà **nội bộ từng FR** (Mô tả ↔ Điều kiện tiên quyết ↔ Luồng chính ↔ Status code có tự khớp nhau không); máy trạng thái nghiệp vụ; mức ưu tiên MoSCoW; các con số định lượng (độ dài, thời gian, kích thước) | MT-34 → MT-41 |
-| 4 | Đối chiếu **SRS v1.1.0 ↔ hệ thống đang chạy**: từng quy định kỹ thuật được kiểm tra với code, `docker-compose.yml`, `nginx.conf`, image Docker thực tế và các sự cố đã ghi trong báo cáo Buổi 1 | MT-42 → MT-57 |
+| 4 | Đối chiếu **SRS v1.1.0 ↔ hệ thống đang chạy**: từng quy định kỹ thuật được kiểm tra với code, `docker-compose.yml`, `nginx.conf`, image Docker thực tế và các sự cố đã ghi trong báo cáo Buổi 2 | MT-42 → MT-57 |
+| 5 | Đối chiếu **yêu cầu mới của giảng viên cho Buổi 2** (dữ liệu mẫu) ↔ SRS v1.2.0 §2.6.1 ↔ dữ liệu đang có trong database | MT-58 |
 
 > Lượt 3 cho ra ít mục hơn nhưng **có mục nặng nhất toàn tài liệu là MT-34** — một lỗi rò rỉ dữ liệu giữa các tài khoản, sinh ra từ việc hai câu nằm cách nhau 5 dòng trong **cùng một FR** mà không ai đối chiếu.
 
-> Lượt 4 cho thấy một loại lỗi mà ba lượt đầu không thể phát hiện: **7/16 mục là lỗi do chính bản sửa v1.1.0 đưa vào** — đặc tả nghe hợp lý khi đọc trên giấy nhưng hỏng khi chạy thật, nặng nhất là **MT-50** (cấu hình Nginx tái tạo nguyên vẹn lỗi 502 mà Buổi 1 đã mất công tìm ra và sửa).
+> Lượt 4 cho thấy một loại lỗi mà ba lượt đầu không thể phát hiện: **7/16 mục là lỗi do chính bản sửa v1.1.0 đưa vào** — đặc tả nghe hợp lý khi đọc trên giấy nhưng hỏng khi chạy thật, nặng nhất là **MT-50** (cấu hình Nginx tái tạo nguyên vẹn lỗi 502 mà Buổi 2 đã mất công tìm ra và sửa).
 
 > **Lưu ý:** MT-01 → MT-41 đã tồn tại trong file PDF gốc (quá trình chuyển sang Markdown giữ nguyên 100% nội dung). MT-42 → MT-57 được phát hiện trên SRS v1.1.0. Mọi thay đổi đều đi qua quy trình Change Request (CR) như mục "Phê duyệt tài liệu" của SRS yêu cầu.
 
@@ -86,7 +87,7 @@
 | MT-47 | Hangfire "in-process" vs container worker riêng | 🟡 | Chuẩn hóa worker riêng |
 | MT-48 | Sitemap cần toàn bộ slug, API danh sách giới hạn 50 | 🟢 | Thêm `GET /recipes/sitemap` |
 | MT-49 | "Có thể khôi phục" nhưng không có chức năng khôi phục | 🟡 | Khôi phục do vận hành; tự phục vụ ngoài phạm vi |
-| MT-50 | **Cấu hình Nginx `upstream` tái tạo lỗi 502 đã sửa ở Buổi 1** | 🔴 | Resolver DNS động |
+| MT-50 | **Cấu hình Nginx `upstream` tái tạo lỗi 502 đã sửa ở Buổi 2** | 🔴 | Resolver DNS động |
 | MT-51 | Lệnh healthcheck không chạy được trong image thật | 🟡 | Dùng lệnh đã kiểm chứng |
 | MT-52 | Admin tự khóa: 403 (FR) vs 409 (Chương 8) | 🟡 | Thống nhất 403 |
 | MT-53 | Giải thích sai cơ chế route; slug dành riêng mỗi nơi một kiểu | 🟢 | Một danh sách duy nhất |
@@ -94,6 +95,7 @@
 | MT-55 | Không quy định nơi lưu token phía Frontend | 🟡 | Access token chỉ trong bộ nhớ |
 | MT-56 | `DEFERRABLE` không nói phải là constraint | 🟢 | Ghi rõ UNIQUE CONSTRAINT |
 | MT-57 | `/categories/[slug]` ghi ISR nhưng không thể dựng tĩnh | 🟢 | SSR + Data Cache |
+| MT-58 | Yêu cầu dữ liệu mẫu của giảng viên (≥ 20 danh mục, ≥ 100 công thức, ≥ 10 nguyên liệu, ≥ 5 bước) khác SRS §2.6.1 (50 công thức) | 🟡 | Cập nhật SRS v1.2.1 (CR-2026-03); nội dung món ăn thật, seeder tự bù |
 
 ---
 
@@ -1112,7 +1114,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 ---
 
-> **Từ đây là các mục phát hiện ở lượt rà soát thứ 4 (19/09/2026).** Khác hẳn ba lượt đầu, lượt này **không đọc tài liệu với tài liệu** mà đối chiếu SRS v1.1.0 với **hệ thống đã chạy thật**: code trên nhánh `main`, `docker-compose.yml`, `nginx.conf`, image Docker được dùng, và các sự cố được ghi trong `BAO_CAO_BUOI_1.md`. Mỗi mục được phân loại: **(a)** lỗi kỹ thuật trong chính v1.1.0 — đặc tả mà làm đúng từng chữ thì hệ thống hỏng; **(b)** yêu cầu mồ côi còn sót sau CR-2026; **(c)** SRS mâu thuẫn với một thiết kế đã được kiểm chứng tốt hơn trong code. Tất cả đã được áp dụng vào **SRS v1.2.0** (CR-2026-02); vị trí sửa ghi ở cuối mỗi mục và ở SRS Phụ lục E.
+> **Từ đây là các mục phát hiện ở lượt rà soát thứ 4 (19/09/2026).** Khác hẳn ba lượt đầu, lượt này **không đọc tài liệu với tài liệu** mà đối chiếu SRS v1.1.0 với **hệ thống đã chạy thật**: code trên nhánh `main`, `docker-compose.yml`, `nginx.conf`, image Docker được dùng, và các sự cố được ghi trong `BAO_CAO_BUOI_2.md`. Mỗi mục được phân loại: **(a)** lỗi kỹ thuật trong chính v1.1.0 — đặc tả mà làm đúng từng chữ thì hệ thống hỏng; **(b)** yêu cầu mồ côi còn sót sau CR-2026; **(c)** SRS mâu thuẫn với một thiết kế đã được kiểm chứng tốt hơn trong code. Tất cả đã được áp dụng vào **SRS v1.2.0** (CR-2026-02); vị trí sửa ghi ở cuối mỗi mục và ở SRS Phụ lục E.
 
 ---
 
@@ -1125,7 +1127,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 | §5.2 "Response Format" | `{ "data": {...}, "meta": { "page":1, "pageSize":10, "total":100 } }` — kèm `pageSize: 10` |
 | Chương 8, quy ước Pagination | `{ "data":[], "meta":{ "page", "pageSize", "total", "totalPages" } }` |
 | FR-RCP-001, FR-SRCH-004 | `PagedResult<RecipeSummaryDto>` với `totalCount`, `totalPages`, **`hasNextPage`, `hasPreviousPage`** |
-| Code Buổi 1 + Frontend | Dùng `PagedResult { items, page, pageSize, totalCount, totalPages, hasNextPage, hasPreviousPage }` (`BAO_CAO_BUOI_1.md` §4.9) |
+| Code Buổi 2 + Frontend | Dùng `PagedResult { items, page, pageSize, totalCount, totalPages, hasNextPage, hasPreviousPage }` (`BAO_CAO_BUOI_2.md` §4.9) |
 
 **Vì sao là vấn đề:** Mâu thuẫn này có từ v1.0.0 nhưng **sót khỏi cả 41 mục của CR-2026**. Frontend đọc §5.2 sẽ tìm `response.data`, Backend làm theo FR trả `response.items` — mọi màn hình danh sách hiển thị rỗng mà không có lỗi nào. Thêm vào đó `pageSize: 10` ở §5.2 lệch với giá trị mặc định 12 đã chốt ở MT-20.13.
 
@@ -1152,7 +1154,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 | FR-RCP-010 | Bước nấu nhận `imageUrl` — **một URL** |
 | FR-FILE-001/002 | Chỉ đặc tả tầng service `IFileStorageService`, **không có endpoint HTTP** |
 | Chương 8 v1.1.0 | Endpoint upload duy nhất là `POST /recipes/{id}/images` — gắn chặt với công thức |
-| Code Buổi 1 | Đã tự bổ sung `POST /api/v1/files/upload`, `DELETE /api/v1/files/{**fileId}` — **ngoài SRS** (`BAO_CAO_BUOI_1.md` §4.14) |
+| Code Buổi 2 | Đã tự bổ sung `POST /api/v1/files/upload`, `DELETE /api/v1/files/{**fileId}` — **ngoài SRS** (`BAO_CAO_BUOI_2.md` §4.14) |
 
 **Vì sao là vấn đề:** Người dùng **không có cách hợp lệ nào** để có một URL ảnh đưa vào `avatarUrl` — tính năng đổi avatar không thể hoàn thành theo đúng SRS. Nếu để code tự thêm endpoint ngoài SRS, tài liệu không còn là nguồn sự thật.
 
@@ -1160,7 +1162,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 | # | Phương án | Ưu điểm | Nhược điểm |
 | --- | --- | --- | --- |
-| A | **Chính thức hóa endpoint tổng quát `/files/upload`** | Mọi quy tắc bảo mật tệp (5MB, magic bytes, tên GUID, phạm vi thư mục theo người dùng) nằm **ở một chỗ**; đã chạy từ Buổi 1 | Có thể sinh tệp mồ côi (upload rồi không gán vào đâu) |
+| A | **Chính thức hóa endpoint tổng quát `/files/upload`** | Mọi quy tắc bảo mật tệp (5MB, magic bytes, tên GUID, phạm vi thư mục theo người dùng) nằm **ở một chỗ**; đã chạy từ Buổi 2 | Có thể sinh tệp mồ côi (upload rồi không gán vào đâu) |
 | B | Ba endpoint con `/auth/me/avatar`, `/categories/{id}/image`, `/recipes/{id}/steps/{stepId}/image` | Gắn chặt ngữ cảnh, không có tệp mồ côi | Lặp quy tắc bảo mật ba lần; thêm ba command/validator |
 | C | Cho nhập URL ảnh ngoài tùy ý | Không cần upload | Biến hệ thống thành nơi nhúng nội dung tùy ý; ảnh ngoài có thể chết bất cứ lúc nào |
 
@@ -1182,7 +1184,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 ### MT-45 🟢 (b) — Quản lý phiên đăng nhập có trong lộ trình nhưng không có FR
 
-**Hiện trạng:** Lộ trình phát triển (Buổi 6, Dev 1) yêu cầu *"Quản lý phiên làm việc nâng cao (Force revoke, Session Management UI)"*. SRS v1.1.0 **không có FR và endpoint** nào cho việc liệt kê/thu hồi phiên; riêng "force revoke" đã có sẵn trong FR-AUTH-008 (khóa tài khoản ⇒ thu hồi mọi refresh token).
+**Hiện trạng:** Lộ trình phát triển (Buổi 7, Dev 1) yêu cầu *"Quản lý phiên làm việc nâng cao (Force revoke, Session Management UI)"*. SRS v1.1.0 **không có FR và endpoint** nào cho việc liệt kê/thu hồi phiên; riêng "force revoke" đã có sẵn trong FR-AUTH-008 (khóa tài khoản ⇒ thu hồi mọi refresh token).
 
 **Vì sao là vấn đề:** Hiện thực thẳng theo lộ trình thì hệ thống có 3 endpoint không truy vết được về yêu cầu nào — phá vỡ nguyên tắc SRS là nguồn sự thật. Bỏ hẳn thì trái lộ trình đã giao.
 
@@ -1200,7 +1202,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 ### MT-46 🟢 (c) — Mã lỗi đang dùng trong code nhưng thiếu trong Phụ lục B
 
-**Hiện trạng:** Code Buổi 1 (`ErrorCodes.cs`) dùng `FILE_FORBIDDEN` (403 — xóa tệp của người khác), `FILE_STORAGE_UNAVAILABLE` (503 — MinIO lỗi, đúng tình huống FR-RCP-008 A4) và `INTERNAL_ERROR` (500). Cả ba **không có** trong Phụ lục B (24 mã). Code còn có `AUTH_USERNAME_EXISTS`.
+**Hiện trạng:** Code Buổi 2 (`ErrorCodes.cs`) dùng `FILE_FORBIDDEN` (403 — xóa tệp của người khác), `FILE_STORAGE_UNAVAILABLE` (503 — MinIO lỗi, đúng tình huống FR-RCP-008 A4) và `INTERNAL_ERROR` (500). Cả ba **không có** trong Phụ lục B (24 mã). Code còn có `AUTH_USERNAME_EXISTS`.
 
 **Vì sao là vấn đề:** Frontend nhận những giá trị `type` không có trong tài liệu — trái mục đích của Phụ lục B. Riêng FR-RCP-008 A4 có status 503 nhưng không có mã, nên Frontend không phân biệt được "MinIO lỗi" với "server quá tải".
 
@@ -1216,7 +1218,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 | --- | --- |
 | SRS §3.6, §5.3, §2.1, §2.6.2 (kế thừa nguyên văn v1.0.0) | *"Hangfire chạy **in-process** trong .NET API"* |
 | SRS §6.5 v1.1.0 | Không có service Hangfire nào trong bảng |
-| Code Buổi 1 | Container **`hangfire`** riêng, dùng chung image với API (`Hangfire__WorkerOnly=true`); container `api` đặt `Hangfire__ServerEnabled=false` — chỉ enqueue |
+| Code Buổi 2 | Container **`hangfire`** riêng, dùng chung image với API (`Hangfire__WorkerOnly=true`); container `api` đặt `Hangfire__ServerEnabled=false` — chỉ enqueue |
 
 **Vì sao là vấn đề:** Hai mô tả khác nhau cho cùng một phần hạ tầng, và 41 mục của CR-2026 **chưa từng phân tích** điểm này. Người đọc SRS để "sửa cho đúng" sẽ gộp worker vào API và đánh mất những lợi ích dưới đây.
 
@@ -1224,7 +1226,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 | # | Phương án | Ưu điểm | Nhược điểm |
 | --- | --- | --- | --- |
-| A | **Worker riêng** (như code) | Resize ảnh (ImageSharp, nặng CPU) **không tranh CPU** với request của người đọc → bảo vệ p95 ≤ 500ms; API và job scale độc lập; chi phí đã trả xong ở Buổi 1 (khóa DataProtection dùng chung qua volume, chờ DB sẵn sàng trước khi chạy) | Thêm một container |
+| A | **Worker riêng** (như code) | Resize ảnh (ImageSharp, nặng CPU) **không tranh CPU** với request của người đọc → bảo vệ p95 ≤ 500ms; API và job scale độc lập; chi phí đã trả xong ở Buổi 2 (khóa DataProtection dùng chung qua volume, chờ DB sẵn sàng trước khi chạy) | Thêm một container |
 | B | In-process (như SRS cũ) | Ít container hơn | Mỗi lượt upload ảnh làm chậm mọi request; `--scale api=3` nhân ba số job server |
 
 **➡️ Quyết định (v1.2.0): Phương án A.** Sửa: SRS §2.1, §2.6.2, §3.6, §5.3, §6.1, §6.5, NFR-SCALE-001, Phụ lục C.
@@ -1254,14 +1256,14 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 | # | Phương án | Ưu điểm | Nhược điểm |
 | --- | --- | --- | --- |
 | A | **Làm rõ: khôi phục do quản trị viên vận hành trên DB trong 30 ngày; chức năng tự phục vụ ngoài phạm vi** | Trung thực với phạm vi; không thêm FR khi không có trong lộ trình | Người dùng không tự khôi phục được |
-| B | Thêm FR "Thùng rác" + `GET /recipes/trash`, `PATCH /recipes/{id}/restore` | Tính năng hoàn chỉnh | Thêm FR + 2 endpoint + UI ngoài lộ trình 7 buổi |
+| B | Thêm FR "Thùng rác" + `GET /recipes/trash`, `PATCH /recipes/{id}/restore` | Tính năng hoàn chỉnh | Thêm FR + 2 endpoint + UI ngoài lộ trình 8 buổi |
 | C | Bỏ chữ "có thể khôi phục" | Gọn | Mất giá trị thật của soft delete (dữ liệu vẫn nằm đó 30 ngày) |
 
 **➡️ Quyết định (v1.2.0): Phương án A.** Chức năng tự phục vụ được ghi vào danh sách "ngoài phạm vi" (§1.2.3) để phiên bản sau có điểm bắt đầu. Sửa: §1.2.3, NFR-REL-003, Phụ lục C.
 
 ---
 
-### MT-50 🔴 (a) — Cấu hình Nginx của SRS tái tạo lỗi 502 đã sửa ở Buổi 1
+### MT-50 🔴 (a) — Cấu hình Nginx của SRS tái tạo lỗi 502 đã sửa ở Buổi 2
 
 **Đây là mục nặng nhất của lượt 4.** Nó không phải "hai chỗ ghi khác nhau" mà là **đặc tả sai sẽ gây sự cố sản xuất**, và sự cố đó đã từng xảy ra thật.
 
@@ -1270,7 +1272,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 | Vị trí | Nội dung |
 | --- | --- |
 | SRS v1.1.0 §6.5 (khối cấu hình Nginx), §6.1, NFR-SCALE-003, Phụ lục D (dòng MT-32) | `upstream api_pool { server api:8080; }` + `proxy_pass http://api_pool;` |
-| `BAO_CAO_BUOI_1.md` §5.1, lỗi #2 | Nginx trả **502** cho toàn bộ `/api/*` sau khi container `api` được tạo lại: *"`upstream { server api:8080; }` chỉ phân giải DNS lúc Nginx khởi động → giữ IP cũ"* |
+| `BAO_CAO_BUOI_2.md` §5.1, lỗi #2 | Nginx trả **502** cho toàn bộ `/api/*` sau khi container `api` được tạo lại: *"`upstream { server api:8080; }` chỉ phân giải DNS lúc Nginx khởi động → giữ IP cũ"* |
 | Code (commit `064f582`) | Đã sửa bằng `resolver 127.0.0.11 valid=10s` + `proxy_pass` qua biến; kiểm chứng: api đổi IP `172.30.2.3` → `172.30.2.2`, Nginx **không restart** vẫn trả 200 |
 
 **Vì sao là vấn đề:** Nginx bản open-source phân giải tên trong khối `upstream` **một lần duy nhất lúc khởi động**. Trong Docker, IP container thay đổi mỗi khi container được tạo lại (deploy, restart do lỗi, scale). Làm đúng SRS v1.1.0 nghĩa là: mỗi lần deploy API, trang web chết cho tới khi ai đó nhớ ra restart Nginx. SRS v1.1.0 đã viết cấu hình này **sau khi** code đã sửa lỗi — tức là tài liệu đẩy hệ thống lùi về trạng thái lỗi.
@@ -1295,12 +1297,12 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 | --- | --- | --- |
 | `api` | `curl -f http://localhost:8080/health/ready` | Image `mcr.microsoft.com/dotnet/aspnet:10.0` **không có `curl`** |
 | `frontend` | `curl -f http://localhost:3000` | `node:22-alpine` **không có `curl`**, chỉ có `wget` của busybox |
-| `minio` | `curl -f http://localhost:9000/minio/health/live` | Image `minio/minio` **không có `curl`**; Buổi 1 dùng `mc ready local` |
-| `postgres` | `pg_isready -U $POSTGRES_USER` | Không có `-h` → kiểm tra qua **unix socket**, báo "ready" khi Postgres **chưa mở cổng TCP** — nguyên nhân lỗi `57P03 the database system is starting up` Buổi 1 đã gặp (§5.1 lỗi #1); Buổi 1 sửa bằng `pg_isready -h 127.0.0.1` |
+| `minio` | `curl -f http://localhost:9000/minio/health/live` | Image `minio/minio` **không có `curl`**; Buổi 2 dùng `mc ready local` |
+| `postgres` | `pg_isready -U $POSTGRES_USER` | Không có `-h` → kiểm tra qua **unix socket**, báo "ready" khi Postgres **chưa mở cổng TCP** — nguyên nhân lỗi `57P03 the database system is starting up` Buổi 2 đã gặp (§5.1 lỗi #1); Buổi 2 sửa bằng `pg_isready -h 127.0.0.1` |
 
 **Vì sao là vấn đề:** Healthcheck không chạy được thì container **luôn `unhealthy`**, và mọi service khai báo `depends_on: condition: service_healthy` **không bao giờ khởi động** — cả hệ thống đứng yên dù không có lỗi nào trong code.
 
-**Phương án:** (A) **Dùng lệnh đã kiểm chứng ở Buổi 1**; riêng `api` cài thêm `curl` ở stage runtime vì healthcheck phải gọi đúng `/health/ready` (kiểm tra kết nối DB + Redis), không chỉ kiểm tra cổng mở; (B) viết một chương trình probe nhỏ bằng .NET trong image — không phụ thuộc `curl` nhưng thêm code phải bảo trì; (C) chỉ kiểm tra cổng TCP — sai ngữ nghĩa readiness.
+**Phương án:** (A) **Dùng lệnh đã kiểm chứng ở Buổi 2**; riêng `api` cài thêm `curl` ở stage runtime vì healthcheck phải gọi đúng `/health/ready` (kiểm tra kết nối DB + Redis), không chỉ kiểm tra cổng mở; (B) viết một chương trình probe nhỏ bằng .NET trong image — không phụ thuộc `curl` nhưng thêm code phải bảo trì; (C) chỉ kiểm tra cổng TCP — sai ngữ nghĩa readiness.
 
 **➡️ Quyết định (v1.2.0): Phương án A.** Mỗi dòng trong bảng §6.5 ghi kèm lý do chọn lệnh. Sửa: §6.5.
 
@@ -1353,7 +1355,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 ### MT-55 🟡 (b) — SRS không quy định Frontend được lưu token ở đâu
 
-**Hiện trạng:** SRS v1.1.0 §5.2 quy định refresh token đi trong **body request, không dùng cookie**; NFR-SEC-002 quy định cách phát và lưu token **phía server**. **Không có chỗ nào** nói Frontend lưu access token và refresh token ở đâu. Buổi 1 đã lưu **cả hai** vào `localStorage` (`BAO_CAO_BUOI_1.md` §4.12 tự ghi *"cần xem lại Buổi 3"*).
+**Hiện trạng:** SRS v1.1.0 §5.2 quy định refresh token đi trong **body request, không dùng cookie**; NFR-SEC-002 quy định cách phát và lưu token **phía server**. **Không có chỗ nào** nói Frontend lưu access token và refresh token ở đâu. Buổi 2 đã lưu **cả hai** vào `localStorage` (`BAO_CAO_BUOI_2.md` §4.12 tự ghi *"cần xem lại Buổi 4"*).
 
 **Vì sao là vấn đề:** `localStorage` đọc được bởi mọi script trên trang — một lỗ hổng XSS là đủ để lấy cả access token (dùng ngay được với mọi API) lẫn refresh token (gia hạn phiên tới 7 ngày). Khoảng trống trong đặc tả đã trực tiếp dẫn tới cách hiện thực kém an toàn nhất.
 
@@ -1371,7 +1373,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 ### MT-56 🟢 (a) — Ràng buộc `DEFERRABLE` không nói rõ phải là constraint
 
-**Hiện trạng:** SRS v1.1.0 (FR-RCP-010, §7.3) yêu cầu `UNIQUE (RecipeId, StepNumber)` khai báo `DEFERRABLE INITIALLY DEFERRED` nhưng không nói dạng khai báo. Code Buổi 1 dùng `HasIndex(...).IsUnique()` của EF Core — sinh ra **unique index**. §7.5 ghi *"Chỉ có 1 ảnh `IsPrimary=true` / Recipe"* mà không nói cơ chế; code dùng **partial unique index** `WHERE "IsPrimary" AND NOT "IsDeleted"`.
+**Hiện trạng:** SRS v1.1.0 (FR-RCP-010, §7.3) yêu cầu `UNIQUE (RecipeId, StepNumber)` khai báo `DEFERRABLE INITIALLY DEFERRED` nhưng không nói dạng khai báo. Code Buổi 2 dùng `HasIndex(...).IsUnique()` của EF Core — sinh ra **unique index**. §7.5 ghi *"Chỉ có 1 ảnh `IsPrimary=true` / Recipe"* mà không nói cơ chế; code dùng **partial unique index** `WHERE "IsPrimary" AND NOT "IsDeleted"`.
 
 **Vì sao là vấn đề:** PostgreSQL **không cho phép index là `DEFERRABLE`** — chỉ constraint mới được. Làm theo cách phổ biến nhất trong EF Core thì tính năng kéo-thả sắp xếp bước (FR-RCP-010) sẽ lỗi `23505` ở câu `UPDATE` đầu tiên, dù code Domain hoàn toàn đúng. Tương tự, partial index của ảnh chính **không thể** chuyển thành constraint (constraint không có `WHERE`), nên đổi ảnh chính phải làm hai bước — điều SRS không nói tới.
 
@@ -1381,7 +1383,7 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 ### MT-57 🟢 (a) — `/categories/[slug]` được ghi là ISR nhưng không thể dựng tĩnh
 
-**Hiện trạng:** SRS v1.1.0 §5.1 ghi `/categories/[slug]` là *"ISR (revalidate=120)"*; trang này phân trang bằng `?page=`. Buổi 1 ghi nhận: *"Trang chi tiết đọc `?page=`, nên Next bắt buộc render động... HTML không phải ISR thuần"* (`BAO_CAO_BUOI_1.md` §4.5).
+**Hiện trạng:** SRS v1.1.0 §5.1 ghi `/categories/[slug]` là *"ISR (revalidate=120)"*; trang này phân trang bằng `?page=`. Buổi 2 ghi nhận: *"Trang chi tiết đọc `?page=`, nên Next bắt buộc render động... HTML không phải ISR thuần"* (`BAO_CAO_BUOI_2.md` §4.5).
 
 **Vì sao là vấn đề:** Trong Next.js App Router, trang đọc `searchParams` **bắt buộc render theo request** — không thể là ISR. Đặc tả mô tả một cơ chế không khả thi; QA kiểm tra header `x-nextjs-cache` sẽ luôn thấy "không đạt".
 
@@ -1389,32 +1391,42 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 **➡️ Quyết định (v1.2.0): Phương án A.** Quy tắc "thời gian tái sinh ≤ TTL cache API" được phát biểu lại để áp dụng cho cả ISR lẫn Data Cache. Sửa: §5.1.
 
+### MT-58 🟡 — Yêu cầu dữ liệu mẫu của giảng viên khác SRS §2.6.1
+
+**Hiện trạng:** SRS v1.2.0 §2.6.1 ghi *"Dữ liệu test (seed) được tạo bằng thư viện Bogus với 50 recipe mẫu và 5 tác giả mẫu"*; kế hoạch Buổi 2 seed ~8 danh mục. Khi đánh số lại 8 buổi (21/09/2026), giảng viên yêu cầu Buổi 2 phải có CSDL chứa dữ liệu ngẫu nhiên cho **ít nhất 20 categories, 100 recipes; mỗi recipe ít nhất 10 nguyên liệu và 5 bước chế biến**. Database thực tế lúc đó: 8 danh mục, 50 công thức, mỗi công thức 4–9 nguyên liệu chọn ngẫu nhiên từ một danh sách chung và 3–6 bước có mô tả Lorem ipsum.
+
+**Vì sao là vấn đề:** code làm theo yêu cầu mới thì lệch SRS; giữ theo SRS thì không đạt yêu cầu của giảng viên. Ngoài ra, nếu chỉ tăng số lượng bằng Bogus như cũ, dữ liệu sẽ vô nghĩa (món tráng miệng có nước mắm, mô tả bước bằng tiếng Latin) — chính dữ liệu này dùng để kiểm thử tìm kiếm tiếng Việt, đo hiệu năng và trình diễn khi bảo vệ.
+
+**Phương án:** (A) Cập nhật SRS qua Change Request, nội dung món ăn viết tay (catalog), Bogus chỉ sinh phần ngẫu nhiên hợp lý, seeder tự bù cho database đang có; (B) giữ SRS, chỉ tăng tham số Bogus — lệch SRS và dữ liệu sai; (C) yêu cầu cả nhóm xóa volume để seed lại — mất dữ liệu thử nghiệm của từng người.
+
+**➡️ Quyết định (v1.2.1, CR-2026-03): Phương án A.** Sửa: §2.6.1. Hiện thực: `RecipeSeedCatalog` + `DatabaseSeeder` (Buổi 2 — Dev 4, mục "Yêu cầu bổ sung" trong `KE_HOACH_PHAT_TRIEN_8_BUOI.md`).
+
 ---
 
-## 4. Xung đột giữa SRS và hiện trạng code Buổi 1 (nợ kỹ thuật)
+## 4. Xung đột giữa SRS và hiện trạng code Buổi 2 (nợ kỹ thuật)
 
-Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS v1.2.0 đã nhất quán ở những điểm này — mà là chỗ **code đã chạy khác với SRS**, vì Buổi 1 được hiện thực theo SRS v1.0.0 (trước CR-2026). Mỗi điểm được kiểm chứng trực tiếp trong code. Kế hoạch hoàn trả chi tiết (buổi nào, dev nào, bước nào) nằm tại `SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md` §4.1; bảng này ghi lại để tài liệu mâu thuẫn có bức tranh đầy đủ.
+Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS v1.2.0 đã nhất quán ở những điểm này — mà là chỗ **code đã chạy khác với SRS**, vì Buổi 2 được hiện thực theo SRS v1.0.0 (trước CR-2026). Mỗi điểm được kiểm chứng trực tiếp trong code. Kế hoạch hoàn trả chi tiết (buổi nào, dev nào, bước nào) nằm tại `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` §4.1; bảng này ghi lại để tài liệu mâu thuẫn có bức tranh đầy đủ.
 
-| # | Code Buổi 1 | SRS v1.2.0 quy định | Căn cứ SRS | Hoàn trả |
+| # | Code Buổi 2 | SRS v1.2.0 quy định | Căn cứ SRS | Hoàn trả |
 | --- | --- | --- | --- | --- |
-| D-1 | Đăng ký nhận `{ fullName, email, userName, password }`; mã `AUTH_USERNAME_EXISTS` | `{ email, password, displayName }`, BE tự sinh `UserName` | MT-12 | Buổi 2 |
-| D-2 | Refresh token 64 byte (512-bit) | 32 byte (256-bit) | MT-13 | Buổi 3 |
-| D-3 | `Recipe.Slug` unique thường | Partial unique `WHERE "IsDeleted" = false` | MT-05 | Buổi 5 |
-| D-4 🔴 | Danh sách công thức lọc theo danh tính + Output Cache khóa công khai; Draft trả 403 | Chỉ Published cho mọi người gọi; Draft → 404; riêng tư qua `/recipes/mine` | **MT-34** | Buổi 5 |
-| D-5 🔴 | Chi tiết danh mục lọc theo danh tính | Chỉ Published | **MT-34** | Buổi 5 |
-| D-6 | Output Cache (Redis-backed) 15′/60′ | Redis cache-aside 2′/5′, không Output Cache | MT-16, MT-17 | Buổi 5 |
-| D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | Buổi 5 |
-| D-8 | `Instructions` NOT NULL | NULL | MT-20.8 | Buổi 2 |
+| D-1 | Đăng ký nhận `{ fullName, email, userName, password }`; mã `AUTH_USERNAME_EXISTS` | `{ email, password, displayName }`, BE tự sinh `UserName` | MT-12 | Buổi 3 |
+| D-2 | Refresh token 64 byte (512-bit) | 32 byte (256-bit) | MT-13 | Buổi 4 |
+| D-3 | `Recipe.Slug` unique thường | Partial unique `WHERE "IsDeleted" = false` | MT-05 | Buổi 6 |
+| D-4 🔴 | Danh sách công thức lọc theo danh tính + Output Cache khóa công khai; Draft trả 403 | Chỉ Published cho mọi người gọi; Draft → 404; riêng tư qua `/recipes/mine` | **MT-34** | Buổi 6 |
+| D-5 🔴 | Chi tiết danh mục lọc theo danh tính | Chỉ Published | **MT-34** | Buổi 6 |
+| D-6 | Output Cache (Redis-backed) 15′/60′ | Redis cache-aside 2′/5′, không Output Cache | MT-16, MT-17 | Buổi 6 |
+| D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | Buổi 6 |
+| D-8 | `Instructions` NOT NULL | NULL | MT-20.8 | Buổi 3 |
 | D-9 | Hangfire worker riêng | **Đã chuẩn hóa theo code** | MT-47 | — (không còn lệch) |
-| D-10 | `sort=-field` | `sortBy` + `sortOrder` | MT-01 | Buổi 4 |
-| D-11 | Validation trả **422** | 400 | MT-08 | Buổi 2 (commit nền) |
-| D-12 | Access + refresh token trong `localStorage` | Access token chỉ trong bộ nhớ | MT-55 | Buổi 3 |
-| D-13 | TTL `categories:all` 60′ | 30′ | MT-17 | Buổi 2 |
-| D-14 | `next/image unoptimized`; ảnh ở `localhost:9000` | Ảnh qua Nginx `/media/` | MT-51 (§6.5) | Buổi 6 |
-| D-15 | `Publish()` cho Archived → Published; Published → publish là no-op | 409 `RECIPE_INVALID_STATE_TRANSITION` | MT-35 | Buổi 4 |
-| D-16 | `(RecipeId, StepNumber)` là unique index | Unique **constraint** deferrable | MT-56 | Buổi 3 |
-| D-17 | Khóa DataProtection không mã hóa | `ProtectKeysWithCertificate` ở production | NFR-SEC-007 | Buổi 6 |
-| D-18 | `init.sql` tạo config FTS `vietnamese_unaccent` (cơ chế thứ hai) | Một cơ chế: `simple` + `unaccent_immutable` trong migration | MT-25 | Buổi 3 |
+| D-10 | `sort=-field` | `sortBy` + `sortOrder` | MT-01 | Buổi 5 |
+| D-11 | Validation trả **422** | 400 | MT-08 | Buổi 3 (commit nền) |
+| D-12 | Access + refresh token trong `localStorage` | Access token chỉ trong bộ nhớ | MT-55 | Buổi 4 |
+| D-13 | TTL `categories:all` 60′ | 30′ | MT-17 | Buổi 3 |
+| D-14 | `next/image unoptimized`; ảnh ở `localhost:9000` | Ảnh qua Nginx `/media/` | MT-51 (§6.5) | Buổi 7 |
+| D-15 | `Publish()` cho Archived → Published; Published → publish là no-op | 409 `RECIPE_INVALID_STATE_TRANSITION` | MT-35 | Buổi 5 |
+| D-16 | `(RecipeId, StepNumber)` là unique index | Unique **constraint** deferrable | MT-56 | Buổi 4 |
+| D-17 | Khóa DataProtection không mã hóa | `ProtectKeysWithCertificate` ở production | NFR-SEC-007 | Buổi 7 |
+| D-18 | `init.sql` tạo config FTS `vietnamese_unaccent` (cơ chế thứ hai) | Một cơ chế: `simple` + `unaccent_immutable` trong migration | MT-25 | Buổi 4 |
 
 > **Hai điểm ngược chiều:** D-9 là trường hợp **code đúng hơn SRS** — thay vì sửa code, SRS được sửa (MT-47). Tương tự, cấu hình Nginx và lệnh healthcheck của code là đúng và SRS v1.1.0 sai (MT-50, MT-51). Nguyên tắc áp dụng: SRS là nguồn sự thật **về yêu cầu**, nhưng khi code đã chứng minh một lựa chọn kỹ thuật tốt hơn qua sự cố thật, cách đúng là sửa SRS qua Change Request chứ không phải ép code lùi về đặc tả kém hơn.
 
@@ -1422,15 +1434,15 @@ Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS
 
 ## 5. Xung đột giữa lộ trình phát triển được giao và SRS
 
-Lộ trình 7 buổi được giao (bản mô tả ban đầu của từng buổi) được viết trước khi SRS v1.1.0/v1.2.0 hoàn tất, nên có 5 điểm lệch. Kế hoạch 7 buổi giải quyết **theo SRS**; điểm X-5 dẫn tới việc bổ sung SRS (MT-45).
+Lộ trình được giao (bản mô tả ban đầu của từng buổi, nay đánh số 8 buổi vì Buổi 1 là buổi đọc đặc tả) được viết trước khi SRS v1.1.0/v1.2.0 hoàn tất, nên có 5 điểm lệch. Kế hoạch 8 buổi giải quyết **theo SRS**; điểm X-5 dẫn tới việc bổ sung SRS (MT-45).
 
 | # | Lộ trình ghi | SRS quy định | Cách giải quyết | Căn cứ |
 | --- | --- | --- | --- | --- |
-| X-1 | Buổi 2: *"Google OAuth PKCE"* | ID Token flow, không PKCE, không redirect URI ở Backend | Làm ID Token flow | MT-11 |
-| X-2 | Buổi 3: *"FR-JOB-003 Recurring Sitemap Generator 02:00 UTC"* | FR-JOB-003 = Permanent Purge Job 03:30 UTC; sitemap do Next.js sinh | Buổi 3 làm Purge Job; sitemap chuyển sang Dev 3 Buổi 6 | MT-05, MT-28 |
-| X-3 | Buổi 5: *"ISR revalidate 3600s"* cho trang danh mục | 1800s / 120s | Theo SRS | MT-33.3 |
+| X-1 | Buổi 3: *"Google OAuth PKCE"* | ID Token flow, không PKCE, không redirect URI ở Backend | Làm ID Token flow | MT-11 |
+| X-2 | Buổi 4: *"FR-JOB-003 Recurring Sitemap Generator 02:00 UTC"* | FR-JOB-003 = Permanent Purge Job 03:30 UTC; sitemap do Next.js sinh | Buổi 4 làm Purge Job; sitemap chuyển sang Dev 3 Buổi 7 | MT-05, MT-28 |
+| X-3 | Buổi 6: *"ISR revalidate 3600s"* cho trang danh mục | 1800s / 120s | Theo SRS | MT-33.3 |
 | X-4 | Phân công *"FR-AUTH-001 đến 007"*, *"FR-RCP-001 đến 010"* | Có thêm FR-AUTH-008, FR-AUTH-009, FR-RCP-011 | Gán vào đúng module của Dev 1 và Dev 2 | MT-22, MT-34, MT-45 |
-| X-5 | Buổi 6: *"Quản lý phiên làm việc nâng cao"* | v1.1.0 không có FR nào | Bổ sung **FR-AUTH-009** vào SRS v1.2.0 | MT-45 |
+| X-5 | Buổi 7: *"Quản lý phiên làm việc nâng cao"* | v1.1.0 không có FR nào | Bổ sung **FR-AUTH-009** vào SRS v1.2.0 | MT-45 |
 
 ---
 
@@ -1444,7 +1456,7 @@ Sau khi áp dụng CR-2026-02, SRS không còn mâu thuẫn nội bộ nào đư
 | O-2 | Refresh token vẫn nằm ở nơi JavaScript đọc được (MT-55) | §5.2 cấm cookie; rủi ro được kiểm soát bằng Rotation + Reuse Detection + CSP | Chuyển sang cookie `HttpOnly` + chống CSRF qua một CR riêng |
 | O-3 | Tệp upload qua `/files/upload` nhưng không được gán vào đâu sẽ nằm lại trên MinIO (MT-43) | Đơn giản hóa endpoint; dung lượng nhỏ ở quy mô đồ án | Job dọn tệp mồ côi (không được tham chiếu sau N ngày) |
 | O-4 | Công thức vừa bị unpublish/archive còn hiển thị tối đa **5 phút** ở trang ISR `/recipes/[slug]` | Hệ quả của TTL cache 5′ và quy tắc "tái sinh ≤ TTL" | Gọi on-demand revalidation của Next.js từ Backend khi đổi trạng thái |
-| O-5 | Khôi phục dữ liệu soft-deleted chỉ do quản trị viên vận hành làm trên DB (MT-49) | Không có trong lộ trình 7 buổi | FR "Thùng rác" ở phiên bản sau |
+| O-5 | Khôi phục dữ liệu soft-deleted chỉ do quản trị viên vận hành làm trên DB (MT-49) | Không có trong lộ trình 8 buổi | FR "Thùng rác" ở phiên bản sau |
 | O-6 | TTL cache ngắn hơn (5′ thay 60′) nên **hit rate thấp hơn**, mốc ≥ 80% của NFR-PERF-003 khó đạt hơn | Dữ liệu tươi và một cơ chế cache duy nhất quan trọng hơn con số đẹp | Nếu đo được < 80%: ghi nhận trung thực và phân tích, **không** nới TTL chỉ để đạt chỉ tiêu |
 
 ---
@@ -1476,7 +1488,7 @@ MT-07, MT-13, MT-20, MT-24, MT-31, MT-33, MT-40 (MoSCoW), MT-41
 
 ---
 
-## 8. Quy trình Change Request (đã thực hiện hai lần)
+## 8. Quy trình Change Request (đã thực hiện ba lần)
 
 **Quy trình áp dụng cho mỗi lượt:**
 
@@ -1492,12 +1504,13 @@ MT-07, MT-13, MT-20, MT-24, MT-31, MT-33, MT-40 (MoSCoW), MT-41
 | CR | Ngày | Mục xử lý | Kết quả | Truy vết |
 | --- | --- | --- | --- | --- |
 | **CR-2026** | 17/09/2026 | MT-01 → MT-41 (lượt 1–3) | SRS v1.1.0 — 36 FR, 37 endpoint, 24 mã lỗi (đã được v1.2.0 kế thừa toàn bộ; không lưu tệp riêng) | SRS Phụ lục D |
-| **CR-2026-02** | 19/09/2026 | MT-42 → MT-57 (lượt 4) | `SPEC/SRS_Culinary_Blog_v1.2.0.md` — **37 FR, 44 endpoint, 27 mã lỗi** | SRS Phụ lục E |
+| **CR-2026-02** | 19/09/2026 | MT-42 → MT-57 (lượt 4) | SRS v1.2.0 — **37 FR, 44 endpoint, 27 mã lỗi** (đã được v1.2.1 kế thừa toàn bộ) | SRS Phụ lục E |
+| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | `SPEC/SRS_Culinary_Blog_v1.2.1.md` — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
 
-Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md` (làm theo SRS v1.2.0).
+Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.1).
 
 > **Bài học quy trình từ lượt 4 — áp dụng cho mọi CR sau:** 7/16 mục của lượt 4 là **lỗi do chính CR-2026 đưa vào** (cấu hình Nginx, lệnh healthcheck, mã lỗi tự khóa, tên API .NET, cơ chế route, dạng ràng buộc DB, kiểu render). Chúng không thể phát hiện bằng cách đọc chéo các chương với nhau — chỉ lộ ra khi đối chiếu với hệ thống đang chạy. Vì vậy, từ CR-2026-02 trở đi, **mọi thay đổi chạm tới cấu hình hạ tầng, mã lỗi, ràng buộc cơ sở dữ liệu hoặc API của framework phải được kiểm chứng trên code/môi trường thật trước khi duyệt**.
 
 ---
 
-*Trạng thái tài liệu: toàn bộ 57 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0. Các điểm lệch giữa code Buổi 1 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_7_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*
+*Trạng thái tài liệu: toàn bộ 58 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*
