@@ -330,7 +330,7 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 
 **Commit `6137d3e` – `fix(infra): accept near-5MB uploads through nginx and quiet DB readiness logs`** (nhánh `feature/b1-dev4-infra-file`, 20/09) – chi tiết §5.2.
 
-Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/b058654) · [9dc3d81](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/9dc3d81) · [064f582](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/064f582) · [6137d3e](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/6137d3e). Báo cáo Lab cá nhân (Word, kèm ảnh chụp commit): `SPEC/BAO_CAO_LAB_01_2312755_NguyenThangThieng.docx`.
+Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/b058654) · [9dc3d81](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/9dc3d81) · [064f582](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/064f582) · [6137d3e](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/6137d3e). Báo cáo Lab cá nhân (Word, kèm ảnh chụp commit): `SPEC/BAO_CAO_LAB_02_2312755_NguyenThangThieng.docx` (Lab 02 = Buổi 2; trước 21/09 tên là `BAO_CAO_LAB_01_…`), gồm cả hai commit của yêu cầu bổ sung [3efa7ae](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3efa7ae) · [7fb87bf](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/7fb87bf).
 
 ### 7.4 Hoàng Bình Quân – Dev 1 (xác thực)
 
