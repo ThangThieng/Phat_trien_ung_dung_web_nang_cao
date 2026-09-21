@@ -1,27 +1,27 @@
 # BÁO CÁO LAB - MÔN PHÁT TRIỂN ỨNG DỤNG WEB NÂNG CAO
 
-Lab: **01**  
+Lab: **01**
 Từ ngày: **09/09/2026** đến ngày: **15/09/2026**
 
-MSSV: **2314236**  
+MSSV: **2314236**
 Họ và tên: **Hoàng Bình Quân**
 
 Nhóm: **20**
 
 ## Công việc:
 
-| STT | Công việc được giao | Liên kết đến github branch | Tiến độ % |
-|---:|---|---|---:|
-| 1 | Module xác thực người dùng - FR-AUTH-001: Đăng ký tài khoản | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 95% |
-| 2 | Module xác thực người dùng - FR-AUTH-002: Đăng nhập bằng email/mật khẩu | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 90% |
-| 3 | Xây dựng lớp Identity, JWT và refresh token phục vụ FR-AUTH-001/002 | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 85% |
-| 4 | Xây dựng giao diện đăng ký, đăng nhập và quản lý trạng thái xác thực phía Frontend | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 80% |
-| 5 | Kiểm thử luồng đăng ký/đăng nhập, validation dữ liệu và các trường hợp lỗi xác thực | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2)  
-Commit Buổi 1: [3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 75% |
+|                                                                                                     STT | Công việc được giao                                                                               | Liên kết đến github branch                                                                                                     | Tiến độ % |
+| ------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | -----------: |
+|                                                                                                       1 | Module xác thực người dùng - FR-AUTH-001: Đăng ký tài khoản                                  | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2) |              |
+| Commit Buổi 1:[3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 95%                                                                                                    |                                                                                                                                    |              |
+|                                                                                                       2 | Module xác thực người dùng - FR-AUTH-002: Đăng nhập bằng email/mật khẩu                     | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2) |              |
+| Commit Buổi 1:[3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 90%                                                                                                    |                                                                                                                                    |              |
+|                                                                                                       3 | Xây dựng lớp Identity, JWT và refresh token phục vụ FR-AUTH-001/002                              | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2) |              |
+| Commit Buổi 1:[3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 85%                                                                                                    |                                                                                                                                    |              |
+|                                                                                                       4 | Xây dựng giao diện đăng ký, đăng nhập và quản lý trạng thái xác thực phía Frontend    | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2) |              |
+| Commit Buổi 1:[3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 80%                                                                                                    |                                                                                                                                    |              |
+|                                                                                                       5 | Kiểm thử luồng đăng ký/đăng nhập, validation dữ liệu và các trường hợp lỗi xác thực | [2314236_HoangBinhQuan_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso2) |              |
+| Commit Buổi 1:[3d40be6](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/3d40be6) | 75%                                                                                                    |                                                                                                                                    |              |
 
 ## 1. Tóm tắt
 
@@ -38,14 +38,14 @@ Phần việc đã được triển khai theo kiến trúc Clean Architecture, C
 
 **Đã làm:**
 
-| Tầng | Thành phần |
-|---|---|
-| Domain | Entity `RefreshToken` và các quy tắc dữ liệu liên quan đến vòng đời token. |
-| Application | `RegisterUserCommand`, `RegisterUserCommandValidator`, `RegisterUserCommandHandler`, `AuthResponseFactory`, `PasswordRules`. |
-| Application contracts | `IIdentityService`, `ITokenService`, `IRefreshTokenRepository`, `IWelcomeEmailScheduler`. |
-| Infrastructure | `ApplicationUser`, `IdentityService` sử dụng `UserManager`, `JwtTokenService`, `JwtOptions`, cấu hình ASP.NET Core Identity. |
-| API | Endpoint `POST /api/v1/auth/register`, trả HTTP 201 khi đăng ký thành công. |
-| Frontend | `RegisterForm`, schema Zod, trang `/auth/register`, `AuthProvider` và hook `useAuth`. |
+| Tầng                 | Thành phần                                                                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Domain                | Entity`RefreshToken` và các quy tắc dữ liệu liên quan đến vòng đời token.                                                     |
+| Application           | `RegisterUserCommand`, `RegisterUserCommandValidator`, `RegisterUserCommandHandler`, `AuthResponseFactory`, `PasswordRules`.     |
+| Application contracts | `IIdentityService`, `ITokenService`, `IRefreshTokenRepository`, `IWelcomeEmailScheduler`.                                          |
+| Infrastructure        | `ApplicationUser`, `IdentityService` sử dụng `UserManager`, `JwtTokenService`, `JwtOptions`, cấu hình ASP.NET Core Identity. |
+| API                   | Endpoint`POST /api/v1/auth/register`, trả HTTP 201 khi đăng ký thành công.                                                         |
+| Frontend              | `RegisterForm`, schema Zod, trang `/auth/register`, `AuthProvider` và hook `useAuth`.                                             |
 
 **Luồng chính đã hoàn thành:**
 
@@ -63,12 +63,12 @@ Phần việc đã được triển khai theo kiến trúc Clean Architecture, C
 
 **Đã làm:**
 
-| Tầng | Thành phần |
-|---|---|
-| Application | `LoginUserCommand`, `LoginUserCommandValidator`, `LoginUserCommandHandler`, xử lý kiểm tra thông tin đăng nhập và phát token. |
-| Infrastructure | `IdentityService` dùng `UserManager.CheckPasswordAsync`, cấu hình lockout và password policy. |
-| API | Endpoint `POST /api/v1/auth/login`, trả HTTP 200 khi đăng nhập thành công. |
-| Frontend | `LoginForm`, schema Zod, trang `/auth/login`, hiển thị trạng thái đăng nhập trên header. |
+| Tầng          | Thành phần                                                                                                                                 |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Application    | `LoginUserCommand`, `LoginUserCommandValidator`, `LoginUserCommandHandler`, xử lý kiểm tra thông tin đăng nhập và phát token. |
+| Infrastructure | `IdentityService` dùng `UserManager.CheckPasswordAsync`, cấu hình lockout và password policy.                                        |
+| API            | Endpoint`POST /api/v1/auth/login`, trả HTTP 200 khi đăng nhập thành công.                                                            |
+| Frontend       | `LoginForm`, schema Zod, trang `/auth/login`, hiển thị trạng thái đăng nhập trên header.                                         |
 
 **Các quy tắc bảo mật đã hoàn thành:**
 
@@ -81,19 +81,19 @@ Phần việc đã được triển khai theo kiến trúc Clean Architecture, C
 
 ## 3. Kết quả kiểm thử thực tế
 
-| Kịch bản | Kết quả |
-|---|---|
-| Đăng ký hợp lệ | HTTP 201, trả access token, refresh token và role `Author`. |
-| Email đã tồn tại | HTTP 409, mã lỗi `AUTH_EMAIL_EXISTS`. |
-| Dữ liệu đăng ký không hợp lệ | Trả lỗi validation theo từng field. |
-| Đăng nhập đúng thông tin | HTTP 200. |
-| Sai mật khẩu lần 1-4 | HTTP 401, mã lỗi `AUTH_INVALID_CREDENTIALS`, thông báo dùng chung. |
-| Sai mật khẩu lần 5 | HTTP 423, mã lỗi `AUTH_ACCOUNT_LOCKED`, khóa 15 phút. |
-| Sai mật khẩu sau khi bị khóa | Vẫn bị từ chối cho đến khi hết thời gian lockout. |
-| Email không tồn tại | HTTP 401 với thông báo giống trường hợp sai mật khẩu. |
-| Hash mật khẩu trong DB | Identity V3 PBKDF2-HMAC-SHA512, tiền tố `AQAAAAIA`. |
-| Refresh token trong DB | Chỉ lưu chuỗi SHA-256 dạng hex 64 ký tự. |
-| Validation Frontend | React Hook Form + Zod kiểm tra dữ liệu trước khi gửi API. |
+| Kịch bản                           | Kết quả                                                                |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| Đăng ký hợp lệ                  | HTTP 201, trả access token, refresh token và role`Author`.           |
+| Email đã tồn tại                 | HTTP 409, mã lỗi`AUTH_EMAIL_EXISTS`.                                 |
+| Dữ liệu đăng ký không hợp lệ | Trả lỗi validation theo từng field.                                   |
+| Đăng nhập đúng thông tin       | HTTP 200.                                                                |
+| Sai mật khẩu lần 1-4              | HTTP 401, mã lỗi`AUTH_INVALID_CREDENTIALS`, thông báo dùng chung. |
+| Sai mật khẩu lần 5                | HTTP 423, mã lỗi`AUTH_ACCOUNT_LOCKED`, khóa 15 phút.               |
+| Sai mật khẩu sau khi bị khóa     | Vẫn bị từ chối cho đến khi hết thời gian lockout.                |
+| Email không tồn tại               | HTTP 401 với thông báo giống trường hợp sai mật khẩu.           |
+| Hash mật khẩu trong DB             | Identity V3 PBKDF2-HMAC-SHA512, tiền tố`AQAAAAIA`.                   |
+| Refresh token trong DB               | Chỉ lưu chuỗi SHA-256 dạng hex 64 ký tự.                           |
+| Validation Frontend                  | React Hook Form + Zod kiểm tra dữ liệu trước khi gửi API.          |
 
 ## 4. Thành phần và file chính
 
@@ -123,15 +123,28 @@ Phần việc đã được triển khai theo kiến trúc Clean Architecture, C
 
 Phần xác thực Buổi 1 đã chạy theo SRS v1.0.0 tại thời điểm thực hiện. Khi đối chiếu với SRS v1.2.0, các điểm sau được ghi nhận là nợ kỹ thuật cho các buổi tiếp theo:
 
-| Mã | Hiện trạng Buổi 1 | Yêu cầu SRS v1.2.0 | Dự kiến xử lý |
-|---|---|---|---|
-| D-1 | Form đăng ký còn dùng `fullName` và `userName` do người dùng nhập. | Dùng `displayName`; backend tự sinh `UserName` từ email. | Buổi 2, Dev 1. |
-| D-2 | Refresh token đang sinh 512-bit. | Chuẩn hóa thành 256-bit. | Buổi 3, Dev 1. |
-| D-11 | Một số validation của code Buổi 1 trả HTTP 422. | Chuẩn hóa validation về HTTP 400, conflict về HTTP 409. | Commit nền Buổi 2. |
-| D-12 | Access token và refresh token được lưu ở `localStorage`. | Access token chỉ lưu trong bộ nhớ; refresh token là token lưu bền duy nhất theo thiết kế đã duyệt. | Buổi 3, Dev 1. |
-| D-13 | TTL cache danh mục đang là 60 phút ở phần code hiện có. | SRS v1.2.0 chốt TTL `categories:all` là 30 phút. | Buổi 2, Dev 1 phối hợp nhóm. |
+| Mã  | Hiện trạng Buổi 1                                                            | Yêu cầu SRS v1.2.0                                                                                            | Dự kiến xử lý                |
+| ---- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| D-1  | Form đăng ký còn dùng`fullName` và `userName` do người dùng nhập. | Dùng`displayName`; backend tự sinh `UserName` từ email.                                                  | Buổi 2, Dev 1.                  |
+| D-2  | Refresh token đang sinh 512-bit.                                               | Chuẩn hóa thành 256-bit.                                                                                     | Buổi 3, Dev 1.                  |
+| D-11 | Một số validation của code Buổi 1 trả HTTP 422.                            | Chuẩn hóa validation về HTTP 400, conflict về HTTP 409.                                                     | Commit nền Buổi 2.             |
+| D-12 | Access token và refresh token được lưu ở`localStorage`.                 | Access token chỉ lưu trong bộ nhớ; refresh token là token lưu bền duy nhất theo thiết kế đã duyệt. | Buổi 3, Dev 1.                  |
+| D-13 | TTL cache danh mục đang là 60 phút ở phần code hiện có.                 | SRS v1.2.0 chốt TTL`categories:all` là 30 phút.                                                            | Buổi 2, Dev 1 phối hợp nhóm. |
 
 Các nợ kỹ thuật trên không làm thay đổi phạm vi hoàn thành của Lab 01; chúng được ghi nhận để tiếp tục retrofit theo SRS v1.2.0 và kế hoạch phát triển 7 buổi.
+
+## 7. Các phần chưa hoàn thành của Buổi 1
+
+Mặc dù hai luồng đăng ký và đăng nhập đã chạy được end-to-end, một số hạng mục vẫn chưa hoàn thiện đầy đủ theo SRS v1.2.0:
+
+1. **Chuẩn hóa thông tin đăng ký:** Form hiện tại còn sử dụng `fullName` và `userName` do người dùng nhập. SRS v1.2.0 yêu cầu dùng `displayName` và backend tự sinh `UserName` từ email.
+2. **Hoàn thiện refresh token:** Refresh token hiện đang sinh 512-bit, trong khi SRS mới quy định 256-bit. Chức năng refresh token rotation và revoke token vẫn cần hoàn thiện ở các buổi tiếp theo.
+3. **Chuẩn hóa mã lỗi:** Một số lỗi validation của code Buổi 1 còn trả HTTP 422. Theo SRS v1.2.0, validation phải trả HTTP 400 và các lỗi xung đột trạng thái phải trả HTTP 409.
+4. **Cải thiện lưu trữ token phía Frontend:** Access token và refresh token hiện còn được lưu trong `localStorage`. Theo SRS mới, access token cần chỉ tồn tại trong bộ nhớ; cơ chế lưu refresh token sẽ được hoàn thiện cùng refresh flow.
+5. **Bổ sung kiểm thử:** Đã có kiểm thử validation và các luồng lỗi chính, nhưng vẫn cần bổ sung integration test cho API đăng ký/đăng nhập và kiểm thử đầy đủ với PostgreSQL, JWT, lockout và refresh token rotation.
+6. **Hoàn thiện các chức năng xác thực mở rộng:** Google OAuth, logout/revoke refresh token, quản lý tài khoản Admin và quản lý các phiên đăng nhập thuộc các buổi tiếp theo, chưa nằm trong phạm vi hoàn thành của Buổi 1.
+
+Vì các hạng mục trên chưa hoàn tất, tiến độ tổng thể phần việc Dev 1 trong Buổi 1 được đánh giá khoảng **85%**.
 
 ## 7. Minh chứng GitHub
 
@@ -142,6 +155,6 @@ Các nợ kỹ thuật trên không làm thay đổi phạm vi hoàn thành củ
 
 ## 8. Kết luận
 
-Phần việc Dev 1 trong Lab 01 đã hoàn thành 100%. Hai chức năng đăng ký và đăng nhập local đã được triển khai từ database, domain, application, infrastructure, API đến frontend; có validation, phân quyền role Author, JWT, lockout và bảo vệ refresh token bằng hash SHA-256.
+Phần việc Dev 1 trong Lab 01 đã hoàn thành khoảng **85%**. Hai chức năng đăng ký và đăng nhập local đã được triển khai từ database, domain, application, infrastructure, API đến frontend; có validation, phân quyền role Author, JWT, lockout và bảo vệ refresh token bằng hash SHA-256. Các phần chưa hoàn thành đã được liệt kê để tiếp tục xử lý trong những buổi sau.
 
 Các thay đổi đã được commit trong Git với commit `3d40be6`. Báo cáo cá nhân này được tạo trên nhánh `2314236_HoangBinhQuan_buoiso2` để làm minh chứng nộp Lab.
