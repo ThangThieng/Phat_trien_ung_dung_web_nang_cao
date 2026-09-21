@@ -5,6 +5,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Bộ dữ liệu mẫu (SRS §2.6.1, CR-2026-03) – nhúng vào assembly để seeder đọc được trong mọi môi trường -->
+    <EmbeddedResource Include="Persistence\Seed\Data\*.json" LogicalName="SeedData/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.103.1" />

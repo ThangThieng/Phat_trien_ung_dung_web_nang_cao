@@ -2,16 +2,16 @@
 
 Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (nguyên liệu, các bước, ảnh), xuất bản, tìm kiếm tiếng Việt không dấu; Admin quản trị danh mục và tài khoản.
 **Công nghệ:** .NET 10 Minimal API (Clean Architecture + CQRS/MediatR) · Next.js 15 App Router · PostgreSQL 16 · Redis 7 · MinIO · Hangfire · Nginx · Docker Compose.
-**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.0.md`](SPEC/SRS_Culinary_Blog_v1.2.0.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (57 mâu thuẫn đã giải quyết).
+**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.1.md`](SPEC/SRS_Culinary_Blog_v1.2.1.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (58 mâu thuẫn đã giải quyết).
 
 ## Thành viên
 
 | Vai trò | Thành viên | MSSV | Phụ trách | Nhánh Git (buổi n) |
 |---|---|---|---|---|
-| Dev 1 | **Hoàng Bình Quân** | 2314236 | Xác thực, phân quyền, quản lý người dùng | `2314236_quan_buoi{n}` |
-| Dev 2 | **Nguyễn Hồng Phúc Thọ** | 2312758 | Công thức nấu ăn (lõi nghiệp vụ) | `2312758_tho_buoi{n}` |
-| Dev 3 | **Đoàn Hồng Tiến** | 2314291 | Danh mục, tìm kiếm, SEO | `2314291_tien_buoi{n}` |
-| Dev 4 | **Nguyễn Thăng Thiêng** (trưởng nhóm) | 2312755 | Tệp tin, job nền, quan sát hệ thống, hạ tầng | `2312755_thieng_buoi{n}` |
+| Dev 1 | **Hoàng Bình Quân** | 2314236 | Xác thực, phân quyền, quản lý người dùng | `2314236_HoangBinhQuan_buoiso{n}` |
+| Dev 2 | **Nguyễn Hồng Phúc Thọ** | 2312758 | Công thức nấu ăn (lõi nghiệp vụ) | `2312758_NguyenHongPhucTho_buoiso{n}` |
+| Dev 3 | **Đoàn Hồng Tiến** | 2314291 | Danh mục, tìm kiếm, SEO | `2314291_DoanHongTien_buoiso{n}` |
+| Dev 4 | **Nguyễn Thăng Thiêng** (trưởng nhóm) | 2312755 | Tệp tin, job nền, quan sát hệ thống, hạ tầng | `2312755_NguyenThangThieng_buoiso{n}` |
 
 ## Mục lục
 
@@ -33,7 +33,8 @@ Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (ng
 | Ràng buộc thiết kế (CONS) | **10** | Kiến trúc, pattern, framework, bảo mật, API, DB, upload, validation, container, logging |
 | Endpoint REST | **44** | SRS Chương 8 |
 | Mã lỗi ứng dụng | **27** | SRS Phụ lục B – mỗi mã phải có ít nhất 1 test |
-| Mâu thuẫn trong SRS đã giải quyết | **57** | MT-01 → MT-57 (CR-2026 và CR-2026-02) |
+| Mâu thuẫn trong SRS đã giải quyết | **58** | MT-01 → MT-58 (CR-2026, CR-2026-02 và CR-2026-03) |
+| Dữ liệu mẫu (SRS §2.6.1, CR-2026-03) | **≥ 20 / ≥ 100** | ≥ 20 danh mục, ≥ 100 công thức; mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước chế biến |
 
 Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = có thì tốt.
 
@@ -153,6 +154,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 
 ## 1.5 Hạ tầng & việc kỹ thuật chung (không gắn với một FR)
 
+- Dữ liệu mẫu theo SRS §2.6.1 (CR-2026-03): ≥ 20 danh mục, ≥ 100 công thức có nội dung thật, 5 tác giả; seeder idempotent, tự bù cho database đang có.
 - Solution 4 tầng + 4 project test, `BaseEntity` (Id, CreatedAt, UpdatedAt, IsDeleted, RowVersion), `AuditInterceptor`, `GlobalExceptionMiddleware`, `PagedResult<T>`.
 - Docker Compose 8 service (`nginx, api, hangfire, frontend, postgres, redis, minio, seq`) + `mailhog` cho dev; bản production `docker-compose.prod.yml` (scale `api`×3).
 - Nginx: reverse proxy, rate limit vòng ngoài, resolver DNS động, `/hangfire` có Basic Auth, `/media/` phục vụ ảnh, SSL/HSTS.
@@ -177,7 +179,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 
 # Phần 2 – Chia việc tổng thể
 
-**Nguyên tắc:** mỗi người giữ **một mảng cố định suốt 7 buổi** và làm **trọn từ database → API → giao diện** cho mảng đó. Cuối mỗi buổi hệ thống phải chạy được.
+**Nguyên tắc:** Buổi 1 cả nhóm đọc đặc tả và tìm hiểu tính năng; từ Buổi 2 mỗi người giữ **một mảng cố định suốt 7 buổi còn lại** và làm **trọn từ database → API → giao diện** cho mảng đó. Cuối mỗi buổi hệ thống phải chạy được.
 
 | Thành viên | Làm gì trên trang web | FR |
 |---|---|---|
@@ -186,19 +188,20 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 | **Dev 3 – Đoàn Hồng Tiến** | Danh mục, tìm kiếm – lọc – sắp xếp – phân trang, trang chủ, SEO, sitemap, trải nghiệm & chuẩn truy cập | FR-CAT-001 → 005, FR-SRCH-001 → 004 |
 | **Dev 4 – Nguyễn Thăng Thiêng** | Upload/xóa ảnh, job nền, health check, log & tracing, Docker, Nginx, cache, hạ tầng test, đóng gói | FR-FILE, FR-JOB, FR-OBS, DevOps |
 
-**Lịch 7 buổi (tóm tắt):**
+**Lịch 8 buổi (tóm tắt):**
 
 | Buổi | Dev 1 – Quân | Dev 2 – Thọ | Dev 3 – Tiến | Dev 4 – Thiêng |
 |---|---|---|---|---|
-| 1 ✅ | Đăng ký, đăng nhập | Danh sách & chi tiết công thức | Danh sách & chi tiết danh mục | Docker + upload/xóa ảnh |
-| 2 | Google, đăng xuất | Tạo công thức nháp + ảnh | Admin CRUD danh mục | Sửa mã lỗi 422→400, dashboard Hangfire, bộ test tích hợp |
-| 3 | Gia hạn phiên an toàn | Nguyên liệu & các bước | Tìm kiếm tiếng Việt | Job resize ảnh, job dọn dữ liệu |
-| 4 | Hồ sơ cá nhân | Sửa công thức, xuất bản | Lọc, sắp xếp, phân trang | Health check |
-| 5 | Rate limit, CSP, chặn route | Xóa mềm, "công thức của tôi", vá rò rỉ bản nháp | Trang chủ, SEO, JSON-LD | Log có cấu trúc, tracing |
-| 6 | Admin quản lý tài khoản, quản lý phiên | Lưu trữ / khôi phục | Sitemap, robots, tối ưu ảnh | Nginx production, SSL, cache, scale |
-| 7 | Test E2E + bảo mật | Test E2E + đồng thời | Test E2E + WCAG + Lighthouse | Load test, đóng gói, `v1.0.0` |
+| 1 (đã hoàn thành) | Đọc SRS phần xác thực, bảo mật | Đọc SRS phần công thức, mô hình dữ liệu | Đọc SRS phần danh mục, tìm kiếm, SEO | Đọc SRS phần kiến trúc, hạ tầng, tệp, job, quan sát |
+| 2 (đã hoàn thành) | Đăng ký, đăng nhập | Danh sách & chi tiết công thức | Danh sách & chi tiết danh mục | Docker + upload/xóa ảnh; **yêu cầu bổ sung:** dữ liệu mẫu 20 danh mục / 100 công thức |
+| 3 | Google, đăng xuất | Tạo công thức nháp + ảnh | Admin CRUD danh mục | Sửa mã lỗi 422→400, dashboard Hangfire, bộ test tích hợp |
+| 4 | Gia hạn phiên an toàn | Nguyên liệu & các bước | Tìm kiếm tiếng Việt | Job resize ảnh, job dọn dữ liệu |
+| 5 | Hồ sơ cá nhân | Sửa công thức, xuất bản | Lọc, sắp xếp, phân trang | Health check |
+| 6 | Rate limit, CSP, chặn route | Xóa mềm, "công thức của tôi", vá rò rỉ bản nháp | Trang chủ, SEO, JSON-LD | Log có cấu trúc, tracing |
+| 7 | Admin quản lý tài khoản, quản lý phiên | Lưu trữ / khôi phục | Sitemap, robots, tối ưu ảnh | Nginx production, SSL, cache, scale |
+| 8 | Test E2E + bảo mật | Test E2E + đồng thời | Test E2E + WCAG + Lighthouse | Load test, đóng gói, `v1.0.0` |
 
-**Quy trình chung:** mỗi buổi mỗi người tạo nhánh `{mssv}_{tên}_buoi{n}` từ `develop` → **1 commit / người / buổi** → merge vào `develop` theo thứ tự **Dev 4 → Dev 1 → Dev 3 → Dev 2** → hết buổi merge `develop` vào `main`. Commit chỉ được merge khi đạt Definition of Done (build 0 warning, test xanh, lint + build frontend xanh, `docker compose up` chạy, đã test tay).
+**Quy trình chung:** mỗi buổi mỗi người tạo nhánh `{mssv}_{HoTenKhongDau}_buoiso{n}` từ `develop` (ví dụ `2312755_NguyenThangThieng_buoiso3`) → **1 commit / người / buổi** → merge vào `develop` theo thứ tự **Dev 4 → Dev 1 → Dev 3 → Dev 2** → hết buổi merge `develop` vào `main`. Commit chỉ được merge khi đạt Definition of Done (build 0 warning, test xanh, lint + build frontend xanh, `docker compose up` chạy, đã test tay).
 
 ---
 
@@ -206,48 +209,82 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 
 > **Cách đọc mỗi phần việc:**
 > **Chức năng** – làm gì · **Hướng đi** – các bước làm theo thứ tự · **Vì sao** – lý do chọn hướng đó · **Xong khi** – điều kiện kiểm chứng · **Commit** – thông điệp commit.
-> Chi tiết kỹ thuật đầy đủ (đoạn code mẫu, phân tích phương án bị loại) nằm trong [`SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md).
+> Chi tiết kỹ thuật đầy đủ (đoạn code mẫu, phân tích phương án bị loại) nằm trong [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md).
 
 ---
 
-## BUỔI 1 – Nền móng & lát cắt đầu tiên ✅ (đã hoàn thành, 11/09 – 14/09/2026)
+## BUỔI 1 – Đọc đặc tả yêu cầu hệ thống & tìm hiểu các tính năng cần xây dựng (đã hoàn thành)
+
+**Mục tiêu:** cả nhóm nắm được phạm vi sản phẩm, lớp người dùng, kiến trúc và toàn bộ yêu cầu; mỗi người hiểu sâu phần mình sẽ phụ trách từ Buổi 2. Buổi này không viết code.
+
+| Thành viên | Phần SRS đọc kỹ | Cần trả lời được sau buổi |
+|---|---|---|
+| **Dev 1 – Hoàng Bình Quân** | FR-AUTH-001 → 009, §2.3 lớp người dùng, NFR-SEC, API Auth (§8.1) | Luồng đăng ký, đăng nhập, Google, gia hạn phiên, đăng xuất; role Author/Admin; mã lỗi `AUTH_*` |
+| **Dev 2 – Nguyễn Hồng Phúc Thọ** | FR-RCP-001 → 011, Chương 7 mô hình dữ liệu, API Recipe (§8.3 – §8.6) | Máy trạng thái Draft/Published/Archived; nguyên liệu, các bước, ảnh; xóa mềm; chống ghi đè đồng thời |
+| **Dev 3 – Đoàn Hồng Tiến** | FR-CAT-001 → 005, FR-SRCH-001 → 004, NFR-SEO, route frontend (§5.1) | Tìm kiếm tiếng Việt không dấu; lọc, sắp xếp, phân trang; SSR/ISR từng trang; SEO |
+| **Dev 4 – Nguyễn Thăng Thiêng** | FR-FILE, FR-JOB, FR-OBS, Chương 6 kiến trúc, CONS-001 → 010, NFR-PERF/REL/SCALE, §2.6 giả định | Clean Architecture + CQRS; 8 service Docker; cache Redis; job nền; health check, log, tracing |
+
+- **Hướng đi:** (1) cả nhóm đọc Chương 1 – 2; (2) mỗi người đọc sâu phần của mình theo bảng trên; (3) gom thành bảng đầu việc chung — **Phần 1 của README này** (37 FR, 30 NFR, 10 CONS, 44 endpoint, 27 mã lỗi); (4) ghi mọi chỗ SRS chưa rõ hoặc tự mâu thuẫn vào [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md); (5) chốt công nghệ – phiên bản ([`SPEC/CONG_NGHE_VA_PHIEN_BAN.md`](SPEC/CONG_NGHE_VA_PHIEN_BAN.md)) và phân công cố định.
+- **Vì sao cần một buổi riêng:** schema, pipeline MediatR, cache và topology Docker dựng ở Buổi 2 đều khó sửa khi đã có dữ liệu; đọc kỹ SRS trước giúp dựng đúng một lần và phát hiện mâu thuẫn trên giấy thay vì khi đã code.
+- **Xong khi:** mỗi người trình bày được chức năng của module mình và module liên quan; bảng đầu việc và danh sách câu hỏi/mâu thuẫn được cả nhóm thống nhất.
+
+---
+
+## BUỔI 2 – Nền móng & lát cắt đầu tiên (đã hoàn thành, 11/09 – 14/09/2026; bổ sung dữ liệu mẫu 21/09/2026)
 
 **Mục tiêu:** có khung dự án chạy được bằng Docker và 4 lát cắt đầu tiên: đăng ký/đăng nhập, xem công thức, xem danh mục, upload ảnh.
 
+**Năm yêu cầu của giảng viên cho Buổi 2:**
+
+| # | Yêu cầu | Trạng thái | Nơi thực hiện |
+|---|---|---|---|
+| 1 | Tạo cấu trúc dự án backend theo Clean Architecture | Đã hoàn thành | Commit khung `b058654`: 4 tầng Domain / Application / Infrastructure / API + 4 project test, kiểm bằng `LayerDependencyTests` |
+| 2 | Cài đặt các gói thư viện cần thiết | Đã hoàn thành | EF Core + Npgsql, Identity, MediatR, FluentValidation, Bogus, Hangfire, Redis, AWSSDK.S3, Serilog, OpenTelemetry… (`CONG_NGHE_VA_PHIEN_BAN.md`) |
+| 3 | Cài đặt các lớp entities, configuration, DbContext | Đã hoàn thành | `Domain/Entities`, `Infrastructure/Persistence/Configurations`, `CulinaryBlogDbContext` |
+| 4 | Tạo migration, cài đặt các lớp để tạo dữ liệu ngẫu nhiên | Đã hoàn thành | Migration `B1_InitialSchema`, `DatabaseSeeder` (Bogus) |
+| 5 | CSDL có dữ liệu ngẫu nhiên cho ít nhất 20 categories, 100 recipes; mỗi recipe ít nhất 10 nguyên liệu và 5 bước chế biến | **Yêu cầu bổ sung, khác SRS v1.2.0 — đã hoàn thành 21/09/2026** | Mục "Yêu cầu bổ sung" của Dev 4 bên dưới; SRS v1.2.1 §2.6.1 (CR-2026-03) |
+
 **Tiến trình đã thực hiện:** 30 phút đầu Dev 4 đẩy commit khung (`b058654`) → 4 người tách nhánh làm song song → merge vào `develop` theo thứ tự Dev 4 → Dev 1 → Dev 3 → Dev 2 → merge `main` (`d2d8243`) → rà soát chạy container và sửa lỗi (`064f582`, `6137d3e`).
 
-### Dev 1 – Hoàng Bình Quân · FR-AUTH-001, FR-AUTH-002 ✅
+### Dev 1 – Hoàng Bình Quân · FR-AUTH-001, FR-AUTH-002 (đã hoàn thành)
 - **Đã làm:** `ApplicationUser` + `RefreshToken` (chỉ lưu SHA-256); Identity PBKDF2 100.000 vòng, mật khẩu mạnh, khóa 5 lần/15 phút; `RegisterUserCommand`, `LoginUserCommand`; `POST /auth/register` (201), `POST /auth/login` (200); trang `/auth/login`, `/auth/register` (React Hook Form + Zod).
 - **Vì sao:** dùng ASP.NET Core Identity thay vì tự viết bảng user để có sẵn băm mật khẩu chuẩn, khóa tài khoản, role; lưu hash của refresh token ngay từ đầu để lộ DB cũng không mạo danh được ai.
-- **Còn nợ:** D-1 (Buổi 2), D-2 và D-12 (Buổi 3); integration test đăng ký/đăng nhập viết khi có bộ test ở Buổi 2.
+- **Còn nợ:** D-1 (Buổi 3), D-2 và D-12 (Buổi 4); integration test đăng ký/đăng nhập viết khi có bộ test ở Buổi 3.
 - **Commit:** `3d40be6 feat(auth): complete FR-AUTH-001 & 002 register login flow`
 
-### Dev 2 – Nguyễn Hồng Phúc Thọ · FR-RCP-001, FR-RCP-002 ✅
-- **Đã làm:** toàn bộ schema công thức (Recipe, Step, Ingredient, Image, Nutrition dạng owned); seed 50 công thức / 5 tác giả bằng Bogus; `GET /recipes` (phân trang, lọc), `GET /recipes/{slug}`; trang `/recipes` (SSR) và `/recipes/[slug]` (ISR 300s).
+### Dev 2 – Nguyễn Hồng Phúc Thọ · FR-RCP-001, FR-RCP-002 (đã hoàn thành)
+- **Đã làm:** toàn bộ schema công thức (Recipe, Step, Ingredient, Image, Nutrition dạng owned); seed 50 công thức / 5 tác giả bằng Bogus (nâng lên 100 công thức ở yêu cầu bổ sung); `GET /recipes` (phân trang, lọc), `GET /recipes/{slug}`; trang `/recipes` (SSR) và `/recipes/[slug]` (ISR 300s).
 - **Vì sao:** dựng đủ schema ngay buổi đầu vì schema là thứ đắt nhất để sửa khi đã có dữ liệu; truy vấn đọc dùng `AsNoTracking` + projection để tránh N+1 từ gốc.
-- **Còn nợ:** D-3, D-4, D-6 (Buổi 5), D-8 (Buổi 2), D-15 (Buổi 4), D-16 (Buổi 3).
+- **Còn nợ:** D-3, D-4, D-6 (Buổi 6), D-8 (Buổi 3), D-15 (Buổi 5), D-16 (Buổi 4).
 - **Commit:** `0fc95d1 feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view`
 
-### Dev 3 – Đoàn Hồng Tiến · FR-CAT-001, FR-CAT-002 ✅
-- **Đã làm:** entity `Category` + seed 8 danh mục; `SlugHelper` bỏ dấu tiếng Việt; `RedisCacheService` (Redis lỗi thì đọc DB); `GET /categories`, `GET /categories/{slug}`; trang `/categories`, `/categories/[slug]`.
+### Dev 3 – Đoàn Hồng Tiến · FR-CAT-001, FR-CAT-002 (đã hoàn thành)
+- **Đã làm:** entity `Category` + seed 8 danh mục (nâng lên 20 ở yêu cầu bổ sung); `SlugHelper` bỏ dấu tiếng Việt; `RedisCacheService` (Redis lỗi thì đọc DB); `GET /categories`, `GET /categories/{slug}`; trang `/categories`, `/categories/[slug]`.
 - **Vì sao:** chọn Redis ngay từ đầu (không `IMemoryCache`) vì chạy nhiều instance thì cache trong bộ nhớ không invalidate được.
-- **Còn nợ:** D-13 (Buổi 2), D-18 (Buổi 3), D-5, D-7 (Buổi 5); Value Object `Slug` và component `CategoryNav` bổ sung ở Buổi 2.
+- **Còn nợ:** D-13 (Buổi 3), D-18 (Buổi 4), D-5, D-7 (Buổi 6); Value Object `Slug` và component `CategoryNav` bổ sung ở Buổi 3.
 - **Commit:** `fd27a71 feat(category): complete FR-CAT-001 & 002 public categories API and UI`
 
-### Dev 4 – Nguyễn Thăng Thiêng · Hạ tầng + FR-FILE-001, FR-FILE-002 ✅
+### Dev 4 – Nguyễn Thăng Thiêng · Hạ tầng + FR-FILE-001, FR-FILE-002 (đã hoàn thành)
 - **Đã làm:** commit khung cho cả nhóm; Docker Compose 8 service + mailhog, Dockerfile multi-stage non-root; `MinioFileStorageService` (AWSSDK.S3); kiểm tra magic bytes; `POST /files/upload`, `DELETE /files/{**key}`; component `ImageUploader` (kéo-thả, % tiến trình); làm sớm FR-JOB-001 (email chào mừng qua Hangfire).
 - **Vì sao:** dùng AWSSDK.S3 để sau này đổi sang AWS S3 thật chỉ cần đổi cấu hình; kiểm magic bytes vì `Content-Type` do client khai là giả mạo được; tên file do server sinh (`{Guid}`) để chặn path traversal.
 - **Sửa sau buổi:** chờ DB sẵn sàng khi khởi động, Nginx 502 khi container api đổi IP, hook gitleaks trên Windows (`064f582`); ảnh gần 5MB bị Nginx chặn, log khởi động (`6137d3e`).
 - **Commit:** `b058654 chore: bootstrap…` · `9dc3d81 feat(infra): complete docker compose setup and FR-FILE minio upload component`
 
+### Dev 4 – Nguyễn Thăng Thiêng · Yêu cầu bổ sung: dữ liệu mẫu (đã hoàn thành, 21/09/2026)
+> **Yêu cầu mới, khác file SRS v1.2.0:** SRS v1.2.0 §2.6.1 chỉ yêu cầu 50 công thức và 5 tác giả mẫu. Giảng viên yêu cầu CSDL có ít nhất **20 danh mục, 100 công thức; mỗi công thức ít nhất 10 nguyên liệu và 5 bước chế biến**. Yêu cầu đã được ghi vào **SRS v1.2.1** (CR-2026-03, MT-58) trước khi code.
+- **Đã làm:** catalog dữ liệu thật trong `Infrastructure/Persistence/Seed/Data/` — 20 danh mục (8 cũ + 12 mới: Cơm & Xôi, Lẩu, Hải sản, Gỏi & Salad, Món cuốn, Món hấp, Món chiên, Ăn vặt, Món Hàn Quốc, Món Nhật Bản, Món Thái, Món Âu) và 100 món (50 món cũ giữ nguyên tên, slug, danh mục + 50 món mới), mỗi món 10 – 14 nguyên liệu có định lượng và 5 – 6 bước có mô tả, thời gian; `RecipeSeedCatalog` đọc catalog và khai báo ngưỡng; `DatabaseSeeder` idempotent, tự bù; xóa cache danh mục và Output Cache công thức khi dữ liệu thay đổi; `RecipeSeedCatalogTests` (5 test).
+- **Vì sao:** Bogus chọn ngẫu nhiên từ danh sách nguyên liệu chung sẽ ra món sai (sinh tố có nước mắm, bước nấu bằng chữ Latin), trong khi dữ liệu này dùng để kiểm thử tìm kiếm, đo hiệu năng và trình diễn. Vì vậy nội dung món ăn viết tay; Bogus (seed cố định) chỉ sinh tác giả, trạng thái, ngày xuất bản, dinh dưỡng. Seeder tự bù để không ai phải xóa volume: công thức mẫu cũ chưa từng bị sửa được thay bằng nội dung đúng, dữ liệu người dùng không bị động tới.
+- **Xong khi (đã kiểm chứng trên Docker):** database cũ → log *"50 recipes created, 50 recipes repaired"*; database trống → *"100 recipes created"*; khởi động lại → *"0 created, 0 repaired"*; SQL: 20 danh mục, 100 công thức, tối thiểu 10 nguyên liệu và 5 bước mỗi món, số bước liên tục, không còn Lorem ipsum; `dotnet test` 49/49.
+- **Commit:** `feat(seed): seed 20 categories and 100 real recipes per CR-2026-03` (nhánh `2312755_NguyenThangThieng_buoiso2`)
+
 ---
 
-## BUỔI 2 – Google / Đăng xuất, tạo công thức nháp, CRUD danh mục, hạ tầng kiểm thử
+## BUỔI 3 – Google / Đăng xuất, tạo công thức nháp, CRUD danh mục, hạ tầng kiểm thử
 
 **Mục tiêu:** đủ đường vào hệ thống (email, Google, đăng xuất); Author tạo được công thức nháp kèm ảnh; Admin quản trị danh mục; job nền xem được qua dashboard an toàn; **cả nhóm có bộ integration test** để mọi buổi sau viết test thật.
 
 **Tiến trình trong buổi:**
-1. **30 phút đầu – commit nền D-11 (Thiêng làm, cả nhóm review):** đổi mọi lỗi validation 422 → 400 ở backend và frontend. Merge vào `develop` rồi 4 người mới tách nhánh `…_buoi2`.
+1. **30 phút đầu – commit nền D-11 (Thiêng làm, cả nhóm review):** đổi mọi lỗi validation 422 → 400 ở backend và frontend. Merge vào `develop` rồi 4 người mới tách nhánh `…_buoiso3`.
 2. **Trước giữa buổi:** Thiêng đẩy bộ test (`CulinaryBlogApiFactory`, `CreateClientAs(role)`) để 3 người còn lại viết integration test.
 3. Quân làm D-1 (đổi `UserDto`) **sớm và merge trước** Thọ, Tiến vì component FE nào đọc `user.fullName` cũng phải đổi theo.
 4. Cuối buổi: merge Thiêng → Quân → Tiến → Thọ, chạy kiểm chứng cuối buổi, merge `develop` → `main`.
@@ -275,17 +312,17 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 
 ### Dev 2 – Nguyễn Hồng Phúc Thọ · FR-RCP-003 Tạo nháp + FR-RCP-008 Ảnh (+ D-8)
 - **Hướng đi:**
-  1. **D-8 trước tiên:** migration `B2_Recipe_InstructionsNullable` cho `Instructions` NULL (nếu không, mọi request thiếu trường này lỗi DB).
+  1. **D-8 trước tiên:** migration `B3_Recipe_InstructionsNullable` cho `Instructions` NULL (nếu không, mọi request thiếu trường này lỗi DB).
   2. **`CreateRecipeCommand` + Validator:** `title` 5–200, `description` 20–2000, `prepTime > 0`, `cookTime ≥ 0`, `servings > 0`, `categoryId` phải tồn tại → sai trả 400. Dùng `Recipe.Create(...)` (luôn Draft); slug từ `SlugHelper`, trùng thì `-2`, `-3`; **cấm slug trùng từ khóa dành riêng** `search, mine, sitemap, new, edit`; nutrition gửi kèm body (không có endpoint riêng).
   3. **`RecipeAuthorizationHandler`:** qua khi là chủ công thức hoặc Admin – dùng lại cho **mọi** FR-RCP về sau.
-  4. **Ảnh:** `UploadRecipeImageCommand` (dùng lại `IFileStorageService` + `ImageFileInspector` của Buổi 1, ảnh đầu tiên tự là ảnh chính, **để sẵn chỗ `BackgroundJob.Enqueue` cho job resize**); `UpdateImageMetadataCommand { altText?, isPrimary?, orderIndex? }`; `DeleteRecipeImageCommand` (xóa ảnh chính thì ảnh có `OrderIndex` nhỏ nhất lên thay). Đổi ảnh chính làm **2 lần `SaveChanges` trong 1 transaction**. Mọi command xóa cache `recipes:list:*` + `recipe:{slug}`.
+  4. **Ảnh:** `UploadRecipeImageCommand` (dùng lại `IFileStorageService` + `ImageFileInspector` của Buổi 2, ảnh đầu tiên tự là ảnh chính, **để sẵn chỗ `BackgroundJob.Enqueue` cho job resize**); `UpdateImageMetadataCommand { altText?, isPrimary?, orderIndex? }`; `DeleteRecipeImageCommand` (xóa ảnh chính thì ảnh có `OrderIndex` nhỏ nhất lên thay). Đổi ảnh chính làm **2 lần `SaveChanges` trong 1 transaction**. Mọi command xóa cache `recipes:list:*` + `recipe:{slug}`.
   5. **API + UI:** `POST /recipes` (201), `POST/PATCH/DELETE /recipes/{id}/images…` (MinIO lỗi → 503); trang `/dashboard/recipes/new` dạng wizard: bước 1 thông tin + dinh dưỡng, bước 2 thư viện ảnh (chọn ảnh chính bằng radio). Test: đổi ảnh chính 10 lần liên tiếp không lần nào vỡ unique index.
 - **Vì sao:**
-  - **Luôn tạo ở trạng thái Draft** để có điểm chặn kiểm tra điều kiện xuất bản (đủ bước + nguyên liệu) ở Buổi 4.
+  - **Luôn tạo ở trạng thái Draft** để có điểm chặn kiểm tra điều kiện xuất bản (đủ bước + nguyên liệu) ở Buổi 5.
   - **Nutrition đi kèm công thức** vì nó chỉ là nhóm cột trong bảng `Recipes`; endpoint riêng sẽ tạo hai đường ghi cùng một dữ liệu.
   - **Handler phân quyền dựng ngay từ FR ghi đầu tiên** để không handler nào tự viết `if` rồi quên.
   - **Đổi ảnh chính 2 bước** vì index "chỉ 1 ảnh chính" là index một phần – PostgreSQL không cho hoãn kiểm tra, còn EF không đảm bảo thứ tự 2 lệnh UPDATE.
-  - Mảng `steps?`/`ingredients?` trong body tạo công thức **để sang Buổi 3** để validator nguyên liệu/bước chỉ viết một lần.
+  - Mảng `steps?`/`ingredients?` trong body tạo công thức **để sang Buổi 4** để validator nguyên liệu/bước chỉ viết một lần.
 - **Xong khi:** Author tạo được công thức nháp kèm nhiều ảnh, đổi được ảnh chính; slug dành riêng bị chặn; integration test xanh.
 - **Commit:** `feat(recipes): complete FR-RCP-003 create draft recipe & FR-RCP-008 image management with merged patch metadata`
 
@@ -295,7 +332,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
   2. **`UpdateCategoryCommand`:** cùng validator, cũng kiểm tra tên trùng; **slug không đổi khi đổi tên**.
   3. **`DeleteCategoryCommand`:** còn công thức → 409 `CATEGORY_DELETE_HAS_RECIPES` kèm **số công thức** trong thông báo; không còn → **xóa mềm**.
   4. **Lớp phòng vệ thứ hai:** middleware bắt lỗi PostgreSQL `23505` (trùng unique) → 409 thay vì 500 (hai Admin tạo trùng cùng lúc).
-  5. **Cache + API + UI:** D-13 đổi TTL `categories:all` 60 → **30 phút**; 3 command xóa `categories:all` + `categories:detail:*`. `POST/PUT/DELETE /categories` chỉ Admin (Author → 403). Trang `/dashboard/categories`: bảng, form modal (có `ImageUploader`), hộp xác nhận xóa, thông báo 409 dễ hiểu. Bổ sung Value Object `Slug` và component `CategoryNav` còn thiếu từ Buổi 1. Test: 201 / 403 / 409 trùng tên / 409 còn công thức.
+  5. **Cache + API + UI:** D-13 đổi TTL `categories:all` 60 → **30 phút**; 3 command xóa `categories:all` + `categories:detail:*`. `POST/PUT/DELETE /categories` chỉ Admin (Author → 403). Trang `/dashboard/categories`: bảng, form modal (có `ImageUploader`), hộp xác nhận xóa, thông báo 409 dễ hiểu. Bổ sung Value Object `Slug` và component `CategoryNav` còn thiếu từ Buổi 2. Test: 201 / 403 / 409 trùng tên / 409 còn công thức.
 - **Vì sao:**
   - **Kiểm tra tên trùng ở tầng Application** để người dùng nhận thông báo nghiệp vụ rõ ràng thay vì "Lỗi hệ thống 500"; vẫn giữ lớp bắt `23505` vì kiểm tra trước không loại được hoàn toàn race condition.
   - **Slug giữ nguyên khi đổi tên** để link đã chia sẻ và URL Google đã lập chỉ mục không chết.
@@ -309,27 +346,27 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
   1. **Dashboard:** `MapHangfireDashboard("/hangfire")` (chỉ ở container `api`) với filter `NginxGateDashboardFilter`: chỉ cho qua khi header `X-Hangfire-Gate` khớp secret (so sánh `FixedTimeEquals`).
   2. **Nginx:** `location /hangfire` có **Basic Auth** (`htpasswd`, không commit) và gắn header gate; chuyển `nginx.conf` sang thư mục `templates/` để nạp secret bằng `envsubst`; thêm biến giả vào `.env.example`.
   3. **Bộ test tích hợp** trong `tests/CulinaryBlog.API.IntegrationTests`: `CulinaryBlogApiFactory` khởi động **Testcontainers** `postgres:16-alpine` + `redis:7-alpine`, chạy migration, tắt Hangfire server, thay `IFileStorageService`/`IBackgroundJobClient` bằng bản giả; `Respawn` dọn DB giữa các test; helper `CreateClientAs(role)` phát JWT thật.
-  4. **Trả nợ test Buổi 1:** integration test cho mọi endpoint Buổi 1; viết sẵn test tái hiện lỗ hổng rò rỉ bản nháp (đánh dấu `Skip` – Thọ gỡ ở Buổi 5).
+  4. **Trả nợ test Buổi 2:** integration test cho mọi endpoint Buổi 2; viết sẵn test tái hiện lỗ hổng rò rỉ bản nháp (đánh dấu `Skip` – Thọ gỡ ở Buổi 6).
   5. Giảm `QueuePollInterval` Hangfire xuống 1 giây ở dev.
 - **Vì sao:**
-  - **Dựng bộ test ngay Buổi 2** vì Definition of Done đòi test xanh ở mọi commit; để tới cuối dự án thì 5 buổi liền không ai viết được integration test.
+  - **Dựng bộ test ngay Buổi 3** vì Definition of Done đòi test xanh ở mọi commit; để tới cuối dự án thì 5 buổi liền không ai viết được integration test.
   - **Testcontainers thay vì EF In-Memory** vì In-Memory không có unique, FK, `tsvector`, index một phần, concurrency token – đúng những thứ cần kiểm nhất.
   - **Hai lớp bảo vệ dashboard:** trình duyệt không gửi được Bearer token khi mở trang, nên dùng Basic Auth ở Nginx; header gate chặn trường hợp gọi thẳng cổng `5000` bỏ qua Nginx.
 - **Xong khi:** `http://localhost/hangfire` hỏi mật khẩu rồi vào được; `http://localhost:5000/hangfire` trả 401; `dotnet test` chạy integration test xanh trên máy có Docker.
 - **Commit:** `feat(infra): secure hangfire dashboard behind nginx basic auth and add testcontainers integration test harness`
 
-**Kiểm chứng cuối Buổi 2:** không còn chuỗi `Status422` / `status === 422` trong code; form đăng ký hiện lỗi từng ô với 400; 2 email cùng prefix sinh `UserName` có hậu tố số; `/hangfire` được bảo vệ; integration test chạy trên Testcontainers.
+**Kiểm chứng cuối Buổi 3:** không còn chuỗi `Status422` / `status === 422` trong code; form đăng ký hiện lỗi từng ô với 400; 2 email cùng prefix sinh `UserName` có hậu tố số; `/hangfire` được bảo vệ; integration test chạy trên Testcontainers.
 
 ---
 
-## BUỔI 3 – Gia hạn phiên an toàn, nguyên liệu & các bước, tìm kiếm tiếng Việt, job nền
+## BUỔI 4 – Gia hạn phiên an toàn, nguyên liệu & các bước, tìm kiếm tiếng Việt, job nền
 
 **Mục tiêu:** phiên đăng nhập tự gia hạn an toàn; công thức có đủ nguyên liệu + các bước; tìm "pho" ra "Phở"; hai job nền còn lại chạy thật.
 
 **Tiến trình trong buổi:**
 1. Thọ và Tiến **cùng tạo migration trên bảng `Recipes`** → Tiến merge trước, Thọ rebase rồi chạy lại `dotnet ef migrations add`.
-2. Thiêng cắm `ImageResizeJob` vào chỗ `BackgroundJob.Enqueue` Thọ đã để sẵn ở Buổi 2.
-3. Quân bật `UseForwardedHeaders` – Nginx đã gửi `X-Forwarded-For` từ Buổi 1 nên không phụ thuộc ai.
+2. Thiêng cắm `ImageResizeJob` vào chỗ `BackgroundJob.Enqueue` Thọ đã để sẵn ở Buổi 3.
+3. Quân bật `UseForwardedHeaders` – Nginx đã gửi `X-Forwarded-For` từ Buổi 2 nên không phụ thuộc ai.
 4. Cuối buổi merge Thiêng → Quân → Tiến → Thọ.
 
 ### Dev 1 – Hoàng Bình Quân · FR-AUTH-004 Refresh token rotation (+ D-2, D-12, IP thật)
@@ -343,14 +380,14 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
   - **Rotation** biến refresh token thành bí mật dùng một lần; **phát hiện dùng lại** là cách duy nhất trong JWT stateless để biết token bị đánh cắp.
   - **Chỉ lưu hash**: lộ DB cũng không có token dùng được; SHA-256 đủ vì token là chuỗi ngẫu nhiên 256-bit, không phải mật khẩu người đặt.
   - **Single-flight**: 5 request cùng nhận 401 mà mỗi cái tự refresh sẽ kích hoạt nhầm cơ chế phát hiện dùng lại → người dùng bị đăng xuất vô cớ.
-  - **Access token trong bộ nhớ** giảm thứ XSS lấy được; SRS cấm cookie nên refresh token vẫn phải ở nơi JS đọc được – bù lại bằng rotation + CSP (Buổi 5).
+  - **Access token trong bộ nhớ** giảm thứ XSS lấy được; SRS cấm cookie nên refresh token vẫn phải ở nơi JS đọc được – bù lại bằng rotation + CSP (Buổi 6).
   - **Bật IP thật ngay buổi này** vì từ đây mỗi lần refresh ghi `CreatedByIp`; để muộn là ghi sai IP vĩnh viễn.
 - **Xong khi:** dùng lại token cũ sau khi rotate → cả họ token bị thu hồi; `localStorage` không còn access token; `CreatedByIp` là IP thật.
 - **Commit:** `feat(auth): complete FR-AUTH-004 refresh rotation with reuse detection, in-memory access token and forwarded headers`
 
 ### Dev 2 – Nguyễn Hồng Phúc Thọ · FR-RCP-009 Nguyên liệu + FR-RCP-010 Các bước (+ D-16)
 - **Hướng đi:**
-  1. **Migration `B3_Recipe_IngredientStep`:** thêm `QuantityText varchar(50) NULL`, `CHECK (Quantity IS NULL OR Quantity > 0)`. **D-16:** bỏ unique index `(RecipeId, StepNumber)`, thay bằng **unique constraint `DEFERRABLE INITIALLY DEFERRED`**.
+  1. **Migration `B4_Recipe_IngredientStep`:** thêm `QuantityText varchar(50) NULL`, `CHECK (Quantity IS NULL OR Quantity > 0)`. **D-16:** bỏ unique index `(RecipeId, StepNumber)`, thay bằng **unique constraint `DEFERRABLE INITIALLY DEFERRED`**.
   2. **Domain nguyên liệu:** `DomainException` thêm `Code` + bảng ánh xạ mã → HTTP trong middleware; `AddIngredient/UpdateIngredient/RemoveIngredient`; không được trống cả `Quantity`, `QuantityText` và `Unit` → 400.
   3. **Domain các bước:** `AddStep` tự gán `StepNumber = Max + 1` (đã có); thêm `RemoveStep` (đánh số lại 1..N) và `ReorderSteps(stepIds)` (tập id phải khớp chính xác). Mọi lần đánh số lại nằm trong **một `SaveChanges`**. Bật mảng `steps?`/`ingredients?` của `POST /recipes` bằng cách gọi lại đúng các hàm này.
   4. **Command + validator:** nguyên liệu `name` 1–200, `quantityText` ≤ 50; bước `title` 1–200 bắt buộc, `description` ≤ 2000, `timerMinutes ≥ 0`; `ReorderStepsCommand`. Tất cả qua `RecipeAuthorizationHandler` và xóa cache.
@@ -364,9 +401,9 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 
 ### Dev 3 – Đoàn Hồng Tiến · FR-SRCH-001 Tìm kiếm toàn văn tiếng Việt (+ D-18)
 - **Hướng đi:**
-  1. **Migration `B3_Search_FTS`** (thứ tự bắt buộc): `CREATE EXTENSION unaccent, pg_trgm` → hàm `unaccent_immutable` → cột **generated `STORED`** `SearchVector = to_tsvector('simple', unaccent_immutable(Title || ' ' || Description))` → **GIN index**. **D-18:** xóa khối `vietnamese_unaccent` khỏi `init.sql`.
+  1. **Migration `B4_Search_FTS`** (thứ tự bắt buộc): `CREATE EXTENSION unaccent, pg_trgm` → hàm `unaccent_immutable` → cột **generated `STORED`** `SearchVector = to_tsvector('simple', unaccent_immutable(Title || ' ' || Description))` → **GIN index**. **D-18:** xóa khối `vietnamese_unaccent` khỏi `init.sql`.
   2. **`SearchRecipesQuery`:** `q` ≥ 2 ký tự (sai → 400); làm sạch ký tự đặc biệt, ghép prefix `pho:* & bo:*`; xếp theo `ts_rank`; **chỉ Published**; trả `relevanceScore`; cache `search:{hash}` 1 phút.
-  3. **API:** `GET /recipes/search?q&page&pageSize&categoryId&difficulty` (slug `search` đã bị cấm ở Buổi 2).
+  3. **API:** `GET /recipes/search?q&page&pageSize&categoryId&difficulty` (slug `search` đã bị cấm ở Buổi 3).
   4. **Kiểm chứng DB:** 50 công thức seed tự có vector ngay khi migration chạy; test chạy trên Testcontainers.
   5. **UI:** `SearchBar` trên header (debounce 300ms), trang `/search` (SSR) có tô sáng từ khóa, trạng thái rỗng kèm gợi ý.
 - **Vì sao:**
@@ -393,11 +430,11 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 - **Xong khi:** MinIO có đủ 3 phiên bản ảnh; công thức giả lập xóa 40 ngày trước biến mất khỏi DB **và** MinIO sau khi chạy job từ `/hangfire`.
 - **Commit:** `feat(jobs): complete FR-JOB-002 async image resize & FR-JOB-003 permanent purge job with distributed lock`
 
-**Kiểm chứng cuối Buổi 3:** kéo-thả bước không lỗi 23505; tìm "pho" ra "Phở bò" trên Testcontainers; `localStorage` không còn access token; `CreatedByIp` là IP thật.
+**Kiểm chứng cuối Buổi 4:** kéo-thả bước không lỗi 23505; tìm "pho" ra "Phở bò" trên Testcontainers; `localStorage` không còn access token; `CreatedByIp` là IP thật.
 
 ---
 
-## BUỔI 4 – Hồ sơ cá nhân, sửa & xuất bản công thức, bộ lọc nâng cao, health check
+## BUỔI 5 – Hồ sơ cá nhân, sửa & xuất bản công thức, bộ lọc nâng cao, health check
 
 **Mục tiêu:** người dùng quản lý hồ sơ; công thức đi hết vòng đời tới Published an toàn khi nhiều người sửa cùng lúc; lọc/sắp xếp/phân trang hoàn chỉnh; hệ thống tự báo sức khỏe.
 
@@ -440,7 +477,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
   1. **`RecipeFilterSpec` dùng chung** cho `GetRecipesQuery`, `SearchRecipesQuery`, `GetCategoryBySlugQuery`: `categoryId`, `difficulty` (Easy/Medium/Hard/Expert, ngoài enum → 400), `maxCookTime`, `maxPrepTime`, `minServings` – kết hợp AND.
   2. **`SortMapper`** – dictionary whitelist 5 trường `createdAt, publishedAt, title, cookTime, prepTime`; ngoài whitelist → **400**; `sortOrder ∈ {asc, desc}`; mặc định `createdAt desc`. **D-10:** xóa `RecipeSortParser` và tham số `sort=-field`.
   3. **Phân trang:** `page` ≥ 1, `pageSize` mặc định 12, tối đa 50 → sai 400.
-  4. **Index:** migration `B4_Search_CompositeIndexes` tạo 3 composite index; đo `EXPLAIN ANALYZE` trên **≥ 10.000 công thức** (`PerformanceSeeder` bật bằng cờ); ghi kết quả `docs/explain-analyze-b4.md`.
+  4. **Index:** migration `B5_Search_CompositeIndexes` tạo 3 composite index; đo `EXPLAIN ANALYZE` trên **≥ 10.000 công thức** (`PerformanceSeeder` bật bằng cờ); ghi kết quả `docs/explain-analyze-b5.md`.
   5. **UI:** `FilterPanel`, `SortSelect` (cột + chiều), `Pagination`; **toàn bộ trạng thái nằm trên URL**; dùng chung cho `/recipes`, `/search`, `/categories/[slug]`; mobile dùng drawer.
 - **Vì sao:**
   - **`sortBy` + `sortOrder`** dễ validate từng tham số; dấu `-` dễ mất khi quên encode URL → sắp sai thứ tự mà không báo lỗi.
@@ -466,11 +503,11 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 - **Xong khi:** kịch bản tắt/bật Redis ở bước 5 cho đúng kết quả.
 - **Commit:** `feat(obs): complete FR-OBS-001 health checks with docker healthcheck wiring and ui indicator`
 
-**Kiểm chứng cuối Buổi 4:** Index Scan trên ≥ 10.000 bản ghi; `sort=-title` → 400; publish Archived → 409; tắt Redis → ready 503, live 200.
+**Kiểm chứng cuối Buổi 5:** Index Scan trên ≥ 10.000 bản ghi; `sort=-title` → 400; publish Archived → 409; tắt Redis → ready 503, live 200.
 
 ---
 
-## BUỔI 5 – Gia cố bảo mật, xóa mềm & cách ly dữ liệu riêng tư, SEO, log có cấu trúc
+## BUỔI 6 – Gia cố bảo mật, xóa mềm & cách ly dữ liệu riêng tư, SEO, log có cấu trúc
 
 **Mục tiêu:** khóa chặt bề mặt tấn công; vá lỗ hổng rò rỉ bản nháp; trang công khai đạt chuẩn SEO; hệ thống quan sát được từ bên ngoài.
 > ⚠️ Buổi nặng nhất về trả nợ: D-3 → D-7, trong đó **D-4, D-5 là lỗi bảo mật** (bản nháp bị lộ qua cache công khai).
@@ -478,7 +515,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 **Tiến trình trong buổi:**
 1. **Việc đầu tiên của Thọ là vá lỗ hổng** (D-4, D-6), sau đó mới làm tính năng mới.
 2. Thọ và Tiến cùng gỡ kiểu `RecipeVisibility`: **Tiến gỡ ở query danh mục và merge trước**, Thọ xóa hẳn kiểu này khi rebase. Output Cache chỉ Thọ gỡ.
-3. Cuối buổi merge Thiêng → Quân → Tiến → Thọ; test tái hiện lỗ hổng (viết từ Buổi 2) phải chuyển sang xanh.
+3. Cuối buổi merge Thiêng → Quân → Tiến → Thọ; test tái hiện lỗ hổng (viết từ Buổi 3) phải chuyển sang xanh.
 
 ### Dev 1 – Hoàng Bình Quân · Rate limit, phân quyền, CSP, chặn route
 - **Hướng đi:**
@@ -488,7 +525,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
   4. **Header bảo mật:** CSP chặt (`script-src 'self'` + nonce, `object-src 'none'`, `frame-ancestors 'none'`), `nosniff`, `Referrer-Policy`; rà CORS không có `*`.
   5. **Chặn route FE** (`middleware.ts`): `/dashboard/**`, `/profile` cần đăng nhập; `/dashboard/categories`, `/dashboard/users` chỉ Admin; component `<RequireRole>`. Test: request đăng nhập thứ 11 → 429; Author gọi API Admin → 403.
 - **Vì sao:**
-  - **Rate limit phải dựa trên IP thật** (bật ở Buổi 3): nếu không, mọi người dùng chung IP của Nginx → 10 req/phút cho *cả hệ thống*.
+  - **Rate limit phải dựa trên IP thật** (bật ở Buổi 4): nếu không, mọi người dùng chung IP của Nginx → 10 req/phút cho *cả hệ thống*.
   - **Chỉ tin `X-Forwarded-For` từ mạng nội bộ**: header này giả mạo được, tin bừa thì né được rate limit.
   - **Sliding window cho `/auth`** chặn kiểu bắn 10 request cuối cửa sổ + 10 request đầu cửa sổ sau.
   - **CSP là lớp phòng vệ cuối cho refresh token**; chặn route FE chỉ là trải nghiệm, quyền thật kiểm ở backend.
@@ -499,7 +536,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 - **Hướng đi:**
   1. **Vá lỗ hổng trước (D-4 + D-6):** `RecipeReadRepository` bỏ lọc theo Guest/Author/Admin → **chỉ Published cho mọi người**; query không inject `ICurrentUser` nữa; Draft/Archived qua `/recipes/{slug}` → **404** (thay vì 403). Xóa Output Cache, chuyển sang Redis: `recipes:list:{hash}` 2 phút, `recipe:{slug}` 5 phút. Gỡ `Skip` khỏi test tái hiện lỗ hổng.
   2. **`GetMyRecipesQuery` (FR-RCP-011):** **không cache**; Author chỉ xem của mình, Admin truyền được `authorId`; Author xem của người khác → 403; lọc theo `status`; header `Cache-Control: no-store`.
-  3. **Xóa mềm + D-3:** migration `B5_Recipe_PartialUnique` – slug unique chỉ trong bản ghi chưa xóa; `DeleteRecipeCommand` chỉ gán `IsDeleted = true`, **không xóa bản ghi con, không xóa file MinIO** (việc của job dọn ở Buổi 3).
+  3. **Xóa mềm + D-3:** migration `B6_Recipe_PartialUnique` – slug unique chỉ trong bản ghi chưa xóa; `DeleteRecipeCommand` chỉ gán `IsDeleted = true`, **không xóa bản ghi con, không xóa file MinIO** (việc của job dọn ở Buổi 4).
   4. **API:** `DELETE /recipes/{id}` (204), `GET /recipes/mine`.
   5. **UI `/dashboard/recipes`:** gọi `/recipes/mine`, tab Draft/Published/Archived; nút Sửa/Xuất bản/Hủy/Xóa (xác nhận bằng cách gõ tên công thức); `/dashboard` thống kê theo trạng thái.
 - **Vì sao:**
@@ -507,7 +544,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
   - Không thêm `userId` vào khóa cache: hit rate sụp và chỉ cần quên ở một endpoint là lỗ hổng quay lại.
   - **Draft trả 404 thay vì 403**: 403 tiết lộ "ở đây có một bản nháp".
   - **Slug unique từng phần** để xóa xong tạo lại được công thức cùng tên; **không xóa file khi xóa mềm** để còn khôi phục được.
-  - FR-RCP-006 (Archive) dời trọn sang Buổi 6 để buổi này tập trung vá lỗ hổng.
+  - FR-RCP-006 (Archive) dời trọn sang Buổi 7 để buổi này tập trung vá lỗ hổng.
 - **Xong khi:** Admin gọi `GET /recipes` rồi khách gọi lại đúng URL → khách **không** thấy Draft; `/recipes/mine` có `no-store`; xóa `pho-bo` rồi tạo lại vẫn được slug `pho-bo`.
 - **Commit:** `fix(recipes)!: close MT-34 draft leak; complete FR-RCP-007 soft delete & FR-RCP-011 private my-recipes`
 
@@ -541,11 +578,11 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 - **Xong khi:** mọi dòng log trên Seq có 3 trường bắt buộc; grep log không thấy token/mật khẩu; xem được trace một request xuyên các tầng.
 - **Commit:** `feat(obs): complete FR-OBS-002 serilog correlation logging & FR-OBS-003 opentelemetry with secret redaction`
 
-**Kiểm chứng cuối Buổi 5:** test tái hiện lỗ hổng xanh; Draft → 404; `/recipes/mine` có `no-store`; request thứ 11 tới `/auth/login` → 429; log đủ trường, không lộ bí mật.
+**Kiểm chứng cuối Buổi 6:** test tái hiện lỗ hổng xanh; Draft → 404; `/recipes/mine` có `no-store`; request thứ 11 tới `/auth/login` → 429; log đủ trường, không lộ bí mật.
 
 ---
 
-## BUỔI 6 – Quản lý người dùng, khép kín máy trạng thái, sitemap, hạ tầng production
+## BUỔI 7 – Quản lý người dùng, khép kín máy trạng thái, sitemap, hạ tầng production
 
 **Mục tiêu:** xong 3 FR cuối (`FR-AUTH-008`, `FR-AUTH-009`, `FR-RCP-006`) → **37/37 FR**; sitemap đúng chỗ; hạ tầng sẵn sàng cho load test.
 
@@ -582,7 +619,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
      | Draft hoặc Published | archive | Archived |
      | Archived | unarchive | Draft |
 
-     Ngoài bảng → 409 `RECIPE_INVALID_STATE_TRANSITION`. Sửa `Publish()`/`Unpublish()` (Buổi 4) đi qua cùng bảng.
+     Ngoài bảng → 409 `RECIPE_INVALID_STATE_TRANSITION`. Sửa `Publish()`/`Unpublish()` (Buổi 5) đi qua cùng bảng.
   2. **Command + API:** `PATCH /recipes/{id}/archive`, `…/unarchive`; xóa cache `recipe:{slug}`, `recipes:list:*`, `categories:detail:*`. **`GET /recipes/sitemap`**: `{ slug, updatedAt }[]` của mọi Published, cache 1 giờ.
   3. **Test đủ 12 tổ hợp** (3 trạng thái × 4 hành động): 5 hợp lệ ra đúng trạng thái, 7 còn lại phải lỗi.
   4. Test `publish → unpublish → publish` giữ nguyên `PublishedAt` lần đầu.
@@ -619,17 +656,17 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 - **Vì sao:**
   - **`SCAN` thay `KEYS`**: `KEYS` khóa toàn bộ Redis khi quét – chạy tốt lúc dev, sập khi có tải.
   - **Bỏ `ports` là điều kiện để scale**: 3 container không thể cùng chiếm cổng 5000 của máy.
-  - **Resolver động** tự nhận replica mới trong 10 giây; khối `upstream` chỉ phân giải DNS một lần (đã gây 502 ở Buổi 1).
+  - **Resolver động** tự nhận replica mới trong 10 giây; khối `upstream` chỉ phân giải DNS một lần (đã gây 502 ở Buổi 2).
   - **Một địa chỉ ảnh qua Nginx** xóa bỏ việc `localhost:9000` đúng với trình duyệt nhưng sai với container.
   - **D-17 cùng buổi SSL** vì cùng cần chứng chỉ.
 - **Xong khi:** `docker compose -f docker-compose.prod.yml up --scale api=3` chạy; tạo lại một container `api` không gây 502; ảnh tải qua `/media/`; hit rate được đo và ghi lại.
 - **Commit:** `chore(devops): production nginx with ssl and /media proxy, prod compose scaling, dataprotection keys and cache audit`
 
-**Kiểm chứng cuối Buổi 6:** 37/37 FR; 12 tổ hợp trạng thái đúng; khóa user thu hồi phiên; sitemap ở domain chính; `--scale api=3` không 502.
+**Kiểm chứng cuối Buổi 7:** 37/37 FR; 12 tổ hợp trạng thái đúng; khóa user thu hồi phiên; sitemap ở domain chính; `--scale api=3` không 502.
 
 ---
 
-## BUỔI 7 – Kiểm thử toàn diện, WCAG, load test, đóng gói & bảo vệ
+## BUỔI 8 – Kiểm thử toàn diện, WCAG, load test, đóng gói & bảo vệ
 
 **Mục tiêu:** **không viết tính năng mới** – chứng minh hệ thống đạt mọi chỉ tiêu trong SRS và đóng gói để bảo vệ.
 **Điều kiện đầu vào:** 37/37 FR xong, 17/17 nợ kỹ thuật cần sửa code đã trả.
@@ -706,7 +743,7 @@ docker compose --profile dev up -d --build
 | Seq | http://localhost:5341 |
 | Mailhog | http://localhost:8025 |
 
-Tài khoản seed: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWORD`), `author1..5@culinaryblog.local` (`SEED_AUTHOR_PASSWORD`). Máy đã có PostgreSQL chiếm cổng 5432 → đặt `POSTGRES_HOST_PORT=5434`.
+Tài khoản seed: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWORD`), `author1..5@culinaryblog.local` (`SEED_AUTHOR_PASSWORD`). Dữ liệu mẫu: 20 danh mục, 100 công thức (~85% đã xuất bản) — API tự seed/bù khi khởi động, không cần xóa volume. Máy đã có PostgreSQL chiếm cổng 5432 → đặt `POSTGRES_HOST_PORT=5434`.
 
 **Definition of Done mỗi commit:**
 ```bash
