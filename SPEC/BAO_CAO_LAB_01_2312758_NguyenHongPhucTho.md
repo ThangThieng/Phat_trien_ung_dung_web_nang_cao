@@ -12,8 +12,8 @@
 
 | STT | Công việc được giao | Liên kết đến GitHub branch | Tiến độ % |
 |---:|---|---|---:|
-| 1 | Cài đặt API danh sách công thức (FR-RCP-001) | [feature/b1-dev2-rcp-001-002](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/feature/b1-dev2-rcp-001-002)<br><br>Commit `0fc95d1`: [feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/0fc95d1bfd62afc43050f3d55d57e0ea45629708) | 100% |
-| 2 | Cài đặt API và giao diện chi tiết công thức (FR-RCP-002) | [feature/b1-dev2-rcp-001-002](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/feature/b1-dev2-rcp-001-002)<br><br>Commit `0fc95d1`: [feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/0fc95d1bfd62afc43050f3d55d57e0ea45629708) | 100% |
+| 1 | **FR-RCP-001 — Danh sách công thức:** xây dựng API `GET /api/v1/recipes`, lọc theo danh mục/độ khó/thời gian nấu, sắp xếp theo whitelist, phân trang `PagedResult`, cache Redis và giao diện SSR `/recipes`. | [2312758_NguyenHongPhucTho_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2312758_NguyenHongPhucTho_buoiso2)<br><br>Commit triển khai gốc `0fc95d1`: [feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/0fc95d1bfd62afc43050f3d55d57e0ea45629708) | 100% |
+| 2 | **FR-RCP-002 — Chi tiết công thức:** xây dựng API `GET /api/v1/recipes/{slug}`, kiểm soát quyền xem Draft, cache Redis và trang ISR `/recipes/[slug]` hiển thị ảnh, nguyên liệu, bước nấu và dinh dưỡng. | [2312758_NguyenHongPhucTho_buoiso2](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2312758_NguyenHongPhucTho_buoiso2)<br><br>Commit triển khai gốc `0fc95d1`: [feat(recipe): complete FR-RCP-001 & 002 recipe list and detail view](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/0fc95d1bfd62afc43050f3d55d57e0ea45629708) | 100% |
 
 ### 1. Cài đặt API danh sách công thức (FR-RCP-001)
 
