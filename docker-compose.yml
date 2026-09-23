@@ -131,7 +131,9 @@ services:
     restart: unless-stopped
 
   minio:
-    image: minio/minio:latest
+    # quay.io + tag ghim: repository "minio/minio" trên Docker Hub đã bị gỡ (pull trả "pull access denied
+    # ... repository does not exist"), nên "minio/minio:latest" không còn kéo được trên máy mới.
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     command: server /data --console-address ":9001"
     ports:
       - "9000:9000"
