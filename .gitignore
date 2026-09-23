@@ -6,6 +6,9 @@
 *.pfx
 *.key
 ssl/
+# Basic Auth cho Hangfire Dashboard – sinh bằng nginx/generate-htpasswd.sh, không bao giờ commit
+nginx/.htpasswd
+.htpasswd
 
 # .NET
 bin/

@@ -70,6 +70,32 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   return (await response.json()) as T;
 }
 
+/** Hàm setError của react-hook-form (thu hẹp để lib/ không phụ thuộc react-hook-form). */
+type SetFieldError<TField extends string> = (field: TField, error: { message: string }) => void;
+
+/**
+ * D-11 / MT-08: lỗi validation của Backend trả **400** kèm `errors{}` (RFC 7807).
+ * Ánh xạ `errors{}` → từng ô của form, chỉ nhận những field mà form khai báo.
+ * Trả về `true` nếu đã xử lý (form đã hiện lỗi từng ô), `false` nếu caller cần hiện lỗi chung.
+ */
+export function mapProblemDetailsToForm<TField extends string>(
+  error: unknown,
+  fields: readonly TField[],
+  setError: SetFieldError<TField>,
+): boolean {
+  if (!(error instanceof ApiError) || error.status !== 400) return false;
+
+  const entries = Object.entries(error.fieldErrors).filter(([field]) =>
+    (fields as readonly string[]).includes(field),
+  );
+  if (entries.length === 0) return false;
+
+  entries.forEach(([field, messages]) => {
+    if (messages[0]) setError(field as TField, { message: messages[0] });
+  });
+  return true;
+}
+
 /** Thông báo thân thiện cho lỗi mạng / lỗi 5xx (không lộ chi tiết kỹ thuật – NFR-USE-003). */
 export function getErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {

@@ -14,7 +14,7 @@ public static class AuthEndpoints
             .WithName("Register")
             .WithSummary("FR-AUTH-001 – Đăng ký tài khoản (role Author, tự động đăng nhập)")
             .Produces<AuthResponseDto>(StatusCodes.Status201Created)
-            .ProducesValidationProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status409Conflict);
 
         group.MapPost("/login", LoginAsync)
@@ -23,7 +23,7 @@ public static class AuthEndpoints
             .Produces<AuthResponseDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status423Locked)
-            .ProducesValidationProblem(StatusCodes.Status422UnprocessableEntity);
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         return api;
     }

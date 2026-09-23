@@ -30,8 +30,16 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
+    environment:
+      # nginx.conf.template → envsubst → /etc/nginx/nginx.conf lúc khởi động (FR-JOB-001 / MT-39).
+      # FILTER giới hạn phạm vi thay thế ở các biến HANGFIRE_*, giữ nguyên biến của Nginx ($host, $remote_addr…).
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+      NGINX_ENVSUBST_FILTER: "^HANGFIRE_"
+      HANGFIRE_GATE_SECRET: ${HANGFIRE_GATE_SECRET}
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      # Sinh trước khi "docker compose up": ./nginx/generate-htpasswd.sh (hoặc .ps1). KHÔNG commit (NFR-SEC-007).
+      - ./nginx/.htpasswd:/etc/nginx/.htpasswd:ro
     depends_on:
       - api
       - frontend
@@ -49,6 +57,8 @@ services:
       Hangfire__WorkerOnly: "false"
       # Job do container "hangfire" xử lý; API chỉ enqueue
       Hangfire__ServerEnabled: "false"
+      # Lớp bảo vệ thứ hai của Dashboard: chỉ request mang header X-Hangfire-Gate khớp secret mới vào được
+      Hangfire__DashboardGateSecret: ${HANGFIRE_GATE_SECRET}
       Database__MigrateOnStartup: "true"
       Seed__Enabled: "true"
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}

@@ -9,6 +9,8 @@ using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Infrastructure;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Seed;
+using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
@@ -101,6 +103,18 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference(o => o.WithTitle("Culinary Blog API v1"));
 }
 
+// FR-JOB-001 / MT-39: Dashboard chỉ chạy ở container "api" (worker đã return ở trên).
+// Hai lớp bảo vệ: Basic Auth tại Nginx + header X-Hangfire-Gate do Nginx gắn (NginxGateDashboardFilter).
+app.MapHangfireDashboard(
+    builder.Configuration.GetValue("Hangfire:DashboardPath", "/hangfire") ?? "/hangfire",
+    new DashboardOptions
+    {
+        Authorization = [new NginxGateDashboardFilter(builder.Configuration["Hangfire:DashboardGateSecret"] ?? string.Empty)],
+        DisplayStorageConnectionString = false,
+        DashboardTitle = "Culinary Blog – Background Jobs",
+        IsReadOnlyFunc = _ => false,
+    });
+
 app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.API", version = "v1", docs = "/scalar" }))
     .ExcludeFromDescription();
 
@@ -111,3 +125,18 @@ api.MapRecipesEndpoints();
 api.MapFilesEndpoints();
 
 await app.RunAsync().ConfigureAwait(false);
+
+/// <summary>
+/// Top-level statements sinh ra lớp Program ẩn. Khai báo tường minh để
+/// <c>WebApplicationFactory&lt;Program&gt;</c> của integration test harness (NFR-MAINT-002) tham chiếu được.
+/// </summary>
+public partial class Program
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Program"/> class.
+    /// Constructor để non-public nhằm nói rõ Program chỉ là điểm vào của host, không phải kiểu để khởi tạo.
+    /// </summary>
+    protected Program()
+    {
+    }
+}

@@ -18,7 +18,7 @@ public static class RecipesEndpoints
             .WithSummary("FR-RCP-001 – Danh sách công thức (phân trang, lọc, sắp xếp)")
             .CacheOutput(OutputCachePolicies.RecipeList)
             .Produces<PagedResult<RecipeSummaryDto>>()
-            .ProducesValidationProblem(StatusCodes.Status422UnprocessableEntity);
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapGet("/{slug}", GetRecipeBySlugAsync)
             .WithName("GetRecipeBySlug")

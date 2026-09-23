@@ -62,7 +62,7 @@ public sealed partial class GlobalExceptionMiddleware(
                 return appProblem;
 
             case ValidationException validation:
-                // Quyết định dự án: lỗi validation → 422 (theo các FR chi tiết)
+                // MT-08 (SRS v1.2.1 §3): MỌI lỗi validation/input → 400. Mã 422 bị loại bỏ khỏi hệ thống.
                 var errors = validation.Errors
                     .GroupBy(e => ToCamelCase(e.PropertyName))
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).Distinct().ToArray());
@@ -70,7 +70,7 @@ public sealed partial class GlobalExceptionMiddleware(
                 {
                     Type = ErrorCodes.ValidationError,
                     Title = "Dữ liệu không hợp lệ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = "Một hoặc nhiều trường không hợp lệ. Xem \"errors\".",
                     Instance = context.Request.Path,
                 };
@@ -80,7 +80,7 @@ public sealed partial class GlobalExceptionMiddleware(
                 {
                     Type = ErrorCodes.ValidationError,
                     Title = "Vi phạm quy tắc nghiệp vụ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = domain.Message,
                     Instance = context.Request.Path,
                 };

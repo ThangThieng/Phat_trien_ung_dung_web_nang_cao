@@ -1,4 +1,9 @@
-# Development reverse proxy. Bản production (HTTPS, HSTS, upstream pool) hoàn thiện ở Buổi 7.
+# Development reverse proxy. Bản production (HTTPS, HSTS) hoàn thiện ở Buổi 7.
+#
+# ĐÂY LÀ TEMPLATE, KHÔNG phải file cấu hình cuối cùng. Image nginx:alpine chạy envsubst lúc khởi động
+# và ghi kết quả ra /etc/nginx/nginx.conf (NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx).
+# NGINX_ENVSUBST_FILTER=^HANGFIRE_ giới hạn phạm vi thay thế đúng các biến HANGFIRE_*, nên mọi biến
+# của chính Nginx ($host, $remote_addr, $binary_remote_addr…) được giữ nguyên.
 worker_processes auto;
 
 events {
@@ -63,7 +68,28 @@ http {
             return 413 '{"type":"FILE_SIZE_EXCEEDED","title":"Content Too Large","status":413,"detail":"Kích thước file vượt quá giới hạn 5MB."}';
         }
 
-        location ~ ^/(health|hangfire|scalar|openapi) {
+        # FR-JOB-001 / MT-39: Hangfire Dashboard là trang HTML mở thẳng trong trình duyệt nên không đính kèm
+        # được header Authorization: Bearer, mà SRS §5.2 lại loại bỏ cookie → bảo vệ bằng HTTP Basic Auth tại đây.
+        # Khối này phải đứng TRƯỚC khối regex bên dưới: Nginx ưu tiên prefix match dài nhất chỉ khi không có
+        # regex nào khớp, nên nếu thiếu khối riêng này thì /hangfire rơi vào khối regex và mất Basic Auth.
+        location /hangfire {
+            auth_basic           "Hangfire Dashboard Restricted";
+            auth_basic_user_file /etc/nginx/.htpasswd;
+
+            # Lớp bảo vệ thứ hai (NginxGateDashboardFilter): secret chỉ Nginx biết và chỉ được gắn SAU khi
+            # người dùng đã qua Basic Auth. Nhờ đó gọi thẳng http://localhost:5000/hangfire (cổng dev của
+            # container api, bỏ qua Nginx) vẫn bị API trả 401.
+            proxy_set_header     X-Hangfire-Gate ${HANGFIRE_GATE_SECRET};
+
+            proxy_pass           $api_upstream;
+            proxy_http_version   1.1;
+            proxy_set_header     Host $host;
+            proxy_set_header     X-Real-IP $remote_addr;
+            proxy_set_header     X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header     X-Forwarded-Proto $scheme;
+        }
+
+        location ~ ^/(health|scalar|openapi) {
             proxy_pass $api_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

@@ -146,6 +146,11 @@ public static class DependencyInjection
         services.AddScoped<WelcomeEmailJob>();
         services.AddScoped<IWelcomeEmailScheduler, HangfireWelcomeEmailScheduler>();
 
+        // Tồn đọng Buổi 2 §6: mặc định 15 giây khiến job fire-and-forget (Welcome Email) mãi mới chạy,
+        // quá chậm khi demo và khi viết integration test. Môi trường Development hạ xuống 1 giây, đổi lại
+        // là vài truy vấn polling mỗi giây trên Postgres, chấp nhận được ở môi trường dev.
+        var pollInterval = TimeSpan.FromSeconds(configuration.GetValue("Hangfire:PollIntervalSeconds", 15));
+
         // SRS §3.6: Hangfire dùng chung PostgreSQL (schema "hangfire")
         services.AddHangfire(cfg => cfg
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -153,12 +158,22 @@ public static class DependencyInjection
             .UseRecommendedSerializerSettings()
             .UsePostgreSqlStorage(
                 o => o.UseNpgsqlConnection(connectionString),
-                new PostgreSqlStorageOptions { SchemaName = "hangfire", PrepareSchemaIfNecessary = true }));
+                new PostgreSqlStorageOptions
+                {
+                    SchemaName = "hangfire",
+                    PrepareSchemaIfNecessary = true,
+                    QueuePollInterval = pollInterval,
+                }));
 
         // Server xử lý job: bật ở container "hangfire" (worker) hoặc khi chạy local (Hangfire:ServerEnabled mặc định true)
         if (configuration.GetValue("Hangfire:ServerEnabled", true) || configuration.GetValue<bool>("Hangfire:WorkerOnly"))
         {
-            services.AddHangfireServer(o => o.ServerName = $"culinaryblog-{Environment.MachineName}");
+            // SchedulePollingInterval chi phối job ĐÃ LÊN LỊCH (các lần retry 1'/5'/30' của WelcomeEmailJob).
+            services.AddHangfireServer(o =>
+            {
+                o.ServerName = $"culinaryblog-{Environment.MachineName}";
+                o.SchedulePollingInterval = pollInterval;
+            });
         }
     }
 }
