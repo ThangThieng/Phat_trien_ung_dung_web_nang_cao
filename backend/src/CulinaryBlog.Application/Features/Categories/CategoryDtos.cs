@@ -1,5 +1,6 @@
 using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
+using CulinaryBlog.Domain.Entities;
 
 namespace CulinaryBlog.Application.Features.Categories;
 
@@ -21,6 +22,7 @@ public static class CategoryCacheKeys
     /// <summary>Key theo FR-CAT-001 bước 3. Command Create/Update/Delete (Buổi 3) sẽ invalidate key này.</summary>
     public const string All = "categories:all";
 }
+
 /// <summary>
 /// FR-CAT-003/004/005 – repository GHI cho Category. Application không được tham chiếu EF Core (CONS-001),
 /// nên mọi truy cập dữ liệu đi qua interface này; việc commit do <see cref="Common.Interfaces.IUnitOfWork"/> đảm nhiệm.
