@@ -29,7 +29,7 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider t
         {
             new(JwtRegisteredClaimNames.Sub, user.Id),
             new(JwtRegisteredClaimNames.Email, user.Email),
-            new(JwtRegisteredClaimNames.Name, user.FullName),
+            new(JwtRegisteredClaimNames.Name, user.DisplayName),
             new(JwtRegisteredClaimNames.UniqueName, user.UserName),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
         };

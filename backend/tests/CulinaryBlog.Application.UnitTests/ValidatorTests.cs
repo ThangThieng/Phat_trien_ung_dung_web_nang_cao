@@ -9,7 +9,7 @@ public class ValidatorTests
 
     [Fact]
     public void Register_ValidCommand_Passes() =>
-        Assert.True(_register.Validate(new RegisterUserCommand("Nguyễn Văn A", "a@example.com", "nguyen.a", "Passw0rd!")).IsValid);
+        Assert.True(_register.Validate(new RegisterUserCommand("Nguyễn Văn A", "a@example.com", "Passw0rd!")).IsValid);
 
     [Theory]
     [InlineData("short1!")] // < 8 ký tự
@@ -19,16 +19,16 @@ public class ValidatorTests
     [InlineData("Password1")] // thiếu ký tự đặc biệt
     public void Register_WeakPassword_Fails(string password)
     {
-        var result = _register.Validate(new RegisterUserCommand("Nguyễn Văn A", "a@example.com", "nguyen.a", password));
+        var result = _register.Validate(new RegisterUserCommand("Nguyễn Văn A", "a@example.com", password));
 
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(RegisterUserCommand.Password));
     }
 
     [Theory]
-    [InlineData("not-an-email", "nguyen.a")]
-    [InlineData("a@example.com", "có dấu")]
-    public void Register_InvalidEmailOrUserName_Fails(string email, string userName) =>
-        Assert.False(_register.Validate(new RegisterUserCommand("Nguyễn Văn A", email, userName, "Passw0rd!")).IsValid);
+    [InlineData("not-an-email")]
+    [InlineData("a@")]
+    public void Register_InvalidEmail_Fails(string email) =>
+        Assert.False(_register.Validate(new RegisterUserCommand("Nguyễn Văn A", email, "Passw0rd!")).IsValid);
 
     [Theory]
     [InlineData(0, 12, false)]
