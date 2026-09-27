@@ -12,10 +12,10 @@ Vai trò: **Dev 1**
 
 | STT | Công việc được giao | Nhánh | Tiến độ |
 |---:|---|---|---:|
-| 1 | FR-AUTH-003: Đăng nhập/đăng ký bằng Google theo ID Token flow | `2314236_HoangBinhQuan_buoiso3` | 100% |
-| 2 | FR-AUTH-005: Đăng xuất và thu hồi refresh token | `2314236_HoangBinhQuan_buoiso3` | 100% |
-| 3 | Retrofit D-1: chuẩn hóa `displayName`, backend tự sinh `UserName` | `2314236_HoangBinhQuan_buoiso3` | 100% |
-| 4 | Phối hợp D-11: validation trả HTTP 400 thay cho 422 | `2314236_HoangBinhQuan_buoiso3` | 100% |
+| 1 | FR-AUTH-003: Đăng nhập/đăng ký bằng Google theo ID Token flow | [2314236_HoangBinhQuan_buoiso3](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso3) | 100% |
+| 2 | FR-AUTH-005: Đăng xuất và thu hồi refresh token | [2314236_HoangBinhQuan_buoiso3](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso3) | 100% |
+| 3 | Retrofit D-1: chuẩn hóa `displayName`, backend tự sinh `UserName` | [2314236_HoangBinhQuan_buoiso3](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso3) | 100% |
+| 4 | Phối hợp D-11: validation trả HTTP 400 thay cho 422 | [2314236_HoangBinhQuan_buoiso3](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso3) | 100% |
 
 ## 1. Tóm tắt
 
@@ -87,6 +87,13 @@ Lưu ý: để thử Google Sign-In trên trình duyệt, cần tạo OAuth Web 
 
 Các yêu cầu Buổi 2 của Dev 1 (FR-AUTH-003, FR-AUTH-005, D-1) đã được xử lý. Các phần Dev 1 còn theo kế hoạch là FR-AUTH-004/D-2/D-12 ở Buổi 3, profile ở Buổi 4 và các yêu cầu bảo mật/quản trị ở các buổi sau.
 
-## 7. Kết luận
+## 7. Minh chứng GitHub
+
+- Repository: [Phat_trien_ung_dung_web_nang_cao](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao)
+- Nhánh Buổi 2 của Dev 1: [2314236_HoangBinhQuan_buoiso3](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314236_HoangBinhQuan_buoiso3)
+- Commit hoàn thành: [369cdfa](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/369cdfa)
+- Nội dung commit: `feat(auth): complete Google sign-in, logout revocation and displayName contract`
+
+## 8. Kết luận
 
 Phần việc Dev 1 của Buổi 2 hoàn thành end-to-end từ API, domain/application, infrastructure đến frontend. Luồng Google không dựa vào dữ liệu frontend tự khai báo; logout đã thu hồi token ở server thay vì chỉ xóa dữ liệu cục bộ. Báo cáo này và mã nguồn được commit trên nhánh `2314236_HoangBinhQuan_buoiso3`.
