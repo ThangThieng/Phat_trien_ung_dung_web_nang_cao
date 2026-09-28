@@ -20,7 +20,7 @@ public class Recipe : BaseEntity
 
     public string Description { get; private set; } = string.Empty;
 
-    public string Instructions { get; private set; } = string.Empty;
+    public string? Instructions { get; private set; }
 
     public int PrepTimeMinutes { get; private set; }
 
@@ -74,7 +74,7 @@ public class Recipe : BaseEntity
             Title = title.Trim(),
             Slug = slug,
             Description = description,
-            Instructions = instructions ?? string.Empty,
+            Instructions = instructions?.Trim(),
             CategoryId = categoryId,
             AuthorId = authorId,
             PrepTimeMinutes = prepTimeMinutes,
@@ -106,6 +106,25 @@ public class Recipe : BaseEntity
         var image = RecipeImage.Create(Id, originalUrl, altText, isPrimary: _images.Count == 0, _images.Count);
         _images.Add(image);
         return image;
+    }
+
+    public void UpdateImage(RecipeImage image, string? altText, int? orderIndex, bool? isPrimary)
+    {
+        ArgumentNullException.ThrowIfNull(image);
+        if (!_images.Contains(image)) throw new DomainException("Ảnh không thuộc công thức.");
+        image.Update(altText, orderIndex);
+        if (isPrimary == true)
+        {
+            foreach (var item in _images) item.SetPrimary(item == image);
+        }
+    }
+
+    public void RemoveImage(RecipeImage image)
+    {
+        ArgumentNullException.ThrowIfNull(image);
+        if (!_images.Remove(image)) throw new DomainException("Ảnh không thuộc công thức.");
+        if (image.IsPrimary && _images.Count > 0)
+            _images.OrderBy(x => x.OrderIndex).ThenBy(x => x.CreatedAt).First().SetPrimary(true);
     }
 
     public void SetNutrition(RecipeNutrition? nutrition) => Nutrition = nutrition;
