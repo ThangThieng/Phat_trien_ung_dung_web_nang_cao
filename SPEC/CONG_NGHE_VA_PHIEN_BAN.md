@@ -209,7 +209,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 ### 6.4 Health check MinIO – tự viết `IHealthCheck` ⚠️
 - **SRS (FR-OBS-001)** ghi package `AspNetCore.HealthChecks.Minio`.
 - **Thực tế:** tra NuGet ngày 11/09/2026 thì package này **không tồn tại** (0 kết quả).
-- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (ListBuckets) ở Buổi 5. `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
+- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (kiểm tra bucket cấu hình tồn tại — `AmazonS3Util.DoesS3BucketExistV2Async`) ở Buổi 3 (endpoint health kéo từ Buổi 5 lên theo yêu cầu bổ sung ngày 29/09/2026). `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
 - **Đây là thay đổi duy nhất bắt buộc phải khác SRS.**
 
 ### 6.5 Lockfile npm sinh bằng npm 10 📌
