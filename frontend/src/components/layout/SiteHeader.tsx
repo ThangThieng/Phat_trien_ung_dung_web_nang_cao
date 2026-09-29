@@ -5,11 +5,9 @@ import { usePathname } from 'next/navigation';
 import { ChefHat, LogOut, ImageUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
+import CategoryNav from '@/features/categories/components/CategoryNav';
 
-const NAV = [
-  { href: '/recipes', label: 'Công thức' },
-  { href: '/categories', label: 'Danh mục' },
-];
+const NAV = [{ href: '/recipes', label: 'Công thức' }];
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -44,6 +42,7 @@ export default function SiteHeader() {
               </Link>
             );
           })}
+          <CategoryNav />
         </nav>
 
         <div className="flex min-w-[9rem] items-center justify-end gap-2">

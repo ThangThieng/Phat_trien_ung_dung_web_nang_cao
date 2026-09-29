@@ -1,6 +1,5 @@
 using System.Net;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
-using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Categories;
 using CulinaryBlog.Domain.Exceptions;
 

@@ -9,6 +9,9 @@ namespace CulinaryBlog.Application.Common.Interfaces.Persistence;
 /// </summary>
 public interface IUnitOfWork
 {
+    /// <summary>Repository ghi của module Category (FR-CAT-003/004/005) — dùng chung DbContext với các repository khác.</summary>
+    ICategoryRepository Categories { get; }
+
     /// <summary>
     /// Lưu mọi thay đổi trong một transaction. Lỗi ghi DB đã được dịch sang domain exception
     /// (ConcurrencyConflictException hoặc lỗi của module) — handler KHÔNG cần và KHÔNG được bắt exception của EF.
