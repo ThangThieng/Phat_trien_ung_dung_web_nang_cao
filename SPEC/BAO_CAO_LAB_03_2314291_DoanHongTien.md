@@ -123,7 +123,7 @@ Nhánh Npgsql do lần đầu mình viết trong `GlobalExceptionMiddleware` đ�
 
 ## 8. Frontend
 
-- `dashboard/categories/page.tsx`: bảng danh mục, tạo/sửa bằng `CategoryFormDialog` (React Hook Form + Zod), xóa có xác nhận. Khi 409 `CATEGORY_DELETE_HAS_RECIPES`, đọc `error.problem.recipeCount` để báo *"Danh mục đang có N công thức…"*, không có thì dùng `error.message`.
+- `dashboard/categories/page.tsx`: bảng danh mục, tạo/sửa bằng `CategoryFormDialog` (React Hook Form + Zod; các ô Tên, Mô tả, Ảnh qua `ImageUploader`, Thứ tự hiển thị), xóa có xác nhận. Khi 409 `CATEGORY_DELETE_HAS_RECIPES`, đọc `error.problem.recipeCount` để báo *"Danh mục đang có N công thức…"*, không có thì dùng `error.message`.
 - `CategoryNav.tsx`: menu thả xuống "Danh mục" trên `SiteHeader`, dùng chung khóa TanStack Query `['categories']`, đóng khi nhấn Escape / bấm ngoài / bấm link.
 - `admin-api.ts`: `createCategory`, `updateCategory`, `deleteCategory`.
 
@@ -133,7 +133,8 @@ Nhánh Npgsql do lần đầu mình viết trong `GlobalExceptionMiddleware` đ�
 | `npx tsc --noEmit` | ✅ không lỗi |
 | `npm test` | ✅ 3 suite, 20 test pass (chưa có test riêng cho `CategoryNav`/trang quản trị) |
 | `npm run build` | ✅ thành công, có route `/dashboard/categories` |
-| Test tay qua Scalar + UI (Admin/Author) | ⏳ chờ điền |
+| Test tay qua UI (Admin): hộp thoại tạo danh mục, tạo trùng tên khác hoa/thường | ✅ 409, lỗi hiện dưới ô Tên |
+| Test tay còn lại: sửa giữ slug, xóa có bài viết, xóa rỗng, tạo lại tên đã xóa, Author bị chặn | ⏳ chờ điền |
 
 ---
 
@@ -141,8 +142,8 @@ Nhánh Npgsql do lần đầu mình viết trong `GlobalExceptionMiddleware` đ�
 
 | # | Điểm review | Trạng thái | Bằng chứng / còn thiếu |
 |---|-------------|-----------|------------------------|
-| 1 | PR nhắm `main` | ⏳ chờ làm | Mở PR mới với base **`develop`**, đóng PR cũ *(thao tác trên GitHub, sau khi push)* |
-| 2 | Tên nhánh | ⏳ chờ push | Nhánh `2314291_DoanHongTien_buoiso3` đã tạo ở máy, chưa push |
+| 1 | PR nhắm `main` | ◐ một phần | Đã mở PR #40 với base **`develop`** (đã đổi từ `main`); còn phải đóng PR cũ #1 và sửa tiêu đề/mô tả PR |
+| 2 | Tên nhánh | ✅ đã xong | Nhánh `2314291_DoanHongTien_buoiso3` đã push lên GitHub (commit `710e0a2`) |
 | 3 | Kiểm tra tên/slug bỏ sót bản đã xóa mềm | ✅ | `IgnoreQueryFilters()` ở `ExistsByNameAsync` và `SlugExistsAsync`; 2 test integration xanh (tên đã xóa → 409; slug trùng bản đã xóa → `mon-chay-2`) |
 | 4 | Integration test trên harness | ✅ | `CategoryAdminEndpointsTests` 20/20 xanh; test song song chạy lặp nhiều lần luôn ra 1×201 + 1×409, không 5xx |
 | 5 | Dịch `23505` | ✅ | `CategoryPersistenceExceptionTranslator`; middleware không còn nhánh Npgsql; test `UnitOfWork_DuplicateNameInsert_...` xanh |
