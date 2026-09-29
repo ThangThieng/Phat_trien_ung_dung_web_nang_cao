@@ -1,10 +1,10 @@
 # PHÂN TÍCH MÂU THUẪN TRONG SRS & ĐỀ XUẤT GIẢI PHÁP
 
-**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.1.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
-**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5)
+**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.2.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
+**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5) · 29/09/2026 (lượt 6)
 **Phạm vi:** Toàn bộ 8 chương + các phụ lục; lượt 4 mở rộng sang **hệ thống đang chạy** (code, cấu hình Docker/Nginx, báo cáo Buổi 2)
-**Kết quả:** **58 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4 và 1 mục ở lượt 5. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 5 điểm xung đột giữa lộ trình phát triển và SRS (§5).
-**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026).
+**Kết quả:** **63 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4, 1 mục ở lượt 5 và 5 mục ở lượt 6. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 5 điểm xung đột giữa lộ trình phát triển và SRS (§5).
+**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026). MT-59 → MT-63 đã áp dụng vào **SRS v1.2.2** (CR-2026-04, 29/09/2026).
 
 **Lịch sử rà soát**
 
@@ -15,6 +15,7 @@
 | 3 | Rà **nội bộ từng FR** (Mô tả ↔ Điều kiện tiên quyết ↔ Luồng chính ↔ Status code có tự khớp nhau không); máy trạng thái nghiệp vụ; mức ưu tiên MoSCoW; các con số định lượng (độ dài, thời gian, kích thước) | MT-34 → MT-41 |
 | 4 | Đối chiếu **SRS v1.1.0 ↔ hệ thống đang chạy**: từng quy định kỹ thuật được kiểm tra với code, `docker-compose.yml`, `nginx.conf`, image Docker thực tế và các sự cố đã ghi trong báo cáo Buổi 2 | MT-42 → MT-57 |
 | 5 | Đối chiếu **yêu cầu mới của giảng viên cho Buổi 2** (dữ liệu mẫu) ↔ SRS v1.2.0 §2.6.1 ↔ dữ liệu đang có trong database | MT-58 |
+| 6 | Đối chiếu **yêu cầu của giảng viên cho Buổi 3–4** (domain exceptions, repository & Unit of Work, middleware Problem Details; hoàn thành **tất cả** API endpoints) ↔ Phụ lục B ↔ §6.2; và **từng route giao diện §5.1 ↔ endpoint Chương 8** (route nào không có API phục vụ) | MT-59 → MT-63 |
 
 > Lượt 3 cho ra ít mục hơn nhưng **có mục nặng nhất toàn tài liệu là MT-34** — một lỗi rò rỉ dữ liệu giữa các tài khoản, sinh ra từ việc hai câu nằm cách nhau 5 dòng trong **cùng một FR** mà không ai đối chiếu.
 
@@ -96,6 +97,11 @@
 | MT-56 | `DEFERRABLE` không nói phải là constraint | 🟢 | Ghi rõ UNIQUE CONSTRAINT |
 | MT-57 | `/categories/[slug]` ghi ISR nhưng không thể dựng tĩnh | 🟢 | SSR + Data Cache |
 | MT-58 | Yêu cầu dữ liệu mẫu của giảng viên (≥ 20 danh mục, ≥ 100 công thức, ≥ 10 nguyên liệu, ≥ 5 bước) khác SRS §2.6.1 (50 công thức) | 🟡 | Cập nhật SRS v1.2.1 (CR-2026-03); nội dung món ăn thật, seeder tự bù |
+| MT-59 | FR-AUTH-008 trả 404 khi user không tồn tại nhưng Phụ lục B không có mã | 🟢 | Thêm `AUTH_USER_NOT_FOUND` (404) |
+| MT-60 | Mọi `BaseEntity` có concurrency token, chỉ Recipe có mã lỗi xung đột | 🟢 | Thêm `CONCURRENCY_CONFLICT` (409, Common) |
+| MT-61 | `AUTH_GOOGLE_TOKEN_INVALID` 400 (Phụ lục B) vs 401 (FR-AUTH-003); `categoryId` không tồn tại 404 (§8.3) vs 400 (FR-RCP-003) | 🟢 | Một mã hai mã HTTP theo bản chất lỗi; `categoryId` → 400 |
+| MT-62 | Trang sửa công thức (§5.1) không có endpoint nào trả trọn một bản nháp | 🟡 | Thêm `GET /recipes/mine/{id}` — 45 endpoint |
+| MT-63 | §6.2 đặt `ApplicationUser` (có NuGet) và interface repository ở Domain, trái "Domain chỉ BCL"; FR-CAT-003 A4 đọc mã PostgreSQL ở tầng API | 🟢 | Interface truy cập dữ liệu ở Application; `ApplicationUser` ở Infrastructure; dịch lỗi DB ở Infrastructure |
 
 ---
 
@@ -1401,6 +1407,85 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 **➡️ Quyết định (v1.2.1, CR-2026-03): Phương án A.** Sửa: §2.6.1. Hiện thực: `RecipeSeedCatalog` + `DatabaseSeeder` (Buổi 2 — Dev 4, mục "Yêu cầu bổ sung" trong `KE_HOACH_PHAT_TRIEN_8_BUOI.md`).
 
+
+---
+### MT-59 🟢 — 404 "user không tồn tại" không có mã lỗi
+
+**Hiện trạng:** FR-AUTH-008 A3 và §8.1 (`PATCH /users/{id}/status`) quy định trả 404 khi user không tồn tại, nhưng Phụ lục B không có mã nào cho tình huống này.
+
+**Vì sao là vấn đề:** mọi lỗi phải có `type` là Application Error Code (CONS-005, Phụ lục B). Thiếu mã thì hoặc trả 404 không có `type` nghiệp vụ, hoặc dev tự đặt mã ngoài SRS — đúng loại lệch mà MT-46 đã phải sửa.
+
+**Phương án:** (A) thêm `AUTH_USER_NOT_FOUND`; (B) dùng lại `VALIDATION_ERROR` — sai ngữ nghĩa (luôn là 400).
+
+**➡️ Quyết định (v1.2.2, CR-2026-04): Phương án A.** Hiện thực: `UserNotFoundException` (Buổi 3 Dev 1), ném từ API FR-AUTH-008 (Buổi 4 Dev 1).
+
+---
+### MT-60 🟢 — Chỉ Recipe có mã lỗi xung đột đồng thời
+
+**Hiện trạng:** mọi bảng kế thừa `BaseEntity` đều có `RowVersion` là concurrency token (§7.1), nhưng Phụ lục B chỉ có `RECIPE_CONCURRENCY_CONFLICT`.
+
+**Vì sao là vấn đề:** hai Admin cùng sửa một danh mục sẽ gây `DbUpdateConcurrencyException`. Không có mã thì chỉ có hai lối ra, đều sai:
+- trả 500 `INTERNAL_ERROR` — sai bản chất;
+- mượn mã của module Recipe — sai module.
+
+**Phương án:**
+- **(A)** thêm mã chung `CONCURRENCY_CONFLICT`, Recipe giữ mã riêng;
+- **(B)** bỏ concurrency token khỏi các bảng ngoài Recipe — đổi schema và mất bảo vệ lost-update;
+- **(C)** đổi `RECIPE_CONCURRENCY_CONFLICT` thành mã chung — phá hợp đồng Frontend đang dựa vào.
+
+**➡️ Quyết định (v1.2.2, CR-2026-04): Phương án A.** Hiện thực: `ConcurrencyConflictException` + `UnitOfWork` dịch lỗi (Buổi 3 Dev 4).
+
+---
+### MT-61 🟢 — Hai chỗ tự mâu thuẫn về mã HTTP
+
+**Hiện trạng:**
+- **(a)** Phụ lục B ghi `AUTH_GOOGLE_TOKEN_INVALID` = 400, nhưng FR-AUTH-003 A1 trả 401 với chính mã đó.
+- **(b)** §8.3 ghi `POST /recipes` trả 404 khi `categoryId` không tồn tại, nhưng FR-RCP-003 A2 ghi 400 kèm lỗi field-level.
+
+**Vì sao là vấn đề:** hai dev đọc hai chỗ sẽ hiện thực hai kiểu; QA không biết lấy chỗ nào làm chuẩn.
+
+**Phương án cho (a):**
+- **(A1)** một mã, hai mã HTTP theo bản chất: 400 = token thiếu dữ liệu, 401 = token không xác thực được;
+- **(A2)** tách hai mã — thêm một mã mới mà Frontend phải xử lý giống hệt mã cũ.
+
+**Phương án cho (b):**
+- **(B1)** 400 — `categoryId` là một trường của body, và form gắn được lỗi vào ô "Danh mục";
+- **(B2)** 404 — Frontend sẽ hiểu nhầm là URL `/recipes` không tồn tại.
+
+**➡️ Quyết định (v1.2.2, CR-2026-04): A1 và B1.** Không đổi code (kế hoạch Buổi 3 đã làm theo FR).
+
+---
+### MT-62 🟡 — Trang sửa công thức không có endpoint nào phục vụ
+
+**Hiện trạng:** §5.1 có route `/dashboard/recipes/[id]/edit`. Nhưng:
+- `GET /recipes/{slug}` chỉ trả Published (MT-34);
+- `GET /recipes/mine` chỉ trả bản tóm tắt.
+
+**Vì sao là vấn đề:** Author **không sửa được bản nháp của chính mình**, và FR-RCP-004 không có nguồn `rowVersion` ban đầu cho bản nháp. Lỗi này **không lộ ra khi đọc chéo FR với Chương 8** (cả hai đều tự nhất quán) — chỉ lộ ra khi đối chiếu **từng route giao diện với API phục vụ nó**. Phát hiện khi kiểm tra yêu cầu Buổi 4 "hoàn thành tất cả API endpoints": cài đủ 44 endpoint thì vẫn thiếu tính năng.
+
+**Phương án:**
+- **(A)** `GET /recipes/{slug}` trả Draft cho chủ sở hữu — mở lại MT-34;
+- **(B)** `/recipes/mine` trả đầy đủ chi tiết — mỗi trang danh sách kéo theo toàn bộ steps/ingredients;
+- **(C)** endpoint riêng tư `GET /recipes/mine/{id}` — Owner/Admin, mọi trạng thái, `no-store`, 404 cho id của người khác.
+
+**➡️ Quyết định (v1.2.2, CR-2026-04): Phương án C** — Chương 8 tăng 44 → 45 endpoint. Hiện thực: Buổi 4 Dev 3.
+
+---
+### MT-63 🟢 — Mô tả tầng ở §6.2 trái ràng buộc "Domain chỉ .NET BCL"
+
+**Hiện trạng:**
+- §6.2 đặt `ApplicationUser` và các interface `IRepository<T>`, `IRecipeRepository`, `ICategoryRepository` ở Domain.
+- `ApplicationUser` kế thừa `IdentityUser` (NuGet `Microsoft.Extensions.Identity.Stores`), trong khi NFR-MAINT-004 / CONS-001 cấm Domain có NuGet. Code Buổi 2 đã đặt `ApplicationUser` ở Infrastructure, `IUnitOfWork` và read repository ở Application.
+- FR-CAT-003 A4 giao việc đọc mã lỗi PostgreSQL `23505` cho middleware tầng API.
+
+**Vì sao là vấn đề:** làm đúng từng chữ §6.2 thì Domain phải tham chiếu NuGet (gãy test kiến trúc). Đọc `PostgresException` ở tầng API thì tầng API phụ thuộc chi tiết của một DBMS cụ thể.
+
+**Phương án:**
+- **(A)** Domain chỉ gồm entity, value object, enum và domain exception; interface truy cập dữ liệu ở Application; `ApplicationUser` ở Infrastructure; dịch lỗi ghi DB ở Infrastructure;
+- **(B)** giữ interface ở Domain, chỉ chuyển `ApplicationUser` — chia đôi các cổng truy cập dữ liệu sang hai tầng (`IUnitOfWork` và read repository đã ở Application).
+
+**➡️ Quyết định (v1.2.2, CR-2026-04): Phương án A** (quyết định kiến trúc của nhóm ngày 29/09/2026). Hiện thực: Buổi 3 Dev 4 (nền) + Dev 1/2/3 (phần module).
+
 ---
 
 ## 4. Xung đột giữa SRS và hiện trạng code Buổi 2 (nợ kỹ thuật)
@@ -1411,19 +1496,19 @@ Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS
 | --- | --- | --- | --- | --- |
 | D-1 | Đăng ký nhận `{ fullName, email, userName, password }`; mã `AUTH_USERNAME_EXISTS` | `{ email, password, displayName }`, BE tự sinh `UserName` | MT-12 | Buổi 3 |
 | D-2 | Refresh token 64 byte (512-bit) | 32 byte (256-bit) | MT-13 | Buổi 4 |
-| D-3 | `Recipe.Slug` unique thường | Partial unique `WHERE "IsDeleted" = false` | MT-05 | Buổi 6 |
-| D-4 🔴 | Danh sách công thức lọc theo danh tính + Output Cache khóa công khai; Draft trả 403 | Chỉ Published cho mọi người gọi; Draft → 404; riêng tư qua `/recipes/mine` | **MT-34** | Buổi 6 |
-| D-5 🔴 | Chi tiết danh mục lọc theo danh tính | Chỉ Published | **MT-34** | Buổi 6 |
-| D-6 | Output Cache (Redis-backed) 15′/60′ | Redis cache-aside 2′/5′, không Output Cache | MT-16, MT-17 | Buổi 6 |
+| D-3 | `Recipe.Slug` unique thường | Partial unique `WHERE "IsDeleted" = false` | MT-05 | Buổi 4 *(kéo từ Buổi 6)* |
+| D-4 🔴 | Danh sách công thức lọc theo danh tính + Output Cache khóa công khai; Draft trả 403 | Chỉ Published cho mọi người gọi; Draft → 404; riêng tư qua `/recipes/mine` | **MT-34** | Buổi 4 *(kéo từ Buổi 6)* |
+| D-5 🔴 | Chi tiết danh mục lọc theo danh tính | Chỉ Published | **MT-34** | Buổi 4 *(kéo từ Buổi 6)* |
+| D-6 | Output Cache (Redis-backed) 15′/60′ | Redis cache-aside 2′/5′, không Output Cache | MT-16, MT-17 | Buổi 4 *(kéo từ Buổi 6)* |
 | D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | Buổi 6 |
 | D-8 | `Instructions` NOT NULL | NULL | MT-20.8 | Buổi 3 |
 | D-9 | Hangfire worker riêng | **Đã chuẩn hóa theo code** | MT-47 | — (không còn lệch) |
-| D-10 | `sort=-field` | `sortBy` + `sortOrder` | MT-01 | Buổi 5 |
+| D-10 | `sort=-field` | `sortBy` + `sortOrder` | MT-01 | Buổi 4 (API) · Buổi 5 (FE) |
 | D-11 | Validation trả **422** | 400 | MT-08 | Buổi 3 (commit nền) |
-| D-12 | Access + refresh token trong `localStorage` | Access token chỉ trong bộ nhớ | MT-55 | Buổi 4 |
+| D-12 | Access + refresh token trong `localStorage` | Access token chỉ trong bộ nhớ | MT-55 | Buổi 5 *(phần FE, tách khỏi API refresh ở Buổi 4)* |
 | D-13 | TTL `categories:all` 60′ | 30′ | MT-17 | Buổi 3 |
 | D-14 | `next/image unoptimized`; ảnh ở `localhost:9000` | Ảnh qua Nginx `/media/` | MT-51 (§6.5) | Buổi 7 |
-| D-15 | `Publish()` cho Archived → Published; Published → publish là no-op | 409 `RECIPE_INVALID_STATE_TRANSITION` | MT-35 | Buổi 5 |
+| D-15 | `Publish()` cho Archived → Published; Published → publish là no-op | 409 `RECIPE_INVALID_STATE_TRANSITION` | MT-35 | Buổi 4 *(kéo từ Buổi 5, đi cùng API publish)* |
 | D-16 | `(RecipeId, StepNumber)` là unique index | Unique **constraint** deferrable | MT-56 | Buổi 4 |
 | D-17 | Khóa DataProtection không mã hóa | `ProtectKeysWithCertificate` ở production | NFR-SEC-007 | Buổi 7 |
 | D-18 | `init.sql` tạo config FTS `vietnamese_unaccent` (cơ chế thứ hai) | Một cơ chế: `simple` + `unaccent_immutable` trong migration | MT-25 | Buổi 4 |
@@ -1505,12 +1590,13 @@ MT-07, MT-13, MT-20, MT-24, MT-31, MT-33, MT-40 (MoSCoW), MT-41
 | --- | --- | --- | --- | --- |
 | **CR-2026** | 17/09/2026 | MT-01 → MT-41 (lượt 1–3) | SRS v1.1.0 — 36 FR, 37 endpoint, 24 mã lỗi (đã được v1.2.0 kế thừa toàn bộ; không lưu tệp riêng) | SRS Phụ lục D |
 | **CR-2026-02** | 19/09/2026 | MT-42 → MT-57 (lượt 4) | SRS v1.2.0 — **37 FR, 44 endpoint, 27 mã lỗi** (đã được v1.2.1 kế thừa toàn bộ) | SRS Phụ lục E |
-| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | `SPEC/SRS_Culinary_Blog_v1.2.1.md` — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
+| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | SRS v1.2.1 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.2.md`) — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
+| **CR-2026-04** | 29/09/2026 | MT-59 → MT-63 (lượt 6) | `SPEC/SRS_Culinary_Blog_v1.2.2.md` — **37 FR, 45 endpoint, 29 mã lỗi**; §6.2 chỉnh phân tầng; không đổi schema | SRS Phụ lục G |
 
-Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.1).
+Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.2).
 
 > **Bài học quy trình từ lượt 4 — áp dụng cho mọi CR sau:** 7/16 mục của lượt 4 là **lỗi do chính CR-2026 đưa vào** (cấu hình Nginx, lệnh healthcheck, mã lỗi tự khóa, tên API .NET, cơ chế route, dạng ràng buộc DB, kiểu render). Chúng không thể phát hiện bằng cách đọc chéo các chương với nhau — chỉ lộ ra khi đối chiếu với hệ thống đang chạy. Vì vậy, từ CR-2026-02 trở đi, **mọi thay đổi chạm tới cấu hình hạ tầng, mã lỗi, ràng buộc cơ sở dữ liệu hoặc API của framework phải được kiểm chứng trên code/môi trường thật trước khi duyệt**.
 
 ---
 
-*Trạng thái tài liệu: toàn bộ 58 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*
+*Trạng thái tài liệu: toàn bộ 63 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1, MT-59 → MT-63 trong SRS v1.2.2. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*
