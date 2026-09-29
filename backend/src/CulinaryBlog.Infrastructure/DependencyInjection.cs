@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Application.Features.Categories;
 using CulinaryBlog.Application.Features.Recipes;
@@ -20,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 namespace CulinaryBlog.Infrastructure;
@@ -36,6 +38,7 @@ public static class DependencyInjection
         AddCaching(services, configuration);
         AddStorage(services, configuration);
         AddJobs(services, configuration, connectionString);
+        AddHealthChecks(services, configuration, connectionString);
 
         services.AddOptions<SeedOptions>().Bind(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseSeeder>();
@@ -57,10 +60,20 @@ public static class DependencyInjection
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.OptionalDependentWithoutIdentifyingPropertyWarning))
                 .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
 
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CulinaryBlogDbContext>());
+        // Buổi 3 – Repository & Unit of Work: repository generic đăng ký dạng open generic nên mọi entity có sẵn
+        // repository cơ bản; bộ dịch lỗi ghi DB của từng module được quét tự động, dev module không phải sửa file này.
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+        foreach (var translator in typeof(DependencyInjection).Assembly.GetTypes()
+                     .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(IPersistenceExceptionTranslator).IsAssignableFrom(t)))
+        {
+            services.AddScoped(typeof(IPersistenceExceptionTranslator), translator);
+        }
+
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
     }
 
     private static void AddIdentity(IServiceCollection services, IConfiguration configuration)
@@ -146,6 +159,11 @@ public static class DependencyInjection
         services.AddScoped<WelcomeEmailJob>();
         services.AddScoped<IWelcomeEmailScheduler, HangfireWelcomeEmailScheduler>();
 
+        // Tồn đọng Buổi 2 §6: mặc định 15 giây khiến job fire-and-forget (Welcome Email) mãi mới chạy,
+        // quá chậm khi demo và khi viết integration test. Môi trường Development hạ xuống 1 giây, đổi lại
+        // là vài truy vấn polling mỗi giây trên Postgres, chấp nhận được ở môi trường dev.
+        var pollInterval = TimeSpan.FromSeconds(configuration.GetValue("Hangfire:PollIntervalSeconds", 15));
+
         // SRS §3.6: Hangfire dùng chung PostgreSQL (schema "hangfire")
         services.AddHangfire(cfg => cfg
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -153,12 +171,39 @@ public static class DependencyInjection
             .UseRecommendedSerializerSettings()
             .UsePostgreSqlStorage(
                 o => o.UseNpgsqlConnection(connectionString),
-                new PostgreSqlStorageOptions { SchemaName = "hangfire", PrepareSchemaIfNecessary = true }));
+                new PostgreSqlStorageOptions
+                {
+                    SchemaName = "hangfire",
+                    PrepareSchemaIfNecessary = true,
+                    QueuePollInterval = pollInterval,
+                }));
 
         // Server xử lý job: bật ở container "hangfire" (worker) hoặc khi chạy local (Hangfire:ServerEnabled mặc định true)
         if (configuration.GetValue("Hangfire:ServerEnabled", true) || configuration.GetValue<bool>("Hangfire:WorkerOnly"))
         {
-            services.AddHangfireServer(o => o.ServerName = $"culinaryblog-{Environment.MachineName}");
+            // SchedulePollingInterval chi phối job ĐÃ LÊN LỊCH (các lần retry 1'/5'/30' của WelcomeEmailJob).
+            services.AddHangfireServer(o =>
+            {
+                o.ServerName = $"culinaryblog-{Environment.MachineName}";
+                o.SchedulePollingInterval = pollInterval;
+            });
         }
+    }
+
+    /// <summary>
+    /// FR-OBS-001 (Buổi 3): PostgreSQL và Redis gắn tag "ready" — thiếu một trong hai là API không phục vụ được;
+    /// MinIO KHÔNG gắn "ready" và chỉ báo Degraded — mất MinIO là suy giảm (không tải được ảnh), không phải sập.
+    /// Timeout 3 giây mỗi check để một dependency treo không làm /health treo theo.
+    /// </summary>
+    private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration, string connectionString)
+    {
+        var redis = configuration.GetConnectionString("Redis")
+            ?? throw new InvalidOperationException("Thiếu ConnectionStrings:Redis.");
+        var timeout = TimeSpan.FromSeconds(3);
+
+        services.AddHealthChecks()
+            .AddNpgSql(connectionString, name: "database", tags: ["ready"], timeout: timeout)
+            .AddRedis($"{redis},connectTimeout=2000,syncTimeout=2000", name: "redis", tags: ["ready"], timeout: timeout)
+            .AddCheck<MinioHealthCheck>("minio", failureStatus: HealthStatus.Degraded, timeout: timeout);
     }
 }

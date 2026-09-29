@@ -18,6 +18,26 @@ public interface ICategoryReadRepository
 
 public static class CategoryCacheKeys
 {
-    /// <summary>Key theo FR-CAT-001 bước 3. Command Create/Update/Delete (Buổi 3) sẽ invalidate key này.</summary>
+    /// <summary>Key theo FR-CAT-001 bước 3. Command Create/Update/Delete (Buổi 3) invalidate key này.</summary>
     public const string All = "categories:all";
+
+    /// <summary>
+    /// Tiền tố khóa cache chi tiết danh mục <c>categories:detail:{slug}:{queryHash}</c> (SRS NFR-PERF-003, TTL 2 phút).
+    /// <c>GetCategoryBySlugQuery</c> chưa cache (bật ở Buổi 4 cùng retrofit D-5) nên hiện chưa có khóa nào mang tiền tố này.
+    /// Ba command Create/Update/Delete khai báo sẵn tiền tố này để Buổi 4 không phải nhớ thêm; <c>CacheInvalidationBehavior</c>
+    /// hiện xóa theo khóa chính xác (thao tác không có tác dụng), việc xóa theo tiền tố là <c>RemoveByPrefixAsync</c> (SCAN) của Buổi 7.
+    /// </summary>
+    public const string DetailPrefix = "categories:detail:";
+}
+
+/// <summary>
+/// SRS §7.9 Bảng Giới hạn Dữ liệu Chuẩn (MT-37) – nguồn sự thật duy nhất cho độ dài field Category.
+/// Validator và định nghĩa cột DB PHẢI bằng nhau: Name varchar(100), Slug varchar(120), ImageUrl varchar(500).
+/// </summary>
+public static class CategoryLimits
+{
+    public const int NameMin = 2;
+    public const int NameMax = 100;
+    public const int DescriptionMax = 2000;
+    public const int ImageUrlMax = 500;
 }

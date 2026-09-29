@@ -156,7 +156,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | frontend | culinaryblog-web (build) | Node **22.23.2** | Node 22 LTS (khuyến nghị) | 3000:3000 |
 | postgres | postgres:16-alpine | PostgreSQL **16.15** | PostgreSQL 16 | `${POSTGRES_HOST_PORT:-5432}`:5432 – máy này dùng **5434** (xem 6.10) |
 | redis | redis:7-alpine | Redis **7.4.11** (AOF bật) | Redis 7 | 6379:6379 |
-| minio | minio/minio:latest | RELEASE.**2025-09-07** | MinIO RELEASE.2024+ | 9000, 9001 (console) |
+| minio | quay.io/minio/minio | RELEASE.**2025-09-07T16-13-09Z** (ghim) | MinIO RELEASE.2024+ | 9000, 9001 (console) |
 | seq | datalust/seq:latest | latest | Seq | 5341:80 |
 | mailhog | mailhog/mailhog | latest (profile `dev`) | Mailhog (dev only) | 8025, 1025 |
 

@@ -1,5 +1,6 @@
 using CulinaryBlog.Domain.Common;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Domain.Exceptions;
 
 namespace CulinaryBlog.Domain.Entities;
 
@@ -66,7 +67,7 @@ public class Recipe : BaseEntity
 
         if (prepTimeMinutes <= 0 || cookTimeMinutes < 0 || servings <= 0)
         {
-            throw new DomainException("PrepTime và Servings phải > 0, CookTime phải >= 0.");
+            throw new BusinessRuleViolationException(ErrorCodes.ValidationError, "PrepTime và Servings phải > 0, CookTime phải >= 0.");
         }
 
         return new Recipe
@@ -120,7 +121,7 @@ public class Recipe : BaseEntity
 
         if (_steps.Count == 0 || _ingredients.Count == 0)
         {
-            throw new DomainException("Recipe phải có ít nhất 1 bước thực hiện và 1 nguyên liệu.");
+            throw new BusinessRuleViolationException(ErrorCodes.RecipePublishIncomplete, "Recipe phải có ít nhất 1 bước thực hiện và 1 nguyên liệu.");
         }
 
         Status = RecipeStatus.Published;

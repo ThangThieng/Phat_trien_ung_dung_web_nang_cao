@@ -1,6 +1,7 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Files;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Domain.Exceptions;
 using MediatR;
 
 namespace CulinaryBlog.Application.Features.Files;

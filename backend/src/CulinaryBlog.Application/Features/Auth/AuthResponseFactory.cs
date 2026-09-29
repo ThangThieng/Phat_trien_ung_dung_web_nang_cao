@@ -1,4 +1,5 @@
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Domain.Entities;
 
 namespace CulinaryBlog.Application.Features.Auth;
