@@ -4,6 +4,7 @@ using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Domain.Exceptions;
 
 namespace CulinaryBlog.API.IntegrationTests.Content;
 
@@ -82,7 +83,7 @@ public class RecipesEndpointsTests(CulinaryBlogApiFactory factory)
 
     /// <summary>
     /// FR-RCP-002 A2 ở trạng thái HIỆN TẠI: Draft của người khác → 403 RECIPE_FORBIDDEN.
-    /// Buổi 6 (retrofit D-4) sẽ đổi thành 404 RECIPE_NOT_FOUND để không xác nhận sự tồn tại của slug;
+    /// Buổi 4 — Dev 3 (retrofit D-4) sẽ đổi thành 404 RECIPE_NOT_FOUND để không xác nhận sự tồn tại của slug;
     /// khi đó test này phải được cập nhật cùng commit đó.
     /// </summary>
     [Fact]

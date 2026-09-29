@@ -1,5 +1,6 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Domain.Exceptions;
 using FluentValidation;
 using MediatR;
 

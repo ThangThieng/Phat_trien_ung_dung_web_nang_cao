@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Application.Features.Categories;
 using CulinaryBlog.Application.Features.Recipes;
@@ -20,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 namespace CulinaryBlog.Infrastructure;
@@ -36,6 +38,7 @@ public static class DependencyInjection
         AddCaching(services, configuration);
         AddStorage(services, configuration);
         AddJobs(services, configuration, connectionString);
+        AddHealthChecks(services, configuration, connectionString);
 
         services.AddOptions<SeedOptions>().Bind(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseSeeder>();
@@ -57,7 +60,16 @@ public static class DependencyInjection
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.OptionalDependentWithoutIdentifyingPropertyWarning))
                 .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
 
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CulinaryBlogDbContext>());
+        // Buổi 3 – Repository & Unit of Work: repository generic đăng ký dạng open generic nên mọi entity có sẵn
+        // repository cơ bản; bộ dịch lỗi ghi DB của từng module được quét tự động, dev module không phải sửa file này.
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+        foreach (var translator in typeof(DependencyInjection).Assembly.GetTypes()
+                     .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(IPersistenceExceptionTranslator).IsAssignableFrom(t)))
+        {
+            services.AddScoped(typeof(IPersistenceExceptionTranslator), translator);
+        }
+
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
@@ -175,5 +187,22 @@ public static class DependencyInjection
                 o.SchedulePollingInterval = pollInterval;
             });
         }
+    }
+
+    /// <summary>
+    /// FR-OBS-001 (Buổi 3): PostgreSQL và Redis gắn tag "ready" — thiếu một trong hai là API không phục vụ được;
+    /// MinIO KHÔNG gắn "ready" và chỉ báo Degraded — mất MinIO là suy giảm (không tải được ảnh), không phải sập.
+    /// Timeout 3 giây mỗi check để một dependency treo không làm /health treo theo.
+    /// </summary>
+    private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration, string connectionString)
+    {
+        var redis = configuration.GetConnectionString("Redis")
+            ?? throw new InvalidOperationException("Thiếu ConnectionStrings:Redis.");
+        var timeout = TimeSpan.FromSeconds(3);
+
+        services.AddHealthChecks()
+            .AddNpgSql(connectionString, name: "database", tags: ["ready"], timeout: timeout)
+            .AddRedis($"{redis},connectTimeout=2000,syncTimeout=2000", name: "redis", tags: ["ready"], timeout: timeout)
+            .AddCheck<MinioHealthCheck>("minio", failureStatus: HealthStatus.Degraded, timeout: timeout);
     }
 }

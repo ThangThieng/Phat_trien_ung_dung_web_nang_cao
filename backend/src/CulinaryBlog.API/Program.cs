@@ -2,16 +2,19 @@ using System.Text.Json.Serialization;
 using CulinaryBlog.API.Endpoints;
 using CulinaryBlog.API.Extensions;
 using CulinaryBlog.API.Middleware;
+using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.API.Services;
 using CulinaryBlog.Application;
-using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Infrastructure;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Seed;
 using Hangfire;
 using Hangfire.Dashboard;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -33,6 +36,10 @@ if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath
 }
 
 builder.Services.AddHttpContextAccessor();
+
+// Buổi 3: bảng "domain exception → mã HTTP" dựng MỘT lần từ mọi IExceptionStatusMapping của assembly này.
+builder.Services.AddSingleton(ExceptionStatusMap.FromAssembly(typeof(GlobalExceptionMiddleware).Assembly));
+
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 {
@@ -117,6 +124,22 @@ app.MapHangfireDashboard(
 
 app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.API", version = "v1", docs = "/scalar" }))
     .ExcludeFromDescription();
+
+// FR-OBS-001 / SRS §8.7 (Buổi 3): ba endpoint, ba mục đích — không phải ba bản sao.
+//   /health       → mọi check (database, redis, minio) + JSON chi tiết; 503 khi Unhealthy (MinIO lỗi chỉ Degraded → 200).
+//   /health/live  → không chạy check nào: process còn sống là 200 (lỗi thì Docker restart container).
+//   /health/ready → chỉ check tag "ready" (PostgreSQL + Redis): 503 thì ngừng chuyển traffic, KHÔNG restart.
+// Đi thẳng qua HealthCheckService, không qua MediatR: Docker gọi mỗi 10 giây nên phải phụ thuộc ít thành phần nhất.
+app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse })
+    .AllowAnonymous();
+app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false })
+    .AllowAnonymous();
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("ready"),
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+    })
+    .AllowAnonymous();
 
 var api = app.MapGroup("/api/v1");
 api.MapAuthEndpoints();

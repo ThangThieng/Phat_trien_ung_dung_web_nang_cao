@@ -2,8 +2,8 @@
 
 **Dev 4:** Nguyễn Thăng Thiêng — MSSV 2312755 — Trưởng nhóm / Kỹ sư Hạ tầng & DevOps
 **Nhánh:** `2312755_NguyenThangThieng_buoiso3` (tách từ `develop`)
-**Phạm vi:** commit nền **D-11 (422 → 400)** · **FR-JOB-001** Hangfire Dashboard sau Nginx Basic Auth · **NFR-MAINT-002** Integration Test Harness (Testcontainers) dùng chung cả nhóm
-**Tài liệu bám sát:** `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (Buổi 3 — Dev 4) và `SPEC/SRS_Culinary_Blog_v1.2.1.md` (MT-08, MT-39, MT-21, MT-34)
+**Phạm vi:** commit nền **D-11 (422 → 400)** · **FR-JOB-001** Hangfire Dashboard sau Nginx Basic Auth · **NFR-MAINT-002** Integration Test Harness (Testcontainers) dùng chung cả nhóm · **bổ sung 29/09/2026:** nền Domain Exceptions / Repository & Unit of Work / Global Exception Middleware + **FR-OBS-001** ba endpoint health (mục 11)
+**Tài liệu bám sát:** `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (Buổi 3 — Dev 4) và `SPEC/SRS_Culinary_Blog_v1.2.1.md` — nay là `SPEC/SRS_Culinary_Blog_v1.2.2.md` (MT-08, MT-39, MT-21, MT-34)
 
 ---
 
@@ -16,6 +16,10 @@
 | C | **Integration Test Harness (NFR-MAINT-002)** | `CulinaryBlogApiFactory` + Testcontainers (PostgreSQL 16, Redis 7, MinIO) + `CreateClientAs` + Respawn | ✅ Hoàn thành — 44 integration test, 43 xanh, 1 Skip có chủ đích (MT-34) |
 | D | **Trả nợ test Buổi 2** | Register/Login/Recipes/Categories/Files | ✅ Hoàn thành — mọi endpoint của Buổi 2 có ≥ 1 happy path + ≥ 1 error case |
 | E | **Tồn đọng Buổi 2 §6 — poll interval** | Giảm xuống 1 giây ở môi trường dev | ✅ Hoàn thành — `Hangfire:PollIntervalSeconds` = 1 ở `appsettings.Development.json` |
+| F | **Nền Domain Exceptions** *(yêu cầu bổ sung 29/09)* | Lớp gốc trừu tượng, lỗi dùng chung, danh mục 29 mã Phụ lục B ở Domain | ✅ Code xong, test xanh — mục 11 |
+| G | **Nền Repository & Unit of Work** *(bổ sung)* | `IRepository<T>`, `IUnitOfWork`, `EfRepository<T>`, `UnitOfWork` (transaction qua execution strategy, dịch lỗi ghi DB) | ✅ Code xong, rollback & xung đột kiểm chứng trên PostgreSQL thật — mục 11 |
+| H | **Global Exception Middleware** *(bổ sung)* | Ánh xạ domain exception → HTTP theo module, hợp đồng Problem Details | ✅ Code xong, 11 test hợp đồng — mục 11 |
+| I | **FR-OBS-001 — 3 endpoint health** *(bổ sung, kéo từ Buổi 5)* | `/health`, `/health/live`, `/health/ready` | ✅ Code xong, 4 integration test + kiểm chứng trên `docker compose` (MinIO/Redis sập) — mục 11 |
 
 ---
 
@@ -371,7 +375,7 @@ Kết quả kiểm chứng Hangfire Dashboard và Welcome Email: xem bảng ở 
    Lớp test nào **ghi dữ liệu** thì thêm `: IAsyncLifetime` với `InitializeAsync() => factory.ResetDatabaseAsync();`.
 3. **Lỗi validation từ nay là 400**, không còn 422 — ở Frontend dùng `mapProblemDetailsToForm(error, FIELDS, setError)` thay vì tự viết điều kiện status.
 4. **Buổi 4 (D-18):** `CREATE TEXT SEARCH CONFIGURATION vietnamese_unaccent` phải được đưa vào migration, vì Testcontainers không chạy `docker/postgres/init.sql`.
-5. **Buổi 6 (D-4/D-6):** gỡ `Skip` khỏi `RecipeCacheIsolationTests` và cập nhật `GetRecipeBySlug_DraftAsGuest_Returns403ForNow` thành 404.
+5. **Buổi 4 — Dev 3 (D-4/D-6; kéo từ Buổi 6 theo kế hoạch cập nhật 29/09/2026):** gỡ `Skip` khỏi `RecipeCacheIsolationTests` và cập nhật `GetRecipeBySlug_DraftAsGuest_Returns403ForNow` thành 404.
 
 ---
 
@@ -394,3 +398,104 @@ feat(infra): secure hangfire dashboard behind nginx basic auth and add testconta
 ```
 
 *(Commit nền D-11 được gộp trong commit này; nếu nhóm muốn tách thêm, phần D-11 dùng message đã chốt trong kế hoạch: `refactor(api): unify validation errors to 400 per SRS v1.1.0 MT-08`.)*
+
+---
+
+## 11. Phần bổ sung ngày 29/09/2026 — nền kiến trúc Buổi 3 và health checks
+
+### 11.1 Bối cảnh
+
+Giảng viên giao cho Buổi 3 bốn yêu cầu:
+1. cài đặt các lớp domain exceptions;
+2. cài đặt repository & Unit of Work;
+3. middleware bắt lỗi toàn cục trả Problem Details;
+4. ≥ 2 API mỗi thành viên.
+
+Kế hoạch được viết lại (`KE_HOACH_PHAT_TRIEN_8_BUOI.md` — mục Buổi 3) để chia cả bốn yêu cầu cho 4 dev theo module. Dev 4 làm **phần nền dùng chung** mà ba dev còn lại dựa vào, cộng **ba endpoint health** — chính là API của Dev 4 trong buổi này, vì `POST /files/upload` đã làm ở Buổi 2 nên không tính.
+
+Đồng thời SRS được nâng lên **v1.2.2** (CR-2026-04 — MT-59 → MT-63):
+- thêm hai mã lỗi mà code của buổi này cần: `AUTH_USER_NOT_FOUND`, `CONCURRENCY_CONFLICT`;
+- sửa §6.2 cho interface repository nằm ở tầng Application.
+
+### 11.2 Đã làm và lý do
+
+| Thành phần | Nơi đặt | Tác dụng | Vì sao làm như vậy |
+|---|---|---|---|
+| `DomainException` (trừu tượng, mang `Code` + `Extensions`) | `Domain/Exceptions` | Mọi lỗi nghiệp vụ có một mã Phụ lục B; dữ liệu phụ (ví dụ `recipeCount`) đi thẳng vào Problem Details | Domain **không mang mã HTTP** — Domain không được biết mình chạy sau web API; mã HTTP là việc của tầng API |
+| `BusinessRuleViolationException`, `ConcurrencyConflictException` | `Domain/Exceptions` | Lỗi quy tắc không đáng một lớp riêng (400) và xung đột `RowVersion` chung (409) | Ba chỗ `throw new DomainException(...)` của Buổi 2 được chuyển sang lớp cụ thể trong cùng commit, nên build không gãy khi lớp gốc thành trừu tượng |
+| `ErrorCodes` (đủ 29 mã, chuyển từ Application sang Domain) | `Domain/Exceptions` | Một danh mục mã duy nhất cho mọi tầng | Đưa đủ 29 mã vào một lần → dev module không phải sửa file dùng chung này → không xung đột merge |
+| `BadGatewayException` (502) | `Application/Common/Exceptions` | Lỗi dịch vụ ngoài (Google JWKS — Dev 1 dùng) | Lỗi hạ tầng không phải bất biến nghiệp vụ nên ở `AppException`, không ở Domain |
+| `IRepository<T>`, `IUnitOfWork` | `Application/Common/Interfaces/Persistence` | Handler ghi dữ liệu không còn biết tới `DbContext` | Không có `Remove` (mọi xóa là xóa mềm), không trả `IQueryable` (không để chi tiết EF lọt lên), không có `Update` (entity đã được EF theo dõi) |
+| `EfRepository<T>` (open generic) | `Infrastructure/Persistence/Repositories` | Mọi entity có sẵn repository cơ bản | Dev 2 kiểm tra `categoryId` bằng `IRepository<Category>` mà không phải chờ repository của Dev 3 |
+| `UnitOfWork` | `Infrastructure/Persistence` | `SaveChangesAsync` dịch lỗi ghi DB; `ExecuteInTransactionAsync` chạy nhiều lần lưu trong một transaction | DbContext bật `EnableRetryOnFailure` → tự `BeginTransaction` ngoài execution strategy là EF ném lỗi. Gói đúng mẫu mà `DatabaseSeeder` đã chạy ổn định |
+| `IPersistenceExceptionTranslator` (quét tự động) | `Infrastructure/Persistence` | Mỗi module dịch lỗi DB của mình (ví dụ `23505` trên tên danh mục → 409) | Chỉ Infrastructure đọc chi tiết PostgreSQL; tầng API không tham chiếu Npgsql (MT-63) |
+| `ExceptionStatusMap` + `IExceptionStatusMapping` (quét tự động) + `CommonExceptionMappings` | `API/Middleware/ExceptionMapping` | Mỗi module khai mã HTTP cho exception của mình trong **một file riêng** | Tra theo **kiểu**, không theo chuỗi mã: trình biên dịch kiểm tra tên lớp, và một mã được đi với hai mã HTTP khi cần (MT-61); đăng ký trùng → lỗi ngay khi khởi động |
+| `GlobalExceptionMiddleware` (nâng cấp) | `API/Middleware` | Domain exception → mã HTTP từ bảng; chép `Extensions`; 500 không lộ chi tiết | Giữ middleware có sẵn (SRS §6.2 gọi đích danh), chỉ đổi phần bên trong — chuyển sang `IExceptionHandler` không thêm khả năng nào |
+| `MinioHealthCheck` + đăng ký 3 check + map `/health`, `/health/live`, `/health/ready` | `Infrastructure/Storage`, `Program.cs` | FR-OBS-001 phần endpoint (kéo từ Buổi 5) | PostgreSQL + Redis gắn tag `ready`; MinIO chỉ `Degraded` — mất MinIO là suy giảm, không phải sập. Không đi qua MediatR vì Docker gọi mỗi 10 giây |
+
+### 11.3 Test đã viết
+
+| File | Số test | Kiểm chứng |
+|---|---|---|
+| `ArchitectureTests/DomainExceptionRulesTests.cs` | 5 | Mọi domain exception cụ thể **đã đăng ký mã HTTP**; exception nằm đúng namespace; repository không trả `IQueryable`, không có xóa cứng; **`ErrorCodes` khớp Phụ lục B — đọc thẳng từ file SRS mới nhất trong `SPEC/`** |
+| `ArchitectureTests/ExceptionStatusMapTests.cs` | 6 | Tra theo kiểu, đi ngược lên lớp cha, mặc định 400, cấm đăng ký trùng, cấm mã 2xx |
+| `IntegrationTests/Platform/ProblemDetailsContractTests.cs` | 11 | Mọi loại lỗi (quy tắc nghiệp vụ, chưa đăng ký, validation, 401, 404, 500, 502, 503) đều là `application/problem+json`, đúng `type`, có `traceId`; lỗi 500 không lộ chi tiết nội bộ; `Extensions` được chép |
+| `IntegrationTests/Platform/UnitOfWorkTests.cs` | 3 | Transaction commit; **rollback cả hai lần lưu** khi lỗi giữa chừng; hai phiên cùng sửa một danh mục → `ConcurrencyConflictException` (409 `CONCURRENCY_CONFLICT`) — trên PostgreSQL thật |
+| `IntegrationTests/Platform/HealthEndpointsTests.cs` | 4 | `live` luôn 200; `ready` chỉ gồm database + redis; `/health` đủ 3 entry; Redis sai địa chỉ → `ready` 503 nhưng `live` vẫn 200 |
+
+Các lỗi được ném qua `ErrorTriggerStartupFilter` — một middleware **chỉ có trong test**, gắn ở cuối pipeline — nên đi qua `GlobalExceptionMiddleware` thật mà không phải thêm endpoint giả vào code sản phẩm.
+
+### 11.4 Kết quả chạy thật
+
+```
+dotnet build CulinaryBlog.sln → Build succeeded. 0 Warning(s) 0 Error(s)
+Passed! - Failed: 0, Passed: 14, Skipped: 0, Total: 14 - CulinaryBlog.Domain.UnitTests.dll
+Passed! - Failed: 0, Passed: 27, Skipped: 0, Total: 27 - CulinaryBlog.Application.UnitTests.dll
+Passed! - Failed: 0, Passed: 15, Skipped: 0, Total: 15 - CulinaryBlog.ArchitectureTests.dll
+Passed! - Failed: 0, Passed: 61, Skipped: 1, Total: 62 - CulinaryBlog.API.IntegrationTests.dll
+```
+
+**Tổng: 117 Passed · 0 Failed · 1 Skipped** (vẫn là test MT-34, Skip có chủ đích — nay gỡ ở Buổi 4, Dev 3).
+
+**`docker compose up -d --build`, gọi qua Nginx:**
+
+| Kịch bản | `/health` | `/health/live` | `/health/ready` |
+|---|---|---|---|
+| Bình thường | 200 `Healthy` (database, redis, minio) | 200 | 200 `Healthy` (database, redis) |
+| `docker compose stop minio` | 200 **`Degraded`** | — | 200 `Healthy` |
+| `docker compose stop redis` | — | **200** | **503 `Unhealthy`** |
+| Bật lại Redis | — | — | 200 (tự hồi phục) |
+
+`GET http://localhost/api/v1/khong-ton-tai` → `404`, `Content-Type: application/problem+json`, có `traceId`.
+
+### 11.5 Bàn giao cho Dev 1 / Dev 2 / Dev 3
+
+1. **Exception của module mình:**
+   - tạo trong `Domain/Exceptions/{Auth|Recipes|Categories}/`, kế thừa lớp gốc của module (`AuthDomainException`, …);
+   - lấy mã từ `ErrorCodes` — đã có đủ 29 mã, **không sửa file này**;
+   - khai mã HTTP trong `API/Middleware/ExceptionMapping/{Module}ExceptionMappings.cs`.
+
+   Quên khai mã HTTP → `EveryConcreteDomainException_IsExplicitlyMappedToAnHttpStatus` đỏ.
+2. **Repository của module:**
+   - interface ở `Application/Common/Interfaces/Persistence/`, kế thừa `IRepository<T>`;
+   - cài đặt kế thừa `EfRepository<T>`;
+   - thêm **một** property vào `IUnitOfWork` + `UnitOfWork` (chỉ thêm dòng).
+3. **Lỗi ghi DB riêng của module** (ví dụ `23505`): viết một lớp `IPersistenceExceptionTranslator` trong Infrastructure — được quét tự động. **Không** `try/catch` exception của EF trong handler.
+4. **Nhiều lần `SaveChanges` trong một transaction** (ví dụ đổi ảnh chính): dùng `unitOfWork.ExecuteInTransactionAsync`, **đọc lại dữ liệu bên trong** thao tác vì nó có thể bị chạy lại.
+5. **Dev 1:** `AUTH_USERNAME_EXISTS` còn giữ tạm trong `ErrorCodes` cho tới khi làm xong D-1; xong thì xóa hằng số và dòng miễn trừ trong `DomainExceptionRulesTests`.
+
+### 11.6 Commit
+
+Chưa commit tại thời điểm viết báo cáo. Theo kế hoạch, toàn bộ phần bổ sung đi vào **một** commit trên nhánh `2312755_NguyenThangThieng_buoiso3`, sau hai commit ở mục 10:
+
+```
+feat(infra): add base domain exception, unit of work, global exception middleware and health check APIs
+```
+
+Tài liệu đi kèm cùng đợt:
+- `SPEC/SRS_Culinary_Blog_v1.2.2.md` (đổi tên từ v1.2.1, CR-2026-04);
+- `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (MT-59 → MT-63);
+- `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (Buổi 3 và Buổi 4 viết lại, Buổi 5–7 cập nhật);
+- `README.md`, `SPEC/CONG_NGHE_VA_PHIEN_BAN.md`.
+
+Nên tách thành commit `docs(spec): ...` riêng để người review phân biệt được thay đổi tài liệu với thay đổi code.

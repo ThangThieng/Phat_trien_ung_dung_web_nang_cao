@@ -13,13 +13,13 @@ namespace CulinaryBlog.API.IntegrationTests.Content;
 /// gỡ bỏ ở tầng thiết kế, hai người dùng khác quyền vẫn có thể chia nhau một entry cache.
 ///
 /// Test được viết NGAY HÔM NAY và đánh dấu Skip có chủ đích: lỗ hổng phải nằm trong bộ test thay vì
-/// nằm trong trí nhớ của ai đó. Retrofit D-4 + D-6 ở Buổi 6 gỡ lọc theo danh tính khỏi
+/// nằm trong trí nhớ của ai đó. Retrofit D-4 + D-6 ở Buổi 4 (Dev 3 — kéo từ Buổi 6 ngày 29/09/2026) gỡ lọc theo danh tính khỏi
 /// <c>RecipeReadRepository</c> và xóa Output Cache — khi đó bỏ Skip và test này phải chuyển sang xanh.
 /// </summary>
 [Collection(IntegrationTestSuite.Name)]
 public class RecipeCacheIsolationTests(CulinaryBlogApiFactory factory)
 {
-    private const string SkipReason = "Lỗ hổng đã biết MT-34 — retrofit D-4/D-6 ở Buổi 6 (gỡ lọc theo danh tính + bỏ Output Cache).";
+    private const string SkipReason = "Lỗ hổng đã biết MT-34 — retrofit D-4/D-6 ở Buổi 4 — Dev 3 (gỡ lọc theo danh tính + bỏ Output Cache).";
 
     [Fact(Skip = SkipReason)]
     public async Task GetRecipes_AfterAdminRequest_DoesNotLeakDraftsToGuest()

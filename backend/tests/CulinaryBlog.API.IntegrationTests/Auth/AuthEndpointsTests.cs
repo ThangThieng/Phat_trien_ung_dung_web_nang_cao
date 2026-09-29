@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Auth;
+using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Infrastructure.Jobs;
 
 namespace CulinaryBlog.API.IntegrationTests.Auth;

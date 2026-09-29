@@ -203,6 +203,9 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
             // "endpoint CÓ enqueue đúng job" — bản thân WelcomeEmailJob đã chạy thật từ Buổi 2.
             services.RemoveAll<IBackgroundJobClient>();
             services.AddSingleton<IBackgroundJobClient>(BackgroundJobs);
+
+            // Buổi 3: middleware chỉ có trong test, ném từng loại lỗi để kiểm hợp đồng Problem Details.
+            services.AddTransient<IStartupFilter, ErrorTriggerStartupFilter>();
         });
     }
 

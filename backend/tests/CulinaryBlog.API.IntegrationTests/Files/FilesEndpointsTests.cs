@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Files;
+using CulinaryBlog.Domain.Exceptions;
 
 namespace CulinaryBlog.API.IntegrationTests.Files;
 
