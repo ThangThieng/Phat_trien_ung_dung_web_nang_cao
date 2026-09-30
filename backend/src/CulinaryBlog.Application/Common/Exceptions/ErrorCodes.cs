@@ -9,6 +9,9 @@ public static class ErrorCodes
     public const string AuthAccountDisabled = "AUTH_ACCOUNT_DISABLED";
     public const string AuthTokenExpired = "AUTH_TOKEN_EXPIRED";
     public const string AuthTokenInvalid = "AUTH_TOKEN_INVALID";
+    public const string AuthRefreshTokenExpired = "AUTH_REFRESH_TOKEN_EXPIRED";
+    public const string AuthRefreshTokenRevoked = "AUTH_REFRESH_TOKEN_REVOKED";
+    public const string AuthUserNotFound = "AUTH_USER_NOT_FOUND";
     public const string AuthGoogleTokenInvalid = "AUTH_GOOGLE_TOKEN_INVALID";
     public const string AuthGoogleUnavailable = "AUTH_GOOGLE_UNAVAILABLE";
 

@@ -10,15 +10,15 @@ namespace CulinaryBlog.Infrastructure.Identity;
 
 /// <summary>
 /// ITokenService – Access Token: JWT HS256, TTL 15 phút, claims userId/email/roles/jti (NFR-SEC-002).
-/// Refresh Token: 512-bit cryptographically secure random (FR-AUTH-001 bước 9), lưu DB dạng SHA-256 hex.
+/// Refresh Token: 256-bit cryptographically secure random, lưu DB dạng SHA-256 hex.
 /// </summary>
 public sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider timeProvider) : ITokenService
 {
-    private const int RefreshTokenBytes = 64;
+    private const int RefreshTokenBytes = 32;
 
     private readonly JwtOptions _options = options.Value;
 
-    public AccessToken CreateAccessToken(IdentityUserInfo user)
+    public AccessToken CreateAccessToken(IdentityUserInfo user, Guid sessionId)
     {
         ArgumentNullException.ThrowIfNull(user);
 
@@ -32,6 +32,7 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider t
             new(JwtRegisteredClaimNames.Name, user.DisplayName),
             new(JwtRegisteredClaimNames.UniqueName, user.UserName),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+            new("sid", sessionId.ToString()),
         };
         claims.AddRange(user.Roles.Select(role => new Claim("role", role)));
 

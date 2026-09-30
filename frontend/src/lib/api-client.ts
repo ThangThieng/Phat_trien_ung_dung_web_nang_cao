@@ -37,6 +37,20 @@ export interface ApiRequestOptions {
   next?: NextFetchRequestConfig;
   cache?: RequestCache;
   signal?: AbortSignal;
+  skipAuthRefresh?: boolean;
+}
+
+interface AuthCallbacks {
+  getAccessToken: () => string | null;
+  refresh: () => Promise<string>;
+  onRefreshFailure: () => void;
+}
+
+let authCallbacks: AuthCallbacks | null = null;
+let refreshPromise: Promise<string> | null = null;
+
+export function configureAuthCallbacks(callbacks: AuthCallbacks | null) {
+  authCallbacks = callbacks;
 }
 
 async function parseProblem(response: Response): Promise<ProblemDetails> {
@@ -51,7 +65,8 @@ async function parseProblem(response: Response): Promise<ProblemDetails> {
 export async function apiFetch<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
   if (options.body !== undefined) headers['Content-Type'] = 'application/json';
-  if (options.accessToken) headers.Authorization = `Bearer ${options.accessToken}`;
+  const accessToken = options.accessToken !== undefined ? options.accessToken : authCallbacks?.getAccessToken() ?? null;
+  if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     method: options.method ?? 'GET',
@@ -63,7 +78,17 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   });
 
   if (!response.ok) {
-    throw new ApiError(response.status, await parseProblem(response));
+    const problem = await parseProblem(response);
+    if (response.status === 401 && problem.type === 'AUTH_TOKEN_EXPIRED' && !options.skipAuthRefresh && authCallbacks) {
+      try {
+        refreshPromise ??= authCallbacks.refresh().finally(() => { refreshPromise = null; });
+        const renewedToken = await refreshPromise;
+        return await apiFetch<T>(path, { ...options, accessToken: renewedToken, skipAuthRefresh: true });
+      } catch {
+        authCallbacks.onRefreshFailure();
+      }
+    }
+    throw new ApiError(response.status, problem);
   }
 
   if (response.status === 204) return undefined as T;

@@ -23,9 +23,10 @@ public class RefreshToken
 
     public string? CreatedByIp { get; private set; }
 
-    public static RefreshToken Create(string userId, string tokenHash, DateTime expiresAt, DateTime createdAt, string? createdByIp) =>
+    public static RefreshToken Create(string userId, string tokenHash, DateTime expiresAt, DateTime createdAt, string? createdByIp, Guid? id = null) =>
         new()
         {
+            Id = id ?? Guid.NewGuid(),
             UserId = userId,
             TokenHash = tokenHash,
             ExpiresAt = expiresAt,
@@ -35,5 +36,9 @@ public class RefreshToken
 
     public bool IsActive(DateTime utcNow) => RevokedAt is null && ExpiresAt > utcNow;
 
-    public void Revoke(DateTime revokedAt) => RevokedAt ??= revokedAt;
+    public void Revoke(DateTime revokedAt, string? replacedByHash = null)
+    {
+        RevokedAt ??= revokedAt;
+        ReplacedByTokenHash ??= replacedByHash;
+    }
 }

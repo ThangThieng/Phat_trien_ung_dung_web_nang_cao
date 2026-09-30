@@ -1,17 +1,22 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { apiFetch } from '@/lib/api-client';
+import { apiFetch, configureAuthCallbacks } from '@/lib/api-client';
+import { getQueryClient } from '@/lib/query-client';
 import type { AuthResponse, User } from '@/types/api';
 
 const STORAGE_KEY = 'culinaryblog.auth';
+let authRefreshPromise: Promise<string> | null = null;
 
 interface AuthSession {
-  accessToken: string;
   refreshToken: string;
-  expiresAt: string;
   user: User;
+}
+
+interface ActiveSession extends AuthSession {
+  accessToken: string;
+  expiresAt: string;
 }
 
 interface RegisterInput {
@@ -38,13 +43,7 @@ function readSession(): AuthSession | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const session = JSON.parse(raw) as AuthSession;
-    // Access token hết hạn → bỏ session (luồng Refresh Token Rotation – FR-AUTH-004 – bổ sung ở Buổi 3)
-    if (new Date(session.expiresAt).getTime() <= Date.now()) {
-      window.localStorage.removeItem(STORAGE_KEY);
-      return null;
-    }
-    return session;
+    return JSON.parse(raw) as AuthSession;
   } catch {
     return null;
   }
@@ -60,39 +59,73 @@ function writeSession(session: AuthSession | null) {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<AuthSession | null>(null);
+  const [session, setSession] = useState<ActiveSession | null>(null);
+  const sessionRef = useRef<ActiveSession | null>(null);
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    setSession(readSession());
-    setIsReady(true);
+  const updateSession = useCallback((next: ActiveSession | null) => {
+    sessionRef.current = next;
+    setSession(next);
+    writeSession(next ? { refreshToken: next.refreshToken, user: next.user } : null);
   }, []);
 
-  // Tự đăng xuất phía client khi access token hết hạn
+  const refresh = useCallback(() => {
+    if (authRefreshPromise) return authRefreshPromise;
+    authRefreshPromise = (async () => {
+      const stored = readSession();
+      if (!stored) throw new Error('No refresh token');
+      const response = await apiFetch<AuthResponse>('/auth/refresh', {
+        method: 'POST', body: { refreshToken: stored.refreshToken }, accessToken: null, skipAuthRefresh: true,
+      });
+      const next: ActiveSession = response;
+      updateSession(next);
+      return next.accessToken;
+    })().finally(() => { authRefreshPromise = null; });
+    return authRefreshPromise;
+  }, [updateSession]);
+
+  const clearSession = useCallback(() => {
+    updateSession(null);
+    getQueryClient().clear();
+  }, [updateSession]);
+
   useEffect(() => {
-    if (!session) return undefined;
-    const remaining = new Date(session.expiresAt).getTime() - Date.now();
-    const timer = window.setTimeout(
-      () => {
-        writeSession(null);
-        setSession(null);
+    configureAuthCallbacks({
+      getAccessToken: () => sessionRef.current?.accessToken ?? null,
+      refresh,
+      onRefreshFailure: () => {
+        clearSession();
+        window.location.assign('/auth/login?callbackUrl=');
       },
-      Math.max(remaining, 0),
-    );
-    return () => window.clearTimeout(timer);
-  }, [session]);
+    });
+    return () => configureAuthCallbacks(null);
+  }, [refresh, clearSession]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!readSession()) {
+      setIsReady(true);
+      return () => { cancelled = true; };
+    }
+    refresh().catch(() => {
+      if (!cancelled) {
+        clearSession();
+        window.location.assign('/auth/login?callbackUrl=');
+      }
+    }).finally(() => { if (!cancelled) setIsReady(true); });
+    return () => { cancelled = true; };
+  }, [refresh, clearSession]);
 
   const applyAuthResponse = useCallback((response: AuthResponse) => {
-    const next: AuthSession = {
+    const next: ActiveSession = {
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
       expiresAt: response.expiresAt,
       user: response.user,
     };
-    writeSession(next);
-    setSession(next);
+    updateSession(next);
     return response.user;
-  }, []);
+  }, [updateSession]);
 
   const login = useCallback(
     async (email: string, password: string) =>
@@ -125,13 +158,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           method: 'POST',
           body: { refreshToken: session.refreshToken },
           accessToken: session.accessToken,
+          skipAuthRefresh: true,
         });
       }
     } finally {
-      writeSession(null);
-      setSession(null);
+      updateSession(null);
     }
-  }, [session]);
+  }, [session, updateSession]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
