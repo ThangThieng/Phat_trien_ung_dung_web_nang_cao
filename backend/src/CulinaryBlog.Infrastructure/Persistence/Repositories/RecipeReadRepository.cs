@@ -141,7 +141,7 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
             author,
             nutrition,
             [.. r.Steps.OrderBy(s => s.StepNumber).Select(s => new RecipeStepDto(s.Id, s.StepNumber, s.Title, s.Description, s.TimerMinutes, s.ImageUrl))],
-            [.. r.Ingredients.OrderBy(i => i.OrderIndex).Select(i => new RecipeIngredientDto(i.Id, i.Name, i.Quantity, i.Unit, i.Notes, i.OrderIndex))],
+            [.. r.Ingredients.OrderBy(i => i.OrderIndex).Select(i => new RecipeIngredientDto(i.Id, i.Name, i.Quantity, i.QuantityText, i.Unit, i.Notes, i.OrderIndex))],
             images,
             r.PublishedAt,
             r.CreatedAt,

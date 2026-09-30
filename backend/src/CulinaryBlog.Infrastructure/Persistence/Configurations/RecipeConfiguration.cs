@@ -84,7 +84,7 @@ internal sealed class RecipeStepConfiguration : IEntityTypeConfiguration<RecipeS
         builder.Property(s => s.Description).HasColumnType("text").IsRequired();
         builder.Property(s => s.ImageUrl).HasMaxLength(500);
 
-        builder.HasIndex(s => new { s.RecipeId, s.StepNumber }).IsUnique().HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
+        builder.HasIndex(s => new { s.RecipeId, s.StepNumber }).HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
     }
 }
 
@@ -98,6 +98,7 @@ internal sealed class RecipeIngredientConfiguration : IEntityTypeConfiguration<R
 
         builder.Property(i => i.Name).HasMaxLength(200).IsRequired();
         builder.Property(i => i.Quantity).HasPrecision(10, 3);
+        builder.Property(i => i.QuantityText).HasMaxLength(50);
         builder.Property(i => i.Unit).HasMaxLength(50);
         builder.Property(i => i.Notes).HasMaxLength(500);
         builder.Property(i => i.OrderIndex).HasDefaultValue(0);

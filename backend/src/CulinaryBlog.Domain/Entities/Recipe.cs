@@ -100,6 +100,49 @@ public class Recipe : BaseEntity
         return ingredient;
     }
 
+    public RecipeIngredient AddIngredient(string name, decimal? quantity, string? quantityText, string? unit, string? notes = null)
+    {
+        var item = RecipeIngredient.Create(Id, name, quantity, unit, notes, _ingredients.Count, quantityText);
+        _ingredients.Add(item);
+        return item;
+    }
+
+    public void RemoveIngredient(Guid id)
+    {
+        var item = _ingredients.SingleOrDefault(x => x.Id == id) ?? throw new DomainException("Nguyên liệu không tồn tại.");
+        _ingredients.Remove(item);
+    }
+
+    public void UpdateIngredient(Guid id, string name, decimal? quantity, string? quantityText, string? unit, string? notes)
+    {
+        var item = _ingredients.SingleOrDefault(x => x.Id == id) ?? throw new DomainException("Nguyên liệu không tồn tại.");
+        item.Update(name, quantity, unit, notes, quantityText);
+    }
+
+    public void RemoveStep(Guid id)
+    {
+        var item = _steps.SingleOrDefault(x => x.Id == id) ?? throw new DomainException("Bước nấu không tồn tại.");
+        _steps.Remove(item);
+        RenumberSteps();
+    }
+
+    public void ReorderSteps(IReadOnlyList<Guid> ids)
+    {
+        if (ids.Count != _steps.Count || ids.Distinct().Count() != ids.Count || ids.Any(id => !_steps.Any(x => x.Id == id)))
+        {
+            throw new DomainException("Danh sách bước không khớp.");
+        }
+
+        var ordered = ids.Select(id => _steps.Single(x => x.Id == id)).ToList();
+        _steps.Clear();
+        _steps.AddRange(ordered);
+        var number = 1;
+        foreach (var step in _steps)
+        {
+            step.SetNumber(number++);
+        }
+    }
+
     public RecipeImage AddImage(string originalUrl, string? altText)
     {
         // FR-RCP-008: ảnh đầu tiên tự động là ảnh chính
@@ -144,5 +187,14 @@ public class Recipe : BaseEntity
 
         Status = RecipeStatus.Published;
         PublishedAt ??= utcNow;
+    }
+
+    private void RenumberSteps()
+    {
+        var number = 1;
+        foreach (var step in _steps.OrderBy(x => x.StepNumber))
+        {
+            step.SetNumber(number++);
+        }
     }
 }

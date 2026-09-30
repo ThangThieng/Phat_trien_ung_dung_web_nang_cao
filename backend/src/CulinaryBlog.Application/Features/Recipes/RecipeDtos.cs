@@ -30,7 +30,7 @@ public sealed record RecipeNutritionDto(decimal? Calories, decimal? Protein, dec
 
 public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl);
 
-public sealed record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? Unit, string? Notes, int OrderIndex);
+public sealed record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? QuantityText, string? Unit, string? Notes, int OrderIndex);
 
 public sealed record RecipeImageDto(Guid Id, string OriginalUrl, string? MediumUrl, string? ThumbnailUrl, string? AltText, bool IsPrimary, int OrderIndex);
 
