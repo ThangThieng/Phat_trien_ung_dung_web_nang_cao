@@ -274,7 +274,7 @@ public sealed partial class DatabaseSeeder(
     {
         foreach (var ingredient in seed.Ingredients)
         {
-            db.Add(recipe.AddIngredient(ingredient.Name, ingredient.Quantity, ingredient.Unit, ingredient.Notes));
+            db.Add(recipe.AddIngredient(new IngredientDetails(ingredient.Name, ingredient.Quantity, ingredient.QuantityText, ingredient.Unit, ingredient.Notes)));
         }
 
         foreach (var step in seed.Steps)

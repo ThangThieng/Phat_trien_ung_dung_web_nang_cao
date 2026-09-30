@@ -142,10 +142,13 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
         Assert.True(landed.Length == 0, "Endpoint đã được cài đặt — xóa khỏi PendingEndpoints: " + string.Join("; ", landed));
     }
 
+    /// <summary>
+    /// Endpoint không khai báo method (ví dụ MapHealthChecks) nhận MỌI method — tính là có GET, đúng như SRS §8.7 mô tả.
+    /// </summary>
     private HashSet<string> ImplementedEndpoints() =>
         factory.Services.GetRequiredService<EndpointDataSource>().Endpoints
             .OfType<RouteEndpoint>()
-            .SelectMany(e => (e.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods ?? [])
+            .SelectMany(e => (e.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods ?? [HttpMethods.Get])
                 .Select(method => Key(method, "/" + (e.RoutePattern.RawText ?? string.Empty).TrimStart('/'))))
             .ToHashSet(StringComparer.Ordinal);
 

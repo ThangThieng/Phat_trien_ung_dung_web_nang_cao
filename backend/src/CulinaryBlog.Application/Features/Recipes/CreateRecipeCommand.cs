@@ -24,7 +24,8 @@ public sealed record NutritionInput(decimal? Calories, decimal? Protein, decimal
 
 /// <summary>
 /// FR-RCP-003 – tạo công thức ở trạng thái Draft (<c>PublishedAt = NULL</c>). Nutrition đi kèm body vì là Owned Entity
-/// (không có endpoint riêng — MT-02).
+/// (không có endpoint riêng — MT-02). Buổi 4 (Dev 2) kích hoạt hai mảng tùy chọn <c>steps?</c>/<c>ingredients?</c>: chúng đi
+/// qua ĐÚNG validator và phương thức Domain của FR-RCP-009/010 — mỗi quy tắc chỉ tồn tại ở một chỗ.
 /// </summary>
 public sealed record CreateRecipeCommand(
     string Title,
@@ -35,7 +36,9 @@ public sealed record CreateRecipeCommand(
     int Servings,
     RecipeDifficulty Difficulty,
     string? Instructions,
-    NutritionInput? Nutrition) : IRequest<RecipeDetailDto>, ICacheInvalidator
+    NutritionInput? Nutrition,
+    IReadOnlyList<StepInput>? Steps = null,
+    IReadOnlyList<IngredientInput>? Ingredients = null) : IRequest<RecipeDetailDto>, ICacheInvalidator
 {
     public IReadOnlyCollection<string> CacheKeysToInvalidate => [RecipeCacheKeys.ListPrefix];
 }
@@ -55,7 +58,7 @@ public static class RecipeLimits
 
 public sealed class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeCommand>
 {
-    public CreateRecipeCommandValidator(IRepository<Category> categories)
+    public CreateRecipeCommandValidator(IRepository<Category> categories, IFileStorageService storage)
     {
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Tiêu đề không được để trống.")
@@ -88,6 +91,18 @@ public sealed class CreateRecipeCommandValidator : AbstractValidator<CreateRecip
         RuleFor(x => x.Nutrition!)
             .SetValidator(new NutritionInputValidator())
             .When(x => x.Nutrition is not null);
+
+        RuleFor(x => x.Steps!.Count)
+            .LessThanOrEqualTo(RecipeContentLimits.InlineItemsMax).WithMessage($"Tối đa {RecipeContentLimits.InlineItemsMax} bước.")
+            .OverridePropertyName("steps")
+            .When(x => x.Steps is not null);
+        RuleForEach(x => x.Steps).SetValidator(new StepInputValidator(storage));
+
+        RuleFor(x => x.Ingredients!.Count)
+            .LessThanOrEqualTo(RecipeContentLimits.InlineItemsMax).WithMessage($"Tối đa {RecipeContentLimits.InlineItemsMax} nguyên liệu.")
+            .OverridePropertyName("ingredients")
+            .When(x => x.Ingredients is not null);
+        RuleForEach(x => x.Ingredients).SetValidator(new IngredientInputValidator());
     }
 }
 
@@ -141,6 +156,18 @@ public sealed class CreateRecipeCommandHandler(
             recipe.SetNutrition(request.Nutrition.ToEntity());
         }
 
+        // Cùng phương thức Domain với POST /ingredients, /steps: bất biến "không rỗng cả ba" (400
+        // INGREDIENT_QUANTITY_REQUIRED) và StepNumber do server gán 1..N được áp y hệt.
+        foreach (var ingredient in request.Ingredients ?? [])
+        {
+            recipe.AddIngredient(ingredient.ToDetails(), ingredient.OrderIndex);
+        }
+
+        foreach (var step in request.Steps ?? [])
+        {
+            recipe.AddStep(step.Title!, step.Description!, step.TimerMinutes, step.ImageUrl);
+        }
+
         await unitOfWork.Recipes.AddAsync(recipe, cancellationToken).ConfigureAwait(false);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -155,7 +182,16 @@ public sealed class CreateRecipeCommandHandler(
 /// </summary>
 public static class RecipeSlugs
 {
-    public static async Task<string> ResolveAsync(IRecipeRepository recipes, string title, CancellationToken cancellationToken)
+    /// <summary>Slug trống đầu tiên cho <paramref name="title"/>.</summary>
+    /// <param name="recipes">Repository để tra slug đã có người giữ.</param>
+    /// <param name="title">Tiêu đề sinh slug.</param>
+    /// <param name="cancellationToken">Token hủy.</param>
+    /// <param name="currentSlug">Slug hiện tại của chính công thức đang sửa (FR-RCP-004) — coi là còn trống.</param>
+    public static async Task<string> ResolveAsync(
+        IRecipeRepository recipes,
+        string title,
+        CancellationToken cancellationToken,
+        string? currentSlug = null)
     {
         ArgumentNullException.ThrowIfNull(recipes);
 
@@ -163,7 +199,8 @@ public static class RecipeSlugs
         var number = 1;
         var candidate = baseSlug;
         while (candidate.IsReserved
-            || await recipes.SlugExistsAsync(candidate.Value, cancellationToken).ConfigureAwait(false))
+            || (candidate.Value != currentSlug
+                && await recipes.SlugExistsAsync(candidate.Value, cancellationToken).ConfigureAwait(false)))
         {
             number++;
             candidate = baseSlug.WithSuffix(number);

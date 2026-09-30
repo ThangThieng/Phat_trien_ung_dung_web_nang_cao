@@ -41,4 +41,12 @@ public sealed class RecipeRepository(CulinaryBlogDbContext db) : EfRepository<Re
             .AsNoTracking()
             .AnyAsync(r => r.Slug == slug, cancellationToken);
     }
+
+    public void SetOriginalRowVersion(Recipe recipe, byte[] rowVersion)
+    {
+        ArgumentNullException.ThrowIfNull(recipe);
+        ArgumentNullException.ThrowIfNull(rowVersion);
+
+        Db.Entry(recipe).Property(r => r.RowVersion).OriginalValue = rowVersion;
+    }
 }

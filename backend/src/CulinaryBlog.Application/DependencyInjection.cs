@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
         services.AddScoped<AuthResponseFactory>();
         services.AddScoped<RecipeLifecycle>();
+        services.AddScoped<RecipeContent>();
         services.AddSingleton(TimeProvider.System);
 
         // NFR-SEC-006: resource-based authorization ở tầng Application (IAuthorizationService do tầng API đăng ký).

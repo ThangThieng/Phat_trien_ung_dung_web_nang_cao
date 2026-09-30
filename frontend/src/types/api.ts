@@ -61,10 +61,12 @@ export interface RecipeStep {
   imageUrl: string | null;
 }
 
+/** SRS §8.6 – định lượng hai cột (MT-04): `quantity` số tính toán được, `quantityText` nguyên văn ("vừa đủ", "1/2 muỗng"). */
 export interface RecipeIngredient {
   id: string;
   name: string;
   quantity: number | null;
+  quantityText: string | null;
   unit: string | null;
   notes: string | null;
   orderIndex: number;
