@@ -10,7 +10,7 @@ import { ApiError, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-cl
 import { useAuth } from '../auth-context';
 import { registerSchema, type RegisterFormValues } from '../schemas';
 
-const FIELDS = ['fullName', 'email', 'userName', 'password'] as const;
+const FIELDS = ['displayName', 'email', 'password'] as const;
 
 export default function RegisterForm() {
   const { register: registerAccount } = useAuth();
@@ -25,16 +25,12 @@ export default function RegisterForm() {
   const onSubmit = handleSubmit(async ({ confirmPassword: _confirm, ...values }) => {
     try {
       const user = await registerAccount(values);
-      toast.success(`Đăng ký thành công! Chào mừng ${user.fullName}. Email chào mừng đã được gửi.`);
+      toast.success(`Đăng ký thành công! Chào mừng ${user.displayName}. Email chào mừng đã được gửi.`);
       router.replace('/recipes');
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.code === 'AUTH_EMAIL_EXISTS') {
           setError('email', { message: error.message });
-          return;
-        }
-        if (error.code === 'AUTH_USERNAME_EXISTS') {
-          setError('userName', { message: error.message });
           return;
         }
       }
@@ -55,10 +51,10 @@ export default function RegisterForm() {
         </div>
       )}
       <FormField
-        label="Họ và tên"
+        label="Tên hiển thị"
         autoComplete="name"
-        error={errors.fullName?.message}
-        {...register('fullName')}
+        error={errors.displayName?.message}
+        {...register('displayName')}
       />
       <FormField
         label="Email"
@@ -66,13 +62,6 @@ export default function RegisterForm() {
         autoComplete="email"
         error={errors.email?.message}
         {...register('email')}
-      />
-      <FormField
-        label="Tên đăng nhập"
-        autoComplete="username"
-        hint="3–50 ký tự: chữ, số, dấu chấm, gạch dưới."
-        error={errors.userName?.message}
-        {...register('userName')}
       />
       <FormField
         label="Mật khẩu"

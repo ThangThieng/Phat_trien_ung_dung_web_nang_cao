@@ -9,6 +9,7 @@ import FormField from '@/components/ui/FormField';
 import { getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import { useAuth } from '../auth-context';
 import { loginSchema, type LoginFormValues } from '../schemas';
+import GoogleSignIn from './GoogleSignIn';
 
 const LOGIN_FIELDS = ['email', 'password'] as const;
 
@@ -31,7 +32,7 @@ export default function LoginForm() {
   const onSubmit = handleSubmit(async (values) => {
     try {
       const user = await login(values.email, values.password);
-      toast.success(`Chào mừng trở lại, ${user.fullName}!`);
+      toast.success(`Chào mừng trở lại, ${user.displayName}!`);
       router.replace(safeCallbackUrl(searchParams.get('callbackUrl')));
     } catch (error) {
       // D-11: lỗi validation là 400 (không còn 422) – dùng helper chung
@@ -72,6 +73,7 @@ export default function LoginForm() {
       >
         {isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
       </button>
+      <GoogleSignIn onSuccess={() => router.replace(safeCallbackUrl(searchParams.get('callbackUrl')))} />
       <p className="text-center text-sm text-gray-600">
         Chưa có tài khoản?{' '}
         <Link href="/auth/register" className="font-medium text-orange-700 hover:underline">

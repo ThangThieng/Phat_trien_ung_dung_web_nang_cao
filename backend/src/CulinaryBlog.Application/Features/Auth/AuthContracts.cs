@@ -5,19 +5,19 @@ namespace CulinaryBlog.Application.Features.Auth;
 /// <summary>FR-AUTH-001 bước 12 – AuthResponseDto.</summary>
 public sealed record AuthResponseDto(string AccessToken, string RefreshToken, DateTime ExpiresAt, int ExpiresIn, UserDto User);
 
-public sealed record UserDto(string Id, string FullName, string Email, string UserName, string? AvatarUrl, IReadOnlyList<string> Roles);
+public sealed record UserDto(string Id, string DisplayName, string Email, string? AvatarUrl, IReadOnlyList<string> Roles);
 
 /// <summary>Thông tin user trả về từ tầng Identity (Infrastructure) – không bao giờ chứa PasswordHash/SecurityStamp.</summary>
 public sealed record IdentityUserInfo(
     string Id,
-    string FullName,
+    string DisplayName,
     string Email,
     string UserName,
     string? AvatarUrl,
     bool IsActive,
     IReadOnlyList<string> Roles)
 {
-    public UserDto ToDto() => new(Id, FullName, Email, UserName, AvatarUrl, Roles);
+    public UserDto ToDto() => new(Id, DisplayName, Email, AvatarUrl, Roles);
 }
 
 public enum PasswordCheckStatus
@@ -35,10 +35,10 @@ public interface IIdentityService
 {
     Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
 
-    Task<bool> UserNameExistsAsync(string userName, CancellationToken cancellationToken);
-
     /// <summary>Tạo user (UserManager.CreateAsync – hash PBKDF2) và gán role. Ném ValidationException nếu Identity từ chối.</summary>
-    Task<IdentityUserInfo> CreateUserAsync(string fullName, string email, string userName, string password, string role, CancellationToken cancellationToken);
+    Task<IdentityUserInfo> CreateUserAsync(string displayName, string email, string password, string role, CancellationToken cancellationToken);
+
+    Task<IdentityUserInfo> AuthenticateGoogleAsync(string idToken, CancellationToken cancellationToken);
 
     /// <summary>Xác minh mật khẩu có xử lý lockout: sai 5 lần → khóa 15 phút (FR-AUTH-002 A3).</summary>
     Task<PasswordCheckResult> CheckPasswordAsync(string email, string password, CancellationToken cancellationToken);
@@ -61,6 +61,10 @@ public interface ITokenService
 public interface IRefreshTokenRepository
 {
     Task AddAsync(RefreshToken token, CancellationToken cancellationToken);
+
+    Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken);
+
+    Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken);
 }
 
 /// <summary>FR-JOB-001 – đẩy job gửi email chào mừng vào Hangfire (fire-and-forget).</summary>

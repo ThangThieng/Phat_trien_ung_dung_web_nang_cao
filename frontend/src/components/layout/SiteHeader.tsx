@@ -13,8 +13,8 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const { user, isReady, logout } = useAuth();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     toast.info('Bạn đã đăng xuất.');
   };
 
@@ -59,7 +59,7 @@ export default function SiteHeader() {
                 className="hidden text-sm font-medium text-gray-900 md:inline"
                 title={user.email}
               >
-                {user.fullName}
+                {user.displayName}
               </span>
               <button
                 type="button"

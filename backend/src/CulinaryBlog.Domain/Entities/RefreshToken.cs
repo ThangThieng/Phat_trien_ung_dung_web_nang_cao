@@ -34,4 +34,6 @@ public class RefreshToken
         };
 
     public bool IsActive(DateTime utcNow) => RevokedAt is null && ExpiresAt > utcNow;
+
+    public void Revoke(DateTime revokedAt) => RevokedAt ??= revokedAt;
 }

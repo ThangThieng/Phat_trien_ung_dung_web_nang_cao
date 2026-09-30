@@ -25,12 +25,27 @@ public static class AuthEndpoints
             .ProducesProblem(StatusCodes.Status423Locked)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
+        group.MapPost("/google", GoogleLoginAsync)
+            .WithName("GoogleLogin")
+            .WithSummary("FR-AUTH-003 – Đăng nhập hoặc đăng ký bằng Google ID Token")
+            .Produces<AuthResponseDto>()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status502BadGateway);
+
+        group.MapPost("/logout", LogoutAsync)
+            .RequireAuthorization()
+            .WithName("Logout")
+            .WithSummary("FR-AUTH-005 – Thu hồi refresh token của phiên hiện tại")
+            .Produces(StatusCodes.Status204NoContent);
+
         return api;
     }
 
     private static async Task<IResult> RegisterAsync(RegisterRequest body, HttpContext http, ISender sender, CancellationToken ct)
     {
-        var command = new RegisterUserCommand(body.FullName ?? string.Empty, body.Email ?? string.Empty, body.UserName ?? string.Empty, body.Password ?? string.Empty)
+        var command = new RegisterUserCommand(body.DisplayName ?? string.Empty, body.Email ?? string.Empty, body.Password ?? string.Empty)
         {
             IpAddress = http.Connection.RemoteIpAddress?.ToString(),
         };
@@ -49,7 +64,26 @@ public static class AuthEndpoints
         return Results.Ok(await sender.Send(command, ct).ConfigureAwait(false));
     }
 
-    public sealed record RegisterRequest(string? FullName, string? Email, string? UserName, string? Password);
+    private static async Task<IResult> GoogleLoginAsync(GoogleLoginRequest body, HttpContext http, ISender sender, CancellationToken ct)
+    {
+        var command = new GoogleLoginCommand(body.IdToken ?? string.Empty)
+        {
+            IpAddress = http.Connection.RemoteIpAddress?.ToString(),
+        };
+        return Results.Ok(await sender.Send(command, ct).ConfigureAwait(false));
+    }
+
+    private static async Task<IResult> LogoutAsync(LogoutRequest body, ISender sender, CancellationToken ct)
+    {
+        await sender.Send(new LogoutCommand(body.RefreshToken ?? string.Empty), ct).ConfigureAwait(false);
+        return Results.NoContent();
+    }
+
+    public sealed record RegisterRequest(string? DisplayName, string? Email, string? Password);
 
     public sealed record LoginRequest(string? Email, string? Password);
+
+    public sealed record GoogleLoginRequest(string? IdToken);
+
+    public sealed record LogoutRequest(string? RefreshToken);
 }
