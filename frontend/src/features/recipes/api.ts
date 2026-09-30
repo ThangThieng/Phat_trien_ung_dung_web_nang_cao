@@ -10,16 +10,34 @@ export interface RecipeListParams {
   sort?: string;
 }
 
+/**
+ * MT-01 / D-10: backend Buổi 4 chỉ nhận `sortBy` + `sortOrder` (tham số `sort` cũ → 400).
+ * Cầu nối tối thiểu cho trang /recipes hiện tại ("-createdAt" → sortBy=createdAt&sortOrder=desc) để hệ thống vẫn chạy cuối
+ * Buổi 4; bộ lọc/sắp xếp đầy đủ phía giao diện (FilterPanel, D-10 FE) làm ở Buổi 5 — Dev 3.
+ */
+function toSortParams(sort: string): [string, string][] {
+  const descending = sort.startsWith('-');
+  return [
+    ['sortBy', descending ? sort.slice(1) : sort],
+    ['sortOrder', descending ? 'desc' : 'asc'],
+  ];
+}
+
 function toQuery(params: RecipeListParams): string {
   const query = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') query.set(key, String(value));
+    if (value === undefined || value === null || value === '') return;
+    if (key === 'sort') {
+      toSortParams(String(value)).forEach(([name, text]) => query.set(name, text));
+    } else {
+      query.set(key, String(value));
+    }
   });
   const text = query.toString();
   return text ? `?${text}` : '';
 }
 
-/** FR-RCP-001 – GET /recipes (SSR dynamic: không cache ở Next, backend đã có Output Cache 15 phút). */
+/** FR-RCP-001 – GET /recipes (SSR dynamic: không cache ở Next; backend cache Redis 2 phút — NFR-PERF-003). */
 export function getRecipes(params: RecipeListParams = {}) {
   return apiFetch<PagedResult<RecipeSummary>>(`/recipes${toQuery(params)}`, { cache: 'no-store' });
 }

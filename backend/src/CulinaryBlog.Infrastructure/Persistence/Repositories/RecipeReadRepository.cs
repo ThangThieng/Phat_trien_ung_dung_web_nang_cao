@@ -6,121 +6,60 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Repositories;
 
-/// <summary>Read-side cho Recipe: AsNoTracking + projection (list), split query (detail) – tránh N+1 (NFR-PERF-004).</summary>
+/// <summary>
+/// Read-side cho Recipe: AsNoTracking + projection (list), split query (detail) – tránh N+1 (NFR-PERF-004).
+/// Mọi phương thức <c>Published…</c> cố định <c>Status == Published</c> ngay trong repository và không nhận danh tính người gọi
+/// (MT-34, retrofit D-4/D-5); Global Query Filter đã loại <c>IsDeleted</c>.
+/// </summary>
 public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeReadRepository
 {
-    public async Task<PagedResult<RecipeSummaryDto>> GetPagedAsync(RecipeListCriteria criteria, CancellationToken cancellationToken)
+    public Task<PagedResult<RecipeSummaryDto>> GetPublishedPagedAsync(RecipeListCriteria criteria, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(criteria);
-
-        var query = ApplyVisibility(db.Recipes.AsNoTracking(), criteria.Visibility);
-
-        if (criteria.CategoryId.HasValue)
-        {
-            query = query.Where(r => r.CategoryId == criteria.CategoryId.Value);
-        }
-
-        if (criteria.Difficulty.HasValue)
-        {
-            query = query.Where(r => r.Difficulty == criteria.Difficulty.Value);
-        }
-
-        if (criteria.MaxCookTime.HasValue)
-        {
-            query = query.Where(r => r.CookTimeMinutes <= criteria.MaxCookTime.Value);
-        }
-
-        // Bước 6: COUNT trước khi phân trang
-        var total = await query.CountAsync(cancellationToken).ConfigureAwait(false);
-
-        var items = await ApplySorting(query, criteria.SortBy, criteria.Descending)
-            .Skip((criteria.Page - 1) * criteria.PageSize)
-            .Take(criteria.PageSize)
-            .Join(db.Users, r => r.AuthorId, u => u.Id, (r, u) => new RecipeSummaryDto(
-                r.Id,
-                r.Title,
-                r.Slug,
-                r.Description,
-                r.PrepTimeMinutes,
-                r.CookTimeMinutes,
-                r.Servings,
-                r.Difficulty,
-                r.Status,
-                r.Images.Where(i => i.IsPrimary).Select(i => i.ThumbnailUrl ?? i.OriginalUrl).FirstOrDefault(),
-                new CategoryRefDto(r.CategoryId, r.Category!.Name, r.Category.Slug),
-                new AuthorDto(u.Id, u.DisplayName, u.AvatarUrl),
-                r.PublishedAt,
-                r.CreatedAt))
-            .ToListAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        return new PagedResult<RecipeSummaryDto>(items, total, criteria.Page, criteria.PageSize);
+        return PageAsync(Published(), criteria, cancellationToken);
     }
 
-    public async Task<(RecipeDetailDto Recipe, string AuthorId)?> GetBySlugAsync(string slug, CancellationToken cancellationToken)
+    public Task<RecipeDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken) =>
+        DetailAsync(DetailQuery().Where(r => r.Slug == slug && r.Status == RecipeStatus.Published), cancellationToken);
+
+    public Task<RecipeDetailDto?> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken) =>
+        DetailAsync(DetailQuery().Where(r => r.Id == id), cancellationToken);
+
+    private static IQueryable<Recipe> ApplyFilter(IQueryable<Recipe> query, RecipeFilterSpec filter)
     {
-        var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Slug == slug, cancellationToken).ConfigureAwait(false);
-        if (recipe is null)
+        // FR-SRCH-002: các tiêu chí kết hợp bằng AND; tiêu chí để trống thì bỏ qua.
+        if (filter.CategoryId.HasValue)
         {
-            return null;
+            query = query.Where(r => r.CategoryId == filter.CategoryId.Value);
         }
 
-        return (await ToDetailAsync(recipe, cancellationToken).ConfigureAwait(false), recipe.AuthorId);
-    }
-
-    public async Task<RecipeDetailDto?> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Id == id, cancellationToken).ConfigureAwait(false);
-        return recipe is null ? null : await ToDetailAsync(recipe, cancellationToken).ConfigureAwait(false);
-    }
-
-    private IQueryable<Recipe> DetailQuery() =>
-        db.Recipes
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(r => r.Category)
-            .Include(r => r.Steps)
-            .Include(r => r.Ingredients)
-            .Include(r => r.Images);
-
-    private async Task<RecipeDetailDto> ToDetailAsync(Recipe recipe, CancellationToken cancellationToken)
-    {
-        var author = await db.Users
-            .AsNoTracking()
-            .Where(u => u.Id == recipe.AuthorId)
-            .Select(u => new AuthorDto(u.Id, u.DisplayName, u.AvatarUrl))
-            .FirstAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        return ToDetail(recipe, author);
-    }
-
-    /// <summary>FR-RCP-001 bước 4: Guest → Published; Author → Published OR của mình; Admin → tất cả.</summary>
-    private static IQueryable<Recipe> ApplyVisibility(IQueryable<Recipe> query, RecipeVisibility visibility)
-    {
-        if (visibility.IsAdmin)
+        if (filter.Difficulty.HasValue)
         {
-            return query;
+            query = query.Where(r => r.Difficulty == filter.Difficulty.Value);
         }
 
-        return visibility.ViewerId is null
-            ? query.Where(r => r.Status == RecipeStatus.Published)
-            : query.Where(r => r.Status == RecipeStatus.Published || r.AuthorId == visibility.ViewerId);
+        if (filter.MaxCookTime.HasValue)
+        {
+            query = query.Where(r => r.CookTimeMinutes <= filter.MaxCookTime.Value);
+        }
+
+        if (filter.MaxPrepTime.HasValue)
+        {
+            query = query.Where(r => r.PrepTimeMinutes <= filter.MaxPrepTime.Value);
+        }
+
+        if (filter.MinServings.HasValue)
+        {
+            query = query.Where(r => r.Servings >= filter.MinServings.Value);
+        }
+
+        return query;
     }
 
-    private static IQueryable<Recipe> ApplySorting(IQueryable<Recipe> query, RecipeSortField sortBy, bool descending)
+    private static IQueryable<Recipe> ApplySorting(IQueryable<Recipe> query, RecipeSort sort)
     {
-        var ordered = (sortBy, descending) switch
-        {
-            (RecipeSortField.Title, false) => query.OrderBy(r => r.Title),
-            (RecipeSortField.Title, true) => query.OrderByDescending(r => r.Title),
-            (RecipeSortField.CookTime, false) => query.OrderBy(r => r.CookTimeMinutes),
-            (RecipeSortField.CookTime, true) => query.OrderByDescending(r => r.CookTimeMinutes),
-            (RecipeSortField.PublishedAt, false) => query.OrderBy(r => r.PublishedAt),
-            (RecipeSortField.PublishedAt, true) => query.OrderByDescending(r => r.PublishedAt),
-            (_, false) => query.OrderBy(r => r.CreatedAt),
-            _ => query.OrderByDescending(r => r.CreatedAt),
-        };
+        // Biểu thức cột đến từ whitelist SortMapper (tầng Application) — không có đường nào ghép tên cột từ chuỗi người dùng.
+        var ordered = sort.Descending ? query.OrderByDescending(sort.KeySelector) : query.OrderBy(sort.KeySelector);
 
         // Tie-breaker ổn định để phân trang không lặp/bỏ sót
         return ordered.ThenBy(r => r.Id);
@@ -158,5 +97,73 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
             r.CreatedAt,
             r.UpdatedAt,
             Convert.ToBase64String(r.RowVersion));
+    }
+
+    /// <summary>Tập công thức công khai: chỉ Published (MT-34).</summary>
+    private IQueryable<Recipe> Published() =>
+        db.Recipes.AsNoTracking().Where(r => r.Status == RecipeStatus.Published);
+
+    private async Task<PagedResult<RecipeSummaryDto>> PageAsync(
+        IQueryable<Recipe> query,
+        RecipeListCriteria criteria,
+        CancellationToken cancellationToken)
+    {
+        query = ApplyFilter(query, criteria.Filter);
+
+        // COUNT trước khi phân trang (FR-RCP-001 bước 7)
+        var total = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+
+        var items = await ToSummaries(ApplySorting(query, criteria.Sort)
+                .Skip((criteria.Page - 1) * criteria.PageSize)
+                .Take(criteria.PageSize))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return new PagedResult<RecipeSummaryDto>(items, total, criteria.Page, criteria.PageSize);
+    }
+
+    /// <summary>Projection card danh sách (FR-RCP-001) — một round-trip, không N+1. Giữ nguyên thứ tự của <paramref name="query"/>.</summary>
+    private IQueryable<RecipeSummaryDto> ToSummaries(IQueryable<Recipe> query) =>
+        query.Join(db.Users, r => r.AuthorId, u => u.Id, (r, u) => new RecipeSummaryDto(
+            r.Id,
+            r.Title,
+            r.Slug,
+            r.Description,
+            r.PrepTimeMinutes,
+            r.CookTimeMinutes,
+            r.Servings,
+            r.Difficulty,
+            r.Status,
+            r.Images.Where(i => i.IsPrimary).Select(i => i.ThumbnailUrl ?? i.OriginalUrl).FirstOrDefault(),
+            new CategoryRefDto(r.CategoryId, r.Category!.Name, r.Category.Slug),
+            new AuthorDto(u.Id, u.DisplayName, u.AvatarUrl),
+            r.PublishedAt,
+            r.CreatedAt));
+
+    private IQueryable<Recipe> DetailQuery() =>
+        db.Recipes
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(r => r.Category)
+            .Include(r => r.Steps)
+            .Include(r => r.Ingredients)
+            .Include(r => r.Images);
+
+    private async Task<RecipeDetailDto?> DetailAsync(IQueryable<Recipe> query, CancellationToken cancellationToken)
+    {
+        var recipe = await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+        if (recipe is null)
+        {
+            return null;
+        }
+
+        var author = await db.Users
+            .AsNoTracking()
+            .Where(u => u.Id == recipe.AuthorId)
+            .Select(u => new AuthorDto(u.Id, u.DisplayName, u.AvatarUrl))
+            .FirstAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return ToDetail(recipe, author);
     }
 }

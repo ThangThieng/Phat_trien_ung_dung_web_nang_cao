@@ -1,5 +1,6 @@
 using CulinaryBlog.API.Extensions;
 using CulinaryBlog.Application.Features.Categories;
+using CulinaryBlog.Application.Features.Recipes;
 using MediatR;
 
 namespace CulinaryBlog.API.Endpoints;
@@ -18,8 +19,9 @@ public static class CategoriesEndpoints
 
         group.MapGet("/{slug}", GetCategoryBySlugAsync)
             .WithName("GetCategoryBySlug")
-            .WithSummary("FR-CAT-002 – Chi tiết danh mục + công thức phân trang")
+            .WithSummary("FR-CAT-002 – Chi tiết danh mục + công thức Published phân trang (sortBy/sortOrder)")
             .Produces<CategoryDetailDto>()
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
         group.MapPost("/", CreateCategoryAsync)
@@ -59,8 +61,16 @@ public static class CategoriesEndpoints
     private static async Task<IResult> GetCategoriesAsync(ISender sender, CancellationToken ct) =>
         Results.Ok(await sender.Send(new GetCategoriesQuery(), ct).ConfigureAwait(false));
 
-    private static async Task<IResult> GetCategoryBySlugAsync(string slug, ISender sender, CancellationToken ct, int page = 1, int pageSize = 12) =>
-        Results.Ok(await sender.Send(new GetCategoryBySlugQuery(slug, page, pageSize), ct).ConfigureAwait(false));
+    /// <summary>FR-CAT-002 — chỉ công thức Published, không đọc danh tính (MT-34, retrofit D-5); sortBy/sortOrder theo whitelist FR-SRCH-003.</summary>
+    private static async Task<IResult> GetCategoryBySlugAsync(
+        string slug,
+        ISender sender,
+        CancellationToken ct,
+        int page = 1,
+        int pageSize = RecipeQueryRules.DefaultPageSize,
+        string? sortBy = null,
+        string? sortOrder = null) =>
+        Results.Ok(await sender.Send(new GetCategoryBySlugQuery(slug, page, pageSize, sortBy, sortOrder), ct).ConfigureAwait(false));
 
     private static async Task<IResult> CreateCategoryAsync(CategoryRequest body, ISender sender, CancellationToken ct)
     {

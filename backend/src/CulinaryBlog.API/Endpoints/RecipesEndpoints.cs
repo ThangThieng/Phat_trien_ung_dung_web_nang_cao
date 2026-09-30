@@ -1,5 +1,4 @@
 using CulinaryBlog.API.Extensions;
-using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Enums;
 using MediatR;
@@ -8,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace CulinaryBlog.API.Endpoints;
 
 /// <summary>
-/// SRS §8.3 / §8.4 – /api/v1/recipes: ghi NỘI DUNG (tạo công thức, ảnh; Buổi 4 thêm bước, nguyên liệu, cập nhật) +
-/// hai GET công khai (Buổi 4 Dev 3 chuyển sang RecipeQueryEndpoints). Vòng đời nằm ở <see cref="RecipeLifecycleEndpoints"/>.
+/// SRS §8.3 / §8.4 – /api/v1/recipes: ghi NỘI DUNG (tạo công thức, ảnh; Buổi 4 thêm bước, nguyên liệu, cập nhật).
+/// Mọi GET nằm ở <see cref="RecipeQueryEndpoints"/> (Buổi 4 — Dev 3); vòng đời nằm ở <see cref="RecipeLifecycleEndpoints"/>.
 /// </summary>
 public static class RecipesEndpoints
 {
@@ -60,21 +59,6 @@ public static class RecipesEndpoints
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
-        group.MapGet("/", GetRecipesAsync)
-            .WithName("GetRecipes")
-            .WithSummary("FR-RCP-001 – Danh sách công thức (phân trang, lọc, sắp xếp)")
-            .CacheOutput(OutputCachePolicies.RecipeList)
-            .Produces<PagedResult<RecipeSummaryDto>>()
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
-
-        group.MapGet("/{slug}", GetRecipeBySlugAsync)
-            .WithName("GetRecipeBySlug")
-            .WithSummary("FR-RCP-002 – Chi tiết công thức theo slug")
-            .CacheOutput(OutputCachePolicies.RecipeDetail)
-            .Produces<RecipeDetailDto>()
-            .ProducesProblem(StatusCodes.Status403Forbidden)
-            .ProducesProblem(StatusCodes.Status404NotFound);
-
         return group;
     }
 
@@ -119,20 +103,6 @@ public static class RecipesEndpoints
         await sender.Send(new DeleteRecipeImageCommand(id, imageId), ct).ConfigureAwait(false);
         return Results.NoContent();
     }
-
-    private static async Task<IResult> GetRecipesAsync(
-        ISender sender,
-        CancellationToken ct,
-        int page = 1,
-        int pageSize = 12,
-        Guid? categoryId = null,
-        RecipeDifficulty? difficulty = null,
-        int? maxCookTime = null,
-        string? sort = null) =>
-        Results.Ok(await sender.Send(new GetRecipesQuery(page, pageSize, categoryId, difficulty, maxCookTime, sort), ct).ConfigureAwait(false));
-
-    private static async Task<IResult> GetRecipeBySlugAsync(string slug, ISender sender, CancellationToken ct) =>
-        Results.Ok(await sender.Send(new GetRecipeBySlugQuery(slug), ct).ConfigureAwait(false));
 
     public sealed record CreateRecipeRequest(
         string? Title,
