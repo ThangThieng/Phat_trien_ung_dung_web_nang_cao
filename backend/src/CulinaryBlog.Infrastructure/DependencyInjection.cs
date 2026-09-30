@@ -72,6 +72,7 @@ public static class DependencyInjection
 
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
+        services.AddScoped<IRecipeWriteRepository, RecipeWriteRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
     }
