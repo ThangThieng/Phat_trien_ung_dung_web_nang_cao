@@ -16,9 +16,15 @@ namespace CulinaryBlog.Infrastructure.Persistence;
 public sealed class UnitOfWork(
     CulinaryBlogDbContext db,
     IEnumerable<IPersistenceExceptionTranslator> translators,
+    IUserRepository users,
+    IRecipeRepository recipes,
     ICategoryRepository categories) : IUnitOfWork
 {
     private readonly IPersistenceExceptionTranslator[] _translators = translators.ToArray();
+
+    public IUserRepository Users { get; } = users;
+
+    public IRecipeRepository Recipes { get; } = recipes;
 
     public ICategoryRepository Categories { get; } = categories;
 

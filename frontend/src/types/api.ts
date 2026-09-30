@@ -105,11 +105,13 @@ export interface CategoryDetail {
   recipes: PagedResult<RecipeSummary>;
 }
 
+/** SRS §8.1 – UserDto `{ id, email, displayName, avatarUrl, bio, roles }` (D-1). */
 export interface User {
   id: string;
-  displayName: string;
   email: string;
+  displayName: string;
   avatarUrl: string | null;
+  bio: string | null;
   roles: string[];
 }
 

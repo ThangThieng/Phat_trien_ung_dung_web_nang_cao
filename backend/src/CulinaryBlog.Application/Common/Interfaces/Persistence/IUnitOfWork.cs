@@ -9,6 +9,12 @@ namespace CulinaryBlog.Application.Common.Interfaces.Persistence;
 /// </summary>
 public interface IUnitOfWork
 {
+    /// <summary>Repository của module Auth (người dùng + refresh token) — Buổi 3, Dev 1.</summary>
+    IUserRepository Users { get; }
+
+    /// <summary>Repository ghi của aggregate Recipe — Buổi 3, Dev 2.</summary>
+    IRecipeRepository Recipes { get; }
+
     /// <summary>Repository ghi của module Category (FR-CAT-003/004/005) — dùng chung DbContext với các repository khác.</summary>
     ICategoryRepository Categories { get; }
 

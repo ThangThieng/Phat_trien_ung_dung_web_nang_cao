@@ -36,15 +36,6 @@ public sealed class UnauthorizedException(string errorCode, string message)
 public sealed class ForbiddenException(string errorCode, string message)
     : AppException(errorCode, 403, "Forbidden", message);
 
-public sealed class NotFoundException(string errorCode, string message)
-    : AppException(errorCode, 404, "Not Found", message);
-
-public sealed class ConflictException(string errorCode, string message)
-    : AppException(errorCode, 409, "Conflict", message);
-
-public sealed class LockedException(string errorCode, string message)
-    : AppException(errorCode, 423, "Locked", message);
-
 public sealed class ServiceUnavailableException(string errorCode, string message)
     : AppException(errorCode, 503, "Service Unavailable", message);
 

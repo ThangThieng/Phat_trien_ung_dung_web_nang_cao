@@ -18,34 +18,16 @@ public sealed class UploadFileCommandHandler(IFileStorageService storage, ICurre
     {
         var userId = currentUser.UserId ?? throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Yêu cầu đăng nhập.");
 
-        // 1. Kích thước – kiểm tra TRƯỚC khi đọc stream (NFR-SEC-004)
-        if (request.Length <= 0 || request.Length > ImageFileInspector.MaxFileSizeBytes)
-        {
-            throw new BadRequestException(ErrorCodes.FileSizeExceeded, "Kích thước file vượt quá giới hạn 5MB.");
-        }
-
-        // 2. MIME type khai báo
-        if (!ImageFileInspector.IsAllowedContentType(request.DeclaredContentType))
-        {
-            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "Loại file không được phép. Chỉ chấp nhận JPEG, PNG, WebP, AVIF.");
-        }
-
-        // 3. Magic bytes – định dạng thật phải khớp MIME khai báo
-        var header = new byte[ImageFileInspector.HeaderLength];
-        var read = await request.Content.ReadAtLeastAsync(header, header.Length, throwOnEndOfStream: false, cancellationToken).ConfigureAwait(false);
-        var detected = ImageFileInspector.Detect(header.AsSpan(0, read));
-
-        if (detected is null || !string.Equals(detected.ContentType, request.DeclaredContentType!.Trim(), StringComparison.OrdinalIgnoreCase))
-        {
-            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "File không hợp lệ.");
-        }
-
-        // 4. Upload: header đã đọc + phần còn lại của stream (không buffer toàn bộ file vào memory)
-        await using var fullContent = new PrefixedReadStream(header.AsMemory(0, read), request.Content, request.Length);
-        var stored = await storage
-            .UploadAsync(fullContent, $"uploads/{userId}", detected.Extension, detected.ContentType, cancellationToken)
+        // Kích thước → MIME khai báo → magic bytes (NFR-SEC-004) — dùng chung với FR-RCP-008.
+        var image = await ImageUploadInspector
+            .InspectAsync(request.Content, request.Length, request.DeclaredContentType, cancellationToken)
             .ConfigureAwait(false);
 
-        return new FileUploadResultDto(stored.Key, stored.Url, detected.ContentType, request.Length);
+        await using var content = image.Content;
+        var stored = await storage
+            .UploadAsync(content, $"uploads/{userId}", image.Format.Extension, image.Format.ContentType, cancellationToken)
+            .ConfigureAwait(false);
+
+        return new FileUploadResultDto(stored.Key, stored.Url, image.Format.ContentType, request.Length);
     }
 }

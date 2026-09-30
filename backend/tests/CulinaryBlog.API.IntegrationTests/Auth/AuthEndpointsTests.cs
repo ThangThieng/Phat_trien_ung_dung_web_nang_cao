@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
-using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Infrastructure.Jobs;
@@ -67,9 +66,8 @@ public class AuthEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 
         var response = await client.PostAsJsonAsync("/api/v1/auth/register", new
         {
-            fullName = "A",
+            displayName = "A",
             email = "khong-phai-email",
-            userName = "it_invalid",
             password = "123",
         });
 
@@ -165,9 +163,8 @@ public class AuthEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 
         var response = await client.PostAsJsonAsync("/api/v1/auth/register", new
         {
-            fullName = "Nguyễn Văn Test",
+            displayName = "Nguyễn Văn Test",
             email = "thieu-cha-a-cong",
-            userName = $"it_{NewSuffix()}",
             password = TestDataSeeder.ValidPassword,
         });
 
@@ -178,27 +175,25 @@ public class AuthEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Register_WithTooLongFullName_Returns400()
+    public async Task Register_WithTooLongDisplayName_Returns400()
     {
         var client = factory.CreateClient();
 
         var response = await client.PostAsJsonAsync("/api/v1/auth/register", new
         {
-            fullName = new string('a', 101),
+            displayName = new string('a', 101),
             email = $"it-{NewSuffix()}@culinaryblog.test",
-            userName = $"it_{NewSuffix()}",
             password = TestDataSeeder.ValidPassword,
         });
 
         await response.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
-        Assert.Contains("fullName", (await response.ReadValidationErrorsAsync()).Keys, StringComparer.Ordinal);
+        Assert.Contains("displayName", (await response.ReadValidationErrorsAsync()).Keys, StringComparer.Ordinal);
     }
 
     private static object NewRegistration(string suffix) => new
     {
-        fullName = "Nguyễn Văn Test",
+        displayName = "Nguyễn Văn Test",
         email = $"it-{suffix}@culinaryblog.test",
-        userName = $"it_{suffix}",
         password = TestDataSeeder.ValidPassword,
     };
 

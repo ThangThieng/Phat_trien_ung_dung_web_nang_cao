@@ -1,23 +1,25 @@
-using CulinaryBlog.Application.Common.Exceptions;
+using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Features.Auth;
+using CulinaryBlog.Domain.Exceptions;
 using FluentValidation;
 using FluentValidation.Results;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace CulinaryBlog.Infrastructure.Identity;
 
 /// <summary>
 /// IIdentityService dựa trên ASP.NET Core Identity UserManager:
 /// hash mật khẩu PBKDF2 (IPasswordHasher mặc định của Identity – cấu hình 100.000 vòng lặp), lockout 5 lần / 15 phút.
+/// Mọi thao tác GHI người dùng của hệ thống đi qua lớp này.
 /// </summary>
 public sealed class IdentityService(
     UserManager<ApplicationUser> userManager,
-    TimeProvider timeProvider,
-    IOptions<GoogleAuthOptions> googleOptions) : IIdentityService
+    IUserNameGenerator userNameGenerator,
+    TimeProvider timeProvider) : IIdentityService
 {
+    private const string GoogleProvider = "Google";
+
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
     {
         var normalized = userManager.NormalizeEmail(email);
@@ -31,17 +33,54 @@ public sealed class IdentityService(
         string role,
         CancellationToken cancellationToken)
     {
-        var userName = await GenerateUniqueUserNameAsync(email, cancellationToken).ConfigureAwait(false);
+        var userName = await userNameGenerator.GenerateAsync(email, cancellationToken).ConfigureAwait(false);
         var user = ApplicationUser.Create(displayName, email, userName, timeProvider.GetUtcNow().UtcDateTime);
 
         // UserManager.CreateAsync → IPasswordHasher<ApplicationUser> (PBKDF2-HMAC-SHA512)
-        var created = await userManager.CreateAsync(user, password).ConfigureAwait(false);
-        ThrowIfFailed(created);
-
-        var addedRole = await userManager.AddToRoleAsync(user, role).ConfigureAwait(false);
-        ThrowIfFailed(addedRole);
+        ThrowIfFailed(await userManager.CreateAsync(user, password).ConfigureAwait(false));
+        ThrowIfFailed(await userManager.AddToRoleAsync(user, role).ConfigureAwait(false));
 
         return ToInfo(user, [role]);
+    }
+
+    public async Task<IdentityUserInfo> FindOrCreateGoogleUserAsync(GoogleIdTokenPayload payload, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(payload);
+        var email = payload.Email ?? throw new ArgumentException("Payload Google phải có email.", nameof(payload));
+
+        // 1. Đã liên kết Google từ trước → đăng nhập.
+        var user = await userManager.FindByLoginAsync(GoogleProvider, payload.Subject).ConfigureAwait(false);
+        if (user is null)
+        {
+            user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
+            if (user is null)
+            {
+                // 3. Hoàn toàn mới → tạo tài khoản Author (không mật khẩu; chỉ đăng nhập được bằng Google).
+                var userName = await userNameGenerator.GenerateAsync(email, cancellationToken).ConfigureAwait(false);
+                user = ApplicationUser.Create(
+                    string.IsNullOrWhiteSpace(payload.Name) ? userName : payload.Name.Trim(),
+                    email,
+                    userName,
+                    timeProvider.GetUtcNow().UtcDateTime);
+                user.AvatarUrl = payload.Picture;
+                user.EmailConfirmed = payload.EmailVerified;
+                ThrowIfFailed(await userManager.CreateAsync(user).ConfigureAwait(false));
+                ThrowIfFailed(await userManager.AddToRoleAsync(user, Roles.Author).ConfigureAwait(false));
+            }
+            else if (!payload.EmailVerified)
+            {
+                // 2. Email đã có tài khoản: chỉ liên kết khi Google xác nhận email — nếu không, kẻ tấn công tạo tài khoản
+                //    Google gắn email của nạn nhân là chiếm được tài khoản Culinary Blog của nạn nhân.
+                throw new BusinessRuleViolationException(
+                    ErrorCodes.AuthGoogleTokenInvalid,
+                    "Google chưa xác minh địa chỉ email này nên không thể liên kết với tài khoản đang có.");
+            }
+
+            ThrowIfFailed(await userManager.AddLoginAsync(user, new UserLoginInfo(GoogleProvider, payload.Subject, GoogleProvider)).ConfigureAwait(false));
+        }
+
+        var roles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+        return ToInfo(user, [.. roles]);
     }
 
     public async Task<PasswordCheckResult> CheckPasswordAsync(string email, string password, CancellationToken cancellationToken)
@@ -79,92 +118,11 @@ public sealed class IdentityService(
         return new PasswordCheckResult(PasswordCheckStatus.Success, ToInfo(user, [.. roles]), null);
     }
 
-    public async Task<IdentityUserInfo> AuthenticateGoogleAsync(string idToken, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(googleOptions.Value.ClientId))
-        {
-            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Dịch vụ đăng nhập Google chưa được cấu hình.");
-        }
-
-        GoogleJsonWebSignature.Payload payload;
-        try
-        {
-            payload = await GoogleJsonWebSignature.ValidateAsync(
-                idToken,
-                new GoogleJsonWebSignature.ValidationSettings { Audience = [googleOptions.Value.ClientId] })
-                .ConfigureAwait(false);
-        }
-        catch (InvalidJwtException)
-        {
-            throw new UnauthorizedException(ErrorCodes.AuthGoogleTokenInvalid, "Google ID token không hợp lệ hoặc đã hết hạn.");
-        }
-        catch (HttpRequestException)
-        {
-            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh Google ID token lúc này.");
-        }
-        catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
-        {
-            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh Google ID token lúc này.");
-        }
-
-        if (!payload.EmailVerified || string.IsNullOrWhiteSpace(payload.Email) || string.IsNullOrWhiteSpace(payload.Subject))
-        {
-            throw new BadRequestException(ErrorCodes.AuthGoogleTokenInvalid, "Google chưa xác minh địa chỉ email của tài khoản này.");
-        }
-
-        var user = await userManager.FindByLoginAsync("Google", payload.Subject).ConfigureAwait(false);
-        if (user is null)
-        {
-            user = await userManager.FindByEmailAsync(payload.Email).ConfigureAwait(false);
-            if (user is null)
-            {
-                var userName = await GenerateUniqueUserNameAsync(payload.Email, cancellationToken).ConfigureAwait(false);
-                user = ApplicationUser.Create(payload.Name ?? payload.Email, payload.Email, userName, timeProvider.GetUtcNow().UtcDateTime);
-                user.AvatarUrl = payload.Picture;
-                ThrowIfFailed(await userManager.CreateAsync(user).ConfigureAwait(false));
-                ThrowIfFailed(await userManager.AddToRoleAsync(user, "Author").ConfigureAwait(false));
-            }
-
-            ThrowIfFailed(await userManager.AddLoginAsync(user, new UserLoginInfo("Google", payload.Subject, "Google")).ConfigureAwait(false));
-        }
-
-        var roles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
-        return ToInfo(user, [.. roles]);
-    }
-
-    private static IdentityUserInfo ToInfo(ApplicationUser user, IReadOnlyList<string> roles) =>
-        new(user.Id, user.DisplayName, user.Email ?? string.Empty, user.UserName ?? string.Empty, user.AvatarUrl, user.IsActive, roles);
-
-    private async Task<string> GenerateUniqueUserNameAsync(string email, CancellationToken cancellationToken)
-    {
-        var prefix = email.Split('@')[0].Trim().ToLowerInvariant();
-        const string allowedCharacters = "abcdefghijklmnopqrstuvwxyz0123456789-._@+";
-        var baseName = new string(prefix.Where(character => allowedCharacters.Contains(character)).ToArray());
-        if (string.IsNullOrWhiteSpace(baseName))
-        {
-            baseName = "user";
-        }
-
-        baseName = baseName[..Math.Min(baseName.Length, 45)];
-
-        var candidate = baseName;
-        var suffix = 2;
-        while (await UserNameExistsAsync(candidate, cancellationToken).ConfigureAwait(false))
-        {
-            candidate = $"{baseName}{suffix++}";
-        }
-
-        return candidate;
-    }
-
-    private Task<bool> UserNameExistsAsync(string userName, CancellationToken cancellationToken)
-    {
-        var normalized = userManager.NormalizeName(userName);
-        return userManager.Users.AnyAsync(u => u.NormalizedUserName == normalized, cancellationToken);
-    }
+    internal static IdentityUserInfo ToInfo(ApplicationUser user, IReadOnlyList<string> roles) =>
+        new(user.Id, user.DisplayName, user.Email ?? string.Empty, user.UserName ?? string.Empty, user.AvatarUrl, user.IsActive, roles, user.Bio);
 
     /// <summary>Chuyển IdentityError thành FluentValidation failures → HTTP 400 VALIDATION_ERROR (FR-AUTH-001 A2, MT-08).</summary>
-    private static void ThrowIfFailed(IdentityResult result)
+    internal static void ThrowIfFailed(IdentityResult result)
     {
         if (result.Succeeded)
         {

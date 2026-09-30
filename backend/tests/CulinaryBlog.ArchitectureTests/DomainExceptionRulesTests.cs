@@ -17,10 +17,7 @@ public partial class DomainExceptionRulesTests
     private const string DomainExceptionsNamespace = "CulinaryBlog.Domain.Exceptions";
 
     /// <summary>Mã có trong code nhưng chưa có trong Phụ lục B — mỗi dòng phải ghi rõ khi nào được gỡ.</summary>
-    private static readonly string[] TemporarilyAllowedExtraCodes =
-    [
-        ErrorCodes.AuthUserNameExists, // gỡ khi Dev 1 làm xong retrofit D-1 (Buổi 3)
-    ];
+    private static readonly string[] TemporarilyAllowedExtraCodes = [];
 
     private static readonly Assembly DomainAssembly = typeof(DomainException).Assembly;
 

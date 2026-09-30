@@ -1,6 +1,4 @@
-using System.Globalization;
-using CulinaryBlog.Application.Common.Exceptions;
-using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using MediatR;
 
@@ -40,27 +38,15 @@ public sealed class LoginUserCommandHandler(
                 return await authResponseFactory.IssueAsync(result.User, request.IpAddress, cancellationToken).ConfigureAwait(false);
 
             case PasswordCheckStatus.Disabled:
-                throw new ForbiddenException(ErrorCodes.AuthAccountDisabled, "Tài khoản đã bị vô hiệu hóa bởi quản trị viên.");
+                throw new AccountDisabledException();
 
             case PasswordCheckStatus.LockedOut:
-                throw BuildLockedException(result.LockoutEnd);
+                var remaining = result.LockoutEnd.HasValue ? result.LockoutEnd.Value - timeProvider.GetUtcNow() : TimeSpan.Zero;
+                throw new AccountLockedException(result.LockoutEnd, Math.Max(1, (int)Math.Ceiling(remaining.TotalMinutes)));
 
             default:
                 // A1: thông báo chung – không tiết lộ email có tồn tại hay không (chống User Enumeration)
-                throw new UnauthorizedException(ErrorCodes.AuthInvalidCredentials, "Email hoặc mật khẩu không đúng.");
+                throw new InvalidCredentialsException();
         }
-    }
-
-    private LockedException BuildLockedException(DateTimeOffset? lockoutEnd)
-    {
-        var remaining = lockoutEnd.HasValue ? lockoutEnd.Value - timeProvider.GetUtcNow() : TimeSpan.Zero;
-        var minutes = Math.Max(1, (int)Math.Ceiling(remaining.TotalMinutes));
-
-        var exception = new LockedException(
-            ErrorCodes.AuthAccountLocked,
-            $"Tài khoản tạm thời bị khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau {minutes.ToString(CultureInfo.InvariantCulture)} phút.");
-        exception.Extensions["lockoutEnd"] = lockoutEnd;
-        exception.Extensions["retryAfterMinutes"] = minutes;
-        return exception;
     }
 }

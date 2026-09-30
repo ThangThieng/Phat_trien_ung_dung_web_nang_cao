@@ -21,12 +21,6 @@ public static class ErrorCodes
     public const string AuthAccountLocked = "AUTH_ACCOUNT_LOCKED";
     public const string AuthUserNotFound = "AUTH_USER_NOT_FOUND";
 
-    /// <summary>
-    /// ⚠️ Tạm thời — KHÔNG có trong Phụ lục B (MT-46). Còn được RegisterUserCommand dùng cho tới khi Dev 1 làm xong
-    /// retrofit D-1 (BE tự sinh UserName) trong Buổi 3; D-1 xong thì xóa hằng số này và dòng miễn trừ trong ErrorCodesTests.
-    /// </summary>
-    public const string AuthUserNameExists = "AUTH_USERNAME_EXISTS";
-
     // ---- Recipe ----
     public const string RecipeNotFound = "RECIPE_NOT_FOUND";
     public const string RecipeSlugExists = "RECIPE_SLUG_EXISTS";
