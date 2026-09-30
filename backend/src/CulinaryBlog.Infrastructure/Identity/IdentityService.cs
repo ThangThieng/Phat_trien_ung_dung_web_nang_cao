@@ -118,6 +118,59 @@ public sealed class IdentityService(
         return new PasswordCheckResult(PasswordCheckStatus.Success, ToInfo(user, [.. roles]), null);
     }
 
+    public async Task<IdentityUserInfo?> FindByIdAsync(string userId, CancellationToken cancellationToken)
+    {
+        var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+        return user is null ? null : ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
+    }
+
+    public async Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(changes);
+
+        var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+        if (user is null)
+        {
+            return null;
+        }
+
+        if (changes.DisplayName is not null)
+        {
+            user.DisplayName = changes.DisplayName;
+        }
+
+        if (changes.AvatarUrl is not null)
+        {
+            user.AvatarUrl = changes.AvatarUrl.Length == 0 ? null : changes.AvatarUrl;
+        }
+
+        if (changes.Bio is not null)
+        {
+            user.Bio = changes.Bio.Length == 0 ? null : changes.Bio;
+        }
+
+        // UpdateAsync (không ghi thẳng bảng): đổi ConcurrencyStamp để hai lần sửa đồng thời không âm thầm đè nhau.
+        ThrowIfFailed(await userManager.UpdateAsync(user).ConfigureAwait(false));
+        return ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
+    }
+
+    public async Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken)
+    {
+        var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+        if (user is null)
+        {
+            return null;
+        }
+
+        if (user.IsActive != isActive)
+        {
+            user.IsActive = isActive;
+            ThrowIfFailed(await userManager.UpdateAsync(user).ConfigureAwait(false));
+        }
+
+        return ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
+    }
+
     internal static IdentityUserInfo ToInfo(ApplicationUser user, IReadOnlyList<string> roles) =>
         new(user.Id, user.DisplayName, user.Email ?? string.Empty, user.UserName ?? string.Empty, user.AvatarUrl, user.IsActive, roles, user.Bio);
 

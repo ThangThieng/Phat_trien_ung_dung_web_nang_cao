@@ -70,6 +70,9 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
     /// <summary>Ghi lại mọi lời gọi Hangfire mà không cần BackgroundJobServer chạy.</summary>
     public FakeBackgroundJobClient BackgroundJobs { get; } = new();
 
+    /// <summary>Buổi 4: Google ID token giả cho FR-AUTH-003 (không gọi Google thật).</summary>
+    public FakeGoogleIdTokenValidator GoogleTokens { get; } = new();
+
     /// <summary>Endpoint S3 của container MinIO (dùng cho cả cấu hình app lẫn kiểm chứng trực tiếp trong test).</summary>
     public string MinioEndpoint => $"http://{_minio.Hostname}:{_minio.GetMappedPublicPort(9000)}";
 
@@ -206,6 +209,11 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
 
             // Buổi 3: middleware chỉ có trong test, ném từng loại lỗi để kiểm hợp đồng Problem Details.
             services.AddTransient<IStartupFilter, ErrorTriggerStartupFilter>();
+
+            // Buổi 4: request đi vào như từ container Nginx trong mạng Docker (UseForwardedHeaders), Google ID token giả.
+            services.AddTransient<IStartupFilter, SimulatedProxyStartupFilter>();
+            services.RemoveAll<IGoogleIdTokenValidator>();
+            services.AddSingleton<IGoogleIdTokenValidator>(GoogleTokens);
         });
     }
 
