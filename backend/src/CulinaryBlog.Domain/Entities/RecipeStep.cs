@@ -1,4 +1,5 @@
 using CulinaryBlog.Domain.Common;
+using CulinaryBlog.Domain.Exceptions;
 
 namespace CulinaryBlog.Domain.Entities;
 
@@ -25,7 +26,7 @@ public class RecipeStep : BaseEntity
     {
         if (stepNumber <= 0)
         {
-            throw new DomainException("StepNumber phải lớn hơn 0.");
+            throw new BusinessRuleViolationException(ErrorCodes.ValidationError, "StepNumber phải lớn hơn 0.");
         }
 
         return new RecipeStep

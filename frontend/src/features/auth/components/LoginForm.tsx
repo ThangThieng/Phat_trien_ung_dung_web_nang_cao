@@ -6,9 +6,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import FormField from '@/components/ui/FormField';
-import { ApiError, getErrorMessage } from '@/lib/api-client';
+import { getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import { useAuth } from '../auth-context';
 import { loginSchema, type LoginFormValues } from '../schemas';
+
+const LOGIN_FIELDS = ['email', 'password'] as const;
 
 /** Chỉ cho phép redirect nội bộ (chống open redirect). */
 function safeCallbackUrl(value: string | null): string {
@@ -32,12 +34,8 @@ export default function LoginForm() {
       toast.success(`Chào mừng trở lại, ${user.fullName}!`);
       router.replace(safeCallbackUrl(searchParams.get('callbackUrl')));
     } catch (error) {
-      if (error instanceof ApiError && error.status === 422) {
-        Object.entries(error.fieldErrors).forEach(([field, messages]) => {
-          if (field === 'email' || field === 'password') setError(field, { message: messages[0] });
-        });
-        return;
-      }
+      // D-11: lỗi validation là 400 (không còn 422) – dùng helper chung
+      if (mapProblemDetailsToForm(error, LOGIN_FIELDS, setError)) return;
       // 401 / 403 / 423 – hiển thị message từ Problem Details
       setError('root', { message: getErrorMessage(error) });
     }

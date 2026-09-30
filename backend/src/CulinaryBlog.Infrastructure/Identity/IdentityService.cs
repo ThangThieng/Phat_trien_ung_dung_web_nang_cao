@@ -82,7 +82,7 @@ public sealed class IdentityService(UserManager<ApplicationUser> userManager, Ti
     private static IdentityUserInfo ToInfo(ApplicationUser user, IReadOnlyList<string> roles) =>
         new(user.Id, user.DisplayName, user.Email ?? string.Empty, user.UserName ?? string.Empty, user.AvatarUrl, user.IsActive, roles);
 
-    /// <summary>Chuyển IdentityError thành FluentValidation failures → HTTP 422 (FR-AUTH-001 A2).</summary>
+    /// <summary>Chuyển IdentityError thành FluentValidation failures → HTTP 400 VALIDATION_ERROR (FR-AUTH-001 A2, MT-08).</summary>
     private static void ThrowIfFailed(IdentityResult result)
     {
         if (result.Succeeded)

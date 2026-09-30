@@ -1,17 +1,29 @@
+using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.Application.Common.Exceptions;
-using CulinaryBlog.Domain.Common;
+using CulinaryBlog.Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace CulinaryBlog.API.Middleware;
 
 /// <summary>
 /// CONS-005 / NFR-USE-003: mọi lỗi trả về RFC 7807 (application/problem+json), "type" = Application Error Code.
 /// Lỗi không xử lý → 500, log đầy đủ, KHÔNG lộ stack trace (NFR-REL-002).
+///
+/// Thứ tự xử lý (Buổi 3):
+/// 1. <see cref="DomainException"/> — mã HTTP tra ở <see cref="ExceptionStatusMap"/> (Domain không mang mã HTTP),
+///    "type" = Code của exception, Extensions của exception chép sang Problem Details.
+/// 2. <see cref="ValidationException"/> — 400 VALIDATION_ERROR kèm "errors" theo field (MT-08, D-11).
+/// 3. <see cref="AppException"/> — lỗi tầng Application tự mang mã HTTP (phân quyền tài nguyên, tệp, dịch vụ ngoài).
+/// 4. <see cref="BadHttpRequestException"/> — body/tham số sai định dạng.
+/// 5. Còn lại (kể cả DbUpdateException mà UnitOfWork không dịch được) — 500 INTERNAL_ERROR.
+/// "traceId" được IProblemDetailsService tự thêm vào mọi response để tra log (Buổi 6 bổ sung CorrelationId).
 /// </summary>
 public sealed partial class GlobalExceptionMiddleware(
     RequestDelegate next,
     IProblemDetailsService problemDetailsService,
+    ExceptionStatusMap exceptionStatusMap,
     ILogger<GlobalExceptionMiddleware> logger)
 {
     public async Task InvokeAsync(HttpContext context)
@@ -41,28 +53,25 @@ public sealed partial class GlobalExceptionMiddleware(
         }
     }
 
-    private static ProblemDetails ToProblem(Exception exception, HttpContext context)
+    private ProblemDetails ToProblem(Exception exception, HttpContext context)
     {
         switch (exception)
         {
-            case AppException app:
-                var appProblem = new ProblemDetails
-                {
-                    Type = app.ErrorCode,
-                    Title = app.Title,
-                    Status = app.StatusCode,
-                    Detail = app.Message,
-                    Instance = context.Request.Path,
-                };
-                foreach (var (key, value) in app.Extensions)
-                {
-                    appProblem.Extensions[key] = value;
-                }
-
-                return appProblem;
+            case DomainException domain:
+                var status = exceptionStatusMap.Resolve(domain);
+                return WithExtensions(
+                    new ProblemDetails
+                    {
+                        Type = domain.Code,
+                        Title = ReasonPhrases.GetReasonPhrase(status),
+                        Status = status,
+                        Detail = domain.Message,
+                        Instance = context.Request.Path,
+                    },
+                    domain.Extensions);
 
             case ValidationException validation:
-                // Quyết định dự án: lỗi validation → 422 (theo các FR chi tiết)
+                // MT-08 (SRS v1.2.2 §3): MỌI lỗi validation/input → 400. Mã 422 bị loại bỏ khỏi hệ thống.
                 var errors = validation.Errors
                     .GroupBy(e => ToCamelCase(e.PropertyName))
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).Distinct().ToArray());
@@ -70,20 +79,22 @@ public sealed partial class GlobalExceptionMiddleware(
                 {
                     Type = ErrorCodes.ValidationError,
                     Title = "Dữ liệu không hợp lệ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = "Một hoặc nhiều trường không hợp lệ. Xem \"errors\".",
                     Instance = context.Request.Path,
                 };
 
-            case DomainException domain:
-                return new ProblemDetails
-                {
-                    Type = ErrorCodes.ValidationError,
-                    Title = "Vi phạm quy tắc nghiệp vụ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
-                    Detail = domain.Message,
-                    Instance = context.Request.Path,
-                };
+            case AppException app:
+                return WithExtensions(
+                    new ProblemDetails
+                    {
+                        Type = app.ErrorCode,
+                        Title = app.Title,
+                        Status = app.StatusCode,
+                        Detail = app.Message,
+                        Instance = context.Request.Path,
+                    },
+                    app.Extensions.AsReadOnly());
 
             case BadHttpRequestException badRequest:
                 return new ProblemDetails
@@ -101,10 +112,20 @@ public sealed partial class GlobalExceptionMiddleware(
                     Type = ErrorCodes.InternalError,
                     Title = "Internal Server Error",
                     Status = StatusCodes.Status500InternalServerError,
-                    Detail = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.",
+                    Detail = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau và gửi kèm mã traceId nếu lỗi lặp lại.",
                     Instance = context.Request.Path,
                 };
         }
+    }
+
+    private static ProblemDetails WithExtensions(ProblemDetails problem, IReadOnlyDictionary<string, object?> extensions)
+    {
+        foreach (var (key, value) in extensions)
+        {
+            problem.Extensions[key] = value;
+        }
+
+        return problem;
     }
 
     private static string ToCamelCase(string name) =>
