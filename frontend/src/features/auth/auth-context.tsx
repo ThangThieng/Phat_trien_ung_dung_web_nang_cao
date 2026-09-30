@@ -39,7 +39,7 @@ function readSession(): AuthSession | null {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const session = JSON.parse(raw) as AuthSession;
-    // Access token hết hạn → bỏ session (luồng Refresh Token Rotation – FR-AUTH-004 – bổ sung ở Buổi 3)
+    // Access token hết hạn → bỏ session (luồng Refresh Token Rotation – FR-AUTH-004 – bổ sung ở Buổi 4)
     if (new Date(session.expiresAt).getTime() <= Date.now()) {
       window.localStorage.removeItem(STORAGE_KEY);
       return null;

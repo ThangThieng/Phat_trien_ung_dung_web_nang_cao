@@ -1,0 +1,22 @@
+[
+  { "name": "Món khai vị", "description": "Món ăn nhẹ mở đầu bữa ăn: gỏi, chả giò, nộm..." },
+  { "name": "Món chính", "description": "Các món ăn chính cho bữa cơm gia đình." },
+  { "name": "Canh & Súp", "description": "Canh, súp thanh mát và bổ dưỡng." },
+  { "name": "Món chay", "description": "Món ăn thuần chay, tốt cho sức khỏe." },
+  { "name": "Món nướng", "description": "Thịt, hải sản và rau củ nướng thơm lừng." },
+  { "name": "Bún & Phở", "description": "Các món nước truyền thống của Việt Nam." },
+  { "name": "Bánh", "description": "Bánh mặn, bánh ngọt, bánh truyền thống." },
+  { "name": "Tráng miệng & Đồ uống", "description": "Chè, kem, sinh tố và các loại nước giải khát." },
+  { "name": "Cơm & Xôi", "description": "Cơm chiên, cơm gà, xôi mặn và xôi ngọt cho bữa sáng hay bữa trưa." },
+  { "name": "Lẩu", "description": "Nồi lẩu nóng hổi quây quần cả nhà: lẩu gà, lẩu cá, lẩu mắm, lẩu chay." },
+  { "name": "Hải sản", "description": "Tôm, cua, ốc, sò điệp chế biến đậm đà hương vị biển." },
+  { "name": "Gỏi & Salad", "description": "Gỏi trộn chua ngọt kiểu Việt và salad rau củ kiểu Âu." },
+  { "name": "Món cuốn", "description": "Bò bía, phở cuốn, bánh tráng cuốn và các món cuốn rau sống." },
+  { "name": "Món hấp", "description": "Món hấp giữ trọn vị ngọt tự nhiên, ít dầu mỡ." },
+  { "name": "Món chiên", "description": "Món chiên giòn rụm: gà chiên, tôm chiên xù, chả cá." },
+  { "name": "Ăn vặt", "description": "Món ăn vặt đường phố: bánh tráng trộn, bắp xào, khoai lắc." },
+  { "name": "Món Hàn Quốc", "description": "Kimbap, tokbokki, bibimbap và các món Hàn dễ làm tại nhà." },
+  { "name": "Món Nhật Bản", "description": "Cà ri Nhật, teriyaki, tempura, súp miso theo cách nấu gia đình." },
+  { "name": "Món Thái", "description": "Món Thái chua cay đặc trưng: pad Thái, cà ri xanh, tom kha." },
+  { "name": "Món Âu", "description": "Mì Ý, bít tết, súp kem và các món Âu phổ biến." }
+]

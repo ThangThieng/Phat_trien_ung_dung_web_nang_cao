@@ -1,0 +1,679 @@
+[
+  {
+    "title": "Gà chiên nước mắm",
+    "category": "Món chiên",
+    "description": "Cánh gà chiên giòn rồi áo lớp nước mắm tỏi ớt thắng keo, mặn ngọt đậm đà, món nhậu và đưa cơm.",
+    "prep": 20, "cook": 25, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Cánh gà", 800, "gram", "chặt đôi"],
+      ["Bột năng", 3, "thìa canh"],
+      ["Bột chiên giòn", 2, "thìa canh"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Tỏi", 6, "tép", "băm nhỏ"],
+      ["Ớt tươi", 2, "quả", "băm nhỏ"],
+      ["Gừng", 10, "gram", "băm nhỏ"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Tiêu xay", 1, "thìa cà phê"],
+      ["Dầu ăn", 500, "ml"],
+      ["Rau răm, dưa leo", 100, "gram"]
+    ],
+    "steps": [
+      ["Ướp gà", "Rửa cánh gà với muối, thấm khô, ướp với hạt nêm, tiêu, gừng và 1 thìa nước mắm trong 20 phút.", 20],
+      ["Áo bột", "Trộn bột năng với bột chiên giòn, lăn đều cánh gà qua bột.", 3],
+      ["Chiên gà", "Chiên gà trong dầu 170°C khoảng 10 phút đến khi chín vàng, vớt ra; tăng lửa chiên lại 2 phút cho giòn.", 12],
+      ["Thắng nước mắm", "Phi tỏi vàng, thêm nước mắm còn lại, đường, ớt và 2 thìa nước, đun đến khi sốt sệt sủi bọt lớn.", 4],
+      ["Áo sốt", "Cho gà vào đảo nhanh tay trên lửa lớn đến khi sốt bám đều và khô lại, dọn cùng rau răm, dưa leo.", 2]
+    ]
+  },
+  {
+    "title": "Tôm chiên xù",
+    "category": "Món chiên",
+    "description": "Tôm sú duỗi thẳng tẩm bột chiên xù Panko, chiên vàng giòn rụm, chấm sốt mayonnaise hoặc tương ớt.",
+    "prep": 25, "cook": 10, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Tôm sú", 500, "gram", "bóc vỏ, chừa đuôi"],
+      ["Bột chiên xù Panko", 150, "gram"],
+      ["Bột mì", 60, "gram"],
+      ["Trứng gà", 2, "quả"],
+      ["Muối", 0.5, "thìa cà phê"],
+      ["Tiêu trắng", 0.5, "thìa cà phê"],
+      ["Tỏi băm", 1, "thìa cà phê"],
+      ["Dầu ăn", 600, "ml"],
+      ["Mayonnaise", 3, "thìa canh"],
+      ["Tương ớt", 2, "thìa canh"],
+      ["Xà lách, chanh", 100, "gram", "ăn kèm"]
+    ],
+    "steps": [
+      ["Sơ chế tôm", "Bóc vỏ tôm chừa đuôi, rút chỉ lưng, khứa nhẹ vài đường ở bụng rồi ấn duỗi thẳng thân tôm.", 15],
+      ["Ướp tôm", "Ướp tôm với muối, tiêu trắng và tỏi băm trong 10 phút, thấm khô.", 10],
+      ["Tẩm bột", "Lăn tôm lần lượt qua bột mì, trứng đánh tan và bột Panko, ấn nhẹ cho bột bám chắc.", 10],
+      ["Chiên tôm", "Chiên tôm ngập dầu 175°C khoảng 2–3 phút đến khi vàng giòn, vớt ra giấy thấm dầu.", 3],
+      ["Trình bày", "Xếp tôm lên xà lách, dọn cùng mayonnaise, tương ớt và chanh.", null]
+    ]
+  },
+  {
+    "title": "Chả cá Lã Vọng",
+    "category": "Món chiên",
+    "description": "Cá lăng ướp nghệ, riềng, mẻ, nướng sơ rồi rán lại cùng thì là và hành lá, ăn với bún và mắm tôm.",
+    "prep": 40, "cook": 25, "servings": 4, "difficulty": "Hard",
+    "ingredients": [
+      ["Cá lăng phi lê", 600, "gram", "cắt miếng vừa"],
+      ["Nghệ tươi", 1, "củ", "giã lấy nước"],
+      ["Riềng", 40, "gram", "giã nhuyễn"],
+      ["Mẻ", 2, "thìa canh"],
+      ["Mắm tôm", 1, "thìa canh"],
+      ["Nước mắm", 1, "thìa canh"],
+      ["Thì là", 2, "bó", "cắt khúc"],
+      ["Hành lá", 1, "bó", "cắt khúc"],
+      ["Dầu ăn", 100, "ml"],
+      ["Bún tươi", 600, "gram"],
+      ["Đậu phộng rang", 60, "gram"],
+      ["Rau mùi, kinh giới", 80, "gram"]
+    ],
+    "steps": [
+      ["Ướp cá", "Ướp cá với nước nghệ, riềng, mẻ, nước mắm và chút mắm tôm ít nhất 2 giờ cho thấm.", 120],
+      ["Nướng sơ", "Kẹp cá vào vỉ, nướng trên than hoặc lò 200°C khoảng 10 phút đến khi cá se mặt và chín tới.", 10],
+      ["Rán cá", "Đun nóng dầu trong chảo, cho cá vào rán vàng hai mặt.", 6],
+      ["Đảo thì là hành", "Cho thì là và hành lá vào chảo đảo nhanh đến khi vừa héo, giữ màu xanh.", 1],
+      ["Pha mắm tôm", "Đánh bông mắm tôm với đường, chanh, chút rượu và ớt, rưới thêm dầu nóng.", 5],
+      ["Thưởng thức", "Gắp cá, thì là vào bát bún, thêm rau thơm, đậu phộng và chan mắm tôm.", null]
+    ]
+  },
+  {
+    "title": "Đậu hũ chiên sả ớt",
+    "category": "Món chiên",
+    "description": "Đậu hũ chiên vàng giòn đảo cùng sả ớt phi thơm cay, nêm nước tương, ăn chơi hay đưa cơm đều hợp.",
+    "prep": 15, "cook": 15, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Đậu hũ trắng", 4, "bìa", "cắt khối vuông"],
+      ["Sả", 4, "cây", "băm nhuyễn"],
+      ["Ớt tươi", 3, "quả", "băm nhỏ"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Nước tương", 1.5, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Bột năng", 2, "thìa canh"],
+      ["Dầu ăn", 300, "ml"],
+      ["Lá chanh", 4, "lá", "thái chỉ"],
+      ["Hành lá", 2, "cây", "thái nhỏ"]
+    ],
+    "steps": [
+      ["Sơ chế đậu", "Cắt đậu hũ thành khối vuông 3 cm, thấm thật khô, lăn qua lớp bột năng mỏng.", 5],
+      ["Chiên đậu", "Chiên đậu trong dầu nóng đến khi vàng giòn các mặt, vớt ra để ráo.", 8],
+      ["Phi sả ớt", "Để lại 2 thìa dầu, phi sả băm đến khi vàng tơi, thêm tỏi và ớt đảo thơm.", 3],
+      ["Nêm gia vị", "Nêm nước tương, đường và hạt nêm, đảo đều cho sả thấm gia vị.", 1],
+      ["Đảo đậu", "Cho đậu vào đảo nhanh cho sả ớt bám đều, rắc lá chanh và hành lá rồi tắt bếp.", 1]
+    ]
+  },
+  {
+    "title": "Bánh tráng trộn",
+    "category": "Ăn vặt",
+    "description": "Bánh tráng cắt sợi trộn khô bò, trứng cút, xoài xanh, rau răm, sa tế và tắc, món ăn vặt tuổi học trò.",
+    "prep": 20, "cook": 5, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Bánh tráng phơi sương", 200, "gram", "cắt sợi"],
+      ["Khô bò xé", 50, "gram"],
+      ["Trứng cút", 10, "quả", "luộc, bóc vỏ"],
+      ["Xoài xanh", 1, "quả", "bào sợi"],
+      ["Rau răm", 30, "gram", "thái nhỏ"],
+      ["Tôm khô", 20, "gram", "rang giòn"],
+      ["Đậu phộng rang", 40, "gram"],
+      ["Hành phi", 2, "thìa canh"],
+      ["Sa tế", 1, "thìa canh"],
+      ["Tắc (quất)", 5, "quả", "vắt lấy nước"],
+      ["Nước mắm, đường", 2, "thìa canh"],
+      ["Muối tôm Tây Ninh", 1, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Chuẩn bị bánh tráng", "Cắt bánh tráng thành sợi nhỏ, nếu bánh quá khô thì phun sương chút nước cho mềm.", 5],
+      ["Pha nước trộn", "Hòa nước mắm, đường, nước tắc và sa tế thành hỗn hợp chua cay ngọt.", 3],
+      ["Trộn bánh tráng", "Rưới nước trộn vào bánh tráng, trộn đều cho sợi bánh mềm và thấm.", 3],
+      ["Thêm topping", "Cho xoài, khô bò, tôm khô, rau răm và muối tôm vào, trộn tiếp.", 3],
+      ["Trình bày", "Cho ra bát, xếp trứng cút cắt đôi, rắc đậu phộng và hành phi.", null]
+    ]
+  },
+  {
+    "title": "Bắp xào bơ",
+    "category": "Ăn vặt",
+    "description": "Hạt bắp Mỹ xào bơ cùng tôm khô, hành lá và nước mắm, ngọt béo mặn mặn, món ăn vặt vỉa hè Sài Gòn.",
+    "prep": 10, "cook": 10, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Bắp Mỹ", 3, "bắp", "tách hạt"],
+      ["Bơ lạt", 40, "gram"],
+      ["Tôm khô", 30, "gram", "ngâm mềm"],
+      ["Hành lá", 3, "cây", "thái nhỏ"],
+      ["Nước mắm", 1, "thìa canh"],
+      ["Đường", 1, "thìa canh"],
+      ["Hạt nêm", 0.5, "thìa cà phê"],
+      ["Sa tế", 1, "thìa cà phê"],
+      ["Bột phô mai", 1, "thìa canh", "tùy chọn"],
+      ["Tiêu xay", 0.5, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Tách hạt bắp", "Dùng dao tách hạt bắp khỏi lõi, luộc sơ 3 phút rồi để ráo.", 8],
+      ["Xào tôm khô", "Đun chảy bơ, cho tôm khô vào xào thơm.", 2],
+      ["Xào bắp", "Cho bắp vào đảo đều, nêm nước mắm, đường và hạt nêm, xào 3–4 phút.", 4],
+      ["Thêm hành và sa tế", "Cho hành lá và sa tế vào đảo nhanh đến khi hành vừa chín.", 1],
+      ["Trình bày", "Múc bắp ra ly giấy, rắc bột phô mai và tiêu, dùng khi còn nóng.", null]
+    ]
+  },
+  {
+    "title": "Khoai lang lắc phô mai",
+    "category": "Ăn vặt",
+    "description": "Khoai lang cắt que chiên giòn, lắc cùng bột phô mai và bơ, ngọt bùi béo mặn, ăn nóng là ngon nhất.",
+    "prep": 20, "cook": 20, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Khoai lang vàng", 600, "gram", "cắt que"],
+      ["Bột chiên giòn", 3, "thìa canh"],
+      ["Bột năng", 2, "thìa canh"],
+      ["Bột phô mai", 4, "thìa canh"],
+      ["Bơ lạt", 20, "gram", "đun chảy"],
+      ["Đường", 1, "thìa canh"],
+      ["Muối", 0.5, "thìa cà phê"],
+      ["Bột ớt", 0.5, "thìa cà phê", "tùy chọn"],
+      ["Lá thơm mùi tây khô", 1, "thìa cà phê"],
+      ["Dầu ăn", 600, "ml"]
+    ],
+    "steps": [
+      ["Sơ chế khoai", "Gọt vỏ khoai, cắt que dày 1 cm, ngâm nước muối loãng 15 phút cho bớt nhựa rồi thấm khô.", 15],
+      ["Áo bột", "Trộn khoai với bột chiên giòn và bột năng cho lớp bột mỏng bám đều.", 3],
+      ["Chiên khoai", "Chiên khoai ở 160°C khoảng 6 phút, vớt ra; tăng lên 180°C chiên lại 2 phút cho giòn.", 8],
+      ["Trộn bột lắc", "Trộn bột phô mai, đường, muối, bột ớt và lá mùi tây khô.", 2],
+      ["Lắc khoai", "Cho khoai còn nóng vào túi, rưới bơ chảy, thêm bột lắc, lắc đều đến khi phủ kín.", 2]
+    ]
+  },
+  {
+    "title": "Trứng cút lộn xào me",
+    "category": "Ăn vặt",
+    "description": "Trứng cút lộn luộc xào sốt me chua ngọt với tỏi và rau răm, món ăn vặt đậm vị đường phố.",
+    "prep": 15, "cook": 20, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Trứng cút lộn", 20, "quả"],
+      ["Me chua", 50, "gram", "dầm lấy nước cốt"],
+      ["Đường", 3, "thìa canh"],
+      ["Nước mắm", 1.5, "thìa canh"],
+      ["Tỏi", 5, "tép", "băm nhỏ"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Ớt tươi", 2, "quả", "băm nhỏ"],
+      ["Bơ lạt", 20, "gram"],
+      ["Bột năng", 1, "thìa cà phê", "hòa với nước"],
+      ["Rau răm", 20, "gram"],
+      ["Đậu phộng rang", 30, "gram"]
+    ],
+    "steps": [
+      ["Luộc trứng", "Luộc trứng cút lộn khoảng 12 phút, ngâm nước lạnh rồi bóc vỏ nhẹ tay.", 15],
+      ["Làm sốt me", "Phi tỏi và hành tím với bơ, cho nước cốt me, đường, nước mắm và ớt vào đun sôi.", 5],
+      ["Tạo độ sánh", "Thêm nước bột năng, khuấy đến khi sốt sánh bóng.", 1],
+      ["Xào trứng", "Cho trứng vào đảo nhẹ tay trong sốt me khoảng 2 phút cho sốt bám đều.", 2],
+      ["Trình bày", "Cho ra đĩa, rắc rau răm và đậu phộng rang.", null]
+    ]
+  },
+  {
+    "title": "Kimbap",
+    "category": "Món Hàn Quốc",
+    "description": "Cơm cuộn rong biển Hàn Quốc với trứng, xúc xích, cà rốt, rau chân vịt và củ cải vàng, rưới dầu mè thơm.",
+    "prep": 40, "cook": 20, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Gạo Hàn Quốc hạt tròn", 400, "gram"],
+      ["Lá rong biển cuộn", 5, "lá"],
+      ["Trứng gà", 3, "quả", "tráng dày, cắt thanh"],
+      ["Xúc xích", 5, "cây"],
+      ["Cà rốt", 1, "củ", "thái sợi"],
+      ["Rau chân vịt (cải bó xôi)", 150, "gram"],
+      ["Củ cải vàng muối", 5, "thanh"],
+      ["Thanh cua", 5, "thanh"],
+      ["Dầu mè", 2, "thìa canh"],
+      ["Mè rang", 1, "thìa canh"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Tỏi băm", 1, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Nấu và trộn cơm", "Nấu cơm hơi khô, trộn khi còn ấm với 1 thìa dầu mè, muối và mè rang.", 25],
+      ["Chuẩn bị nhân", "Tráng trứng dày cắt thanh; áp chảo xúc xích, thanh cua; xào cà rốt với chút muối.", 15],
+      ["Trụng rau chân vịt", "Trụng rau chân vịt 30 giây, vắt ráo, trộn với tỏi băm, dầu mè và chút muối.", 3],
+      ["Cuộn kimbap", "Đặt rong biển lên mành tre, dàn mỏng cơm phủ 2/3 lá, xếp các loại nhân rồi cuộn chặt tay.", 15],
+      ["Cắt và trình bày", "Quét dầu mè lên mặt cuộn, dùng dao sắc nhúng nước cắt khoanh dày 1,5 cm, rắc mè.", 5]
+    ]
+  },
+  {
+    "title": "Tokbokki",
+    "category": "Món Hàn Quốc",
+    "description": "Bánh gạo Hàn Quốc dẻo dai sốt tương ớt gochujang cay ngọt, ăn cùng chả cá, trứng luộc và phô mai.",
+    "prep": 15, "cook": 20, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Bánh gạo tokbokki", 500, "gram"],
+      ["Chả cá Hàn Quốc", 150, "gram", "cắt miếng"],
+      ["Tương ớt gochujang", 3, "thìa canh"],
+      ["Bột ớt Hàn Quốc gochugaru", 1, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Xì dầu", 1, "thìa canh"],
+      ["Nước dùng cá cơm và rong biển", 500, "ml"],
+      ["Trứng gà", 2, "quả", "luộc chín"],
+      ["Hành boa rô", 1, "cây", "cắt khúc"],
+      ["Bắp cải", 100, "gram", "cắt miếng"],
+      ["Phô mai mozzarella", 80, "gram", "tùy chọn"],
+      ["Mè rang", 1, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Ngâm bánh gạo", "Ngâm bánh gạo trong nước ấm 10 phút cho mềm và tách rời.", 10],
+      ["Nấu sốt", "Đun sôi nước dùng, hòa gochujang, bột ớt, đường và xì dầu vào, khuấy tan.", 5],
+      ["Nấu bánh gạo", "Cho bánh gạo, chả cá và bắp cải vào, đun lửa vừa, khuấy thường xuyên đến khi sốt sệt và bánh mềm dẻo.", 10],
+      ["Thêm trứng và hành", "Cho trứng luộc và hành boa rô vào, đun thêm 2 phút.", 2],
+      ["Hoàn thiện", "Rắc phô mai mozzarella lên trên, đậy nắp cho phô mai chảy, rắc mè rang và dùng nóng.", 2]
+    ]
+  },
+  {
+    "title": "Canh kim chi thịt heo",
+    "category": "Món Hàn Quốc",
+    "description": "Kimchi jjigae nấu kim chi chua lâu ngày với thịt ba chỉ và đậu hũ, nước canh cay nồng ấm bụng.",
+    "prep": 15, "cook": 30, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Kim chi cải thảo chua", 300, "gram", "cắt miếng"],
+      ["Nước kim chi", 100, "ml"],
+      ["Thịt ba chỉ heo", 250, "gram", "thái miếng"],
+      ["Đậu hũ non", 1, "bìa", "cắt miếng dày"],
+      ["Hành tây", 0.5, "củ", "thái lát"],
+      ["Hành boa rô", 1, "cây", "cắt xéo"],
+      ["Tương ớt gochujang", 1, "thìa canh"],
+      ["Bột ớt gochugaru", 1, "thìa canh"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Dầu mè", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Nước dùng cá cơm", 600, "ml"]
+    ],
+    "steps": [
+      ["Xào thịt", "Cho dầu mè vào nồi, xào thịt ba chỉ đến khi ra mỡ và săn lại.", 5],
+      ["Xào kim chi", "Thêm kim chi, tỏi, gochugaru và đường, xào 5 phút cho kim chi mềm và dậy mùi.", 5],
+      ["Nấu canh", "Đổ nước dùng và nước kim chi vào, hòa gochujang, đun sôi rồi hạ lửa nấu 15 phút.", 15],
+      ["Thêm đậu hũ", "Cho hành tây và đậu hũ vào, nấu thêm 5 phút, nêm lại vừa ăn.", 5],
+      ["Hoàn thiện", "Rắc hành boa rô, dọn nóng trong nồi đất cùng cơm trắng.", null]
+    ]
+  },
+  {
+    "title": "Bibimbap",
+    "category": "Món Hàn Quốc",
+    "description": "Cơm trộn Hàn Quốc với các loại rau namul, thịt bò xào, trứng ốp la và sốt gochujang, trộn đều khi ăn.",
+    "prep": 40, "cook": 25, "servings": 2, "difficulty": "Medium",
+    "ingredients": [
+      ["Cơm trắng", 400, "gram"],
+      ["Thịt bò băm", 150, "gram"],
+      ["Rau chân vịt", 100, "gram"],
+      ["Giá đỗ", 100, "gram"],
+      ["Cà rốt", 1, "củ", "thái sợi"],
+      ["Nấm hương tươi", 80, "gram", "thái lát"],
+      ["Dưa leo", 1, "quả", "thái sợi"],
+      ["Trứng gà", 2, "quả"],
+      ["Tương ớt gochujang", 2, "thìa canh"],
+      ["Dầu mè", 2, "thìa canh"],
+      ["Xì dầu", 1, "thìa canh"],
+      ["Tỏi băm, mè rang", 1, "thìa canh"]
+    ],
+    "steps": [
+      ["Xào thịt bò", "Ướp thịt bò với xì dầu, tỏi, chút đường và dầu mè, xào chín tơi.", 8],
+      ["Làm rau namul", "Trụng riêng rau chân vịt và giá đỗ, vắt ráo, mỗi loại trộn với dầu mè, tỏi và chút muối.", 10],
+      ["Xào rau củ", "Xào nhanh riêng cà rốt và nấm hương với chút muối.", 6],
+      ["Pha sốt", "Trộn gochujang với 1 thìa dầu mè, 1 thìa đường, 1 thìa nước và mè rang.", 3],
+      ["Chiên trứng", "Ốp la trứng lòng đào.", 3],
+      ["Trình bày", "Cho cơm vào tô, xếp các loại rau, thịt bò thành từng phần quanh tô, đặt trứng ở giữa, thêm sốt và trộn đều khi ăn.", null]
+    ]
+  },
+  {
+    "title": "Cơm cà ri Nhật",
+    "category": "Món Nhật Bản",
+    "description": "Cà ri Nhật sánh đặc vị ngọt nhẹ với thịt gà, khoai tây, cà rốt, hành tây, rưới lên cơm nóng.",
+    "prep": 20, "cook": 40, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Thịt đùi gà", 500, "gram", "cắt miếng vừa"],
+      ["Viên cà ri Nhật", 100, "gram"],
+      ["Khoai tây", 2, "củ", "cắt khối"],
+      ["Cà rốt", 1, "củ", "cắt khối"],
+      ["Hành tây", 2, "củ", "thái múi cau"],
+      ["Táo", 0.5, "quả", "bào nhuyễn"],
+      ["Mật ong", 1, "thìa canh"],
+      ["Tỏi", 2, "tép", "băm nhỏ"],
+      ["Gừng", 10, "gram", "băm nhỏ"],
+      ["Dầu ăn", 2, "thìa canh"],
+      ["Cơm trắng", 800, "gram"],
+      ["Dưa củ cải muối Fukujinzuke", 50, "gram", "ăn kèm"]
+    ],
+    "steps": [
+      ["Xào hành tây", "Phi tỏi, gừng rồi xào hành tây lửa vừa khoảng 10 phút đến khi mềm và ngả vàng caramel.", 10],
+      ["Xào thịt gà", "Cho thịt gà vào xào săn các mặt.", 5],
+      ["Hầm rau củ", "Thêm khoai tây, cà rốt và 700 ml nước, đun sôi, hớt bọt và hầm lửa nhỏ 15 phút đến khi rau củ mềm.", 15],
+      ["Cho viên cà ri", "Tắt bếp, bẻ viên cà ri cho vào khuấy tan, thêm táo bào và mật ong.", 3],
+      ["Nấu sánh", "Bật lại lửa nhỏ, khuấy đều 5–7 phút đến khi cà ri sánh đặc.", 7],
+      ["Trình bày", "Xới cơm ra đĩa, rưới cà ri bên cạnh, ăn kèm dưa củ cải muối.", null]
+    ]
+  },
+  {
+    "title": "Gà teriyaki",
+    "category": "Món Nhật Bản",
+    "description": "Đùi gà áp chảo da giòn, rim sốt teriyaki từ xì dầu, mirin và rượu sake, bóng đẹp mặn ngọt hài hòa.",
+    "prep": 10, "cook": 20, "servings": 2, "difficulty": "Easy",
+    "ingredients": [
+      ["Đùi gà rút xương", 2, "cái"],
+      ["Xì dầu Nhật", 3, "thìa canh"],
+      ["Mirin", 3, "thìa canh"],
+      ["Rượu sake", 2, "thìa canh"],
+      ["Đường", 1, "thìa canh"],
+      ["Gừng", 10, "gram", "bào nhuyễn"],
+      ["Tỏi", 1, "tép", "băm nhỏ"],
+      ["Bột năng", 1, "thìa cà phê", "tùy chọn"],
+      ["Dầu ăn", 1, "thìa canh"],
+      ["Mè rang", 1, "thìa cà phê"],
+      ["Hành lá", 1, "cây", "thái nhỏ"],
+      ["Bắp cải thái sợi", 100, "gram", "ăn kèm"]
+    ],
+    "steps": [
+      ["Sơ chế gà", "Dùng dao đâm vài lỗ trên da và cắt đứt gân để gà không co khi chiên, thấm khô, rắc chút muối.", 5],
+      ["Pha sốt teriyaki", "Trộn xì dầu, mirin, sake, đường, gừng và tỏi.", 3],
+      ["Áp chảo gà", "Đặt gà úp mặt da xuống chảo nóng có dầu, áp lửa vừa 7 phút đến khi da vàng giòn, lật mặt áp tiếp 5 phút.", 12],
+      ["Rim sốt", "Thấm bớt mỡ trong chảo, đổ sốt vào, rim và rưới sốt lên gà đến khi sốt sánh bóng.", 4],
+      ["Trình bày", "Cắt gà thành lát, rưới sốt còn lại, rắc mè và hành lá, dọn cùng bắp cải thái sợi và cơm.", null]
+    ]
+  },
+  {
+    "title": "Súp miso đậu hũ",
+    "category": "Món Nhật Bản",
+    "description": "Súp miso nấu từ nước dashi rong biển kombu và cá bào, thêm đậu hũ non, rong wakame và hành lá.",
+    "prep": 15, "cook": 20, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Tương miso trắng", 3, "thìa canh"],
+      ["Rong biển kombu", 10, "gram"],
+      ["Cá ngừ bào katsuobushi", 15, "gram"],
+      ["Đậu hũ non", 1, "hộp", "cắt khối nhỏ"],
+      ["Rong biển wakame khô", 5, "gram", "ngâm nở"],
+      ["Nấm kim châm", 100, "gram"],
+      ["Hành lá", 2, "cây", "thái nhỏ"],
+      ["Nước", 1, "lít"],
+      ["Xì dầu Nhật", 1, "thìa cà phê"],
+      ["Mirin", 1, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Ngâm kombu", "Lau sạch kombu, ngâm trong 1 lít nước lạnh ít nhất 30 phút.", 30],
+      ["Nấu dashi", "Đun nồi kombu lửa nhỏ, vớt kombu ra ngay trước khi nước sôi; cho cá bào vào, tắt bếp để 3 phút rồi lọc lấy nước dashi.", 15],
+      ["Nấu nguyên liệu", "Đun dashi sôi nhẹ, thả nấm kim châm và wakame vào nấu 2 phút.", 2],
+      ["Hòa miso", "Tắt bếp, hòa tan miso qua rây nhỏ vào nồi, thêm xì dầu và mirin; không để súp sôi lại sau khi cho miso.", 2],
+      ["Thêm đậu hũ", "Thả đậu hũ non vào, hâm nóng nhẹ, rắc hành lá và dùng ngay.", 2]
+    ]
+  },
+  {
+    "title": "Tempura tôm rau củ",
+    "category": "Món Nhật Bản",
+    "description": "Tôm và rau củ nhúng bột tempura lạnh chiên giòn nhẹ, lớp vỏ mỏng xốp, chấm sốt tentsuyu với củ cải bào.",
+    "prep": 30, "cook": 20, "servings": 3, "difficulty": "Medium",
+    "ingredients": [
+      ["Tôm sú", 9, "con", "bóc vỏ chừa đuôi"],
+      ["Bí đỏ", 150, "gram", "thái lát mỏng"],
+      ["Khoai lang", 1, "củ", "thái lát mỏng"],
+      ["Ớt chuông xanh", 1, "quả", "cắt miếng"],
+      ["Nấm đùi gà", 100, "gram", "thái lát"],
+      ["Bột mì số 8", 120, "gram"],
+      ["Lòng đỏ trứng gà", 1, "quả"],
+      ["Nước đá lạnh", 200, "ml"],
+      ["Dầu ăn", 800, "ml"],
+      ["Nước dashi", 150, "ml", "làm sốt"],
+      ["Xì dầu Nhật và mirin", 3, "thìa canh", "mỗi loại 1,5 thìa"],
+      ["Củ cải trắng", 100, "gram", "bào nhuyễn"]
+    ],
+    "steps": [
+      ["Sơ chế tôm", "Rút chỉ lưng, khứa bụng tôm và ấn nhẹ để tôm thẳng, thấm khô cả tôm và rau củ.", 15],
+      ["Làm sốt tentsuyu", "Đun dashi, xì dầu và mirin đến khi sôi, để nguội.", 5],
+      ["Pha bột tempura", "Đánh lòng đỏ với nước đá, cho bột mì vào khuấy sơ vài vòng, để bột còn lợn cợn; không khuấy kỹ để bột không dai.", 2],
+      ["Chiên rau củ", "Đun dầu 170°C, nhúng rau củ qua bột rồi chiên 2–3 phút đến khi giòn nhẹ.", 8],
+      ["Chiên tôm", "Tăng dầu lên 180°C, nhúng tôm qua bột chiên 1,5–2 phút, vừa chiên vừa rưới thêm giọt bột để tạo lớp vỏ xốp.", 5],
+      ["Thưởng thức", "Xếp tempura lên giấy thấm dầu, dọn cùng sốt tentsuyu và củ cải bào.", null]
+    ]
+  },
+  {
+    "title": "Pad Thái tôm",
+    "category": "Món Thái",
+    "description": "Hủ tiếu Thái xào sốt me, nước mắm và đường thốt nốt cùng tôm, trứng, giá đỗ và đậu phộng rang.",
+    "prep": 25, "cook": 15, "servings": 2, "difficulty": "Medium",
+    "ingredients": [
+      ["Hủ tiếu sợi dẹt khô", 200, "gram", "ngâm nước ấm 30 phút"],
+      ["Tôm sú", 250, "gram", "bóc vỏ"],
+      ["Đậu hũ chiên", 1, "bìa", "cắt hạt lựu"],
+      ["Trứng gà", 2, "quả"],
+      ["Nước cốt me", 3, "thìa canh"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường thốt nốt", 2, "thìa canh"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Giá đỗ", 100, "gram"],
+      ["Hẹ", 1, "bó", "cắt khúc"],
+      ["Đậu phộng rang", 40, "gram", "giã dập"],
+      ["Chanh", 1, "quả"]
+    ],
+    "steps": [
+      ["Pha sốt pad Thái", "Đun nước cốt me, nước mắm và đường thốt nốt đến khi đường tan, sốt có vị chua ngọt mặn cân bằng.", 3],
+      ["Xào tôm", "Phi tỏi và hành tím, cho tôm vào xào đến khi đỏ, đẩy sang một bên chảo.", 3],
+      ["Chiên trứng", "Đập trứng vào chảo, đảo nhẹ đến khi trứng vừa chín tơi.", 2],
+      ["Xào hủ tiếu", "Cho hủ tiếu đã ngâm, đậu hũ và sốt vào, đảo đều trên lửa lớn đến khi sợi mềm và thấm sốt.", 5],
+      ["Thêm rau", "Cho giá và hẹ vào đảo nhanh 30 giây.", 1],
+      ["Trình bày", "Cho ra đĩa, rắc đậu phộng rang, dọn cùng chanh, ớt bột và giá sống.", null]
+    ]
+  },
+  {
+    "title": "Cà ri xanh gà",
+    "category": "Món Thái",
+    "description": "Cà ri xanh Thái nấu nước cốt dừa với gà, cà tím Thái và lá húng quế, cay thơm, ăn với cơm hoặc bánh mì.",
+    "prep": 20, "cook": 25, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Thịt ức hoặc đùi gà", 500, "gram", "thái miếng mỏng"],
+      ["Sốt cà ri xanh Thái", 3, "thìa canh"],
+      ["Nước cốt dừa", 400, "ml"],
+      ["Cà tím Thái", 6, "quả", "cắt múi"],
+      ["Măng tre", 100, "gram"],
+      ["Ớt chuông đỏ", 1, "quả", "thái sợi"],
+      ["Lá chanh Thái", 5, "lá", "xé nhỏ"],
+      ["Húng quế Thái", 30, "gram"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường thốt nốt", 1, "thìa canh"],
+      ["Dầu ăn", 1, "thìa canh"],
+      ["Cơm trắng", 800, "gram"]
+    ],
+    "steps": [
+      ["Phi sốt cà ri", "Đun 100 ml phần kem đặc của nước cốt dừa đến khi tách dầu, cho sốt cà ri xanh vào xào thơm.", 4],
+      ["Xào gà", "Cho gà vào đảo cho thấm sốt và săn lại.", 4],
+      ["Nấu cà ri", "Đổ phần nước cốt dừa còn lại, thêm cà tím, măng và lá chanh, nấu lửa vừa 12 phút.", 12],
+      ["Nêm nếm", "Nêm nước mắm và đường thốt nốt cho vừa, thêm ớt chuông đun 2 phút.", 2],
+      ["Hoàn thiện", "Tắt bếp, cho húng quế vào, dọn cùng cơm trắng.", null]
+    ]
+  },
+  {
+    "title": "Gỏi đu đủ Thái",
+    "category": "Món Thái",
+    "description": "Som tam giã trong cối với đu đủ xanh, cà chua, đậu đũa, tôm khô và nước trộn chua cay mặn ngọt kiểu Thái.",
+    "prep": 20, "cook": 0, "servings": 2, "difficulty": "Easy",
+    "ingredients": [
+      ["Đu đủ xanh", 300, "gram", "bào sợi"],
+      ["Cà chua bi", 6, "quả", "cắt đôi"],
+      ["Đậu đũa", 4, "cọng", "cắt khúc 3 cm"],
+      ["Tôm khô", 20, "gram"],
+      ["Đậu phộng rang", 30, "gram"],
+      ["Tỏi", 2, "tép"],
+      ["Ớt hiểm", 3, "quả"],
+      ["Nước mắm", 1.5, "thìa canh"],
+      ["Đường thốt nốt", 1, "thìa canh"],
+      ["Nước cốt chanh", 2, "thìa canh"],
+      ["Nước cốt me", 1, "thìa canh"],
+      ["Bắp cải, xà lách", 100, "gram", "ăn kèm"]
+    ],
+    "steps": [
+      ["Giã tỏi ớt", "Cho tỏi và ớt vào cối, giã dập.", 2],
+      ["Giã tôm khô và đậu", "Thêm tôm khô, một nửa đậu phộng và đậu đũa, giã nhẹ cho đậu dập.", 2],
+      ["Pha vị", "Cho đường thốt nốt, nước mắm, nước cốt chanh và nước me vào, giã và khuấy đến khi đường tan.", 2],
+      ["Giã đu đủ", "Cho đu đủ và cà chua vào, vừa giã nhẹ vừa dùng thìa đảo đều cho đu đủ thấm vị nhưng vẫn giòn.", 3],
+      ["Trình bày", "Cho ra đĩa, rắc phần đậu phộng còn lại, ăn kèm bắp cải, xà lách và xôi.", null]
+    ]
+  },
+  {
+    "title": "Tom kha gà",
+    "category": "Món Thái",
+    "description": "Súp gà nấu nước cốt dừa với riềng, sả, lá chanh Thái và nấm rơm, vị béo chua cay nhẹ đặc trưng Thái Lan.",
+    "prep": 20, "cook": 25, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Ức gà", 400, "gram", "thái lát mỏng"],
+      ["Nước cốt dừa", 400, "ml"],
+      ["Nước dùng gà", 500, "ml"],
+      ["Riềng", 40, "gram", "thái lát"],
+      ["Sả", 3, "cây", "đập dập, cắt khúc"],
+      ["Lá chanh Thái", 6, "lá", "xé đôi"],
+      ["Nấm rơm", 200, "gram", "cắt đôi"],
+      ["Ớt hiểm", 4, "quả", "đập dập"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường thốt nốt", 1, "thìa canh"],
+      ["Nước cốt chanh", 3, "thìa canh"],
+      ["Ngò rí", 20, "gram"]
+    ],
+    "steps": [
+      ["Nấu nước thơm", "Đun nước dùng gà với riềng, sả và lá chanh 10 phút cho dậy mùi.", 10],
+      ["Thêm nước cốt dừa", "Đổ nước cốt dừa vào, đun lửa nhỏ, không để sôi mạnh tránh nước cốt dừa bị tách.", 3],
+      ["Nấu gà và nấm", "Cho gà và nấm rơm vào nấu 6–8 phút đến khi gà chín.", 8],
+      ["Nêm vị", "Nêm nước mắm, đường thốt nốt, thêm ớt hiểm; tắt bếp rồi cho nước cốt chanh.", 2],
+      ["Trình bày", "Múc súp ra bát, rắc ngò rí, dọn cùng cơm trắng.", null]
+    ]
+  },
+  {
+    "title": "Spaghetti sốt bò bằm",
+    "category": "Món Âu",
+    "description": "Mì Ý sốt Bolognese hầm chậm từ bò bằm, cà chua, cà rốt, cần tây và rượu vang đỏ, rắc phô mai Parmesan.",
+    "prep": 20, "cook": 60, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Mì spaghetti", 400, "gram"],
+      ["Thịt bò xay", 400, "gram"],
+      ["Cà chua xay đóng hộp", 400, "gram"],
+      ["Cà chua cô đặc", 2, "thìa canh"],
+      ["Hành tây", 1, "củ", "băm nhỏ"],
+      ["Cà rốt", 1, "củ", "băm nhỏ"],
+      ["Cần tây", 2, "nhánh", "băm nhỏ"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Rượu vang đỏ", 100, "ml"],
+      ["Dầu ô liu", 3, "thìa canh"],
+      ["Lá oregano khô", 1, "thìa cà phê"],
+      ["Phô mai Parmesan", 50, "gram", "bào"],
+      ["Muối, tiêu đen", null, null, "vừa đủ"]
+    ],
+    "steps": [
+      ["Xào soffritto", "Phi hành tây, cà rốt, cần tây và tỏi với dầu ô liu lửa vừa 8 phút đến khi mềm và ngọt.", 8],
+      ["Xào thịt bò", "Cho bò xay vào, tăng lửa, đảo tơi đến khi thịt chuyển màu nâu.", 7],
+      ["Thêm vang và cà chua", "Rưới rượu vang cho bay hơi bớt, thêm cà chua xay, cà chua cô đặc, oregano, muối và tiêu.", 5],
+      ["Hầm sốt", "Hầm lửa nhỏ ít nhất 40 phút, thỉnh thoảng khuấy, thêm chút nước nếu sốt quá đặc.", 40],
+      ["Luộc mì", "Luộc spaghetti trong nước sôi có muối theo thời gian trên bao bì (khoảng 9 phút) cho vừa chín tới.", 9],
+      ["Trình bày", "Trộn mì với một phần sốt, cho ra đĩa, múc thêm sốt lên trên và rắc Parmesan.", null]
+    ]
+  },
+  {
+    "title": "Bò bít tết sốt tiêu đen",
+    "category": "Món Âu",
+    "description": "Thăn ngoại bò áp chảo lửa lớn chín vừa, thêm bơ, tỏi, hương thảo, rưới sốt tiêu đen kem béo.",
+    "prep": 15, "cook": 20, "servings": 2, "difficulty": "Medium",
+    "ingredients": [
+      ["Thăn ngoại bò (striploin)", 2, "miếng", "dày 2,5 cm, khoảng 250 gram mỗi miếng"],
+      ["Muối hạt", 1, "thìa cà phê"],
+      ["Tiêu đen hạt", 1, "thìa canh", "đập dập"],
+      ["Bơ lạt", 40, "gram"],
+      ["Tỏi", 4, "tép", "đập dập"],
+      ["Hương thảo", 2, "nhánh"],
+      ["Dầu ô liu", 1, "thìa canh"],
+      ["Hành tím", 1, "củ", "băm nhỏ"],
+      ["Rượu brandy", 2, "thìa canh"],
+      ["Kem tươi (whipping cream)", 100, "ml"],
+      ["Nước dùng bò", 100, "ml"],
+      ["Khoai tây, măng tây", 300, "gram", "ăn kèm"]
+    ],
+    "steps": [
+      ["Chuẩn bị bò", "Để thịt bò ở nhiệt độ phòng 30 phút, thấm khô, rắc muối và tiêu đều hai mặt.", 30],
+      ["Áp chảo bò", "Đun chảo gang thật nóng với dầu ô liu, áp bò mỗi mặt 3 phút cho mặt ngoài xém nâu.", 6],
+      ["Arroser bơ", "Thêm bơ, tỏi và hương thảo, nghiêng chảo múc bơ tan rưới liên tục lên thịt trong 1–2 phút.", 2],
+      ["Để thịt nghỉ", "Nhấc bò ra thớt, để nghỉ 5 phút cho nước thịt phân bố đều.", 5],
+      ["Làm sốt tiêu", "Dùng chảo cũ phi hành tím, cho tiêu đập dập, đốt brandy, thêm nước dùng bò và kem tươi, đun sánh.", 5],
+      ["Trình bày", "Cắt hoặc để nguyên miếng bò, rưới sốt tiêu, dọn cùng khoai tây nướng và măng tây xào bơ.", null]
+    ]
+  },
+  {
+    "title": "Súp kem nấm",
+    "category": "Món Âu",
+    "description": "Súp kem nấm mỡ xay mịn nấu cùng bơ, hành tây, kem tươi, thơm mùi cỏ xạ hương, ăn kèm bánh mì nướng.",
+    "prep": 15, "cook": 30, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Nấm mỡ", 400, "gram", "thái lát"],
+      ["Nấm hương tươi", 100, "gram", "thái lát"],
+      ["Hành tây", 1, "củ", "thái hạt lựu"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Bơ lạt", 40, "gram"],
+      ["Bột mì", 2, "thìa canh"],
+      ["Nước dùng gà", 700, "ml"],
+      ["Kem tươi (whipping cream)", 150, "ml"],
+      ["Cỏ xạ hương khô", 0.5, "thìa cà phê"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Tiêu đen xay", 0.5, "thìa cà phê"],
+      ["Bánh mì baguette", 1, "ổ", "nướng giòn, ăn kèm"]
+    ],
+    "steps": [
+      ["Xào hành tỏi", "Đun chảy bơ, phi hành tây và tỏi lửa vừa đến khi mềm trong.", 5],
+      ["Xào nấm", "Cho nấm vào xào đến khi nấm ra nước rồi cạn bớt và hơi vàng, giữ lại vài lát nấm để trang trí.", 8],
+      ["Tạo roux", "Rắc bột mì vào, đảo đều 1–2 phút cho bột chín.", 2],
+      ["Nấu súp", "Đổ từ từ nước dùng vào, vừa đổ vừa khuấy, thêm cỏ xạ hương, nấu lửa nhỏ 10 phút.", 10],
+      ["Xay và thêm kem", "Xay nhuyễn súp, đổ lại vào nồi, thêm kem tươi, nêm muối tiêu và đun nóng lại, không để sôi mạnh.", 5],
+      ["Trình bày", "Múc súp ra bát, trang trí nấm xào và chút kem, dọn cùng bánh mì nướng.", null]
+    ]
+  },
+  {
+    "title": "Cá hồi áp chảo sốt bơ chanh",
+    "category": "Món Âu",
+    "description": "Phi lê cá hồi áp chảo da giòn, rưới sốt bơ chanh và bạch hoa, dọn cùng khoai tây nghiền và rau xanh.",
+    "prep": 15, "cook": 20, "servings": 2, "difficulty": "Medium",
+    "ingredients": [
+      ["Phi lê cá hồi còn da", 2, "miếng", "khoảng 180 gram mỗi miếng"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Tiêu đen xay", 0.5, "thìa cà phê"],
+      ["Dầu ô liu", 1, "thìa canh"],
+      ["Bơ lạt", 40, "gram"],
+      ["Chanh vàng", 1, "quả", "lấy nước cốt và vỏ bào"],
+      ["Tỏi", 2, "tép", "băm nhỏ"],
+      ["Nụ bạch hoa (capers)", 1, "thìa canh"],
+      ["Rau mùi tây", 10, "gram", "băm nhỏ"],
+      ["Khoai tây", 2, "củ", "làm khoai nghiền"],
+      ["Măng tây hoặc đậu que", 150, "gram"],
+      ["Rượu vang trắng", 50, "ml"]
+    ],
+    "steps": [
+      ["Chuẩn bị cá", "Thấm thật khô cá hồi, khứa nhẹ da, rắc muối và tiêu hai mặt.", 5],
+      ["Áp chảo mặt da", "Đặt cá úp mặt da xuống chảo nóng có dầu ô liu, ấn nhẹ 10 giây cho da phẳng, áp lửa vừa 5 phút đến khi da giòn.", 5],
+      ["Lật cá", "Lật cá áp tiếp 2–3 phút, giữ phần giữa vẫn hồng mọng, nhấc ra đĩa.", 3],
+      ["Làm sốt bơ chanh", "Hạ lửa, phi tỏi với bơ, rưới vang trắng cho bay hơi, thêm nước cốt chanh, vỏ chanh, bạch hoa và mùi tây.", 4],
+      ["Chuẩn bị món kèm", "Luộc khoai tây nghiền với bơ và sữa; xào măng tây với chút bơ và muối.", 20],
+      ["Trình bày", "Xếp khoai nghiền, măng tây và cá hồi ra đĩa, rưới sốt bơ chanh lên cá.", null]
+    ]
+  },
+  {
+    "title": "Chè khúc bạch",
+    "category": "Tráng miệng & Đồ uống",
+    "description": "Những viên khúc bạch mềm mịn vị sữa và phô mai, ăn cùng vải, nhãn, hạnh nhân lát và nước đường mát lạnh.",
+    "prep": 30, "cook": 20, "servings": 6, "difficulty": "Medium",
+    "ingredients": [
+      ["Sữa tươi không đường", 400, "ml"],
+      ["Kem tươi (whipping cream)", 200, "ml"],
+      ["Gelatin lá", 20, "gram", "ngâm nước lạnh cho mềm"],
+      ["Đường cát", 150, "gram", "chia phần khúc bạch và nước đường"],
+      ["Phô mai con bò cười", 3, "miếng"],
+      ["Bột trà xanh matcha", 1, "thìa cà phê", "làm viên màu xanh"],
+      ["Vải thiều hộp", 1, "hộp"],
+      ["Nhãn tươi", 200, "gram", "bóc vỏ, bỏ hạt"],
+      ["Hạnh nhân lát", 50, "gram", "rang vàng"],
+      ["Hoa nhài khô hoặc lá dứa", 5, "gram", "tạo mùi nước đường"],
+      ["Đá viên", 300, "gram"]
+    ],
+    "steps": [
+      ["Nấu hỗn hợp sữa", "Đun sữa tươi, kem và 70 gram đường với phô mai ở lửa nhỏ, khuấy đến khi tan mịn, không để sôi.", 8],
+      ["Cho gelatin", "Tắt bếp, vắt ráo gelatin cho vào khuấy tan; chia một phần hòa với bột matcha.", 3],
+      ["Đổ khuôn", "Lọc hỗn hợp qua rây, đổ vào khay, để nguội rồi cho ngăn mát 4 giờ đến khi đông.", 240],
+      ["Nấu nước đường", "Đun phần đường còn lại với 500 ml nước và hoa nhài hoặc lá dứa, để nguội rồi thêm nước ngâm vải.", 10],
+      ["Cắt khúc bạch", "Cắt khúc bạch thành viên vuông 1,5 cm.", 5],
+      ["Trình bày", "Cho khúc bạch, vải, nhãn vào ly, chan nước đường, thêm đá và rắc hạnh nhân lát.", null]
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-/** Trang chủ tạm thời – bản ISR đầy đủ (công thức nổi bật, SEO) thuộc Buổi 5. */
+/** Trang chủ tạm thời – bản ISR đầy đủ (công thức nổi bật, SEO) thuộc Buổi 6. */
 export default function Home() {
   return (
     <section className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-4 py-24 text-center">

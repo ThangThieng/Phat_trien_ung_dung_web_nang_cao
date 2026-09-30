@@ -1,0 +1,380 @@
+[
+  {
+    "title": "Cá kho tộ",
+    "category": "Món chính",
+    "description": "Cá basa kho tộ đất với nước màu, tiêu và ớt, thịt cá săn chắc, nước kho sánh kẹo đậm đà đưa cơm.",
+    "prep": 20, "cook": 45, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Cá basa", 600, "gram", "cắt khúc dày 3 cm"],
+      ["Thịt ba chỉ", 150, "gram", "thái miếng mỏng"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Nước màu", 1, "thìa canh"],
+      ["Hành tím", 4, "củ", "băm nhỏ"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Tiêu xay", 1, "thìa cà phê"],
+      ["Ớt hiểm", 3, "quả"],
+      ["Nước dừa tươi", 200, "ml"],
+      ["Hành lá", 3, "cây", "cắt khúc"],
+      ["Dầu ăn", 1, "thìa canh"]
+    ],
+    "steps": [
+      ["Sơ chế cá", "Rửa cá với nước muối loãng và gừng cho hết nhớt, để ráo.", 5],
+      ["Ướp cá", "Ướp cá với nước mắm, đường, nước màu, hành tỏi băm và tiêu trong 20 phút.", 20],
+      ["Xếp tộ", "Thắng thịt ba chỉ trong tộ đất cho ra bớt mỡ, xếp cá lên trên, đổ phần nước ướp và nước dừa xâm xấp mặt cá.", 5],
+      ["Kho cá", "Đun sôi rồi hạ lửa nhỏ, kho không đậy nắp đến khi nước sệt lại, thỉnh thoảng rưới nước kho lên mặt cá.", 40],
+      ["Hoàn thiện", "Thả ớt hiểm và hành lá, rắc thêm tiêu, để tộ trên bếp thêm 2 phút rồi dọn ăn nóng với cơm trắng.", 2]
+    ]
+  },
+  {
+    "title": "Thịt kho trứng",
+    "category": "Món chính",
+    "description": "Thịt ba chỉ kho nước dừa mềm rục, trứng vịt thấm màu cánh gián, món không thể thiếu ngày Tết miền Nam.",
+    "prep": 30, "cook": 120, "servings": 6, "difficulty": "Medium",
+    "ingredients": [
+      ["Thịt ba chỉ", 1, "kg", "cắt miếng vuông 4 cm"],
+      ["Trứng vịt", 8, "quả", "luộc, bóc vỏ"],
+      ["Nước dừa tươi", 1, "lít"],
+      ["Nước mắm", 4, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Nước màu", 1, "thìa canh"],
+      ["Hành tím", 5, "củ", "băm nhỏ"],
+      ["Tỏi", 5, "tép", "băm nhỏ"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Tiêu xay", 1, "thìa cà phê"],
+      ["Ớt sừng", 2, "quả"]
+    ],
+    "steps": [
+      ["Sơ chế thịt", "Chần thịt ba chỉ qua nước sôi có muối 3 phút, rửa lại nước lạnh cho sạch và để ráo.", 5],
+      ["Ướp thịt", "Ướp thịt với nước mắm, đường, nước màu, hành tỏi băm và tiêu trong 30 phút.", 30],
+      ["Xào săn", "Cho thịt vào nồi đảo trên lửa lớn đến khi thịt săn lại và thấm màu.", 5],
+      ["Kho với nước dừa", "Đổ nước dừa ngập thịt, đun sôi rồi hạ lửa nhỏ, hớt bọt thường xuyên để nước kho trong.", 60],
+      ["Thêm trứng", "Thả trứng đã luộc vào, kho tiếp lửa liu riu đến khi thịt mềm và trứng thấm màu, nêm lại vừa ăn.", 50],
+      ["Dọn ăn", "Thêm ớt sừng, dọn cùng cơm trắng, dưa giá hoặc củ kiệu.", null]
+    ]
+  },
+  {
+    "title": "Gà kho gừng",
+    "category": "Món chính",
+    "description": "Gà ta kho gừng cay ấm, thịt săn ngọt, nước kho keo lại quyện mùi gừng thơm nồng, rất hợp ngày lạnh.",
+    "prep": 20, "cook": 35, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Thịt gà ta", 800, "gram", "chặt miếng vừa ăn"],
+      ["Gừng", 80, "gram", "thái sợi"],
+      ["Hành tím", 3, "củ", "băm nhỏ"],
+      ["Tỏi", 3, "tép", "băm nhỏ"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường", 1.5, "thìa canh"],
+      ["Nước màu", 1, "thìa cà phê"],
+      ["Tiêu xay", 1, "thìa cà phê"],
+      ["Dầu ăn", 2, "thìa canh"],
+      ["Ớt tươi", 1, "quả"],
+      ["Hành lá", 2, "cây", "cắt khúc"]
+    ],
+    "steps": [
+      ["Sơ chế gà", "Rửa gà với muối và rượu trắng để khử mùi, để ráo nước.", 5],
+      ["Ướp gà", "Ướp gà với nước mắm, đường, nước màu, hành tỏi băm, một nửa lượng gừng và tiêu trong 20 phút.", 20],
+      ["Phi gừng", "Phi thơm phần gừng còn lại với dầu ăn đến khi vàng nhẹ.", 3],
+      ["Kho gà", "Cho gà vào đảo săn trên lửa lớn, thêm 100 ml nước, đậy nắp kho lửa nhỏ đến khi gà chín mềm.", 25],
+      ["Rút nước", "Mở nắp đun thêm cho nước kho sệt lại bám đều miếng gà, thêm hành lá, ớt và tiêu rồi tắt bếp.", 5]
+    ]
+  },
+  {
+    "title": "Sườn xào chua ngọt",
+    "category": "Món chính",
+    "description": "Sườn non chiên vàng rim sốt cà chua giấm đường, vị chua ngọt hài hòa, lớp sốt bóng đẹp mắt.",
+    "prep": 20, "cook": 35, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Sườn non heo", 700, "gram", "chặt miếng 3 cm"],
+      ["Cà chua", 2, "quả", "băm nhỏ"],
+      ["Tương cà", 3, "thìa canh"],
+      ["Giấm gạo", 2, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Bột năng", 1, "thìa cà phê", "hòa với nước"],
+      ["Dầu ăn", 200, "ml"],
+      ["Hành lá", 2, "cây"],
+      ["Mè rang", 1, "thìa cà phê"]
+    ],
+    "steps": [
+      ["Luộc sơ sườn", "Chần sườn qua nước sôi có muối 5 phút, vớt ra rửa sạch để ráo.", 5],
+      ["Ướp sườn", "Ướp sườn với 1 thìa nước mắm, tỏi băm và tiêu trong 15 phút.", 15],
+      ["Chiên sườn", "Chiên sườn trong dầu nóng đến khi vàng đều các mặt, vớt ra để ráo dầu.", 12],
+      ["Làm sốt", "Phi thơm hành tỏi, cho cà chua vào xào nhuyễn, thêm tương cà, giấm, đường, nước mắm và 100 ml nước, đun sôi.", 5],
+      ["Rim sườn", "Cho sườn vào sốt, đảo đều và rim lửa nhỏ đến khi sốt sệt bám đều, thêm nước bột năng cho bóng.", 10],
+      ["Trình bày", "Rắc hành lá và mè rang, dọn nóng với cơm.", null]
+    ]
+  },
+  {
+    "title": "Bò lúc lắc",
+    "category": "Món chính",
+    "description": "Thăn bò cắt hạt lựu áp chảo lửa lớn cùng ớt chuông và hành tây, mềm ngọt, dọn cùng xà lách cà chua.",
+    "prep": 25, "cook": 10, "servings": 3, "difficulty": "Medium",
+    "ingredients": [
+      ["Thịt bò thăn", 500, "gram", "cắt khối 2,5 cm"],
+      ["Ớt chuông đỏ", 1, "quả", "cắt vuông"],
+      ["Ớt chuông xanh", 1, "quả", "cắt vuông"],
+      ["Hành tây", 1, "củ", "cắt múi cau"],
+      ["Tỏi", 5, "tép", "đập dập"],
+      ["Dầu hào", 2, "thìa canh"],
+      ["Xì dầu", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Tiêu đen xay", 1, "thìa cà phê"],
+      ["Bơ lạt", 20, "gram"],
+      ["Xà lách, cà chua", 200, "gram", "lót đĩa"],
+      ["Muối tiêu chanh", null, null, "chấm kèm"]
+    ],
+    "steps": [
+      ["Ướp bò", "Ướp thịt bò với dầu hào, xì dầu, đường, tiêu và 1 thìa dầu ăn trong 20 phút.", 20],
+      ["Chuẩn bị rau", "Xếp xà lách và cà chua thái lát ra đĩa, pha muối tiêu chanh để chấm.", 5],
+      ["Áp chảo bò", "Đun chảo thật nóng với bơ và tỏi, cho bò vào dàn đều, để yên 1 phút cho mặt dưới xém rồi lắc chảo cho các mặt chín đều.", 3],
+      ["Xào rau củ", "Cho ớt chuông và hành tây vào đảo nhanh trên lửa lớn khoảng 1 phút để rau vẫn giòn.", 1],
+      ["Trình bày", "Đổ bò lúc lắc lên đĩa rau, dọn ngay khi còn nóng kèm muối tiêu chanh.", null]
+    ]
+  },
+  {
+    "title": "Cơm tấm sườn bì chả",
+    "category": "Món chính",
+    "description": "Cơm tấm Sài Gòn với sườn cốt lết nướng, bì heo thính, chả trứng hấp và mỡ hành, chan nước mắm ngọt.",
+    "prep": 60, "cook": 60, "servings": 4, "difficulty": "Hard",
+    "ingredients": [
+      ["Gạo tấm", 500, "gram"],
+      ["Sườn cốt lết heo", 4, "miếng", "dần mỏng"],
+      ["Bì heo sợi", 150, "gram"],
+      ["Thính gạo", 2, "thìa canh"],
+      ["Thịt heo xay", 200, "gram", "làm chả"],
+      ["Trứng gà", 4, "quả", "làm chả"],
+      ["Miến dong", 20, "gram", "ngâm mềm"],
+      ["Nấm mèo", 3, "tai", "thái nhỏ"],
+      ["Sả", 2, "cây", "băm nhỏ"],
+      ["Mật ong", 1, "thìa canh"],
+      ["Hành lá", 1, "bó", "làm mỡ hành"],
+      ["Nước mắm", 5, "thìa canh"],
+      ["Đường", 4, "thìa canh"],
+      ["Đồ chua, dưa leo", 200, "gram"]
+    ],
+    "steps": [
+      ["Ướp sườn", "Ướp sườn với sả băm, tỏi, 2 thìa nước mắm, 1 thìa đường, mật ong và dầu ăn ít nhất 1 giờ.", 60],
+      ["Hấp chả trứng", "Trộn thịt xay, miến, nấm mèo, 3 quả trứng và gia vị, cho vào khuôn hấp 25 phút; quét lòng đỏ trứng còn lại lên mặt, hấp thêm 5 phút.", 30],
+      ["Trộn bì", "Trộn bì heo sợi với thính gạo, chút tỏi phi và muối.", 5],
+      ["Nướng sườn", "Nướng sườn trên than hoặc lò 200°C, mỗi mặt 8 phút, quét thêm nước ướp để sườn bóng và thơm.", 16],
+      ["Nấu cơm và mỡ hành", "Nấu gạo tấm với lượng nước ít hơn gạo thường. Phi hành lá với dầu nóng làm mỡ hành.", 30],
+      ["Pha nước mắm và dọn ăn", "Pha nước mắm, đường, nước theo tỉ lệ 1:1:2. Dọn cơm tấm với sườn, bì, chả, mỡ hành, đồ chua và chan nước mắm.", 5]
+    ]
+  },
+  {
+    "title": "Tôm rim mặn ngọt",
+    "category": "Món chính",
+    "description": "Tôm rim nước mắm đường thắng keo, vỏ tôm đỏ bóng thấm vị mặn ngọt, ăn kèm cơm nóng rất đưa miệng.",
+    "prep": 15, "cook": 20, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Tôm đất", 500, "gram", "cắt râu"],
+      ["Nước mắm", 2, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Ớt tươi", 1, "quả", "băm nhỏ"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Nước dừa tươi", 100, "ml"],
+      ["Dầu ăn", 2, "thìa canh"],
+      ["Hành lá", 2, "cây", "thái nhỏ"]
+    ],
+    "steps": [
+      ["Sơ chế tôm", "Cắt râu và chân tôm, rửa sạch, để thật ráo nước.", 10],
+      ["Ướp tôm", "Ướp tôm với 1 thìa nước mắm, một nửa hành tỏi và tiêu trong 10 phút.", 10],
+      ["Phi thơm", "Phi hành tỏi còn lại với dầu ăn đến khi vàng thơm.", 2],
+      ["Rim tôm", "Cho tôm vào đảo đến khi đỏ, thêm nước mắm còn lại, đường và nước dừa, rim lửa vừa đến khi nước cạn sệt bám vào tôm.", 12],
+      ["Hoàn thiện", "Rắc ớt, hành lá và tiêu, đảo đều rồi tắt bếp.", 1]
+    ]
+  },
+  {
+    "title": "Mực xào sa tế",
+    "category": "Món chính",
+    "description": "Mực ống giòn ngọt xào cùng sa tế cay nồng, hành tây và ớt chuông, món nhậu và đưa cơm đều hợp.",
+    "prep": 20, "cook": 10, "servings": 3, "difficulty": "Easy",
+    "ingredients": [
+      ["Mực ống", 500, "gram", "khứa vảy rồng, cắt miếng"],
+      ["Sa tế", 2, "thìa canh"],
+      ["Hành tây", 1, "củ", "cắt múi cau"],
+      ["Ớt chuông", 1, "quả", "cắt miếng"],
+      ["Cần tây", 2, "cây", "cắt khúc"],
+      ["Tỏi", 4, "tép", "băm nhỏ"],
+      ["Sả", 2, "cây", "băm nhỏ"],
+      ["Dầu hào", 1, "thìa canh"],
+      ["Nước mắm", 1, "thìa canh"],
+      ["Đường", 1, "thìa cà phê"],
+      ["Dầu ăn", 2, "thìa canh"]
+    ],
+    "steps": [
+      ["Sơ chế mực", "Lột da, bỏ túi mực, rửa với gừng và rượu trắng cho hết tanh, khứa vảy rồng mặt trong rồi cắt miếng.", 15],
+      ["Chần mực", "Chần mực qua nước sôi 30 giây để mực cong đẹp, vớt ra ngâm nước đá cho giòn.", 1],
+      ["Phi sả tỏi", "Phi thơm tỏi và sả băm với dầu ăn, cho sa tế vào đảo đều.", 2],
+      ["Xào mực", "Cho mực vào xào nhanh trên lửa lớn, nêm dầu hào, nước mắm và đường.", 2],
+      ["Thêm rau củ", "Cho hành tây, ớt chuông và cần tây vào đảo thêm 1 phút đến khi rau vừa chín tới rồi tắt bếp.", 1]
+    ]
+  },
+  {
+    "title": "Canh chua cá lóc",
+    "category": "Canh & Súp",
+    "description": "Canh chua miền Tây nấu me, cá lóc ngọt thịt cùng bạc hà, thơm, cà chua, giá và ngò om thơm lừng.",
+    "prep": 25, "cook": 25, "servings": 4, "difficulty": "Medium",
+    "ingredients": [
+      ["Cá lóc", 600, "gram", "cắt khoanh"],
+      ["Me chua", 50, "gram", "dầm lấy nước"],
+      ["Thơm (dứa)", 0.5, "quả", "thái lát"],
+      ["Cà chua", 2, "quả", "bổ múi cau"],
+      ["Bạc hà (dọc mùng)", 2, "cây", "thái xéo"],
+      ["Đậu bắp", 5, "quả", "cắt xéo"],
+      ["Giá đỗ", 100, "gram"],
+      ["Ngò om, ngò gai", 30, "gram", "thái nhỏ"],
+      ["Tỏi phi", 1, "thìa canh"],
+      ["Nước mắm", 3, "thìa canh"],
+      ["Đường", 2, "thìa canh"],
+      ["Ớt tươi", 2, "quả"]
+    ],
+    "steps": [
+      ["Sơ chế cá", "Làm sạch cá lóc, cắt khoanh, ướp với chút nước mắm và tiêu trong 10 phút.", 10],
+      ["Nấu nước me", "Đun sôi 1,5 lít nước, dầm me lấy nước chua cho vào nồi, thêm thơm và cà chua.", 10],
+      ["Nấu cá", "Thả cá vào nồi khi nước sôi, nấu lửa vừa khoảng 7 phút đến khi cá chín, hớt bọt.", 7],
+      ["Nêm nếm", "Nêm nước mắm và đường cho vị chua ngọt cân bằng.", 2],
+      ["Thêm rau", "Cho đậu bắp, bạc hà và giá vào, đun sôi lại rồi tắt bếp ngay để rau còn giòn.", 2],
+      ["Trình bày", "Rắc ngò om, ngò gai và tỏi phi, dọn kèm chén nước mắm ớt.", null]
+    ]
+  },
+  {
+    "title": "Canh bí đỏ nấu tôm",
+    "category": "Canh & Súp",
+    "description": "Bí đỏ bở ngọt nấu cùng tôm tươi, nước canh vàng sánh, bổ dưỡng cho cả người lớn và trẻ nhỏ.",
+    "prep": 15, "cook": 20, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Bí đỏ", 500, "gram", "cắt miếng vừa ăn"],
+      ["Tôm tươi", 200, "gram", "bóc vỏ, băm dập"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Hành lá", 2, "cây", "thái nhỏ"],
+      ["Ngò gai", 5, "lá", "thái nhỏ"],
+      ["Nước mắm", 1.5, "thìa canh"],
+      ["Muối", 0.5, "thìa cà phê"],
+      ["Đường", 0.5, "thìa cà phê"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Dầu ăn", 1, "thìa canh"]
+    ],
+    "steps": [
+      ["Sơ chế bí", "Gọt vỏ bí đỏ, bỏ ruột, cắt miếng vừa ăn và ngâm qua nước muối loãng.", 10],
+      ["Ướp tôm", "Ướp tôm băm với chút nước mắm, tiêu và hành tím.", 5],
+      ["Xào tôm", "Phi thơm hành tím, cho tôm vào xào đến khi tôm đỏ và dậy mùi.", 3],
+      ["Nấu canh", "Đổ 1,2 lít nước vào nồi tôm, đun sôi thì thả bí đỏ vào, nấu lửa vừa đến khi bí chín mềm.", 15],
+      ["Nêm và hoàn thiện", "Nêm nước mắm, muối, đường cho vừa, tắt bếp rồi rắc hành lá, ngò gai và tiêu.", 1]
+    ]
+  },
+  {
+    "title": "Súp cua trứng bắc thảo",
+    "category": "Canh & Súp",
+    "description": "Súp cua sánh mịn với thịt cua xé, trứng bắc thảo, nấm hương và trứng gà đánh tơ, món khai tiệc quen thuộc.",
+    "prep": 30, "cook": 30, "servings": 5, "difficulty": "Medium",
+    "ingredients": [
+      ["Thịt cua", 200, "gram"],
+      ["Trứng bắc thảo", 2, "quả", "cắt hạt lựu"],
+      ["Trứng gà", 2, "quả"],
+      ["Nước dùng gà", 1.5, "lít"],
+      ["Nấm hương", 5, "cái", "ngâm nở, thái sợi"],
+      ["Bắp non", 100, "gram", "tách hạt"],
+      ["Bột năng", 3, "thìa canh", "hòa với nước"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Dầu mè", 1, "thìa cà phê"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Ngò rí", 20, "gram"]
+    ],
+    "steps": [
+      ["Xào thịt cua", "Phi thơm hành tím, cho thịt cua vào xào nhẹ với chút muối và tiêu cho săn.", 3],
+      ["Nấu nước dùng", "Đun sôi nước dùng gà, cho nấm hương và bắp non vào nấu 10 phút.", 10],
+      ["Tạo độ sánh", "Hạ lửa, đổ từ từ nước bột năng vào, vừa đổ vừa khuấy đều đến khi súp sánh.", 3],
+      ["Thêm cua và bắc thảo", "Cho thịt cua và trứng bắc thảo vào, nêm muối cho vừa.", 3],
+      ["Đánh trứng tơ", "Đánh tan trứng gà, rót thành dòng nhỏ vào nồi đồng thời khuấy nhẹ để trứng tạo sợi.", 2],
+      ["Trình bày", "Múc súp ra chén, rưới vài giọt dầu mè, rắc tiêu và ngò rí.", null]
+    ]
+  },
+  {
+    "title": "Canh rau ngót thịt băm",
+    "category": "Canh & Súp",
+    "description": "Canh rau ngót vò nấu thịt heo băm, nước canh xanh ngọt mát, món canh giản dị của bữa cơm Việt.",
+    "prep": 20, "cook": 10, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Rau ngót", 300, "gram", "tuốt lá, vò sơ"],
+      ["Thịt nạc heo băm", 150, "gram"],
+      ["Hành tím", 2, "củ", "băm nhỏ"],
+      ["Nước mắm", 1.5, "thìa canh"],
+      ["Muối", 0.5, "thìa cà phê"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Dầu ăn", 1, "thìa canh"],
+      ["Gừng", 1, "lát", "đập dập"],
+      ["Hành lá", 1, "cây", "thái nhỏ"]
+    ],
+    "steps": [
+      ["Sơ chế rau ngót", "Tuốt lá rau ngót, rửa sạch, vò nhẹ cho lá hơi dập để canh ngọt và nhanh chín.", 10],
+      ["Ướp thịt", "Ướp thịt băm với chút nước mắm, tiêu và một nửa hành tím trong 5 phút.", 5],
+      ["Xào thịt", "Phi thơm hành tím còn lại và gừng, cho thịt vào xào tơi đến khi săn.", 3],
+      ["Nấu canh", "Đổ 1 lít nước vào, đun sôi, hớt bọt rồi cho rau ngót vào nấu thêm 3 phút.", 5],
+      ["Nêm nếm", "Nêm nước mắm, muối, hạt nêm vừa ăn, rắc hành lá và tiêu rồi tắt bếp.", 1]
+    ]
+  },
+  {
+    "title": "Lẩu thái hải sản",
+    "category": "Canh & Súp",
+    "description": "Nước lẩu chua cay từ sả, riềng, lá chanh và sa tế tom yum, nhúng tôm, mực, nghêu và nấm các loại.",
+    "prep": 40, "cook": 30, "servings": 5, "difficulty": "Medium",
+    "ingredients": [
+      ["Tôm sú", 400, "gram"],
+      ["Mực ống", 300, "gram", "cắt khoanh"],
+      ["Nghêu", 500, "gram", "ngâm cho nhả cát"],
+      ["Xương gà", 500, "gram", "ninh nước dùng"],
+      ["Sả", 5, "cây", "đập dập, cắt khúc"],
+      ["Riềng", 50, "gram", "thái lát"],
+      ["Lá chanh", 8, "lá"],
+      ["Gói gia vị lẩu Thái (tom yum)", 1, "gói"],
+      ["Nước cốt chanh", 3, "thìa canh"],
+      ["Cà chua", 2, "quả"],
+      ["Nấm rơm, nấm kim châm", 300, "gram"],
+      ["Rau muống, cải thảo", 500, "gram"],
+      ["Bún tươi", 800, "gram"]
+    ],
+    "steps": [
+      ["Ninh nước dùng", "Chần xương gà, ninh với 3 lít nước trong 30 phút để lấy nước ngọt, lọc bỏ xương.", 30],
+      ["Nấu nước lẩu", "Cho sả, riềng, lá chanh, cà chua và gói gia vị tom yum vào nồi nước dùng, đun sôi 10 phút cho dậy mùi.", 10],
+      ["Nêm vị chua cay", "Nêm nước cốt chanh, nước mắm và đường cho vị chua cay cân bằng.", 3],
+      ["Sơ chế hải sản", "Cắt râu tôm, làm sạch mực và rửa nghêu, xếp ra đĩa cùng nấm và rau.", 20],
+      ["Thưởng thức", "Đặt nồi lẩu lên bếp, nhúng hải sản trước rồi đến nấm và rau, ăn kèm bún tươi.", null]
+    ]
+  },
+  {
+    "title": "Súp gà ngô non",
+    "category": "Canh & Súp",
+    "description": "Súp gà xé nấu cùng ngô ngọt và cà rốt, sánh nhẹ, dễ ăn và ấm bụng cho bữa sáng hay bữa tối.",
+    "prep": 20, "cook": 40, "servings": 4, "difficulty": "Easy",
+    "ingredients": [
+      ["Ức gà", 300, "gram"],
+      ["Ngô ngọt", 2, "bắp", "tách hạt"],
+      ["Cà rốt", 1, "củ", "thái hạt lựu"],
+      ["Nấm hương", 4, "cái", "ngâm nở, thái nhỏ"],
+      ["Trứng gà", 2, "quả"],
+      ["Bột năng", 2, "thìa canh", "hòa với nước"],
+      ["Hành tím", 2, "củ"],
+      ["Gừng", 2, "lát"],
+      ["Muối", 1, "thìa cà phê"],
+      ["Hạt nêm", 1, "thìa cà phê"],
+      ["Tiêu xay", 0.5, "thìa cà phê"],
+      ["Hành lá, ngò rí", 20, "gram"]
+    ],
+    "steps": [
+      ["Luộc gà", "Luộc ức gà với 1,5 lít nước, gừng và hành tím khoảng 20 phút, vớt gà ra xé sợi, giữ lại nước luộc.", 20],
+      ["Nấu rau củ", "Cho ngô, cà rốt và nấm hương vào nồi nước luộc gà, nấu 10 phút đến khi mềm.", 10],
+      ["Thêm gà", "Thả thịt gà xé vào, nêm muối và hạt nêm cho vừa ăn.", 2],
+      ["Tạo độ sánh", "Đổ từ từ nước bột năng vào vừa đổ vừa khuấy cho súp sánh nhẹ.", 2],
+      ["Đánh trứng", "Rót trứng đã đánh tan thành dòng nhỏ vào nồi, khuấy nhẹ cho trứng tạo sợi, tắt bếp.", 2],
+      ["Trình bày", "Múc súp ra chén, rắc hành lá, ngò rí và tiêu.", null]
+    ]
+  }
+]

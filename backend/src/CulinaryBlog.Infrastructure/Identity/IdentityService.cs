@@ -163,7 +163,7 @@ public sealed class IdentityService(
         return userManager.Users.AnyAsync(u => u.NormalizedUserName == normalized, cancellationToken);
     }
 
-    /// <summary>Chuyển IdentityError thành FluentValidation failures → HTTP 422 (FR-AUTH-001 A2).</summary>
+    /// <summary>Chuyển IdentityError thành FluentValidation failures → HTTP 400 VALIDATION_ERROR (FR-AUTH-001 A2, MT-08).</summary>
     private static void ThrowIfFailed(IdentityResult result)
     {
         if (result.Succeeded)

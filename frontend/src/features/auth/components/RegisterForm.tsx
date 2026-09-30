@@ -6,15 +6,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import FormField from '@/components/ui/FormField';
-import { ApiError, getErrorMessage } from '@/lib/api-client';
+import { ApiError, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import { useAuth } from '../auth-context';
 import { registerSchema, type RegisterFormValues } from '../schemas';
 
 const FIELDS = ['displayName', 'email', 'password'] as const;
-type ServerField = (typeof FIELDS)[number];
-
-const isServerField = (field: string): field is ServerField =>
-  (FIELDS as readonly string[]).includes(field);
 
 export default function RegisterForm() {
   const { register: registerAccount } = useAuth();
@@ -37,13 +33,9 @@ export default function RegisterForm() {
           setError('email', { message: error.message });
           return;
         }
-        if (error.status === 400) {
-          Object.entries(error.fieldErrors).forEach(([field, messages]) => {
-            if (isServerField(field)) setError(field, { message: messages[0] });
-          });
-          return;
-        }
       }
+      // D-11: lỗi validation là 400 (không còn 422) – dùng helper chung
+      if (mapProblemDetailsToForm(error, FIELDS, setError)) return;
       setError('root', { message: getErrorMessage(error) });
     }
   });
