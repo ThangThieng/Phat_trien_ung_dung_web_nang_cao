@@ -34,7 +34,9 @@ export default function GoogleSignIn({ onSuccess }: GoogleSignInProps) {
               onSuccess();
             } catch (error) {
               if (error instanceof ApiError && error.status === 502) {
-                toast.error('Dịch vụ Google đang tạm thời không khả dụng. Vui lòng thử lại sau.');
+                toast.error(
+                  'Đăng nhập Google tạm thời không khả dụng. Vui lòng đăng nhập bằng email và mật khẩu.',
+                );
                 return;
               }
               toast.error(getErrorMessage(error));

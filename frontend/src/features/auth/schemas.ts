@@ -6,8 +6,8 @@ export const registerSchema = z
     displayName: z
       .string()
       .trim()
-      .min(2, 'Họ tên phải từ 2 đến 100 ký tự.')
-      .max(100, 'Họ tên phải từ 2 đến 100 ký tự.'),
+      .min(2, 'Tên hiển thị phải từ 2 đến 100 ký tự.')
+      .max(100, 'Tên hiển thị phải từ 2 đến 100 ký tự.'),
     email: z
       .string()
       .trim()

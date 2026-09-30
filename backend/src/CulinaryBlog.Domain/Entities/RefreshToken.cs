@@ -35,5 +35,19 @@ public class RefreshToken
 
     public bool IsActive(DateTime utcNow) => RevokedAt is null && ExpiresAt > utcNow;
 
-    public void Revoke(DateTime revokedAt) => RevokedAt ??= revokedAt;
+    /// <summary>
+    /// Thu hồi token. Idempotent: token đã thu hồi giữ nguyên <see cref="RevokedAt"/> và <see cref="ReplacedByTokenHash"/>
+    /// ban đầu (dấu vết của token family không bị ghi đè). <paramref name="replacedByTokenHash"/> là SHA-256 của token
+    /// mới khi xoay vòng (FR-AUTH-004 bước 6, MT-15) — không bao giờ là token gốc.
+    /// </summary>
+    public void Revoke(DateTime utcNow, string? replacedByTokenHash = null)
+    {
+        if (RevokedAt is not null)
+        {
+            return;
+        }
+
+        RevokedAt = utcNow;
+        ReplacedByTokenHash = replacedByTokenHash;
+    }
 }
