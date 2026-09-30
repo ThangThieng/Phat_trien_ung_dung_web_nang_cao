@@ -5,8 +5,12 @@ using CulinaryBlog.Domain.Exceptions.Recipes;
 
 namespace CulinaryBlog.Domain.Entities;
 
-/// <summary>SRS §7.2 – Aggregate Root: chứa Steps, Ingredients, Images và Owned Entity Nutrition.</summary>
-public class Recipe : BaseEntity
+/// <summary>
+/// SRS §7.2 – Aggregate Root: chứa Steps, Ingredients, Images và Owned Entity Nutrition.
+/// <c>partial</c> theo trách nhiệm (Buổi 4): file này giữ NỘI DUNG (Dev 2); vòng đời trạng thái và xóa mềm nằm ở
+/// <c>Recipe.Lifecycle.cs</c> (Dev 4) — cùng một aggregate, mỗi người sửa một file.
+/// </summary>
+public partial class Recipe : BaseEntity
 {
     private readonly List<RecipeStep> _steps = [];
     private readonly List<RecipeIngredient> _ingredients = [];
@@ -190,21 +194,4 @@ public class Recipe : BaseEntity
     }
 
     public void SetNutrition(RecipeNutrition? nutrition) => Nutrition = nutrition;
-
-    /// <summary>FR-RCP-005: phải có ít nhất 1 bước và 1 nguyên liệu (Phụ lục B – RECIPE_PUBLISH_INCOMPLETE).</summary>
-    public void Publish(DateTime utcNow)
-    {
-        if (Status == RecipeStatus.Published)
-        {
-            return;
-        }
-
-        if (_steps.Count == 0 || _ingredients.Count == 0)
-        {
-            throw new BusinessRuleViolationException(ErrorCodes.RecipePublishIncomplete, "Recipe phải có ít nhất 1 bước thực hiện và 1 nguyên liệu.");
-        }
-
-        Status = RecipeStatus.Published;
-        PublishedAt ??= utcNow;
-    }
 }

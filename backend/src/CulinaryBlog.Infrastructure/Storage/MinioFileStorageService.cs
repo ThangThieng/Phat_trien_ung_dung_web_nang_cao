@@ -84,6 +84,32 @@ public sealed partial class MinioFileStorageService(
         }
     }
 
+    public async Task<Stream> OpenReadAsync(string fileUrlOrKey, CancellationToken cancellationToken = default)
+    {
+        var key = ToObjectKey(fileUrlOrKey);
+        try
+        {
+            using var response = await s3.GetObjectAsync(_options.BucketName, key, cancellationToken).ConfigureAwait(false);
+            var buffer = new MemoryStream();
+            await using (response.ResponseStream.ConfigureAwait(false))
+            {
+                await response.ResponseStream.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
+            }
+
+            buffer.Position = 0;
+            return buffer;
+        }
+        catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new FileNotFoundException($"Không tìm thấy tệp '{key}' trên object storage.", key, ex);
+        }
+        catch (Exception ex) when (ex is AmazonS3Exception or HttpRequestException or AmazonServiceException)
+        {
+            LogStorageError(logger, "read", key, ex);
+            throw new ServiceUnavailableException(ErrorCodes.FileStorageUnavailable, "Dịch vụ lưu trữ ảnh tạm thời không khả dụng.");
+        }
+    }
+
     /// <summary>FR-FILE-002: "trích xuất object name từ URL".</summary>
     private string ToObjectKey(string fileUrlOrKey)
     {

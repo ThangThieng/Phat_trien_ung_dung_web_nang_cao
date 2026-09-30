@@ -58,6 +58,7 @@ public sealed class UploadRecipeImageCommandHandler(
     IUnitOfWork unitOfWork,
     IFileStorageService storage,
     IFileCleanupScheduler fileCleanup,
+    IImageResizeScheduler imageResize,
     IAuthorizationService authorization,
     ICurrentUser currentUser) : IRequestHandler<UploadRecipeImageCommand, RecipeImageResultDto>
 {
@@ -109,8 +110,11 @@ public sealed class UploadRecipeImageCommandHandler(
             throw;
         }
 
+        // FR-JOB-002 (Buổi 4 — Dev 4): chỉ xếp hàng SAU KHI bản ghi ảnh đã commit — job cần đọc được bản ghi đó.
+        imageResize.ScheduleResize(created!.Id);
+
         request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug));
-        return RecipeImageResultDto.From(created!);
+        return RecipeImageResultDto.From(created);
     }
 }
 

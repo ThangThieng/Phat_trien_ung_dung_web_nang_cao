@@ -29,15 +29,15 @@ public sealed class RecipeRepository(CulinaryBlogDbContext db) : EfRepository<Re
             .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
     /// <summary>
-    /// <c>IgnoreQueryFilters</c>: <c>IDX_Recipe_Slug</c> hiện là unique THƯỜNG (tính cả công thức đã xóa mềm) — bỏ qua bản
-    /// đã xóa thì kiểm tra báo "không trùng" trong khi PostgreSQL vẫn ném 23505. Buổi 4 (D-3) đổi sang partial index thì bỏ dòng này.
+    /// D-3 (Buổi 4): <c>IDX_Recipe_Slug</c> là partial unique (<c>WHERE "IsDeleted" = false</c>) nên chỉ công thức CHƯA xóa
+    /// giữ slug — Global Query Filter loại bản đã xóa mềm đúng như index. (Buổi 3 phải dùng IgnoreQueryFilters vì index
+    /// còn là unique thường.)
     /// </summary>
     public Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(slug);
 
         return Set
-            .IgnoreQueryFilters()
             .AsNoTracking()
             .AnyAsync(r => r.Slug == slug, cancellationToken);
     }

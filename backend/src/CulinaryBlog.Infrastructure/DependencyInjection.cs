@@ -23,6 +23,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using RedLockNet;
+using RedLockNet.SERedis;
+using RedLockNet.SERedis.Configuration;
+using StackExchange.Redis;
 
 namespace CulinaryBlog.Infrastructure;
 
@@ -167,6 +171,17 @@ public static class DependencyInjection
         // FR-RCP-008 bước 16: xóa tệp MinIO bất đồng bộ (xóa ảnh đơn lẻ, dọn tệp mồ côi khi lưu DB thất bại).
         services.AddScoped<DeleteStoredFilesJob>();
         services.AddScoped<IFileCleanupScheduler, HangfireFileCleanupScheduler>();
+
+        // Buổi 4 — Dev 4: FR-JOB-002 đổi kích thước ảnh, FR-JOB-003 dọn dữ liệu vĩnh viễn (+ khóa phân tán RedLock, NFR-SCALE-001).
+        services.AddScoped<ImageResizeJob>();
+        services.AddScoped<IImageResizeScheduler, HangfireImageResizeScheduler>();
+        services.AddScoped<PermanentPurgeJob>();
+        services.AddSingleton<IDistributedLockFactory>(_ =>
+        {
+            var redis = configuration.GetConnectionString("Redis")
+                ?? throw new InvalidOperationException("Thiếu ConnectionStrings:Redis.");
+            return RedLockFactory.Create([new RedLockMultiplexer(ConnectionMultiplexer.Connect($"{redis},abortConnect=false"))]);
+        });
 
         // Tồn đọng Buổi 2 §6: mặc định 15 giây khiến job fire-and-forget (Welcome Email) mãi mới chạy,
         // quá chậm khi demo và khi viết integration test. Môi trường Development hạ xuống 1 giây, đổi lại

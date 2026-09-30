@@ -8,6 +8,7 @@ using CulinaryBlog.Application;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Infrastructure;
+using CulinaryBlog.Infrastructure.Jobs;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Seed;
 using Hangfire;
@@ -70,6 +71,12 @@ var app = builder.Build();
 
 // API (migrate) và worker Hangfire (tạo schema) đều cần DB – chờ DB thay vì crash khi Docker khởi động song song
 await app.Services.WaitForDatabaseAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
+
+// FR-JOB-003 (Buổi 4): lịch recurring job nằm trong storage Hangfire dùng chung — AddOrUpdate idempotent.
+if (builder.Configuration.GetValue("Hangfire:RegisterRecurringJobs", true))
+{
+    app.Services.RegisterRecurringJobs();
+}
 
 if (workerOnly)
 {
@@ -144,7 +151,9 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
 var api = app.MapGroup("/api/v1");
 api.MapAuthEndpoints();
 api.MapCategoriesEndpoints();
-api.MapRecipesEndpoints();
+api.MapRecipesGroup()
+    .MapRecipesEndpoints()
+    .MapRecipeLifecycleEndpoints();
 api.MapFilesEndpoints();
 
 await app.RunAsync().ConfigureAwait(false);

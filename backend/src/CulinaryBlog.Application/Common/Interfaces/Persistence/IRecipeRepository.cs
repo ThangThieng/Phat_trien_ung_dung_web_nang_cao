@@ -16,6 +16,6 @@ public interface IRecipeRepository : IRepository<Recipe>
     /// <summary>Chỉ nạp Images — cho các command ảnh chạy thường xuyên, không kéo bước/nguyên liệu không dùng tới.</summary>
     Task<Recipe?> GetByIdWithImagesAsync(Guid id, CancellationToken cancellationToken = default);
 
-    /// <summary>Slug đã có công thức nào giữ chưa (tính cả bản đã xóa mềm cho tới khi IDX_Recipe_Slug thành partial — D-3).</summary>
+    /// <summary>Slug đã có công thức CHƯA xóa nào giữ chưa (IDX_Recipe_Slug là partial unique — D-3).</summary>
     Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken = default);
 }

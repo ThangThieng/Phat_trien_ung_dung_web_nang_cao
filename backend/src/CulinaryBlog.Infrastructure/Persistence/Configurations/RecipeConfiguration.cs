@@ -57,7 +57,9 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Navigation(r => r.Ingredients).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(r => r.Images).UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasIndex(r => r.Slug).IsUnique().HasDatabaseName("IDX_Recipe_Slug");
+        // D-3 (MT-05, Buổi 4): unique CHỈ trên công thức chưa xóa mềm, để slug của bản đã xóa được dùng lại
+        // thay vì chiếm chỗ vĩnh viễn như unique thường.
+        builder.HasIndex(r => r.Slug).IsUnique().HasFilter("\"IsDeleted\" = false").HasDatabaseName("IDX_Recipe_Slug");
         builder.HasIndex(r => r.Status).HasDatabaseName("IDX_Recipe_Status");
         builder.HasIndex(r => r.CategoryId).HasDatabaseName("IDX_Recipe_CategoryId");
         builder.HasIndex(r => r.AuthorId).HasDatabaseName("IDX_Recipe_AuthorId");

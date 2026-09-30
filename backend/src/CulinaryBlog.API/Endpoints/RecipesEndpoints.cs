@@ -7,13 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CulinaryBlog.API.Endpoints;
 
-/// <summary>SRS §8.3 / §8.4 – /api/v1/recipes: đọc công khai + ghi nội dung (tạo công thức, ảnh).</summary>
+/// <summary>
+/// SRS §8.3 / §8.4 – /api/v1/recipes: ghi NỘI DUNG (tạo công thức, ảnh; Buổi 4 thêm bước, nguyên liệu, cập nhật) +
+/// hai GET công khai (Buổi 4 Dev 3 chuyển sang RecipeQueryEndpoints). Vòng đời nằm ở <see cref="RecipeLifecycleEndpoints"/>.
+/// </summary>
 public static class RecipesEndpoints
 {
-    public static RouteGroupBuilder MapRecipesEndpoints(this RouteGroupBuilder api)
+    /// <summary>Route group dùng chung cho mọi file endpoint của module Recipe.</summary>
+    public static RouteGroupBuilder MapRecipesGroup(this RouteGroupBuilder api)
     {
-        var group = api.MapGroup("/recipes").WithTags("Recipes");
+        ArgumentNullException.ThrowIfNull(api);
+        return api.MapGroup("/recipes").WithTags("Recipes");
+    }
 
+    public static RouteGroupBuilder MapRecipesEndpoints(this RouteGroupBuilder group)
+    {
         group.MapPost("/", CreateRecipeAsync)
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("CreateRecipe")
@@ -67,7 +75,7 @@ public static class RecipesEndpoints
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
-        return api;
+        return group;
     }
 
     /// <summary>Location trỏ về tiền tố riêng tư /mine/{id}: công thức mới là Draft nên /recipes/{slug} công khai không thấy nó (MT-34).</summary>
