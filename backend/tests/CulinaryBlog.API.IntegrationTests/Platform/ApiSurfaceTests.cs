@@ -89,6 +89,22 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
     /// </summary>
     private static readonly (string Method, string Route, string Owner)[] PendingEndpoints =
     [
+        ("POST", "/api/v1/auth/refresh", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-004)"),
+        ("GET", "/api/v1/auth/me", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-006)"),
+        ("PATCH", "/api/v1/auth/me", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-007)"),
+        ("GET", "/api/v1/users", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-008)"),
+        ("PATCH", "/api/v1/users/{id}/status", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-008)"),
+        ("GET", "/api/v1/auth/sessions", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-009)"),
+        ("DELETE", "/api/v1/auth/sessions/{id}", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-009)"),
+        ("POST", "/api/v1/auth/sessions/revoke-all", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-009)"),
+        ("PUT", "/api/v1/recipes/{id}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-004)"),
+        ("POST", "/api/v1/recipes/{id}/ingredients", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-009)"),
+        ("PUT", "/api/v1/recipes/{id}/ingredients/{ingId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-009)"),
+        ("DELETE", "/api/v1/recipes/{id}/ingredients/{ingId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-009)"),
+        ("POST", "/api/v1/recipes/{id}/steps", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
+        ("PUT", "/api/v1/recipes/{id}/steps/{stepId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
+        ("PATCH", "/api/v1/recipes/{id}/steps/reorder", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
+        ("DELETE", "/api/v1/recipes/{id}/steps/{stepId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
         ("GET", "/api/v1/recipes/mine", "Dev 3 — 2314291_DoanHongTien_buoiso4 (FR-RCP-011)"),
         ("GET", "/api/v1/recipes/mine/{id}", "Dev 3 — 2314291_DoanHongTien_buoiso4 (CR-2026-04 d)"),
         ("GET", "/api/v1/recipes/search", "Dev 3 — 2314291_DoanHongTien_buoiso4 (FR-SRCH-001)"),
@@ -142,10 +158,13 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
         Assert.True(landed.Length == 0, "Endpoint đã được cài đặt — xóa khỏi PendingEndpoints: " + string.Join("; ", landed));
     }
 
+    /// <summary>
+    /// Endpoint không khai báo method (ví dụ MapHealthChecks) nhận MỌI method — tính là có GET, đúng như SRS §8.7 mô tả.
+    /// </summary>
     private HashSet<string> ImplementedEndpoints() =>
         factory.Services.GetRequiredService<EndpointDataSource>().Endpoints
             .OfType<RouteEndpoint>()
-            .SelectMany(e => (e.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods ?? [])
+            .SelectMany(e => (e.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods ?? [HttpMethods.Get])
                 .Select(method => Key(method, "/" + (e.RoutePattern.RawText ?? string.Empty).TrimStart('/'))))
             .ToHashSet(StringComparer.Ordinal);
 
