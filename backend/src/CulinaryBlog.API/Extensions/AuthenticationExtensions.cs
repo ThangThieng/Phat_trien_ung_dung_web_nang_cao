@@ -1,6 +1,7 @@
 using System.Text;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;

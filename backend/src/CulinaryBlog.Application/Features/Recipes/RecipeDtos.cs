@@ -26,6 +26,56 @@ public sealed record RecipeSummaryDto(
     public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
 }
 
+/// <summary>
+/// FR-SRCH-001 — một kết quả tìm kiếm: đúng các trường của <see cref="RecipeSummaryDto"/> cộng <c>relevanceScore</c>
+/// (<c>ts_rank</c>). Khai báo phẳng (không lồng <c>RecipeSummaryDto</c>) để JSON cùng hình dạng với danh sách công khai, và để
+/// Redis đọc lại được bằng constructor vị trí.
+/// </summary>
+public sealed record RecipeSearchResultDto(
+    Guid Id,
+    string Title,
+    string Slug,
+    string Description,
+    int PrepTimeMinutes,
+    int CookTimeMinutes,
+    int Servings,
+    RecipeDifficulty Difficulty,
+    RecipeStatus Status,
+    string? PrimaryImageUrl,
+    CategoryRefDto Category,
+    AuthorDto Author,
+    DateTime? PublishedAt,
+    DateTime CreatedAt,
+    double RelevanceScore)
+{
+    public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
+
+    public static RecipeSearchResultDto From(RecipeSummaryDto summary, double relevanceScore)
+    {
+        ArgumentNullException.ThrowIfNull(summary);
+
+        return new RecipeSearchResultDto(
+            summary.Id,
+            summary.Title,
+            summary.Slug,
+            summary.Description,
+            summary.PrepTimeMinutes,
+            summary.CookTimeMinutes,
+            summary.Servings,
+            summary.Difficulty,
+            summary.Status,
+            summary.PrimaryImageUrl,
+            summary.Category,
+            summary.Author,
+            summary.PublishedAt,
+            summary.CreatedAt,
+            relevanceScore);
+    }
+}
+
+/// <summary>MT-48 / NFR-SEO-003 — một dòng của <c>GET /recipes/sitemap</c>: <c>{ slug, updatedAt }</c> (nguồn <c>lastmod</c>).</summary>
+public sealed record RecipeSitemapEntryDto(string Slug, DateTime UpdatedAt);
+
 public sealed record RecipeNutritionDto(decimal? Calories, decimal? Protein, decimal? Carbohydrates, decimal? Fat, decimal? Fiber, decimal? Sodium);
 
 public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl);
@@ -40,7 +90,7 @@ public sealed record RecipeDetailDto(
     string Title,
     string Slug,
     string Description,
-    string Instructions,
+    string? Instructions,
     int PrepTimeMinutes,
     int CookTimeMinutes,
     int Servings,

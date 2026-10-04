@@ -1,6 +1,7 @@
-using CulinaryBlog.Domain.Common;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Domain.Exceptions.Recipes;
 
 namespace CulinaryBlog.Domain.UnitTests;
 
@@ -16,9 +17,13 @@ public class RecipeTests
     }
 
     [Fact]
-    public void Create_RejectsInvalidTimes() =>
-        Assert.Throws<DomainException>(() =>
+    public void Create_RejectsInvalidTimes()
+    {
+        var ex = Assert.Throws<BusinessRuleViolationException>(() =>
             Recipe.Create("Phở bò", "pho-bo", "Mô tả", Guid.NewGuid(), "author-1", 0, 60, 4, RecipeDifficulty.Easy));
+
+        Assert.Equal(ErrorCodes.ValidationError, ex.Code);
+    }
 
     [Fact]
     public void AddStep_AssignsSequentialStepNumbers()
@@ -49,7 +54,10 @@ public class RecipeTests
         var recipe = NewRecipe();
         recipe.AddIngredient("Thịt bò", 500, "gram");
 
-        Assert.Throws<DomainException>(() => recipe.Publish(DateTime.UtcNow));
+        var ex = Assert.Throws<RecipePublishIncompleteException>(() => recipe.Publish(DateTime.UtcNow));
+
+        Assert.Equal(ErrorCodes.RecipePublishIncomplete, ex.Code);
+        Assert.Equal(["steps"], ex.Missing);
     }
 
     [Fact]

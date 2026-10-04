@@ -3,12 +3,26 @@ using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Configurations;
 
 /// <summary>SRS §7.2 – "Recipes" (Aggregate Root) + Owned Entity RecipeNutrition (§7.2.1).</summary>
 internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
 {
+    /// <summary>Cột <c>tsvector</c> của FR-SRCH-001 — shadow property: Domain chỉ dùng .NET BCL nên không mang kiểu Npgsql (CONS-001).</summary>
+    public const string SearchVectorColumn = "SearchVector";
+
+    /// <summary>Text search configuration duy nhất của hệ thống (MT-25): PostgreSQL 16 không có sẵn "vietnamese".</summary>
+    public const string TextSearchConfig = "simple";
+
+    /// <summary>
+    /// SRS §7.2 — biểu thức generated column, dùng hàm wrapper IMMUTABLE <c>unaccent_immutable</c> do migration
+    /// <c>B4_Search_FTS</c> tạo (unaccent() mặc định không IMMUTABLE nên không dùng trực tiếp được).
+    /// </summary>
+    public const string SearchVectorSql =
+        "to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))";
+
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
         builder.ToTable("Recipes", t =>
@@ -22,7 +36,7 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(r => r.Title).HasMaxLength(200).IsRequired();
         builder.Property(r => r.Slug).HasMaxLength(220).IsRequired();
         builder.Property(r => r.Description).HasColumnType("text").IsRequired();
-        builder.Property(r => r.Instructions).HasColumnType("text").IsRequired();
+        builder.Property(r => r.Instructions).HasColumnType("text");
         builder.Property(r => r.Difficulty).HasConversion<short>().HasDefaultValue(RecipeDifficulty.Easy).HasSentinel((RecipeDifficulty)0);
         builder.Property(r => r.Status).HasConversion<short>().HasDefaultValue(RecipeStatus.Draft).HasSentinel((RecipeStatus)(-1));
         builder.Property(r => r.AuthorId).HasMaxLength(450).IsRequired();
@@ -57,7 +71,9 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Navigation(r => r.Ingredients).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(r => r.Images).UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasIndex(r => r.Slug).IsUnique().HasDatabaseName("IDX_Recipe_Slug");
+        // D-3 (MT-05, Buổi 4): unique CHỈ trên công thức chưa xóa mềm, để slug của bản đã xóa được dùng lại
+        // thay vì chiếm chỗ vĩnh viễn như unique thường.
+        builder.HasIndex(r => r.Slug).IsUnique().HasFilter("\"IsDeleted\" = false").HasDatabaseName("IDX_Recipe_Slug");
         builder.HasIndex(r => r.Status).HasDatabaseName("IDX_Recipe_Status");
         builder.HasIndex(r => r.CategoryId).HasDatabaseName("IDX_Recipe_CategoryId");
         builder.HasIndex(r => r.AuthorId).HasDatabaseName("IDX_Recipe_AuthorId");
@@ -65,6 +81,13 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasIndex(r => r.PublishedAt).HasDatabaseName("IDX_Recipe_PublishedAt");
         builder.HasIndex(r => r.CreatedAt).HasDatabaseName("IDX_Recipe_CreatedAt");
         builder.HasIndex(r => r.IsDeleted).HasDatabaseName("IDX_Recipe_IsDeleted").HasFilter("\"IsDeleted\" = false");
+
+        // FR-SRCH-001 / MT-25 (Buổi 4 — Dev 3): generated column STORED, không trigger — PostgreSQL tự tính lại khi Title hoặc
+        // Description đổi, không có đường code nào quên đồng bộ. GIN index cho toán tử @@.
+        builder.Property<NpgsqlTsVector>(SearchVectorColumn)
+            .HasColumnType("tsvector")
+            .HasComputedColumnSql(SearchVectorSql, stored: true);
+        builder.HasIndex(SearchVectorColumn).HasMethod("GIN").HasDatabaseName("IDX_Recipe_Search");
     }
 }
 

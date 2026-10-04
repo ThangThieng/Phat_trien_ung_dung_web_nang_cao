@@ -1,8 +1,11 @@
 namespace CulinaryBlog.Application.Common.Exceptions;
 
 /// <summary>
-/// Lỗi nghiệp vụ có Application Error Code (Phụ lục B). GlobalExceptionMiddleware chuyển thành RFC 7807:
-/// "type" = <see cref="ErrorCode"/>, "status" = <see cref="StatusCode"/>.
+/// Lỗi tầng Application có Application Error Code (Phụ lục B) và TỰ mang mã HTTP. GlobalExceptionMiddleware chuyển
+/// thành RFC 7807: "type" = <see cref="ErrorCode"/>, "status" = <see cref="StatusCode"/>.
+/// Từ Buổi 3 chỉ dùng cho lỗi KHÔNG phải bất biến nghiệp vụ: phân quyền trên một tài nguyên cụ thể (RECIPE_FORBIDDEN,
+/// FILE_FORBIDDEN), lỗi đầu vào tệp (FILE_*), dịch vụ ngoài/hạ tầng không trả lời (502, 503). Bất biến nghiệp vụ dùng
+/// lớp con của CulinaryBlog.Domain.Exceptions.DomainException.
 /// </summary>
 public abstract class AppException : Exception
 {
@@ -33,14 +36,9 @@ public sealed class UnauthorizedException(string errorCode, string message)
 public sealed class ForbiddenException(string errorCode, string message)
     : AppException(errorCode, 403, "Forbidden", message);
 
-public sealed class NotFoundException(string errorCode, string message)
-    : AppException(errorCode, 404, "Not Found", message);
-
-public sealed class ConflictException(string errorCode, string message)
-    : AppException(errorCode, 409, "Conflict", message);
-
-public sealed class LockedException(string errorCode, string message)
-    : AppException(errorCode, 423, "Locked", message);
-
 public sealed class ServiceUnavailableException(string errorCode, string message)
     : AppException(errorCode, 503, "Service Unavailable", message);
+
+/// <summary>Dịch vụ bên ngoài trả lỗi hoặc không truy cập được (ví dụ Google JWKS — AUTH_GOOGLE_UNAVAILABLE, FR-AUTH-003 A3).</summary>
+public sealed class BadGatewayException(string errorCode, string message)
+    : AppException(errorCode, 502, "Bad Gateway", message);

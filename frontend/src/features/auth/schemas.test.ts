@@ -1,9 +1,8 @@
 import { loginSchema, registerSchema } from './schemas';
 
 const valid = {
-  fullName: 'Nguyễn Văn A',
+  displayName: 'Nguyễn Văn A',
   email: 'a@example.com',
-  userName: 'nguyen.a',
   password: 'Passw0rd!',
   confirmPassword: 'Passw0rd!',
 };
@@ -30,9 +29,6 @@ describe('registerSchema (mirror backend RegisterUserCommandValidator)', () => {
     expect(result.error?.issues[0].path).toEqual(['confirmPassword']);
   });
 
-  it('từ chối tên đăng nhập có dấu cách hoặc dấu tiếng Việt', () => {
-    expect(registerSchema.safeParse({ ...valid, userName: 'nguyễn a' }).success).toBe(false);
-  });
 });
 
 describe('loginSchema', () => {
