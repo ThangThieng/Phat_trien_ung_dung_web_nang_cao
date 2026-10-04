@@ -101,7 +101,7 @@ public class RecipesEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifet
     /// <summary>
     /// FR-RCP-002 A2 (retrofit D-4, MT-34): Draft qua endpoint công khai → 404 RECIPE_NOT_FOUND với CÙNG mã lỗi như slug không
     /// tồn tại — không xác nhận sự tồn tại của bản nháp (Buổi 2 trả 403). Áp dụng cho mọi người gọi, kể cả chủ sở hữu và Admin;
-    /// chủ sở hữu xem bản nháp qua GET /recipes/mine/{id} (phần API mới của Buổi 4).
+    /// chủ sở hữu xem bản nháp qua GET /recipes/mine/{id} (RecipeQueryEndpointsTests).
     /// </summary>
     [Theory]
     [InlineData(null)]

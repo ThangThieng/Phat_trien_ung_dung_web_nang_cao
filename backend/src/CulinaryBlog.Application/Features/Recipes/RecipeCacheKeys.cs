@@ -23,6 +23,9 @@ public static class RecipeCacheKeys
     /// <summary>FR-RCP-001 — <c>recipes:list:{queryHash}</c>, TTL 2 phút (NFR-PERF-003).</summary>
     public static string List(string normalizedQuery) => ListPrefix + QueryHash.Compute(normalizedQuery);
 
+    /// <summary>FR-SRCH-001 — <c>search:{queryHash}</c>, TTL 1 phút, không invalidate chủ động (NFR-PERF-003).</summary>
+    public static string Search(string normalizedQuery) => SearchPrefix + QueryHash.Compute(normalizedQuery);
+
     /// <summary>Mọi khóa công khai bị ảnh hưởng khi NỘI DUNG của một công thức đổi (bước, nguyên liệu, ảnh, thông tin cơ bản).</summary>
     public static IReadOnlyCollection<string> ForContentChange(string slug) => [Detail(slug), ListPrefix, SearchPrefix];
 

@@ -5,9 +5,10 @@ using FluentValidation;
 namespace CulinaryBlog.Application.Features.Recipes;
 
 /// <summary>
-/// FR-SRCH-002 — MỘT specification lọc dùng chung cho mọi truy vấn danh sách công thức (hiện: <c>GetRecipesQuery</c>,
-/// <c>GetCategoryBySlugQuery</c>; phần API còn lại của Buổi 4 dùng tiếp). Các tiêu chí kết hợp bằng AND; tiêu chí để trống thì bỏ qua.
-/// Không chứa điều kiện trạng thái: endpoint công khai cố định <c>Status == Published</c> ở repository (MT-34).
+/// FR-SRCH-002 — MỘT specification lọc dùng chung cho <c>GetRecipesQuery</c>, <c>SearchRecipesQuery</c>,
+/// <c>GetCategoryBySlugQuery</c> và <c>GetMyRecipesQuery</c>. Các tiêu chí kết hợp bằng AND; tiêu chí để trống thì bỏ qua.
+/// Không chứa điều kiện trạng thái: endpoint công khai cố định <c>Status == Published</c> ở repository (MT-34), còn
+/// <c>/recipes/mine</c> lọc theo tác giả.
 /// </summary>
 public sealed record RecipeFilterSpec(
     Guid? CategoryId = null,
@@ -16,6 +17,8 @@ public sealed record RecipeFilterSpec(
     int? MaxPrepTime = null,
     int? MinServings = null)
 {
+    public static RecipeFilterSpec None { get; } = new();
+
     /// <summary>Chuỗi chuẩn hóa (thứ tự cố định, văn hóa bất biến) — một phần đầu vào của <c>{queryHash}</c> trong khóa cache.</summary>
     public string ToCacheSegment() => string.Create(
         CultureInfo.InvariantCulture,

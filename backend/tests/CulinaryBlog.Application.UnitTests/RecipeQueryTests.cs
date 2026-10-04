@@ -1,12 +1,16 @@
+using CulinaryBlog.Application.Common.Exceptions;
+using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Categories;
 using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Enums;
+using NSubstitute;
 
 namespace CulinaryBlog.Application.UnitTests;
 
 /// <summary>
-/// Buổi 4 — Dev 3 (phần vá D-10/D-6): quy tắc phía Application của truy vấn danh sách công thức — whitelist sắp xếp
-/// (FR-SRCH-003), bộ lọc (FR-SRCH-002), phân trang (FR-SRCH-004) và khóa cache (NFR-PERF-003).
+/// Buổi 4 — Dev 3: quy tắc phía Application của các truy vấn công thức — whitelist sắp xếp (FR-SRCH-003, D-10), dựng tsquery
+/// (FR-SRCH-001), khóa cache (NFR-PERF-003) và phân quyền authorId của /recipes/mine (FR-RCP-011).
 /// </summary>
 public class RecipeQueryTests
 {
@@ -85,4 +89,85 @@ public class RecipeQueryTests
     [Fact]
     public void GetCategoryBySlug_CacheKey_HasDetailPrefixAndSlug() =>
         Assert.StartsWith($"{CategoryCacheKeys.DetailPrefix}mon-chinh:", new GetCategoryBySlugQuery("mon-chinh").CacheKey, StringComparison.Ordinal);
+
+    // ---------- Search (FR-SRCH-001) ----------
+    [Theory]
+    [InlineData("pho bo", "pho:* & bo:*")]
+    [InlineData("Phở  Bò", "pho:* & bo:*")]
+    [InlineData("đậu (xanh) & !", "dau:* & xanh:*")]
+    [InlineData("pho:* | bo", "pho:* & bo:*")]
+    [InlineData("!!", "")]
+    public void SearchTermBuilder_UnaccentsAndSanitizes(string input, string expected) =>
+        Assert.Equal(expected, SearchTermBuilder.Build(input));
+
+    [Theory]
+    [InlineData("p", false)]
+    [InlineData(" p ", false)]
+    [InlineData("", false)]
+    [InlineData("ph", true)]
+    public void Search_TermMinLength2(string q, bool valid) =>
+        Assert.Equal(valid, new SearchRecipesQueryValidator().Validate(new SearchRecipesQuery(q)).IsValid);
+
+    [Fact]
+    public void Search_CacheKey_SameForAccentedAndPlain() =>
+        Assert.Equal(new SearchRecipesQuery("Phở bò").CacheKey, new SearchRecipesQuery("pho  bo").CacheKey);
+
+    [Fact]
+    public async Task Search_OnlySpecialCharacters_ReturnsEmptyPageWithoutQueryingDatabase()
+    {
+        var repository = Substitute.For<IRecipeReadRepository>();
+
+        var page = await new SearchRecipesQueryHandler(repository).Handle(new SearchRecipesQuery("!!"), CancellationToken.None);
+
+        Assert.Empty(page.Items);
+        Assert.Equal(0, page.TotalCount);
+        await repository.DidNotReceiveWithAnyArgs()
+            .SearchPublishedAsync(default!, default, default, default!, default);
+    }
+
+    // ---------- GetMyRecipesQuery (FR-RCP-011) ----------
+    [Fact]
+    public void Mine_IsNeverCached() => Assert.False(typeof(ICacheable).IsAssignableFrom(typeof(GetMyRecipesQuery)));
+
+    [Fact]
+    public void MineById_IsNeverCached() => Assert.False(typeof(ICacheable).IsAssignableFrom(typeof(GetMyRecipeByIdQuery)));
+
+    [Fact]
+    public void Mine_StatusOutsideEnum_Fails() =>
+        Assert.False(new GetMyRecipesQueryValidator().Validate(new GetMyRecipesQuery(Status: (RecipeStatus)7)).IsValid);
+
+    [Fact]
+    public async Task Mine_AuthorPassingAuthorId_Throws403()
+    {
+        var currentUser = Substitute.For<ICurrentUser>();
+        currentUser.UserId.Returns("22222222-2222-2222-2222-222222222222");
+        currentUser.IsAdmin.Returns(false);
+        var handler = new GetMyRecipesQueryHandler(Substitute.For<IRecipeReadRepository>(), currentUser);
+
+        var error = await Assert.ThrowsAsync<ForbiddenException>(() =>
+            handler.Handle(new GetMyRecipesQuery(AuthorId: Guid.Parse("33333333-3333-3333-3333-333333333333")), CancellationToken.None));
+
+        Assert.Equal(403, error.StatusCode);
+    }
+
+    [Fact]
+    public async Task Mine_AdminPassingAuthorId_QueriesThatAuthor()
+    {
+        const string otherAuthor = "33333333-3333-3333-3333-333333333333";
+        var currentUser = Substitute.For<ICurrentUser>();
+        currentUser.UserId.Returns("11111111-1111-1111-1111-111111111111");
+        currentUser.IsAdmin.Returns(true);
+        var repository = Substitute.For<IRecipeReadRepository>();
+        repository.GetByAuthorPagedAsync(default!, default, default!, default)
+            .ReturnsForAnyArgs(new PagedResult<RecipeSummaryDto>([], 0, 1, 12));
+
+        await new GetMyRecipesQueryHandler(repository, currentUser)
+            .Handle(new GetMyRecipesQuery(AuthorId: Guid.Parse(otherAuthor)), CancellationToken.None);
+
+        await repository.Received(1).GetByAuthorPagedAsync(
+            Arg.Is(otherAuthor),
+            Arg.Is<RecipeStatus?>(status => !status.HasValue),
+            Arg.Any<RecipeListCriteria>(),
+            Arg.Any<CancellationToken>());
+    }
 }

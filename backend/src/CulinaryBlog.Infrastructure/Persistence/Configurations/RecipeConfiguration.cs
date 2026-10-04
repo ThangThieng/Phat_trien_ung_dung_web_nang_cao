@@ -13,6 +13,9 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
     /// <summary>Cột <c>tsvector</c> của FR-SRCH-001 — shadow property: Domain chỉ dùng .NET BCL nên không mang kiểu Npgsql (CONS-001).</summary>
     public const string SearchVectorColumn = "SearchVector";
 
+    /// <summary>Text search configuration duy nhất của hệ thống (MT-25): PostgreSQL 16 không có sẵn "vietnamese".</summary>
+    public const string TextSearchConfig = "simple";
+
     /// <summary>
     /// SRS §7.2 — biểu thức generated column, dùng hàm wrapper IMMUTABLE <c>unaccent_immutable</c> do migration
     /// <c>B4_Search_FTS</c> tạo (unaccent() mặc định không IMMUTABLE nên không dùng trực tiếp được).

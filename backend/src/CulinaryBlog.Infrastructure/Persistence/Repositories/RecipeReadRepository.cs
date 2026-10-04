@@ -2,7 +2,9 @@ using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Repositories;
 
@@ -21,6 +23,79 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
 
     public Task<RecipeDetailDto?> GetPublishedBySlugAsync(string slug, CancellationToken cancellationToken) =>
         DetailAsync(DetailQuery().Where(r => r.Slug == slug && r.Status == RecipeStatus.Published), cancellationToken);
+
+    public async Task<PagedResult<RecipeSearchResultDto>> SearchPublishedAsync(
+        string tsQuery,
+        int page,
+        int pageSize,
+        RecipeFilterSpec filter,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tsQuery);
+        ArgumentNullException.ThrowIfNull(filter);
+
+        // FR-SRCH-001 bước 4: SearchVector @@ to_tsquery('simple', :q) — tsQuery là THAM SỐ của câu lệnh, không ghép chuỗi SQL.
+        var matches = ApplyFilter(Published(), filter)
+            .Where(r => EF.Property<NpgsqlTsVector>(r, RecipeConfiguration.SearchVectorColumn)
+                .Matches(EF.Functions.ToTsQuery(RecipeConfiguration.TextSearchConfig, tsQuery)));
+
+        var total = await matches.CountAsync(cancellationToken).ConfigureAwait(false);
+
+        // Bước 5: ORDER BY ts_rank DESC; tie-breaker ổn định để phân trang không lặp/bỏ sót bản ghi cùng điểm.
+        var ranked = await matches
+            .Select(r => new
+            {
+                r.Id,
+                r.PublishedAt,
+                Rank = EF.Property<NpgsqlTsVector>(r, RecipeConfiguration.SearchVectorColumn)
+                    .Rank(EF.Functions.ToTsQuery(RecipeConfiguration.TextSearchConfig, tsQuery)),
+            })
+            .OrderByDescending(x => x.Rank)
+            .ThenByDescending(x => x.PublishedAt)
+            .ThenBy(x => x.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var ids = ranked.Select(x => x.Id).ToList();
+        var summaries = await ToSummaries(db.Recipes.AsNoTracking().Where(r => ids.Contains(r.Id)))
+            .ToDictionaryAsync(s => s.Id, cancellationToken)
+            .ConfigureAwait(false);
+
+        var items = ranked
+            .Where(x => summaries.ContainsKey(x.Id))
+            .Select(x => RecipeSearchResultDto.From(summaries[x.Id], x.Rank))
+            .ToList();
+
+        return new PagedResult<RecipeSearchResultDto>(items, total, page, pageSize);
+    }
+
+    public async Task<IReadOnlyList<RecipeSitemapEntryDto>> GetPublishedSitemapAsync(CancellationToken cancellationToken) =>
+        await Published()
+            .OrderBy(r => r.Slug)
+            .Select(r => new RecipeSitemapEntryDto(r.Slug, r.UpdatedAt ?? r.PublishedAt ?? r.CreatedAt))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+    public Task<PagedResult<RecipeSummaryDto>> GetByAuthorPagedAsync(
+        string authorId,
+        RecipeStatus? status,
+        RecipeListCriteria criteria,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
+        ArgumentNullException.ThrowIfNull(criteria);
+
+        // FR-RCP-011 bước 6: lọc theo tác giả (mọi trạng thái), thêm status nếu có.
+        var query = db.Recipes.AsNoTracking().Where(r => r.AuthorId == authorId);
+        if (status.HasValue)
+        {
+            query = query.Where(r => r.Status == status.Value);
+        }
+
+        return PageAsync(query, criteria, cancellationToken);
+    }
 
     public Task<RecipeDetailDto?> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken) =>
         DetailAsync(DetailQuery().Where(r => r.Id == id), cancellationToken);

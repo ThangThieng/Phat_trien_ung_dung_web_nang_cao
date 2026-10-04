@@ -4,10 +4,10 @@
 **Nhánh:** `2314291_DoanHongTien_buoiso4` (tách từ tip nhánh Dev 4 `2312755_NguyenThangThieng_buoiso4` — đã chứa code Buổi 3 của cả 4 dev, `Recipe.Lifecycle.cs`, `RecipeLifecycleEndpoints.cs`, migration `B4_Recipe_PartialUniqueSlug`; merge chuẩn Dev 4 → Dev 1 → Dev 3 → Dev 2) — **PR nhắm vào `develop`**: `<điền link PR>`
 **Phạm vi (KE_HOACH_PHAT_TRIEN_8_BUOI.md — Buổi 4, Dev 3):** API của FR-SRCH-001 → 004, FR-RCP-011, CR-2026-04 (d) `GET /recipes/mine/{id}`, MT-48 `GET /recipes/sitemap`; sửa hợp đồng `GET /recipes`, `GET /recipes/{slug}`, `GET /categories/{slug}`; retrofit **D-4, D-5 (lỗ hổng MT-34), D-6, D-10 (API), D-18**
 
-> **Giai đoạn 1 — VÁ / SỬA (báo cáo này):** theo thứ tự kế hoạch bước 1 (*"làm bước 4 trước tiên — vá MT-34"*), nhánh hiện chỉ chứa phần vá: **D-4, D-5, D-6, D-10 (API), D-18** và việc gom các GET công khai về `RecipeQueryEndpoints.cs`. **Giai đoạn 2 — bốn endpoint mới** (`/recipes/search`, `/recipes/mine`, `/recipes/mine/{id}`, `/recipes/sitemap`) làm tiếp sau khi phần vá đã build + test xanh; các mục E → H bên dưới vì vậy ghi "Chưa làm".
+> **Trình tự làm:** giai đoạn 1 vá/sửa trước (D-4, D-5, D-6, D-10 API, D-18 — theo kế hoạch bước 1 *"làm bước 4 trước tiên — vá MT-34"*), build + test xanh 277/277; giai đoạn 2 thêm bốn endpoint mới (`/recipes/search`, `/recipes/mine`, `/recipes/mine/{id}`, `/recipes/sitemap`), build + test xanh **319/319**. Báo cáo này gồm cả hai giai đoạn.
 **Tài liệu bám sát:** `SPEC/SRS_Culinary_Blog_v1.2.2.md` (§3.3 nguyên tắc Public/Private, FR-RCP-001/002/011, FR-CAT-002, FR-SRCH-001→004, NFR-PERF-003, NFR-SEC-006, NFR-SEO-003/004, §7.2, §8.3) và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (MT-01, MT-16, MT-17, MT-25, MT-34, MT-48, MT-53, MT-62; §4 D-4/D-5/D-6/D-10/D-18)
 
-> **Trạng thái kiểm chứng (30/09/2026):** code đã viết xong. Máy dùng để viết code **không có .NET SDK và không truy cập được NuGet**, nên `dotnet build` / `dotnet test` **chưa chạy** — mọi hạng mục bên dưới ghi "Code xong, chờ chạy test" cho tới khi có log thật (quy tắc §2.4: chỉ ghi ✅ khi đã kiểm chứng được). Mục 8 là danh sách lệnh cần chạy và chỗ điền kết quả.
+> **Trạng thái kiểm chứng (04/10/2026):** `dotnet build` thành công và `dotnet test` **319/319 đạt, 0 lỗi, 0 bỏ qua** trên máy Windows của Dev 3 (Testcontainers: PostgreSQL, Redis, MinIO). Các hạng mục chưa kiểm chứng được ghi rõ ở mục 8.
 
 ---
 
@@ -15,16 +15,16 @@
 
 | # | Hạng mục | Yêu cầu trong kế hoạch | Kết quả |
 |---|----------|------------------------|---------|
-| A | **Vá MT-34 (D-4, D-5)** — làm trước tiên | `GET /recipes`, `GET /recipes/{slug}`, `GET /categories/{slug}` chỉ trả Published cho mọi người gọi; Draft/Archived → 404; bỏ `RecipeVisibility`, bỏ `ICurrentUser` khỏi 3 query | Code xong, chờ chạy test — mục 2 |
-| B | **D-6 — bỏ Output Cache** | Xóa `OutputCachePolicies.cs`, `AddCulinaryOutputCache`, `.CacheOutput(...)`; chuyển sang `ICacheable` Redis cache-aside 2′/5′/2′ | Code xong, chờ chạy test — mục 2 |
-| C | **D-10 (API) — `RecipeFilterSpec`, `SortMapper`, phân trang** | `sortBy` + `sortOrder` whitelist 5 trường → 400; thêm `maxPrepTime`, `minServings`; `pageSize` 12/50; xóa `RecipeSortParser`, `RecipeSortField` | Code xong, chờ chạy test — mục 3 |
-| D | **D-18 + migration `B4_Search_FTS`** | `unaccent_immutable` IMMUTABLE, generated column `SearchVector` STORED, GIN `IDX_Recipe_Search`; gỡ `vietnamese_unaccent` khỏi `init.sql` | Code xong, chờ chạy test — mục 4 |
-| E | **FR-SRCH-001 `GET /recipes/search`** | `q` ≥ 2 ký tự, làm sạch tsquery, `ts_rank` DESC, chỉ Published, `relevanceScore`, cache `search:{hash}` 1′ | **Giai đoạn 2 — chưa làm** |
-| F | **FR-RCP-011 `GET /recipes/mine`** | Bearer bắt buộc, không `ICacheable`, `no-store`, `authorId` chỉ Admin (khác → 403), `status` whitelist | **Giai đoạn 2 — chưa làm** |
-| G | **CR-2026-04 (d) `GET /recipes/mine/{id}`** | Mọi trạng thái, Owner/Admin qua `RecipeAuthorizationHandler`, người khác/không tồn tại → 404, `rowVersion` + `ETag` + `no-store` | **Giai đoạn 2 — chưa làm** |
-| H | **MT-48 `GET /recipes/sitemap`** | `{ slug, updatedAt }[]` mọi Published, không phân trang, cache `recipes:sitemap` 1 giờ | **Giai đoạn 2 — chưa làm** |
-| I | **`RecipeQueryEndpoints.cs`** | Gom mọi `GET /recipes` về một file, chuyển hai GET cũ ra khỏi `RecipesEndpoints.cs` | Code xong (2 GET công khai; 4 GET mới thêm ở giai đoạn 2) |
-| J | **Integration test phần vá** | Gỡ `Skip` test MT-34 + cập nhật test 403 → 404 + test sort/lọc/phân trang | Code xong, chờ chạy — mục 7 |
+| A | **Vá MT-34 (D-4, D-5)** — làm trước tiên | `GET /recipes`, `GET /recipes/{slug}`, `GET /categories/{slug}` chỉ trả Published cho mọi người gọi; Draft/Archived → 404; bỏ `RecipeVisibility`, bỏ `ICurrentUser` khỏi 3 query | Đã test xanh — mục 2 |
+| B | **D-6 — bỏ Output Cache** | Xóa `OutputCachePolicies.cs`, `AddCulinaryOutputCache`, `.CacheOutput(...)`; chuyển sang `ICacheable` Redis cache-aside 2′/5′/2′ | Đã test xanh — mục 2 |
+| C | **D-10 (API) — `RecipeFilterSpec`, `SortMapper`, phân trang** | `sortBy` + `sortOrder` whitelist 5 trường → 400; thêm `maxPrepTime`, `minServings`; `pageSize` 12/50; xóa `RecipeSortParser`, `RecipeSortField` | Đã test xanh — mục 3 |
+| D | **D-18 + migration `B4_Search_FTS`** | `unaccent_immutable` IMMUTABLE, generated column `SearchVector` STORED, GIN `IDX_Recipe_Search`; gỡ `vietnamese_unaccent` khỏi `init.sql` | Đã test xanh — mục 4 |
+| E | **FR-SRCH-001 `GET /recipes/search`** | `q` ≥ 2 ký tự, làm sạch tsquery, `ts_rank` DESC, chỉ Published, `relevanceScore`, cache `search:{hash}` 1′ | Đã test xanh — `SearchRecipesQuery`, `SearchTermBuilder` |
+| F | **FR-RCP-011 `GET /recipes/mine`** | Bearer bắt buộc, không `ICacheable`, `no-store`, `authorId` chỉ Admin (khác → 403), `status` whitelist | Đã test xanh — `GetMyRecipesQuery` |
+| G | **CR-2026-04 (d) `GET /recipes/mine/{id}`** | Mọi trạng thái, Owner/Admin qua `RecipeAuthorizationHandler`, người khác/không tồn tại → 404, `rowVersion` + `ETag` + `no-store` | Đã test xanh — `GetMyRecipeByIdQuery` |
+| H | **MT-48 `GET /recipes/sitemap`** | `{ slug, updatedAt }[]` mọi Published, không phân trang, cache `recipes:sitemap` 1 giờ | Đã test xanh — `GetRecipeSitemapQuery` |
+| I | **`RecipeQueryEndpoints.cs`** | Gom mọi `GET /recipes` về một file, chuyển hai GET cũ ra khỏi `RecipesEndpoints.cs` | Xong — đủ 6 GET của `/recipes` trong một file |
+| J | **Integration test phần vá** | Gỡ `Skip` test MT-34 + cập nhật test 403 → 404 + test sort/lọc/phân trang | Đã test xanh — mục 7 |
 
 ---
 
@@ -83,7 +83,7 @@
 
 ## 5. Chi tiết E → I — Bốn endpoint mới (GIAI ĐOẠN 2 — thiết kế đã chốt, chưa đưa vào nhánh) và `RecipeQueryEndpoints.cs`
 
-> Ở giai đoạn 1, `RecipeQueryEndpoints.cs` chỉ chứa `GET /recipes` và `GET /recipes/{slug}`. Bảng dưới là hợp đồng sẽ cài ở giai đoạn 2.
+> `RecipeQueryEndpoints.cs` chứa đủ 6 `GET` của `/recipes`. Bảng dưới là hợp đồng đã cài đặt.
 
 | Endpoint | Query | Auth | Hợp đồng chính |
 |---|---|---|---|
@@ -113,7 +113,7 @@ Nguyên tắc áp dụng (kế hoạch §3, file mâu thuẫn §4): **mâu thu�
 | 2 | Bảng TTL (NFR-PERF-003) yêu cầu xóa theo tiền tố `recipes:list:` / `categories:detail:` khi dữ liệu đổi, nhưng `CacheInvalidationBehavior` hiện chỉ xóa theo khóa chính xác; `RemoveByPrefixAsync` (SCAN) là việc của **Buổi 7 — Dev 4** | Kế hoạch §2.3, B7 Dev 4; báo cáo Lab 03 §11.5 | Giữ đúng phân công: không tự làm việc của Dev 4. Hệ quả chấp nhận được cho tới B7: danh sách/chi tiết danh mục cũ tối đa **2 phút** (hết hạn tự nhiên theo TTL). `recipe:{slug}` và `recipes:sitemap` là khóa chính xác nên được xóa ngay. Ghi rõ trong `RecipeCacheKeys`/`CategoryCacheKeys` |
 | 3 | Integration test chạy chung một Redis: sau khi bật cache cho endpoint công khai, response của lớp test trước có thể được trả cho lớp test sau | NFR-MAINT-002 | `CulinaryBlogApiFactory.ResetDatabaseAsync` thêm `redis-cli FLUSHALL` (sạch cache cùng lúc sạch DB); các lớp test đọc mà tôi sửa (`RecipesEndpointsTests`, `CategoriesEndpointsTests`, `RecipeCacheIsolationTests`) chuyển sang reset ở `InitializeAsync`. Sửa nhỏ trên harness của Dev 4 — cần Dev 4 review |
 | 4 | Kế hoạch bước 10 yêu cầu `?sort=-title → 400`, nhưng SRS không còn tham số `sort` nào (MT-01) — ASP.NET Core mặc định im lặng bỏ qua tham số lạ, trái FR-SRCH-003 *"không im lặng bỏ qua"* | MT-01, FR-SRCH-003 | Validator trả 400 khi có `sort`; endpoint đọc giá trị từ query string, **không** khai báo tham số → không thêm gì vào hợp đồng API/Scalar |
-| 10 | Vá D-4 trước khi có `/recipes/mine` (giai đoạn 2): trong khoảng giữa hai giai đoạn, tác giả tạm **không xem lại được bản nháp** của mình qua API (FR-RCP-011 là phần đối xứng của MT-34) | Kế hoạch bước 1, FR-RCP-011 | Chấp nhận trong thời gian ngắn giữa hai giai đoạn cùng buổi; không mở lại lỗ hổng (không cho `/recipes/{slug}` trả Draft cho chủ — phương án (A) đã bị loại ở MT-62). Commit/merge phải chứa cả hai giai đoạn |
+| 10 | Vá D-4 trước khi có `/recipes/mine` (giai đoạn 2): trong khoảng giữa hai giai đoạn (đã đóng — `/recipes/mine` và `/recipes/mine/{id}` đã có), tác giả tạm **không xem lại được bản nháp** của mình qua API (FR-RCP-011 là phần đối xứng của MT-34) | Kế hoạch bước 1, FR-RCP-011 | Chấp nhận trong thời gian ngắn giữa hai giai đoạn cùng buổi; không mở lại lỗ hổng (không cho `/recipes/{slug}` trả Draft cho chủ — phương án (A) đã bị loại ở MT-62). Commit/merge phải chứa cả hai giai đoạn |
 | 5 | Frontend `/recipes` (Buổi 2) đang gửi `sort=-createdAt`; D-10 phía giao diện thuộc **Buổi 5** — nếu để nguyên, trang `/recipes` trả 400 ngay sau khi merge Buổi 4, trái nguyên tắc *"cuối mỗi buổi hệ thống phải chạy được"* | Kế hoạch §0, D-10 | Cầu nối tối thiểu trong `frontend/src/features/recipes/api.ts` (thuộc module của Dev 3): đổi `sort` → `sortBy` + `sortOrder` trước khi gọi API. FilterPanel, trang `/search` và D-10 FE đầy đủ vẫn ở Buổi 5 |
 | 6 | *(giai đoạn 2)* Kế hoạch bước 7 ghi nạp qua `GetByIdWithDetailsAsync` cho `/mine/{id}` | Kế hoạch B4 Dev 3 bước 7 | Phân quyền chỉ cần `AuthorId` nên dùng `unitOfWork.Recipes.GetByIdAsync` (không kéo bước/nguyên liệu/ảnh hai lần), DTO chi tiết lấy từ read repository. Vẫn đúng tinh thần: nạp ở mọi trạng thái + kiểm quyền bằng **chính** `RecipeAuthorizationHandler` |
 | 7 | *(giai đoạn 2)* SRS FR-SRCH-001 ghi kết quả là *"`PagedResult<RecipeSummaryDto>` với field `relevanceScore`"* nhưng `RecipeSummaryDto` không có trường này | FR-SRCH-001 bước 7 | `RecipeSearchResultDto` = đúng các trường của `RecipeSummaryDto` + `relevanceScore` (JSON cùng hình dạng, chỉ thêm một trường) |
@@ -124,9 +124,9 @@ Không phát sinh điểm nào cần Change Request mới: không thêm endpoint
 
 ---
 
-## 7. Test đã viết (chờ chạy)
+## 7. Test đã viết (đã chạy: 319/319 đạt)
 
-**Unit — `Application.UnitTests/RecipeQueryTests.cs` (mới):** whitelist `SortMapper` (5 trường, không phân biệt hoa/thường, từ chối `password`, `-createdAt`, `servings`); `sortOrder`; mặc định `createdAt desc`; `pageSize` mặc định 12; tham số `sort` cũ → lỗi; `difficulty` ngoài enum; bộ lọc âm; khóa cache không phân biệt hoa/thường và đúng tiền tố. `ValidatorTests`: bỏ test `RecipeSortParser` (đã xóa). Test search/mine: giai đoạn 2.
+**Unit — `Application.UnitTests/RecipeQueryTests.cs` (mới):** whitelist `SortMapper` (5 trường, không phân biệt hoa/thường, từ chối `password`, `-createdAt`, `servings`); `sortOrder`; mặc định `createdAt desc`; `pageSize` mặc định 12; tham số `sort` cũ → lỗi; `difficulty` ngoài enum; bộ lọc âm; khóa cache không phân biệt hoa/thường và đúng tiền tố. `ValidatorTests`: bỏ test `RecipeSortParser` (đã xóa). Thêm test `SearchTermBuilder` và validator của `SearchRecipesQuery` / `GetMyRecipesQuery`.
 
 **Integration (Testcontainers):**
 
@@ -134,9 +134,9 @@ Không phát sinh điểm nào cần Change Request mới: không thêm endpoint
 |---|---|
 | `RecipeCacheIsolationTests` | **Gỡ `Skip`**. Admin gọi `GET /recipes` rồi Guest gọi cùng URL → không có Draft, `totalCount = 3`; chi tiết danh mục cho chủ bản nháp chỉ có Published; Draft qua `/recipes/{slug}` với chủ sở hữu → 404 |
 | `RecipesEndpointsTests` | `GetRecipeBySlug_DraftAsGuest_Returns403ForNow` → **`GetRecipeBySlug_Draft_Returns404ForEveryCaller`** (Guest/Author/Admin); xóa `DraftAsOwner_Returns200`; 400 cho `sort=-title`, `sortBy=password`, `sortOrder=up`, `difficulty=Legendary`, `pageSize=51`, `maxPrepTime=-1`, `minServings=0`; `sortBy=title&sortOrder=desc` đúng thứ tự; `difficulty=Expert` → 200; `maxPrepTime` + `minServings`; `categoryId` lạ → 200 rỗng (A3); cờ phân trang |
-| `RecipeQueryEndpointsTests` | **Giai đoạn 2** (search, mine, mine/{id}, sitemap) |
+| `RecipeQueryEndpointsTests` (mới, 18 test) | **Tìm kiếm:** "pho"/không dấu ra "Phở bò", xếp theo độ liên quan và chỉ Published, lọc `categoryId` kết hợp AND, `q` < 2 ký tự → 400, ký tự đặc biệt → 200. **Của tôi:** mọi trạng thái + `no-store`, lọc `status`, tác giả chưa có công thức → 200 rỗng, không token → 401, Author truyền `authorId` → 403, Admin truyền `authorId` → 200, tham số sai → 400. **Chi tiết riêng tư:** Draft của mình → 200 kèm `rowVersion` + `ETag` + `no-store`, Admin → 200, của người khác/id lạ → 404, không token → 401. **Sitemap:** chỉ slug Published; `POST` → 405 |
 | `CategoriesEndpointsTests` | Reset mỗi test; `sortBy=title&sortOrder=asc`; 400 cho `sortBy=name`, `sortOrder=sideways`, `pageSize=51` |
-| `ApiSurfaceTests` | Giữ nguyên 4 endpoint của Dev 3 trong danh sách chờ (xóa ở giai đoạn 2) |
+| `ApiSurfaceTests` | Xóa 4 endpoint của Dev 3 khỏi danh sách chờ (đã cài đặt) |
 
 ---
 
@@ -155,23 +155,23 @@ docker compose up -d --build                   # migration B4_Search_FTS chạy 
 
 | Tiêu chí | Trạng thái |
 |----------|-----------|
-| `dotnet build` 0 warning | ☐ chưa chạy — `<dán kết quả>` |
-| Không còn thay đổi model chờ migration | ☐ chưa chạy |
-| `dotnet test` xanh, test MT-34 đã gỡ `Skip` và xanh | ☐ chưa chạy — `<số test passed>` |
-| `npm run lint && npm run build` xanh | ☐ chưa chạy |
-| `docker compose up` chạy, `/recipes` trên giao diện vẫn hiển thị | ☐ chưa chạy |
-| Scalar `/scalar`: đủ 4 endpoint mới, tìm "pho" ra "Phở bò" | ☐ chưa chạy |
-| `grep -r CacheOutput backend/src` không còn kết quả | ☐ chưa chạy |
+| `dotnet build` | ☑ 04/10/2026 — `Build succeeded` |
+| Không còn thay đổi model chờ migration | ☐ chưa chạy lệnh `has-pending-model-changes` |
+| `dotnet test` xanh, test MT-34 đã gỡ `Skip` và xanh | ☑ 04/10/2026 — `total: 319, failed: 0, succeeded: 319, skipped: 0` |
+| `npm run lint && npm run build` xanh | ☑ `npm run build` thành công 04/10/2026 (sau `npm ci`); kết quả `lint` chưa ghi lại. Frontend không đổi ở giai đoạn 2 |
+| `docker compose up` chạy, `/recipes` trên giao diện vẫn hiển thị | ☑ 04/10/2026 với code giai đoạn 1 — `/recipes` hiện 89 công thức Published, ba nút sắp xếp hoạt động; chưa dựng lại stack với code giai đoạn 2 |
+| Scalar `/scalar`: đủ 4 endpoint mới, tìm "pho" ra "Phở bò" | ☐ chưa thử tay trên Scalar (đã có integration test tương ứng xanh) |
+| `grep -r CacheOutput backend/src` không còn kết quả | ☑ không còn kết quả |
 
 ---
 
 ## 9. Danh sách file thay đổi
 
-**Application (mới):** `Common/Caching/QueryHash.cs`, `Features/Recipes/SortMapper.cs`, `RecipeFilterSpec.cs`.
+**Application (mới):** `Common/Caching/QueryHash.cs`, `Features/Recipes/SortMapper.cs`, `RecipeFilterSpec.cs`, `SearchRecipesQuery.cs`, `SearchTermBuilder.cs`, `GetMyRecipesQuery.cs`, `GetMyRecipeByIdQuery.cs`, `GetRecipeSitemapQuery.cs`.
 **Application (sửa):** `Features/Recipes/GetRecipesQuery.cs`, `GetRecipeBySlugQuery.cs`, `IRecipeReadRepository.cs`, `RecipeCacheKeys.cs`, `RecipeDtos.cs`; `Features/Categories/GetCategoryBySlugQuery.cs`, `CategoryDtos.cs`. **Xóa:** `Features/Recipes/RecipeSortParser.cs`.
 **Infrastructure:** `Persistence/Repositories/RecipeReadRepository.cs`, `Persistence/Configurations/RecipeConfiguration.cs`, `Persistence/Migrations/20260930120000_B4_Search_FTS.cs` (mới), `CulinaryBlogDbContextModelSnapshot.cs`.
 **API:** `Endpoints/RecipeQueryEndpoints.cs` (mới), `RecipesEndpoints.cs`, `CategoriesEndpoints.cs`, `Program.cs`, `CulinaryBlog.API.csproj`. **Xóa:** `Extensions/OutputCachePolicies.cs`.
-**Test:** `Application.UnitTests/RecipeQueryTests.cs` (mới), `ValidatorTests.cs`; `API.IntegrationTests/Content/RecipesEndpointsTests.cs`, `RecipeCacheIsolationTests.cs`, `CategoriesEndpointsTests.cs`, `Infrastructure/CulinaryBlogApiFactory.cs`.
+**Test:** `Application.UnitTests/RecipeQueryTests.cs` (mới), `ValidatorTests.cs`; `API.IntegrationTests/Content/RecipeQueryEndpointsTests.cs` (mới), `Platform/ApiSurfaceTests.cs`, `Content/RecipesEndpointsTests.cs`, `RecipeCacheIsolationTests.cs`, `CategoriesEndpointsTests.cs`, `Infrastructure/CulinaryBlogApiFactory.cs`.
 **Khác:** `docker/postgres/init.sql` (D-18), `frontend/src/features/recipes/api.ts` (cầu nối sort), `SPEC/CONG_NGHE_VA_PHIEN_BAN.md` (đánh dấu gói Output Cache đã gỡ).
 
 ---
