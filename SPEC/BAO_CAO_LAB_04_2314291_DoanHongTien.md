@@ -1,7 +1,7 @@
 # BÁO CÁO KẾT QUẢ BUỔI 4 — DEV 3
 
 **Dev 3:** Đoàn Hồng Tiến — MSSV 2314291 — Nhóm 20 — Kỹ sư Nội dung (Category / Recipe read / Search)
-**Nhánh:** `2314291_DoanHongTien_buoiso4` (tách từ tip nhánh Dev 4 `2312755_NguyenThangThieng_buoiso4` — đã chứa code Buổi 3 của cả 4 dev, `Recipe.Lifecycle.cs`, `RecipeLifecycleEndpoints.cs`, migration `B4_Recipe_PartialUniqueSlug`; merge chuẩn Dev 4 → Dev 1 → Dev 3 → Dev 2) — **PR nhắm vào `develop`**: `<điền link PR>`
+**Nhánh:** `2314291_DoanHongTien_buoiso4` (tách từ tip nhánh Dev 4 `2312755_NguyenThangThieng_buoiso4` — đã chứa code Buổi 3 của cả 4 dev, `Recipe.Lifecycle.cs`, `RecipeLifecycleEndpoints.cs`, migration `B4_Recipe_PartialUniqueSlug`; merge chuẩn Dev 4 → Dev 1 → Dev 3 → Dev 2) — **PR nhắm vào `develop`**: https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/pull/41
 **Phạm vi (KE_HOACH_PHAT_TRIEN_8_BUOI.md — Buổi 4, Dev 3):** API của FR-SRCH-001 → 004, FR-RCP-011, CR-2026-04 (d) `GET /recipes/mine/{id}`, MT-48 `GET /recipes/sitemap`; sửa hợp đồng `GET /recipes`, `GET /recipes/{slug}`, `GET /categories/{slug}`; retrofit **D-4, D-5 (lỗ hổng MT-34), D-6, D-10 (API), D-18**
 
 > **Trình tự làm:** giai đoạn 1 vá/sửa trước (D-4, D-5, D-6, D-10 API, D-18 — theo kế hoạch bước 1 *"làm bước 4 trước tiên — vá MT-34"*), build + test xanh 277/277; giai đoạn 2 thêm bốn endpoint mới (`/recipes/search`, `/recipes/mine`, `/recipes/mine/{id}`, `/recipes/sitemap`), build + test xanh **319/319**. Báo cáo này gồm cả hai giai đoạn.
