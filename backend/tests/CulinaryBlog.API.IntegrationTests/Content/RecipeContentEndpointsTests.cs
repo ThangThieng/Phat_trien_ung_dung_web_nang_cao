@@ -224,6 +224,25 @@ public class RecipeContentEndpointsTests(CulinaryBlogApiFactory factory) : IAsyn
         await stale.ShouldBeProblemAsync(HttpStatusCode.Conflict, ErrorCodes.RecipeConcurrencyConflict);
     }
 
+    /// <summary>
+    /// PUT chỉ đổi dinh dưỡng (Owned Entity) với rowVersion cũ vẫn phải 409: EF không tự đánh dấu Recipe là Modified khi
+    /// chỉ owned entity đổi, nên nếu không ép thì câu UPDATE không so RowVersion và ghi đè âm thầm thay đổi của người khác.
+    /// </summary>
+    [Fact]
+    public async Task Update_NutritionOnlyWithStaleRowVersion_Returns409Conflict()
+    {
+        var author = factory.CreateClientAs("Author");
+        var draft = await RecipeApi.CreateDraftAsync(author, "Gỏi ngó sen tôm thịt");
+
+        var first = await author.PutAsJsonAsync($"/api/v1/recipes/{draft.Id}", new { nutrition = new { calories = 250 }, rowVersion = draft.RowVersion });
+        Assert.Equal(HttpStatusCode.OK, first.StatusCode);
+        Assert.NotEqual(draft.RowVersion, (await first.ReadAsAsync<RecipeDetailDto>()).RowVersion);
+
+        var stale = await author.PutAsJsonAsync($"/api/v1/recipes/{draft.Id}", new { nutrition = new { calories = 999 }, rowVersion = draft.RowVersion });
+
+        await stale.ShouldBeProblemAsync(HttpStatusCode.Conflict, ErrorCodes.RecipeConcurrencyConflict);
+    }
+
     /// <summary>If-Match (ETag) thay cho rowVersion trong body; response trả ETag mới dùng được cho lần sửa kế tiếp.</summary>
     [Fact]
     public async Task Update_WithIfMatchHeader_ReturnsNewETagUsableForNextUpdate()

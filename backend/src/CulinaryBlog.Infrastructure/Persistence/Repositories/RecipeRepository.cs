@@ -47,6 +47,15 @@ public sealed class RecipeRepository(CulinaryBlogDbContext db) : EfRepository<Re
         ArgumentNullException.ThrowIfNull(recipe);
         ArgumentNullException.ThrowIfNull(rowVersion);
 
-        Db.Entry(recipe).Property(r => r.RowVersion).OriginalValue = rowVersion;
+        var entry = Db.Entry(recipe);
+        entry.Property(r => r.RowVersion).OriginalValue = rowVersion;
+
+        // Đổi riêng Nutrition (Owned Entity) hoặc gửi lại đúng giá trị cũ thì EF để entry Recipe ở Unchanged → không có câu
+        // UPDATE nào so RowVersion, xung đột bị bỏ qua âm thầm. Ép Modified để MỌI lần cập nhật đều kiểm tra RowVersion
+        // và AuditInterceptor cấp RowVersion mới (FR-RCP-004 A2).
+        if (entry.State == EntityState.Unchanged)
+        {
+            entry.State = EntityState.Modified;
+        }
     }
 }
