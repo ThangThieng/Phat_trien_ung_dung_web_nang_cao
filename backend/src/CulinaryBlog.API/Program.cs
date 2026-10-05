@@ -110,3 +110,10 @@ api.MapRecipesEndpoints();
 api.MapFilesEndpoints();
 
 await app.RunAsync().ConfigureAwait(false);
+
+public partial class Program
+{
+    protected Program()
+    {
+    }
+}
