@@ -72,7 +72,7 @@ public static class DependencyInjection
 
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
-        services.AddScoped<IRecipeWriteRepository, RecipeWriteRepository>();
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
     }
 
@@ -158,6 +158,10 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, MailKitEmailService>();
         services.AddScoped<WelcomeEmailJob>();
         services.AddScoped<IWelcomeEmailScheduler, HangfireWelcomeEmailScheduler>();
+
+        // FR-RCP-008 bước 16: xóa tệp MinIO bất đồng bộ (xóa ảnh đơn lẻ, dọn tệp mồ côi khi lưu DB thất bại).
+        services.AddScoped<DeleteStoredFilesJob>();
+        services.AddScoped<IFileCleanupScheduler, HangfireFileCleanupScheduler>();
 
         // Tồn đọng Buổi 2 §6: mặc định 15 giây khiến job fire-and-forget (Welcome Email) mãi mới chạy,
         // quá chậm khi demo và khi viết integration test. Môi trường Development hạ xuống 1 giây, đổi lại

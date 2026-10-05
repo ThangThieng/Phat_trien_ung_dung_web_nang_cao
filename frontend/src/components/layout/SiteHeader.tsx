@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChefHat, LogOut, ImageUp } from 'lucide-react';
+import { ChefHat, LogOut, ImageUp, PenSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
 
@@ -49,6 +49,13 @@ export default function SiteHeader() {
         <div className="flex min-w-[9rem] items-center justify-end gap-2">
           {isReady && user && (
             <>
+              <Link
+                href="/dashboard/recipes/new"
+                className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 sm:flex"
+              >
+                <PenSquare aria-hidden className="h-4 w-4" />
+                Viết công thức
+              </Link>
               <Link
                 href="/dashboard/media"
                 className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 sm:flex"

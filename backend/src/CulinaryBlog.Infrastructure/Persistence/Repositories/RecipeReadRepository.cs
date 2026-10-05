@@ -59,21 +59,32 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
 
     public async Task<(RecipeDetailDto Recipe, string AuthorId)?> GetBySlugAsync(string slug, CancellationToken cancellationToken)
     {
-        var recipe = await db.Recipes
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(r => r.Category)
-            .Include(r => r.Steps)
-            .Include(r => r.Ingredients)
-            .Include(r => r.Images)
-            .FirstOrDefaultAsync(r => r.Slug == slug, cancellationToken)
-            .ConfigureAwait(false);
-
+        var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Slug == slug, cancellationToken).ConfigureAwait(false);
         if (recipe is null)
         {
             return null;
         }
 
+        return (await ToDetailAsync(recipe, cancellationToken).ConfigureAwait(false), recipe.AuthorId);
+    }
+
+    public async Task<RecipeDetailDto?> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Id == id, cancellationToken).ConfigureAwait(false);
+        return recipe is null ? null : await ToDetailAsync(recipe, cancellationToken).ConfigureAwait(false);
+    }
+
+    private IQueryable<Recipe> DetailQuery() =>
+        db.Recipes
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(r => r.Category)
+            .Include(r => r.Steps)
+            .Include(r => r.Ingredients)
+            .Include(r => r.Images);
+
+    private async Task<RecipeDetailDto> ToDetailAsync(Recipe recipe, CancellationToken cancellationToken)
+    {
         var author = await db.Users
             .AsNoTracking()
             .Where(u => u.Id == recipe.AuthorId)
@@ -81,7 +92,7 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
             .FirstAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return (ToDetail(recipe, author), recipe.AuthorId);
+        return ToDetail(recipe, author);
     }
 
     /// <summary>FR-RCP-001 bước 4: Guest → Published; Author → Published OR của mình; Admin → tất cả.</summary>

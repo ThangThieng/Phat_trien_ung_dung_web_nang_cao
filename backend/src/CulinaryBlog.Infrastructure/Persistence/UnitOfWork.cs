@@ -15,9 +15,12 @@ namespace CulinaryBlog.Infrastructure.Persistence;
 /// </summary>
 public sealed class UnitOfWork(
     CulinaryBlogDbContext db,
-    IEnumerable<IPersistenceExceptionTranslator> translators) : IUnitOfWork
+    IEnumerable<IPersistenceExceptionTranslator> translators,
+    IRecipeRepository recipes) : IUnitOfWork
 {
     private readonly IPersistenceExceptionTranslator[] _translators = translators.ToArray();
+
+    public IRecipeRepository Recipes { get; } = recipes;
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

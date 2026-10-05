@@ -1,6 +1,7 @@
 using CulinaryBlog.Domain.Common;
 using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Domain.Exceptions.Recipes;
 
 namespace CulinaryBlog.Domain.Entities;
 
@@ -47,7 +48,11 @@ public class Recipe : BaseEntity
 
     public IReadOnlyCollection<RecipeIngredient> Ingredients => _ingredients.AsReadOnly();
 
-    public IReadOnlyCollection<RecipeImage> Images => _images.AsReadOnly();
+    /// <summary>
+    /// Ảnh chưa bị xóa. Ảnh xóa mềm (FR-RCP-008 bước 14) vẫn nằm trong backing field cho tới lần lưu kế tiếp: gỡ nó khỏi
+    /// collection thì EF coi là bản ghi mồ côi và XÓA CỨNG — trái yêu cầu IsDeleted = true của SRS.
+    /// </summary>
+    public IReadOnlyCollection<RecipeImage> Images => _images.Where(i => !i.IsDeleted).ToList().AsReadOnly();
 
     public static Recipe Create(
         string title,
@@ -75,7 +80,7 @@ public class Recipe : BaseEntity
             Title = title.Trim(),
             Slug = slug,
             Description = description,
-            Instructions = instructions?.Trim(),
+            Instructions = string.IsNullOrWhiteSpace(instructions) ? null : instructions.Trim(),
             CategoryId = categoryId,
             AuthorId = authorId,
             PrepTimeMinutes = prepTimeMinutes,
@@ -101,31 +106,87 @@ public class Recipe : BaseEntity
         return ingredient;
     }
 
-    public RecipeImage AddImage(string originalUrl, string? altText)
+    public RecipeImage GetImage(Guid imageId) =>
+        _images.SingleOrDefault(i => i.Id == imageId && !i.IsDeleted) ?? throw new RecipeImageNotFoundException(Id, imageId);
+
+    /// <summary>
+    /// FR-RCP-008 bước 6: ảnh đầu tiên tự động là ảnh chính; <paramref name="isPrimary"/> = true hạ mọi ảnh khác xuống
+    /// (bất biến "chỉ 1 ảnh chính"). <paramref name="orderIndex"/> mặc định là cuối danh sách.
+    /// </summary>
+    public RecipeImage AddImage(string originalUrl, string? altText, bool? isPrimary = null, int? orderIndex = null)
     {
-        // FR-RCP-008: ảnh đầu tiên tự động là ảnh chính
-        var image = RecipeImage.Create(Id, originalUrl, altText, isPrimary: _images.Count == 0, _images.Count);
+        ArgumentException.ThrowIfNullOrWhiteSpace(originalUrl);
+
+        var active = Images;
+        var primary = isPrimary ?? active.Count == 0;
+        if (primary)
+        {
+            DemoteAllImages();
+        }
+
+        var image = RecipeImage.Create(Id, originalUrl, altText, primary, orderIndex ?? active.Count);
         _images.Add(image);
         return image;
     }
 
-    public void UpdateImage(RecipeImage image, string? altText, int? orderIndex, bool? isPrimary)
+    /// <summary>PATCH metadata ảnh (FR-RCP-008 bước 9–11). Đổi ảnh chính đi qua <see cref="SetPrimaryImage"/>.</summary>
+    public RecipeImage UpdateImageMetadata(Guid imageId, string? altText, int? orderIndex)
     {
-        ArgumentNullException.ThrowIfNull(image);
-        if (!_images.Contains(image)) throw new DomainException("Ảnh không thuộc công thức.");
-        image.Update(altText, orderIndex);
-        if (isPrimary == true)
-        {
-            foreach (var item in _images) item.SetPrimary(item == image);
-        }
+        var image = GetImage(imageId);
+        image.UpdateMetadata(altText, orderIndex);
+        return image;
     }
 
-    public void RemoveImage(RecipeImage image)
+    /// <summary>
+    /// Hạ mọi ảnh chính. ⚠️ <c>IDX_RecipeImage_Primary</c> là partial unique index — PostgreSQL không cho index là
+    /// DEFERRABLE và EF không bảo đảm thứ tự hai lệnh UPDATE trong một batch, nên handler phải LƯU bước hạ này trước rồi
+    /// mới nâng ảnh mới (hai SaveChanges trong một transaction).
+    /// </summary>
+    /// <returns><c>true</c> nếu trước đó có ảnh chính.</returns>
+    public bool DemoteAllImages()
     {
-        ArgumentNullException.ThrowIfNull(image);
-        if (!_images.Remove(image)) throw new DomainException("Ảnh không thuộc công thức.");
-        if (image.IsPrimary && _images.Count > 0)
-            _images.OrderBy(x => x.OrderIndex).ThenBy(x => x.CreatedAt).First().SetPrimary(true);
+        var hadPrimary = false;
+        foreach (var image in _images.Where(i => i.IsPrimary))
+        {
+            image.SetPrimary(false);
+            hadPrimary = true;
+        }
+
+        return hadPrimary;
+    }
+
+    /// <summary>Đặt <paramref name="imageId"/> làm ảnh chính, hạ mọi ảnh khác (quy tắc 1 của SRS §8.4).</summary>
+    public RecipeImage SetPrimaryImage(Guid imageId)
+    {
+        var image = GetImage(imageId);
+        DemoteAllImages();
+        image.SetPrimary(true);
+        return image;
+    }
+
+    /// <summary>Xóa mềm ảnh (FR-RCP-008 bước 14). Chọn ảnh chính thay thế ở <see cref="PromoteFallbackPrimaryImage"/> sau khi đã lưu.</summary>
+    public RecipeImage RemoveImage(Guid imageId)
+    {
+        var image = GetImage(imageId);
+        image.SoftDelete();
+        return image;
+    }
+
+    /// <summary>
+    /// Quy tắc 2 của SRS §8.4: không còn ảnh chính mà vẫn còn ảnh → ảnh có OrderIndex nhỏ nhất (hòa thì CreatedAt sớm
+    /// nhất) lên làm ảnh chính. Tiêu chí xác định rõ ràng để không phụ thuộc thứ tự trả về của DB.
+    /// </summary>
+    public RecipeImage? PromoteFallbackPrimaryImage()
+    {
+        var active = _images.Where(i => !i.IsDeleted).ToList();
+        if (active.Count == 0 || active.Exists(i => i.IsPrimary))
+        {
+            return null;
+        }
+
+        var next = active.OrderBy(i => i.OrderIndex).ThenBy(i => i.CreatedAt).First();
+        next.SetPrimary(true);
+        return next;
     }
 
     public void SetNutrition(RecipeNutrition? nutrition) => Nutrition = nutrition;

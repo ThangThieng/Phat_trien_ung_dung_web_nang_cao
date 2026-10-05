@@ -37,4 +37,10 @@ public interface IRecipeReadRepository
 
     /// <summary>Trả về detail kèm AuthorId để handler kiểm tra quyền xem Draft/Archived.</summary>
     Task<(RecipeDetailDto Recipe, string AuthorId)?> GetBySlugAsync(string slug, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Chi tiết theo id ở MỌI trạng thái — chỉ dùng sau khi người gọi đã được phân quyền trên công thức (response của
+    /// command ghi: tạo, cập nhật, vòng đời). Không bao giờ gắn vào endpoint công khai (MT-34).
+    /// </summary>
+    Task<RecipeDetailDto?> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken);
 }

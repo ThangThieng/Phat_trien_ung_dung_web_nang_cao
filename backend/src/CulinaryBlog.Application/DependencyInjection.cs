@@ -1,6 +1,8 @@
 using CulinaryBlog.Application.Common.Behaviors;
 using CulinaryBlog.Application.Features.Auth;
+using CulinaryBlog.Application.Features.Recipes;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.Application;
@@ -24,6 +26,9 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
         services.AddScoped<AuthResponseFactory>();
         services.AddSingleton(TimeProvider.System);
+
+        // NFR-SEC-006: resource-based authorization ở tầng Application (IAuthorizationService do tầng API đăng ký).
+        services.AddSingleton<IAuthorizationHandler, RecipeAuthorizationHandler>();
 
         return services;
     }
