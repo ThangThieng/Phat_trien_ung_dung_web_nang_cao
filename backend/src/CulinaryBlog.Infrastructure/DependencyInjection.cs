@@ -65,6 +65,8 @@ public static class DependencyInjection
 
     private static void AddIdentity(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddOptions<GoogleAuthOptions>().Bind(configuration.GetSection(GoogleAuthOptions.SectionName));
+
         services.AddOptions<JwtOptions>()
             .Bind(configuration.GetSection(JwtOptions.SectionName))
             .ValidateDataAnnotations()

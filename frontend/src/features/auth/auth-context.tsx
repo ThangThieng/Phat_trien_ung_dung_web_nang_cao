@@ -1,23 +1,28 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { apiFetch } from '@/lib/api-client';
+import { apiFetch, configureAuthCallbacks } from '@/lib/api-client';
+import { getQueryClient } from '@/lib/query-client';
 import type { AuthResponse, User } from '@/types/api';
+import { coordinateRefresh } from './refresh-coordinator';
 
 const STORAGE_KEY = 'culinaryblog.auth';
+let authRefreshPromise: Promise<string> | null = null;
 
 interface AuthSession {
-  accessToken: string;
   refreshToken: string;
-  expiresAt: string;
   user: User;
 }
 
+interface ActiveSession extends AuthSession {
+  accessToken: string;
+  expiresAt: string;
+}
+
 interface RegisterInput {
-  fullName: string;
+  displayName: string;
   email: string;
-  userName: string;
   password: string;
 }
 
@@ -28,27 +33,12 @@ interface AuthContextValue {
   /** false cho tới khi đọc xong session từ storage (tránh nháy UI khi hydrate). */
   isReady: boolean;
   login: (email: string, password: string) => Promise<User>;
+  loginWithGoogle: (idToken: string) => Promise<User>;
   register: (input: RegisterInput) => Promise<User>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-function readSession(): AuthSession | null {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const session = JSON.parse(raw) as AuthSession;
-    // Access token hết hạn → bỏ session (luồng Refresh Token Rotation – FR-AUTH-004 – bổ sung ở Buổi 4)
-    if (new Date(session.expiresAt).getTime() <= Date.now()) {
-      window.localStorage.removeItem(STORAGE_KEY);
-      return null;
-    }
-    return session;
-  } catch {
-    return null;
-  }
-}
 
 function writeSession(session: AuthSession | null) {
   try {
@@ -59,40 +49,116 @@ function writeSession(session: AuthSession | null) {
   }
 }
 
+function readSession(): AuthSession | null | undefined {
+  let raw: string | null;
+  try {
+    raw = window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return undefined; // Distinguish inaccessible storage from a session removed by another tab.
+  }
+  if (raw === null) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<AuthSession> | null;
+    if (!parsed || typeof parsed.refreshToken !== 'string' || !parsed.refreshToken.trim()
+      || !parsed.user || typeof parsed.user.id !== 'string' || typeof parsed.user.email !== 'string'
+      || typeof parsed.user.displayName !== 'string' || !Array.isArray(parsed.user.roles)
+      || !parsed.user.roles.every((role) => typeof role === 'string')) throw new Error('Invalid stored session');
+    const stored = { refreshToken: parsed.refreshToken, user: parsed.user };
+    writeSession(stored); // Strip legacy access token even before the reload refresh completes.
+    return stored;
+  } catch {
+    writeSession(null);
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<AuthSession | null>(null);
+  const [session, setSession] = useState<ActiveSession | null>(null);
+  const sessionRef = useRef<ActiveSession | null>(null);
+  const sessionVersion = useRef(0);
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    setSession(readSession());
-    setIsReady(true);
+  const updateSession = useCallback((next: ActiveSession | null) => {
+    sessionVersion.current += 1;
+    sessionRef.current = next;
+    setSession(next);
+    writeSession(next ? { refreshToken: next.refreshToken, user: next.user } : null);
   }, []);
 
-  // Tự đăng xuất phía client khi access token hết hạn
+  const refresh = useCallback(() => {
+    if (authRefreshPromise) return authRefreshPromise;
+    authRefreshPromise = coordinateRefresh(() => {
+      const latest = readSession();
+      if (latest === null) {
+        updateSession(null);
+        getQueryClient().clear();
+      }
+      return (latest === undefined ? sessionRef.current : latest)?.refreshToken ?? null;
+    }, async (refreshToken) => {
+      const version = sessionVersion.current;
+      const response = await apiFetch<AuthResponse>('/auth/refresh', {
+        method: 'POST', body: { refreshToken }, accessToken: null, skipAuthRefresh: true,
+      });
+      const next: ActiveSession = response;
+      const latest = readSession();
+      if (version !== sessionVersion.current || latest === null
+        || (latest && latest.refreshToken !== refreshToken)) throw new Error('Session changed during refresh');
+      updateSession(next);
+      return next.accessToken;
+    }).finally(() => { authRefreshPromise = null; });
+    return authRefreshPromise;
+  }, [updateSession]);
+
+  const clearSession = useCallback(() => {
+    updateSession(null);
+    getQueryClient().clear();
+  }, [updateSession]);
+
   useEffect(() => {
-    if (!session) return undefined;
-    const remaining = new Date(session.expiresAt).getTime() - Date.now();
-    const timer = window.setTimeout(
-      () => {
-        writeSession(null);
-        setSession(null);
+    const onStorage = (event: StorageEvent) => {
+      if ((event.key === STORAGE_KEY || event.key === null) && event.newValue === null) clearSession();
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [clearSession]);
+
+  useEffect(() => {
+    configureAuthCallbacks({
+      getAccessToken: () => sessionRef.current?.accessToken ?? null,
+      refresh,
+      onRefreshFailure: () => {
+        clearSession();
+        window.location.assign('/auth/login?callbackUrl=');
       },
-      Math.max(remaining, 0),
-    );
-    return () => window.clearTimeout(timer);
-  }, [session]);
+    });
+    return () => configureAuthCallbacks(null);
+  }, [refresh, clearSession]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!readSession()) {
+      setIsReady(true);
+      return () => { cancelled = true; };
+    }
+    refresh().catch(() => {
+      if (!cancelled) {
+        clearSession();
+        window.location.assign('/auth/login?callbackUrl=');
+      }
+    }).finally(() => { if (!cancelled) setIsReady(true); });
+    return () => { cancelled = true; };
+  }, [refresh, clearSession]);
 
   const applyAuthResponse = useCallback((response: AuthResponse) => {
-    const next: AuthSession = {
+    const next: ActiveSession = {
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
       expiresAt: response.expiresAt,
       user: response.user,
     };
-    writeSession(next);
-    setSession(next);
+    updateSession(next);
     return response.user;
-  }, []);
+  }, [updateSession]);
 
   const login = useCallback(
     async (email: string, password: string) =>
@@ -110,10 +176,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [applyAuthResponse],
   );
 
-  const logout = useCallback(() => {
-    writeSession(null);
-    setSession(null);
-  }, []);
+  const loginWithGoogle = useCallback(
+    async (idToken: string) =>
+      applyAuthResponse(
+        await apiFetch<AuthResponse>('/auth/google', { method: 'POST', body: { idToken } }),
+      ),
+    [applyAuthResponse],
+  );
+
+  const logout = useCallback(async () => {
+    try {
+      if (session) {
+        await apiFetch<void>('/auth/logout', {
+          method: 'POST',
+          body: { refreshToken: session.refreshToken },
+          accessToken: session.accessToken,
+          skipAuthRefresh: true,
+        });
+      }
+    } finally {
+      updateSession(null);
+    }
+  }, [session, updateSession]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -122,10 +206,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: session !== null,
       isReady,
       login,
+      loginWithGoogle,
       register,
       logout,
     }),
-    [session, isReady, login, register, logout],
+    [session, isReady, login, loginWithGoogle, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

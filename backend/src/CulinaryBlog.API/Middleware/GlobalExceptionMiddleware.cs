@@ -70,7 +70,7 @@ public sealed partial class GlobalExceptionMiddleware(
                 {
                     Type = ErrorCodes.ValidationError,
                     Title = "Dữ liệu không hợp lệ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = "Một hoặc nhiều trường không hợp lệ. Xem \"errors\".",
                     Instance = context.Request.Path,
                 };
@@ -80,7 +80,7 @@ public sealed partial class GlobalExceptionMiddleware(
                 {
                     Type = ErrorCodes.ValidationError,
                     Title = "Vi phạm quy tắc nghiệp vụ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = domain.Message,
                     Instance = context.Request.Path,
                 };

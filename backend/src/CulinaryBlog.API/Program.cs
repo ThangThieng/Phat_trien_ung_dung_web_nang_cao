@@ -10,6 +10,7 @@ using CulinaryBlog.Infrastructure;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -31,6 +32,16 @@ if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath
 }
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+    foreach (var cidr in builder.Configuration.GetSection("ForwardedHeaders:TrustedNetworks").Get<string[]>() ?? ["172.16.0.0/12"])
+    {
+        options.KnownIPNetworks.Add(System.Net.IPNetwork.Parse(cidr));
+    }
+});
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 {
@@ -88,6 +99,7 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
     }
 }
 
+app.UseForwardedHeaders();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseStatusCodePages();
 app.UseCors();
@@ -106,8 +118,16 @@ app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.API", version = "
 
 var api = app.MapGroup("/api/v1");
 api.MapAuthEndpoints();
+api.MapUsersEndpoints();
 api.MapCategoriesEndpoints();
 api.MapRecipesEndpoints();
 api.MapFilesEndpoints();
 
 await app.RunAsync().ConfigureAwait(false);
+
+public partial class Program
+{
+    protected Program()
+    {
+    }
+}

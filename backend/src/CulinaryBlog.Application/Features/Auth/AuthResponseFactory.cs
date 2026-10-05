@@ -10,15 +10,16 @@ public sealed class AuthResponseFactory(
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
 {
-    public async Task<AuthResponseDto> IssueAsync(IdentityUserInfo user, string? ipAddress, CancellationToken cancellationToken)
+    public async Task<AuthResponseDto> IssueAsync(IdentityUserInfo user, string? ipAddress, CancellationToken cancellationToken, GeneratedRefreshToken? generatedRefreshToken = null)
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        var accessToken = tokenService.CreateAccessToken(user);
-        var refreshToken = tokenService.CreateRefreshToken();
+        var sessionId = Guid.NewGuid();
+        var accessToken = tokenService.CreateAccessToken(user, sessionId);
+        var refreshToken = generatedRefreshToken ?? tokenService.CreateRefreshToken();
 
         await refreshTokens.AddAsync(
-            RefreshToken.Create(user.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress),
+            RefreshToken.Create(user.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress, sessionId),
             cancellationToken).ConfigureAwait(false);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 

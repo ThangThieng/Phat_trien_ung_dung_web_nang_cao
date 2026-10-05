@@ -44,3 +44,6 @@ public sealed class LockedException(string errorCode, string message)
 
 public sealed class ServiceUnavailableException(string errorCode, string message)
     : AppException(errorCode, 503, "Service Unavailable", message);
+
+public sealed class BadGatewayException(string errorCode, string message)
+    : AppException(errorCode, 502, "Bad Gateway", message);

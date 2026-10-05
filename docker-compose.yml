@@ -80,9 +80,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-http://localhost:5000/api/v1}
+        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-/api/v1}
         NEXT_PUBLIC_SITE_URL: ${SITE_URL:-http://localhost:3000}
         NEXT_PUBLIC_MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     image: culinaryblog-web
     ports:
       - "3000:3000"
@@ -131,7 +132,7 @@ services:
     restart: unless-stopped
 
   minio:
-    image: minio/minio:latest
+    image: quay.io/minio/minio:latest
     command: server /data --console-address ":9001"
     ports:
       - "9000:9000"
