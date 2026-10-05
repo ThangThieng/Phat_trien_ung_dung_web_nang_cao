@@ -20,7 +20,13 @@ public static class ImageUploadInspector
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        if (length <= 0 || length > ImageFileInspector.MaxFileSizeBytes)
+        // File rỗng không phải "file quá lớn" (review Buổi 3 — Dev 2, mục 16): nó không phải ảnh hợp lệ → FILE_MIME_INVALID.
+        if (length <= 0)
+        {
+            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "File rỗng — không phải ảnh hợp lệ.");
+        }
+
+        if (length > ImageFileInspector.MaxFileSizeBytes)
         {
             throw new BadRequestException(ErrorCodes.FileSizeExceeded, "Kích thước file vượt quá giới hạn 5MB.");
         }

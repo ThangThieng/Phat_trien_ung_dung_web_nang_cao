@@ -82,6 +82,17 @@ export interface RecipeImage {
   orderIndex: number;
 }
 
+/** SRS §8.4 – response của POST/PATCH ảnh công thức (mediumUrl/thumbnailUrl null cho tới khi FR-JOB-002 chạy). */
+export interface RecipeImageResult {
+  imageId: string;
+  originalUrl: string;
+  mediumUrl: string | null;
+  thumbnailUrl: string | null;
+  altText: string | null;
+  isPrimary: boolean;
+  orderIndex: number;
+}
+
 export interface RecipeDetail extends Omit<RecipeSummary, 'primaryImageUrl'> {
   instructions: string;
   nutrition: RecipeNutrition | null;
