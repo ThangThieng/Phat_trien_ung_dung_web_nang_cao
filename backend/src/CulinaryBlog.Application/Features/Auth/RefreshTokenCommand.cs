@@ -1,5 +1,6 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +12,6 @@ public sealed partial class RefreshTokenCommandHandler(
     ITokenService tokenService,
     IRefreshTokenRepository refreshTokens,
     IIdentityService identityService,
-    AuthResponseFactory authResponseFactory,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider,
     ILogger<RefreshTokenCommandHandler> logger) : IRequestHandler<RefreshTokenCommand, AuthResponseDto>
@@ -53,10 +53,7 @@ public sealed partial class RefreshTokenCommandHandler(
 
         if (token.RevokedAt is not null)
         {
-            await refreshTokens.RevokeAllForUserAsync(token.UserId, now, cancellationToken).ConfigureAwait(false);
-            await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            LogRefreshTokenReuse(logger, token.UserId, request.IpAddress);
-            throw new UnauthorizedException(ErrorCodes.AuthRefreshTokenRevoked, "Refresh token đã bị thu hồi; vui lòng đăng nhập lại.");
+            await RejectReuseAsync(token, now, request.IpAddress, cancellationToken).ConfigureAwait(false);
         }
 
         if (!token.IsActive(now))
@@ -65,8 +62,23 @@ public sealed partial class RefreshTokenCommandHandler(
         }
 
         var replacement = tokenService.CreateRefreshToken();
-        token.Revoke(now, replacement.TokenHash);
-        return await authResponseFactory.IssueAsync(user, request.IpAddress, cancellationToken, replacement).ConfigureAwait(false);
+        var sessionId = Guid.NewGuid();
+        var accessToken = tokenService.CreateAccessToken(user, sessionId);
+        var replacementEntity = RefreshToken.Create(user.Id, replacement.TokenHash, replacement.ExpiresAt, now, request.IpAddress, sessionId);
+        if (!await refreshTokens.TryRotateAsync(token, replacementEntity, now, cancellationToken).ConfigureAwait(false))
+        {
+            await RejectReuseAsync(token, now, request.IpAddress, cancellationToken).ConfigureAwait(false);
+        }
+
+        return new AuthResponseDto(accessToken.Token, replacement.RawToken, accessToken.ExpiresAt, accessToken.ExpiresInSeconds, user.ToDto());
+    }
+
+    private async Task RejectReuseAsync(RefreshToken token, DateTime now, string? ipAddress, CancellationToken cancellationToken)
+    {
+        await refreshTokens.RevokeFamilyAsync(token.UserId, token.TokenHash, now, cancellationToken).ConfigureAwait(false);
+        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        LogRefreshTokenReuse(logger, token.UserId, ipAddress);
+        throw new UnauthorizedException(ErrorCodes.AuthRefreshTokenRevoked, "Refresh token đã bị thu hồi; vui lòng đăng nhập lại.");
     }
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "SECURITY ALERT: refresh token reuse detected for user {UserId} from IP {ipAddress}")]

@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { StrictMode } from 'react';
-import { apiFetch } from '@/lib/api-client';
+import { apiFetch, configureAuthCallbacks } from '@/lib/api-client';
 import { AuthProvider, useAuth } from './auth-context';
 
 jest.mock('@/lib/api-client', () => ({ apiFetch: jest.fn(), configureAuthCallbacks: jest.fn() }));
@@ -28,6 +28,85 @@ describe('access token storage', () => {
     window.localStorage.clear();
     jest.mocked(apiFetch).mockReset();
     jest.mocked(apiFetch).mockResolvedValue(session);
+  });
+
+  afterEach(() => { jest.restoreAllMocks(); });
+
+  it.each([false, true])('rereads storage after acquiring the cross-tab lock (logout: %s)', async (logout) => {
+    const descriptor = Object.getOwnPropertyDescriptor(navigator, 'locks');
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const request = jest.fn(async (_name: string, callback: () => Promise<string>) => {
+      await gate;
+      return callback();
+    });
+    Object.defineProperty(navigator, 'locks', { configurable: true, value: { request } });
+    try {
+      render(<AuthProvider><Consumer /></AuthProvider>);
+      fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+      await screen.findByText(session.accessToken);
+      const { calls } = jest.mocked(configureAuthCallbacks).mock;
+      const [callbacks] = calls[calls.length - 1];
+      const pending = callbacks!.refresh();
+      const result = pending.then(() => 'refreshed', () => 'rejected');
+      expect(request).toHaveBeenCalledWith('culinaryblog-auth-refresh', expect.any(Function));
+      expect(apiFetch).toHaveBeenCalledTimes(1);
+      if (logout) {
+        window.localStorage.removeItem('culinaryblog.auth');
+      } else {
+        window.localStorage.setItem('culinaryblog.auth', JSON.stringify({ refreshToken: 'R2', user: session.user }));
+        jest.mocked(apiFetch).mockResolvedValue({ ...session, refreshToken: 'R3' });
+      }
+      await act(async () => {
+        release();
+        expect(await result).toBe(logout ? 'rejected' : 'refreshed');
+      });
+      if (logout) {
+        expect(apiFetch).toHaveBeenCalledTimes(1);
+        expect(window.localStorage.getItem('culinaryblog.auth')).toBeNull();
+        expect(screen.getByText('signed-out')).toBeInTheDocument();
+      } else {
+        expect(apiFetch).toHaveBeenLastCalledWith('/auth/refresh', expect.objectContaining({ body: { refreshToken: 'R2' } }));
+        const stored = JSON.parse(window.localStorage.getItem('culinaryblog.auth')!);
+        expect(stored.refreshToken).toBe('R3');
+        expect(stored).not.toHaveProperty('accessToken');
+      }
+    } finally {
+      release();
+      if (descriptor) Object.defineProperty(navigator, 'locks', descriptor);
+      else Reflect.deleteProperty(navigator, 'locks');
+    }
+  });
+
+  it('refreshes from memory when localStorage reads and writes are blocked', async () => {
+    jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new DOMException('blocked', 'SecurityError'); });
+    jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new DOMException('blocked', 'SecurityError'); });
+    render(<AuthProvider><Consumer /></AuthProvider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+    await screen.findByText(session.accessToken);
+    const { calls } = jest.mocked(configureAuthCallbacks).mock;
+    const [callbacks] = calls[calls.length - 1];
+    await act(async () => { await callbacks!.refresh(); });
+    expect(apiFetch).toHaveBeenLastCalledWith('/auth/refresh', expect.objectContaining({ body: { refreshToken: session.refreshToken } }));
+    expect(callbacks!.getAccessToken()).toBe(session.accessToken);
+  });
+
+  it.each(['', '{broken', 'null', '{}', JSON.stringify({ refreshToken: 42, user: session.user })])('cleans malformed stored session %s gracefully', async (raw) => {
+    window.localStorage.setItem('culinaryblog.auth', raw);
+    render(<AuthProvider><Consumer /></AuthProvider>);
+    await screen.findByText('signed-out');
+    expect(window.localStorage.getItem('culinaryblog.auth')).toBeNull();
+    expect(apiFetch).not.toHaveBeenCalled();
+  });
+
+  it('synchronizes logout from another tab without starting refresh', async () => {
+    render(<AuthProvider><Consumer /></AuthProvider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+    await screen.findByText(session.accessToken);
+    act(() => { window.dispatchEvent(new StorageEvent('storage', { key: 'culinaryblog.auth', newValue: null })); });
+    await screen.findByText('signed-out');
+    expect(window.localStorage.getItem('culinaryblog.auth')).toBeNull();
+    expect(apiFetch).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the access token in memory while persisting the refresh token', async () => {

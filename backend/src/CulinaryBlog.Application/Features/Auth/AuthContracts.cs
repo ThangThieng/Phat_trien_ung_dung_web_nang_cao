@@ -87,9 +87,14 @@ public interface IRefreshTokenRepository
 
     Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken);
 
+    /// <summary>Atomically consumes an active token and persists its replacement; false means it was already consumed.</summary>
+    Task<bool> TryRotateAsync(RefreshToken token, RefreshToken replacement, DateTime now, CancellationToken cancellationToken);
+
     Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken);
 
     Task RevokeAllForUserAsync(string userId, DateTime revokedAt, CancellationToken cancellationToken);
+
+    Task RevokeFamilyAsync(string userId, string startingTokenHash, DateTime revokedAt, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<RefreshToken>> GetActiveForUserAsync(string userId, DateTime now, CancellationToken cancellationToken);
 

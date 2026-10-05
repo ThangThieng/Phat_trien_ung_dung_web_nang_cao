@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import { apiFetch, configureAuthCallbacks } from './api-client';
 
 jest.mock('./config', () => ({ getApiBaseUrl: () => 'http://localhost/api/v1' }));
@@ -27,10 +28,7 @@ describe('automatic access token refresh', () => {
     global.fetch = fetchMock as typeof fetch;
     const pending = Array.from({ length: 5 }, () => apiFetch('/auth/me'));
     // Let all original requests reach the shared refresh promise before resolving it.
-    await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(refresh).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(refresh).toHaveBeenCalledTimes(1));
     completeRefresh('renewed');
     await expect(Promise.all(pending)).resolves.toEqual(Array(5).fill({ success: true }));
     expect(fetchMock).toHaveBeenCalledTimes(10);
@@ -61,5 +59,42 @@ describe('automatic access token refresh', () => {
     await expect(apiFetch('/auth/me')).rejects.toMatchObject({ status: 401 });
     expect(refresh).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([403, 404, 409, 500])('preserves retry status %s without invalidating auth', async (status) => {
+    const onRefreshFailure = jest.fn();
+    configureAuthCallbacks({ getAccessToken: () => 'expired', refresh: jest.fn().mockResolvedValue('renewed'), onRefreshFailure });
+    global.fetch = jest.fn().mockResolvedValueOnce(response(401, { type: 'AUTH_TOKEN_EXPIRED' }))
+      .mockResolvedValueOnce(response(status, { type: 'BUSINESS_ERROR', detail: 'retry failure' }));
+    await expect(apiFetch('/resource')).rejects.toMatchObject({ status, message: 'retry failure' });
+    expect(onRefreshFailure).not.toHaveBeenCalled();
+  });
+
+  it('preserves a retry network error without invalidating auth', async () => {
+    const onRefreshFailure = jest.fn();
+    const networkError = new TypeError('network down');
+    configureAuthCallbacks({ getAccessToken: () => 'expired', refresh: jest.fn().mockResolvedValue('renewed'), onRefreshFailure });
+    global.fetch = jest.fn().mockResolvedValueOnce(response(401, { type: 'AUTH_TOKEN_EXPIRED' })).mockRejectedValueOnce(networkError);
+    await expect(apiFetch('/resource')).rejects.toBe(networkError);
+    expect(onRefreshFailure).not.toHaveBeenCalled();
+  });
+
+  it('invalidates an authenticated invalid token without refreshing', async () => {
+    const refresh = jest.fn();
+    const onRefreshFailure = jest.fn();
+    configureAuthCallbacks({ getAccessToken: () => 'invalid', refresh, onRefreshFailure });
+    global.fetch = jest.fn().mockResolvedValue(response(401, { type: 'AUTH_TOKEN_INVALID' }));
+    await expect(apiFetch('/resource')).rejects.toMatchObject({ code: 'AUTH_TOKEN_INVALID' });
+    expect(refresh).not.toHaveBeenCalled();
+    expect(onRefreshFailure).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries a late expired response with the already renewed token', async () => {
+    const refresh = jest.fn();
+    configureAuthCallbacks({ getAccessToken: () => 'renewed', refresh, onRefreshFailure: jest.fn() });
+    global.fetch = jest.fn().mockResolvedValueOnce(response(401, { type: 'AUTH_TOKEN_EXPIRED' })).mockResolvedValueOnce(response(200, {}));
+    await apiFetch('/resource', { accessToken: 'expired' });
+    expect(refresh).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenLastCalledWith(expect.any(String), expect.objectContaining({ headers: expect.objectContaining({ Authorization: 'Bearer renewed' }) }));
   });
 });
