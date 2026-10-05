@@ -18,6 +18,6 @@ public interface ICategoryReadRepository
 
 public static class CategoryCacheKeys
 {
-    /// <summary>Key theo FR-CAT-001 bước 3. Command Create/Update/Delete (Buổi 2) sẽ invalidate key này.</summary>
+    /// <summary>Key theo FR-CAT-001 bước 3. Command Create/Update/Delete (Buổi 3) sẽ invalidate key này.</summary>
     public const string All = "categories:all";
 }

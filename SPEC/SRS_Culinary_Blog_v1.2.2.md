@@ -8,8 +8,8 @@
 
 | Thuộc tính | Giá trị |
 | --- | --- |
-| Phiên bản tài liệu | 1.2.0 |
-| Ngày phát hành | 19/09/2026 |
+| Phiên bản tài liệu | 1.2.2 |
+| Ngày phát hành | 29/09/2026 |
 | Trạng thái | Đã duyệt (Approved) |
 | Công nghệ Backend | .NET 10 Minimal APIs, C# |
 | Công nghệ Frontend | Next.js App Router, TypeScript |
@@ -25,18 +25,30 @@
 
 | Phiên bản | Ngày | Tác giả / Vai trò | Nội dung thay đổi | Trạng thái |
 | --- | --- | --- | --- | --- |
-| 1.2.0 | 19/09/2026 | Principal Systems Architect | Change Request **CR-2026-02**: đối chiếu SRS v1.1.0 với code Buổi 1 đang chạy trên `main`, xử lý 16 mâu thuẫn mới (MT-42 → MT-57) — sửa 3 lỗi kỹ thuật trong chính v1.1.0 (cấu hình Nginx gây 502, lệnh healthcheck không chạy được, mã lỗi Admin tự khóa), chuẩn hóa hình dạng response phân trang, chính thức hóa endpoint upload tệp, bổ sung `FR-AUTH-009` Quản lý phiên và 7 endpoint, chuẩn hóa topology Hangfire worker, làm rõ cơ chế khôi phục dữ liệu và nơi lưu token phía Frontend. | Đã duyệt (Approved) |
+| 1.2.2 | 29/09/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-04** (MT-59 → MT-63), phát sinh khi lập kế hoạch cho hai yêu cầu của giảng viên — Buổi 3 *"cài đặt domain exceptions, repository & Unit of Work, middleware Problem Details"* và Buổi 4 *"hoàn thành việc cài đặt tất cả API endpoints"*: (1) bổ sung **2 mã lỗi** `AUTH_USER_NOT_FOUND` (404) và `CONCURRENCY_CONFLICT` (409) — Phụ lục B 27 → **29 mã**; (2) bổ sung **1 endpoint** `GET /recipes/mine/{id}` để trang sửa công thức đọc được bản nháp — Chương 8: 44 → **45 endpoint**; (3) làm rõ 2 chỗ tự mâu thuẫn (`AUTH_GOOGLE_TOKEN_INVALID` 400/401; `categoryId` không tồn tại → 400); (4) errata §6.2: interface truy cập dữ liệu thuộc tầng Application, `ApplicationUser` thuộc Infrastructure. Không thay đổi FR, schema hay hành vi của endpoint đang chạy. | Đã duyệt (Approved) |
+| 1.2.1 | 21/09/2026 | Principal Systems Architect | Change Request **CR-2026-03** (MT-58): cập nhật §2.6.1 theo yêu cầu của giảng viên cho Buổi 2 — dữ liệu mẫu có **ít nhất 20 danh mục, 100 công thức; mỗi công thức ít nhất 10 nguyên liệu và 5 bước chế biến** (trước đây: 50 công thức, 5 tác giả). Không thay đổi FR, endpoint, mã lỗi hay schema. | Đã duyệt (Approved) |
+| 1.2.0 | 19/09/2026 | Principal Systems Architect | Change Request **CR-2026-02**: đối chiếu SRS v1.1.0 với code Buổi 2 đang chạy trên `main`, xử lý 16 mâu thuẫn mới (MT-42 → MT-57) — sửa 3 lỗi kỹ thuật trong chính v1.1.0 (cấu hình Nginx gây 502, lệnh healthcheck không chạy được, mã lỗi Admin tự khóa), chuẩn hóa hình dạng response phân trang, chính thức hóa endpoint upload tệp, bổ sung `FR-AUTH-009` Quản lý phiên và 7 endpoint, chuẩn hóa topology Hangfire worker, làm rõ cơ chế khôi phục dữ liệu và nơi lưu token phía Frontend. | Đã duyệt (Approved) |
 | 1.1.0 | 17/09/2026 | Principal Systems Architect | Cập nhật chuẩn hóa toàn bộ tài liệu v1.1.0: Giải quyết triệt để 41 mâu thuẫn kiến trúc, tối ưu Caching, Data Model, API Specs và Security theo đề xuất CR-2026. | Đã duyệt (Approved) |
 | 1.0.0 | 04/06/2026 | Senior BA / Architect | Phát hành lần đầu – Bản hoàn chỉnh theo IEEE 830 / ISO 29148. | Approved |
 | 0.9.0 | 20/05/2026 | Senior BA | Bổ sung Chương 7 (Data Model), Chương 8 (API Spec) và Phụ lục. | Under Review |
 | 0.8.0 | 05/05/2026 | Senior BA | Hoàn thiện Chương 3 (FR), bổ sung FR-FILE, FR-JOB, FR-OBS. | Draft |
 | 0.5.0 | 15/04/2026 | Senior BA | Phác thảo ban đầu: Chương 1–4 (skeleton). | Draft |
 
-**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.0 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect) thông qua Change Request **CR-2026-02**, kế thừa toàn bộ quyết định của **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 không còn lưu thành tệp riêng: toàn bộ nội dung của nó đã nằm trong bản này, mọi chỗ thay đổi ở v1.2.0 đều được đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ và liệt kê ở Phụ lục E.
+**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.2 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-04**, kế thừa toàn bộ quyết định của **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G).
 
 **Phạm vi CR-2026 (v1.1.0):** xử lý toàn bộ 41 điểm mâu thuẫn/bất nhất (MT-01 → MT-41) được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi quyết định đều được chọn theo tiêu chí **kiến trúc dài hạn**: toàn vẹn dữ liệu (DDD/ràng buộc DB), cách ly bảo mật cache, giảm gánh nặng cho client, và chuẩn hóa RESTful API. Bảng truy vết đầy đủ 41 quyết định nằm tại **Phụ lục D**.
 
-**Phạm vi CR-2026-02 (v1.2.0):** lượt rà soát thứ tư, lần đầu tiên **đối chiếu SRS với code đã chạy thật** (nhánh `main`, commit `f313e95`, và `SPEC/BAO_CAO_BUOI_1.md`) thay vì chỉ đối chiếu các chương với nhau. Lượt này phát hiện 16 điểm (MT-42 → MT-57) thuộc ba loại: **(a) lỗi kỹ thuật trong chính v1.1.0** — những đặc tả nếu làm đúng từng chữ sẽ gây lỗi khi chạy (ví dụ cấu hình Nginx tái tạo lỗi 502 mà Buổi 1 đã sửa); **(b) yêu cầu mồ côi còn sót** — chức năng được hứa ở một chỗ nhưng không có API/FR nào đỡ; **(c) mâu thuẫn giữa SRS và thiết kế đã được kiểm chứng** mà thiết kế trong code tốt hơn về dài hạn. Mọi thay đổi được đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ; bảng truy vết nằm tại **Phụ lục E**.
+**Phạm vi CR-2026-02 (v1.2.0):** lượt rà soát thứ tư, lần đầu tiên **đối chiếu SRS với code đã chạy thật** (nhánh `main`, commit `f313e95`, và `SPEC/BAO_CAO_BUOI_2.md`) thay vì chỉ đối chiếu các chương với nhau. Lượt này phát hiện 16 điểm (MT-42 → MT-57) thuộc ba loại: **(a) lỗi kỹ thuật trong chính v1.1.0** — những đặc tả nếu làm đúng từng chữ sẽ gây lỗi khi chạy (ví dụ cấu hình Nginx tái tạo lỗi 502 mà Buổi 2 đã sửa); **(b) yêu cầu mồ côi còn sót** — chức năng được hứa ở một chỗ nhưng không có API/FR nào đỡ; **(c) mâu thuẫn giữa SRS và thiết kế đã được kiểm chứng** mà thiết kế trong code tốt hơn về dài hạn. Mọi thay đổi được đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ; bảng truy vết nằm tại **Phụ lục E**.
+
+**Phạm vi CR-2026-03 (v1.2.1):** giảng viên đánh số lại lộ trình thành 8 buổi (Buổi 1 là buổi đọc đặc tả) và giao cho Buổi 2 yêu cầu về dữ liệu mẫu, khác với §2.6.1 của v1.2.0. Yêu cầu được đưa vào SRS trước khi hiện thực để mọi con số trong database truy vết được về đặc tả (MT-58). Chỉ §2.6.1 thay đổi; bảng truy vết nằm tại **Phụ lục F**.
+
+**Phạm vi CR-2026-04 (v1.2.2):** giảng viên giao cho Buổi 3 bốn yêu cầu kiến trúc (domain exceptions, repository & Unit of Work, middleware Problem Details, ≥ 2 API mỗi thành viên) và cho Buổi 4 yêu cầu *"hoàn thành việc cài đặt tất cả API endpoints"*. Khi lập kế hoạch cho hai yêu cầu này, nhóm đối chiếu từng lớp exception với Phụ lục B và **từng route giao diện của §5.1 với các endpoint của Chương 8**, phát hiện 5 điểm (MT-59 → MT-63):
+- **(a)** hai tình huống mà API phải trả lỗi nhưng Phụ lục B không có mã;
+- **(b)** một route giao diện không có endpoint nào phục vụ được — trang sửa bản nháp;
+- **(c)** hai chỗ SRS tự mâu thuẫn về mã HTTP;
+- **(d)** mô tả tầng ở §6.2 lệch với chính ràng buộc "Domain không có NuGet".
+
+Bảng truy vết nằm tại **Phụ lục G**.
 
 ---
 
@@ -73,6 +85,8 @@
 - [Phụ lục C – Từ điển Thuật ngữ](#phụ-lục-c--từ-điển-thuật-ngữ)
 - [Phụ lục D – Bảng Truy vết Quyết định Kiến trúc CR-2026](#phụ-lục-d--bảng-truy-vết-quyết-định-kiến-trúc-cr-2026)
 - [Phụ lục E – Bảng Truy vết Quyết định CR-2026-02](#phụ-lục-e--bảng-truy-vết-quyết-định-cr-2026-02)
+- [Phụ lục F – Bảng Truy vết Quyết định CR-2026-03](#phụ-lục-f--bảng-truy-vết-quyết-định-cr-2026-03)
+- [Phụ lục G – Bảng Truy vết Quyết định CR-2026-04](#phụ-lục-g--bảng-truy-vết-quyết-định-cr-2026-04)
 
 ---
 
@@ -197,7 +211,7 @@ Tài liệu SRS này được tổ chức thành 8 chương chính và **5 phụ
 - **Chương 5 – Giao diện Ngoài:** Tích hợp với các hệ thống và dịch vụ ngoài (Google OAuth, MinIO, Redis, SMTP/MailKit).
 - **Chương 6 – Kiến trúc Hệ thống:** Clean Architecture Backend, Next.js App Router Frontend, chiến lược caching và deployment.
 - **Chương 7 – Mô hình Dữ liệu:** ERD mô tả văn bản và bảng định nghĩa chi tiết từng entity/table, kèm Bảng Giới hạn Dữ liệu Chuẩn (mục 7.9) là nguồn sự thật duy nhất cho mọi validator và cột DB.
-- **Chương 8 – Đặc tả API REST:** Quy ước, chuẩn lỗi RFC 7807, và bảng tổng hợp tất cả **44 endpoint** (37 của v1.1.0 + 7 bổ sung ở CR-2026-02).
+- **Chương 8 – Đặc tả API REST:** Quy ước, chuẩn lỗi RFC 7807, và bảng tổng hợp tất cả **45 endpoint** (37 của v1.1.0 + 7 bổ sung ở CR-2026-02 + 1 bổ sung ở v1.2.2).
 - **Phụ lục A–E:** HTTP Status Codes, Application Error Codes, Từ điển thuật ngữ, Bảng truy vết CR-2026 (v1.1.0) và Bảng truy vết CR-2026-02 (v1.2.0).
 
 > **Cách đếm FR:** 37 FR được liệt kê ở bảng mục 2.2. Trong đó **26 FR** có mục đặc tả đầy đủ theo template chuẩn (FR-AUTH-001 → 009, FR-CAT, FR-RCP, FR-SRCH-001); **11 FR** (FR-SRCH-002/003/004, FR-FILE-001/002, FR-JOB-001/002/003, FR-OBS-001/002/003) được trình bày dạng bảng gộp vì nội dung ngắn — nhưng từ v1.1.0 tất cả đều **có đầy đủ mức ưu tiên MoSCoW**.
@@ -346,7 +360,9 @@ Các ràng buộc sau đây là **bắt buộc và không thể thương lượn
 - Môi trường development có kết nối Internet để pull Docker images và package NuGet/npm.
 - PostgreSQL, Redis và MinIO được cung cấp qua Docker Compose trong development và dưới dạng managed service (hoặc VPS) trong production.
 - Người dùng cuối có trình duyệt hiện đại và kết nối Internet đủ ổn định để load ảnh từ MinIO.
-- Dữ liệu test (seed) được tạo bằng thư viện Bogus với 50 recipe mẫu và 5 tác giả mẫu.
+- Dữ liệu test (seed) có **ít nhất 20 danh mục và 100 công thức; mỗi công thức có ít nhất 10 nguyên liệu và ít nhất 5 bước chế biến**, cùng 5 tác giả mẫu. Nội dung món ăn (tên, mô tả, nguyên liệu, định lượng, các bước, thời gian) phải đúng với món; thư viện Bogus sinh các giá trị ngẫu nhiên (tác giả, trạng thái, ngày xuất bản, dinh dưỡng) với seed cố định. Việc seed là idempotent: chạy lại chỉ bổ sung phần còn thiếu, không ghi đè dữ liệu do người dùng tạo hoặc đã chỉnh sửa.
+
+> **[CR-2026-03 / MT-58]** v1.2.0 ghi *"Bogus với 50 recipe mẫu và 5 tác giả mẫu"*. Yêu cầu mới của giảng viên cho Buổi 2 nâng lên ≥ 20 danh mục, ≥ 100 công thức, ≥ 10 nguyên liệu và ≥ 5 bước mỗi công thức. Dữ liệu này dùng để kiểm thử tìm kiếm tiếng Việt, phân trang, lọc và trình diễn, nên phải là công thức có nghĩa chứ không phải chuỗi sinh ngẫu nhiên.
 - Email service **SMTP (gửi qua MailKit)** được cấu hình sẵn khi triển khai production để gửi email chào mừng; môi trường development dùng Mailhog.
 - Giới hạn dữ liệu kỳ vọng (initial scale): ≤ 10,000 công thức, ≤ 5,000 người dùng, ≤ 50 danh mục – phù hợp với single-server deployment.
 
@@ -477,7 +493,7 @@ Module này quản lý toàn bộ vòng đời xác thực người dùng: từ 
 | **Điều kiện tiên quyết** | 1. `GoogleClientId` đã được cấu hình ở cả Backend (để verify `aud`) và Frontend. 2. Origin của Frontend đã được đăng ký trong Google Cloud Console (Authorized JavaScript origins). 3. Người dùng có tài khoản Google hợp lệ. |
 | **HTTP Method & Endpoint** | `POST /api/v1/auth/google` |
 | **Kết quả mong đợi** | Người dùng được đăng nhập (hoặc tự động đăng ký), nhận `AuthResponseDto`. Tài khoản mới (nếu có) được tạo với role "Author". |
-| **HTTP Status Code trả về** | `200 OK` – Đăng nhập/đăng ký thành công. `400 Bad Request` – `idToken` thiếu/sai định dạng hoặc thiếu claim `email` (`AUTH_GOOGLE_TOKEN_INVALID`). `401 Unauthorized` – ID Token không vượt qua kiểm tra chữ ký/`aud`/`exp`. `403 Forbidden` – Tài khoản liên kết đã bị vô hiệu hóa. `502 Bad Gateway` – Không truy cập được Google để lấy khóa công khai (`AUTH_GOOGLE_UNAVAILABLE`). |
+| **HTTP Status Code trả về** | `200 OK` – Đăng nhập/đăng ký thành công. `400 Bad Request` – `idToken` thiếu/sai định dạng hoặc thiếu claim `email` (`AUTH_GOOGLE_TOKEN_INVALID`). `401 Unauthorized` – ID Token không vượt qua kiểm tra chữ ký/`aud`/`exp` (cũng mang mã `AUTH_GOOGLE_TOKEN_INVALID` — xem ghi chú MT-61 dưới luồng thay thế). `403 Forbidden` – Tài khoản liên kết đã bị vô hiệu hóa (`AUTH_ACCOUNT_DISABLED`). `502 Bad Gateway` – Không truy cập được Google để lấy khóa công khai (`AUTH_GOOGLE_UNAVAILABLE`). |
 
 **Luồng chính (Happy Path):**
 
@@ -495,8 +511,14 @@ Module này quản lý toàn bộ vòng đời xác thực người dùng: từ 
 **Luồng thay thế / Ngoại lệ:**
 
 - **A1 – ID Token không hợp lệ, sai `aud` hoặc hết hạn:** HTTP 401 Unauthorized (`AUTH_GOOGLE_TOKEN_INVALID`).
-- **A2 – ID Token thiếu claim `email` hoặc `email_verified == false`:** HTTP 400 Bad Request.
+- **A2 – ID Token thiếu claim `email` hoặc `email_verified == false`:** HTTP 400 Bad Request (`AUTH_GOOGLE_TOKEN_INVALID`).
 - **A3 – Google API không khả dụng (không lấy được JWKS):** HTTP 502 Bad Gateway (`AUTH_GOOGLE_UNAVAILABLE`); Frontend hiển thị thông báo dự phòng theo mục 2.6.2.
+
+> **[CR-2026-04 / MT-61]** Mã `AUTH_GOOGLE_TOKEN_INVALID` dùng cho **hai** mã HTTP có chủ đích:
+> - **400** khi token **thiếu dữ liệu** mà hệ thống cần (sai định dạng, thiếu `email`, email chưa được Google xác minh mà lại trùng tài khoản có sẵn) — lỗi thuộc về *nội dung request*;
+> - **401** khi token **không chứng minh được danh tính** (chữ ký, `aud`, `exp` sai) — lỗi thuộc về *xác thực*.
+>
+> v1.2.1 ghi 400 ở Phụ lục B nhưng 401 ở A1 cho cùng tình huống, khiến hai dev có thể hiện thực hai kiểu. Giữ **một mã nghiệp vụ** cho cả hai giúp Frontend hiển thị một thông báo ("Đăng nhập Google không hợp lệ, hãy thử lại"), còn mã HTTP vẫn đúng ngữ nghĩa để proxy, log và công cụ giám sát phân loại được.
 - **A4 – Tài khoản liên kết bị vô hiệu hóa:** HTTP 403 Forbidden (`AUTH_ACCOUNT_DISABLED`).
 
 > **[CR-2026 / MT-11]** Phương án `ExternalLoginInfo` bị loại bỏ (đây là kiểu nội bộ của ASP.NET Core Identity, không serialize qua HTTP được) và **Authorization Code + PKCE cũng bị loại** khỏi v1.1.0. Backend **không** có redirect URI `/api/v1/auth/google/callback`; toàn bộ vòng lặp redirect do Google Identity Services xử lý phía trình duyệt.
@@ -638,7 +660,7 @@ Module này quản lý toàn bộ vòng đời xác thực người dùng: từ 
 | **Điều kiện tiên quyết** | 1. Admin đang đăng nhập với role Admin. 2. Người dùng đích tồn tại. 3. Admin không thể tự khóa chính tài khoản của mình. 4. Danh sách: `page >= 1`, `pageSize ∈ [1, 50]` (mặc định 12). |
 | **HTTP Method & Endpoint** | `GET /api/v1/users?page&pageSize&search&isActive` · `PATCH /api/v1/users/{id}/status` |
 | **Kết quả mong đợi** | **Danh sách:** `PagedResult<UserAdminDto>` với `UserAdminDto = { id, email, displayName, avatarUrl, roles, isActive, createdAt, recipeCount }` — **không** chứa `PasswordHash`, `SecurityStamp`, `UserName`. **Khóa/mở khóa:** `IsActive` được cập nhật; khi khóa, mọi `RefreshToken` của user được gán `RevokedAt = DateTime.UtcNow`. Ghi audit log (userId thao tác + userId bị tác động + lý do + timestamp). |
-| **HTTP Status Code trả về** | `200 OK` – Thành công. `400 Bad Request` – Tham số/body không hợp lệ. `403 Forbidden` – Không có quyền Admin, **hoặc Admin tự khóa chính mình**. `404 Not Found` – User không tồn tại. |
+| **HTTP Status Code trả về** | `200 OK` – Thành công. `400 Bad Request` – Tham số/body không hợp lệ. `403 Forbidden` – Không có quyền Admin, **hoặc Admin tự khóa chính mình**. `404 Not Found` – User không tồn tại (`AUTH_USER_NOT_FOUND` — CR-2026-04 / MT-59). |
 
 **Luồng chính — Xem danh sách:**
 
@@ -661,7 +683,7 @@ Module này quản lý toàn bộ vòng đời xác thực người dùng: từ 
 
 - **A1 – Thiếu role Admin:** HTTP 403 Forbidden.
 - **A2 – Admin tự khóa chính mình:** HTTP 403 Forbidden với thông báo rõ lý do.
-- **A3 – User không tồn tại:** HTTP 404 Not Found.
+- **A3 – User không tồn tại:** HTTP 404 Not Found (`AUTH_USER_NOT_FOUND`).
 
 > **[CR-2026 / MT-22]** FR này tồn tại để cột `IsActive` (mục 7.7) và mã lỗi `AUTH_ACCOUNT_DISABLED` (Phụ lục B) có chủ thể thực thi. Việc kiểm tra `IsActive` khi đăng nhập/refresh được đặc tả tại FR-AUTH-002 (bước 7) và FR-AUTH-004 (bước 4).
 >
@@ -694,7 +716,7 @@ Module này quản lý toàn bộ vòng đời xác thực người dùng: từ 
 - **A1 – Phiên thuộc người khác:** HTTP **404** (không phải 403) — không tiết lộ rằng `id` đó có tồn tại.
 - **A2 – Phiên đã thu hồi trước đó:** HTTP 204 (idempotent).
 
-> **[CR-2026-02 / MT-45]** Yêu cầu này phát sinh từ lộ trình phát triển (Buổi 6) nhưng v1.1.0 **không có FR nào** đỡ — nếu hiện thực thẳng thì hệ thống sẽ có 3 endpoint không truy vết được về yêu cầu nào, phá vỡ nguyên tắc "SRS là nguồn sự thật". FR được đặt riêng (không gộp vào FR-AUTH-005 Đăng xuất) vì phạm vi khác nhau: FR-AUTH-005 thu hồi **phiên đang dùng**, còn FR này quản lý **mọi phiên trên mọi thiết bị**. Mức **C** được chọn có chủ đích để tuân thủ quy tắc MoSCoW của mục 3: cắt FR này không làm hỏng bất kỳ chức năng Must Have nào. Trả **404 cho phiên của người khác** để endpoint không thể bị dùng để dò id token hợp lệ.
+> **[CR-2026-02 / MT-45]** Yêu cầu này phát sinh từ lộ trình phát triển (Buổi 7) nhưng v1.1.0 **không có FR nào** đỡ — nếu hiện thực thẳng thì hệ thống sẽ có 3 endpoint không truy vết được về yêu cầu nào, phá vỡ nguyên tắc "SRS là nguồn sự thật". FR được đặt riêng (không gộp vào FR-AUTH-005 Đăng xuất) vì phạm vi khác nhau: FR-AUTH-005 thu hồi **phiên đang dùng**, còn FR này quản lý **mọi phiên trên mọi thiết bị**. Mức **C** được chọn có chủ đích để tuân thủ quy tắc MoSCoW của mục 3: cắt FR này không làm hỏng bất kỳ chức năng Must Have nào. Trả **404 cho phiên của người khác** để endpoint không thể bị dùng để dò id token hợp lệ.
 
 ### 3.2. Module Quản lý Danh mục (FR-CAT)
 
@@ -799,7 +821,7 @@ Module quản lý danh mục (Category) phân loại công thức nấu ăn. Dan
 - **A1 – Thiếu role Admin:** HTTP 403 Forbidden.
 - **A2 – Dữ liệu không hợp lệ:** HTTP 400 Bad Request.
 - **A3 – Name đã tồn tại:** HTTP **409 Conflict** với `CATEGORY_NAME_EXISTS`.
-- **A4 – Đua (race) giữa hai request cùng tên:** PostgreSQL trả lỗi UNIQUE `23505`; `GlobalExceptionMiddleware` dịch mã `23505` trên cột `Name` thành **409 `CATEGORY_NAME_EXISTS`** (lớp phòng vệ thứ hai, không bao giờ để lọt thành 500).
+- **A4 – Đua (race) giữa hai request cùng tên:** PostgreSQL trả lỗi UNIQUE `23505`; tầng Infrastructure (`UnitOfWork`, qua bộ dịch lỗi ghi DB của module Category) dịch mã `23505` trên ràng buộc của cột `Name` thành lỗi nghiệp vụ, và `GlobalExceptionMiddleware` trả **409 `CATEGORY_NAME_EXISTS`** (lớp phòng vệ thứ hai, không bao giờ để lọt thành 500). *[CR-2026-04 / MT-63: chi tiết của PostgreSQL chỉ được đọc ở Infrastructure, không ở tầng API.]*
 
 > **[CR-2026 / MT-36]** v1.0.0 khai báo status 409 và điều kiện tiên quyết "Name chưa tồn tại" nhưng luồng chính không có bước nào sinh ra 409 — tạo trùng tên sẽ rơi xuống DB và trả 500. Bước 5 và nhánh A4 đóng lỗ hổng này.
 
@@ -1335,7 +1357,7 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 | **Mô tả** | Trả về danh sách phân trang các công thức **thuộc sở hữu của chính người gọi**, ở **mọi trạng thái** (Draft, Published, Archived). Đây là endpoint **riêng tư duy nhất** của module Recipe: response phụ thuộc hoàn toàn vào danh tính người gọi, do đó **bị cấm cache** ở mọi tầng. Admin có thể truyền `?authorId=` để xem danh sách của một Author bất kỳ phục vụ công việc kiểm duyệt. Endpoint này là phần đối xứng của nguyên tắc cách ly Public/Private khai báo ở đầu mục 3.3. |
 | **Điều kiện tiên quyết** | 1. **Bắt buộc** JWT hợp lệ (role Author hoặc Admin). 2. `page >= 1`, `pageSize ∈ [1, 50]` (mặc định 12). 3. `sortBy` thuộc whitelist, `sortOrder ∈ {asc, desc}`. 4. `status` (nếu có) ∈ `{Draft, Published, Archived}`. 5. `authorId` (nếu có) chỉ được chấp nhận khi người gọi có role Admin. |
 | **HTTP Method & Endpoint** | `GET /api/v1/recipes/mine?status={s}&page={n}&pageSize={n}&sortBy={field}&sortOrder={asc\|desc}&authorId={guid}` |
-| **Kết quả mong đợi** | `PagedResult<RecipeSummaryDto>` chứa công thức của người gọi ở mọi trạng thái, kèm header **`Cache-Control: no-store`**. |
+| **Kết quả mong đợi** | `PagedResult<RecipeSummaryDto>` chứa công thức của người gọi ở mọi trạng thái, kèm header **`Cache-Control: no-store`**. Kèm endpoint chi tiết **`GET /api/v1/recipes/mine/{id}`** *(CR-2026-04 / MT-62)*: trả `RecipeDetailDto` đầy đủ (steps, ingredients, images, nutrition) **kèm `rowVersion`** và header `ETag`, ở **mọi trạng thái**, cho chủ sở hữu hoặc Admin; cũng `Cache-Control: no-store`. |
 | **HTTP Status Code trả về** | `200 OK` – Thành công (kể cả items rỗng). `400 Bad Request` – Tham số không hợp lệ (bao gồm `sortBy`/`status` ngoài whitelist). `401 Unauthorized` – Thiếu hoặc sai token. `403 Forbidden` – Người gọi không phải Admin nhưng truyền `authorId`. |
 
 **Luồng chính (Happy Path):**
@@ -1356,6 +1378,20 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 - **A2 – Author truyền `authorId` của người khác:** HTTP 403 Forbidden (`RECIPE_FORBIDDEN`).
 - **A3 – `sortBy`, `sortOrder` hoặc `status` ngoài whitelist:** HTTP 400 Bad Request (`VALIDATION_ERROR`).
 - **A4 – Người dùng chưa có công thức nào:** HTTP 200 với `items = []` (không phải 404).
+- **A5 – `GET /recipes/mine/{id}` với recipe không tồn tại, đã xóa mềm, hoặc thuộc người khác (người gọi không phải Admin):** HTTP 404 Not Found (`RECIPE_NOT_FOUND`) — cùng một phản hồi cho cả ba trường hợp để endpoint không bị dùng để dò id *(CR-2026-04 / MT-62)*.
+
+> **[CR-2026-04 / MT-62]** v1.2.1 có route `/dashboard/recipes/[id]/edit` (§5.1) nhưng **không có endpoint nào trả trọn nội dung một công thức chưa xuất bản**:
+> - `GET /recipes/{slug}` chỉ phục vụ Published (MT-34);
+> - `GET /recipes/mine` chỉ trả bản tóm tắt.
+>
+> Hậu quả: Author **không sửa được bản nháp của chính mình**, và FR-RCP-004 không có nguồn `rowVersion` ban đầu cho bản nháp.
+>
+> Ba phương án đã được cân nhắc:
+> - **(A) cho `GET /recipes/{slug}` trả Draft khi người gọi là chủ** — mở lại đúng lỗ hổng MT-34: endpoint công khai lọc theo danh tính trong khi bị cache theo khóa công khai;
+> - **(B) để `GET /recipes/mine` trả đầy đủ chi tiết** — mỗi trang danh sách kéo theo toàn bộ steps/ingredients của 12 công thức;
+> - **(C) một endpoint riêng tư theo `id` dưới tiền tố `/mine`** — đã chọn.
+>
+> Với (C), mọi endpoint riêng tư của module mang chung dấu hiệu nhận biết (Bearer bắt buộc, `no-store`, không `ICacheable`), và quy tắc cách ly Public/Private đọc được ngay từ URL.
 
 > **[CR-2026 / MT-34]** Đây là **nửa còn lại** của lỗi nghiêm trọng nhất trong v1.0.0. Ở v1.0.0, `GET /recipes` vừa lọc theo danh tính (Guest thấy Published, Author thấy thêm Draft của mình, Admin thấy tất cả) **vừa** được Output Cache lưu dưới khóa chỉ gồm `{path}?{queryString}`. Hệ quả: một lượt truy cập của Admin nạp toàn bộ Draft của mọi Author vào cache, rồi **mọi Guest gọi đúng URL đó trong 15 phút tiếp theo đều đọc được** — một lỗi rò rỉ dữ liệu giữa các tài khoản, sinh ra từ hai câu cách nhau 5 dòng trong cùng một FR.
 >
@@ -1432,7 +1468,7 @@ Module xử lý tất cả thao tác với file binary trên hệ thống lưu t
 >
 > SDK thống nhất là **`AWSSDK.S3`** (khớp Chương 5.3, 6.1, 6.2), không dùng MinIO .NET SDK: `IFileStorageService` được thiết kế để swap implementation, và với `AWSSDK.S3` thì việc chuyển sang AWS S3 thật chỉ là bỏ dòng override `ServiceURL` — trong khi SDK chính chủ MinIO sẽ khóa chặt hệ thống vào một nhà cung cấp. Lưu ý phương thức tương ứng là `DeleteObjectAsync()`, không phải `RemoveObjectAsync()` của MinIO SDK.
 >
-> **[CR-2026-02 / MT-43, MT-46]** v1.1.0 có ba FR chỉ nhận **URL ảnh** — `avatarUrl` (FR-AUTH-007), `imageUrl` danh mục (FR-CAT-003) và `imageUrl` bước nấu (FR-RCP-010) — nhưng **không có endpoint nào để đưa ảnh lên và nhận lại URL**: FR-FILE-001/002 chỉ đặc tả tầng service, còn endpoint upload duy nhất trong Chương 8 (`/recipes/{id}/images`) gắn chặt với công thức. Người dùng vì vậy không có cách hợp lệ nào để đổi avatar. Buổi 1 đã phải tự bổ sung `POST /api/v1/files/upload` và `DELETE /api/v1/files/{**key}` ngoài SRS. v1.2.0 **chính thức hóa** hai endpoint này thay vì tạo ba endpoint con (`/auth/me/avatar`, `/categories/{id}/image`, `/recipes/{id}/steps/{stepId}/image`): một endpoint tổng quát giữ toàn bộ quy tắc bảo mật tệp (giới hạn 5MB, magic bytes, tên GUID, phạm vi thư mục theo người dùng) **ở một chỗ duy nhất**, trong khi ba endpoint con sẽ lặp lại chúng ba lần. Đi kèm là hai mã lỗi mà code đã dùng thực tế nhưng Phụ lục B chưa có: `FILE_FORBIDDEN` (403) và `FILE_STORAGE_UNAVAILABLE` (503).
+> **[CR-2026-02 / MT-43, MT-46]** v1.1.0 có ba FR chỉ nhận **URL ảnh** — `avatarUrl` (FR-AUTH-007), `imageUrl` danh mục (FR-CAT-003) và `imageUrl` bước nấu (FR-RCP-010) — nhưng **không có endpoint nào để đưa ảnh lên và nhận lại URL**: FR-FILE-001/002 chỉ đặc tả tầng service, còn endpoint upload duy nhất trong Chương 8 (`/recipes/{id}/images`) gắn chặt với công thức. Người dùng vì vậy không có cách hợp lệ nào để đổi avatar. Buổi 2 đã phải tự bổ sung `POST /api/v1/files/upload` và `DELETE /api/v1/files/{**key}` ngoài SRS. v1.2.0 **chính thức hóa** hai endpoint này thay vì tạo ba endpoint con (`/auth/me/avatar`, `/categories/{id}/image`, `/recipes/{id}/steps/{stepId}/image`): một endpoint tổng quát giữ toàn bộ quy tắc bảo mật tệp (giới hạn 5MB, magic bytes, tên GUID, phạm vi thư mục theo người dùng) **ở một chỗ duy nhất**, trong khi ba endpoint con sẽ lặp lại chúng ba lần. Đi kèm là hai mã lỗi mà code đã dùng thực tế nhưng Phụ lục B chưa có: `FILE_FORBIDDEN` (403) và `FILE_STORAGE_UNAVAILABLE` (503).
 
 ### 3.6. Module Background Jobs (FR-JOB)
 
@@ -1451,7 +1487,7 @@ Module xử lý các tác vụ nền không đồng bộ sử dụng Hangfire. H
 >
 > v1.1.0 chuyển trách nhiệm sitemap sang **Next.js `app/sitemap.ts` + `app/robots.ts`** (xem NFR-SEO-003) — đúng vị trí, không cần lưu file, không cần distributed lock cho việc này. Khe FR-JOB-003 được dùng cho nhu cầu thực sự phát sinh từ quyết định Soft Delete toàn cục (MT-05): **phải có một chỗ dọn dữ liệu và file vĩnh viễn**, nếu không MinIO sẽ phình mãi mãi và slug của recipe đã xóa chiếm chỗ không bao giờ được giải phóng. Mức ưu tiên **S**: FR-RCP-007 (mức M) ủy thác việc dọn file cho job này, nhưng cắt job đi chỉ để lại file mồ côi chứ không làm hỏng chức năng xóa — không hạ xuống C vì như vậy sẽ thấp hơn mức của FR phụ thuộc vào nó.
 
-> **[CR-2026-02 / MT-47]** v1.1.0 (kế thừa nguyên văn từ v1.0.0) ghi *"Hangfire chạy in-process trong .NET API"*, trong khi hệ thống thực tế từ Buổi 1 chạy Hangfire ở **container worker riêng** dùng chung image với API — và 41 mâu thuẫn của CR-2026 chưa từng phân tích điểm này. v1.2.0 chuẩn hóa theo **worker riêng** vì ba lý do dài hạn: **(1)** FR-JOB-002 resize ảnh bằng ImageSharp là tác vụ **nặng CPU** — chạy chung tiến trình với API thì mỗi lượt upload ảnh sẽ tranh CPU với chính các request đang phục vụ người đọc, đe dọa trực tiếp mục tiêu p95 ≤ 500ms (NFR-PERF-001); **(2)** hai loại tải được **scale độc lập** — `--scale api=3` không kéo theo 3 job server; **(3)** chi phí vận hành đã được trả xong ở Buổi 1 (khóa DataProtection dùng chung qua volume, worker chờ DB sẵn sàng trước khi chạy). Phương án gộp vào API chỉ đơn giản hơn ở số lượng container, đổi lại mất cả ba lợi ích trên.
+> **[CR-2026-02 / MT-47]** v1.1.0 (kế thừa nguyên văn từ v1.0.0) ghi *"Hangfire chạy in-process trong .NET API"*, trong khi hệ thống thực tế từ Buổi 2 chạy Hangfire ở **container worker riêng** dùng chung image với API — và 41 mâu thuẫn của CR-2026 chưa từng phân tích điểm này. v1.2.0 chuẩn hóa theo **worker riêng** vì ba lý do dài hạn: **(1)** FR-JOB-002 resize ảnh bằng ImageSharp là tác vụ **nặng CPU** — chạy chung tiến trình với API thì mỗi lượt upload ảnh sẽ tranh CPU với chính các request đang phục vụ người đọc, đe dọa trực tiếp mục tiêu p95 ≤ 500ms (NFR-PERF-001); **(2)** hai loại tải được **scale độc lập** — `--scale api=3` không kéo theo 3 job server; **(3)** chi phí vận hành đã được trả xong ở Buổi 2 (khóa DataProtection dùng chung qua volume, worker chờ DB sẵn sàng trước khi chạy). Phương án gộp vào API chỉ đơn giản hơn ở số lượng container, đổi lại mất cả ba lợi ích trên.
 
 ### 3.7. Module Quan sát Hệ thống (FR-OBS)
 
@@ -1525,7 +1561,7 @@ Toàn bộ yêu cầu bảo mật tuân thủ OWASP Top 10 (2021) và được k
 > **[CR-2026-02 / MT-54, MT-55]** Hai chỗ trong chương này được làm rõ ở v1.2.0 vì cách viết của v1.1.0 dẫn tới hiện thực sai:
 >
 > - **MT-54 — tên API để khai báo proxy tin cậy.** v1.1.0 ghi "`KnownProxies` giới hạn ở dải mạng Docker" — nhưng `KnownProxies` chỉ nhận **từng địa chỉ IP**, không nhận dải; còn thuộc tính nhận dải quen thuộc trong tài liệu cũ (`KnownNetworks`) đã bị đánh dấu **obsolete trên .NET 10**. Dự án bật `TreatWarningsAsErrors`, nên làm theo đúng chữ của v1.1.0 hoặc theo tài liệu cũ đều dẫn tới hoặc hệ thống không tin được proxy (IP container thay đổi), hoặc **gãy build**. v1.2.0 chỉ đích danh `KnownIPNetworks`.
-> - **MT-55 — nơi lưu token phía Frontend.** v1.1.0 quy định refresh token đi trong body (không cookie) nhưng **không nói Frontend được lưu token ở đâu**. Khoảng trống này khiến Buổi 1 lưu cả access token lẫn refresh token vào `localStorage` — nơi bất kỳ script nào (kể cả script bị tiêm qua XSS) đều đọc được. v1.2.0 quy định: access token **chỉ trong bộ nhớ**, refresh token là thứ duy nhất được lưu bền, và CSP được nâng thành yêu cầu tường minh ở NFR-SEC-005. Phương án chuyển refresh token sang cookie `HttpOnly` an toàn hơn trước XSS nhưng **trái §5.2** và kéo theo cơ chế chống CSRF — không chọn trong phạm vi v1.2.0.
+> - **MT-55 — nơi lưu token phía Frontend.** v1.1.0 quy định refresh token đi trong body (không cookie) nhưng **không nói Frontend được lưu token ở đâu**. Khoảng trống này khiến Buổi 2 lưu cả access token lẫn refresh token vào `localStorage` — nơi bất kỳ script nào (kể cả script bị tiêm qua XSS) đều đọc được. v1.2.0 quy định: access token **chỉ trong bộ nhớ**, refresh token là thứ duy nhất được lưu bền, và CSP được nâng thành yêu cầu tường minh ở NFR-SEC-005. Phương án chuyển refresh token sang cookie `HttpOnly` an toàn hơn trước XSS nhưng **trái §5.2** và kéo theo cơ chế chống CSRF — không chọn trong phạm vi v1.2.0.
 
 | Mã | Nội dung |
 | --- | --- |
@@ -1613,7 +1649,7 @@ Hệ thống cung cấp giao diện web duy nhất trên nền Next.js App Route
 | `/dashboard` | Trang tổng quan của Author/Admin | CSR | Bắt buộc (Author/Admin) |
 | `/dashboard/recipes` | Quản lý danh sách recipe của user — gọi **`GET /recipes/mine`** (FR-RCP-011), không dùng `GET /recipes` | CSR | Bắt buộc |
 | `/dashboard/recipes/new` | Form tạo recipe mới (multi-step wizard) | CSR | Bắt buộc (Author/Admin) |
-| `/dashboard/recipes/[id]/edit` | Form chỉnh sửa recipe | CSR | Bắt buộc (Owner/Admin) |
+| `/dashboard/recipes/[id]/edit` | Form chỉnh sửa recipe — nạp dữ liệu bằng **`GET /recipes/mine/{id}`** (mọi trạng thái, kèm `rowVersion`) *(CR-2026-04 / MT-62)* | CSR | Bắt buộc (Owner/Admin) |
 | `/dashboard/categories` | Quản lý categories (chỉ Admin) | CSR | Bắt buộc (Admin) |
 | `/dashboard/users` | Danh sách người dùng + khóa / mở khóa tài khoản (FR-AUTH-008) | CSR | Bắt buộc (Admin) |
 | `/profile` | Xem và chỉnh sửa thông tin cá nhân; tab "Phiên đăng nhập" (FR-AUTH-009) | CSR | Bắt buộc |
@@ -1623,7 +1659,7 @@ Hệ thống cung cấp giao diện web duy nhất trên nền Next.js App Route
 >
 > Giá trị `revalidate` của ISR được đồng bộ **≤ TTL cache API tương ứng** ở bảng NFR-PERF-003 — nếu ISR dài hơn TTL thì tầng Next.js trở thành tầng cache cũ nhất và mọi nỗ lực invalidate ở Backend đều vô nghĩa. Riêng `/dashboard/*` là CSR và gọi endpoint riêng tư nên không có tầng cache nào.
 >
-> **[CR-2026-02 / MT-57]** v1.1.0 ghi `/categories/[slug]` là **ISR**, nhưng trang này phân trang bằng tham số truy vấn `?page=` — trong Next.js App Router, một trang đọc `searchParams` **bắt buộc render động theo request** và không thể dựng tĩnh (ISR). Buổi 1 đã gặp đúng điều này khi build (`BAO_CAO_BUOI_1.md` §4.5). Yêu cầu thật sự đằng sau chữ "ISR" là *dữ liệu không được cũ hơn TTL của API*; v1.2.0 diễn đạt đúng cơ chế đạt được yêu cầu đó: **SSR + Data Cache** với `fetch(..., { next: { revalidate: 120 } })`. Quy tắc "thời gian tái sinh ≤ TTL cache API" ở trên áp dụng cho **cả** `revalidate` của ISR lẫn `revalidate` của Data Cache. Phương án chuyển phân trang sang segment đường dẫn (`/categories/[slug]/page/[n]`) để giữ ISR thuần bị loại vì làm URL phức tạp và phải sinh trước số trang chưa biết trước.
+> **[CR-2026-02 / MT-57]** v1.1.0 ghi `/categories/[slug]` là **ISR**, nhưng trang này phân trang bằng tham số truy vấn `?page=` — trong Next.js App Router, một trang đọc `searchParams` **bắt buộc render động theo request** và không thể dựng tĩnh (ISR). Buổi 2 đã gặp đúng điều này khi build (`BAO_CAO_BUOI_2.md` §4.5). Yêu cầu thật sự đằng sau chữ "ISR" là *dữ liệu không được cũ hơn TTL của API*; v1.2.0 diễn đạt đúng cơ chế đạt được yêu cầu đó: **SSR + Data Cache** với `fetch(..., { next: { revalidate: 120 } })`. Quy tắc "thời gian tái sinh ≤ TTL cache API" ở trên áp dụng cho **cả** `revalidate` của ISR lẫn `revalidate` của Data Cache. Phương án chuyển phân trang sang segment đường dẫn (`/categories/[slug]/page/[n]`) để giữ ISR thuần bị loại vì làm URL phức tạp và phải sinh trước số trang chưa biết trước.
 
 ### 5.2. Giao diện Phần mềm – REST API
 
@@ -1642,7 +1678,7 @@ Backend cung cấp RESTful API theo chuẩn JSON. Toàn bộ endpoints được 
 | Rate Limit Headers | `X-RateLimit-Limit: 100`; `X-RateLimit-Remaining: 87`; `X-RateLimit-Reset: 1700000000` (Unix timestamp); `Retry-After: 30` (seconds, khi 429) |
 | Correlation ID | `X-Correlation-ID` header: sinh tự động nếu không có trong request, trả về trong response. Gán vào tất cả log entries (Serilog MDC). |
 
-> **[CR-2026-02 / MT-42]** v1.1.0 mô tả **hai hình dạng response danh sách**: mục này và quy ước Chương 8 ghi `{ "data": [...], "meta": { page, pageSize, total, totalPages } }` (kèm `pageSize: 10` lệch với mặc định 12 ở mọi chỗ khác), trong khi FR-RCP-001, FR-SRCH-004 và code Buổi 1 dùng `PagedResult { items, totalCount, totalPages, hasNextPage, hasPreviousPage }`. Mâu thuẫn này sót khỏi cả 41 MT của CR-2026. v1.2.0 chốt **`PagedResult`**: (1) FR-SRCH-004 là yêu cầu chi tiết và đòi đúng các trường `hasNextPage`/`hasPreviousPage` mà hình dạng `{ data, meta }` không có; (2) code và Frontend Buổi 1 đã dùng nó — đổi sang `{ data, meta }` là thay đổi phá vỡ mọi màn hình danh sách mà không đem lại lợi ích chức năng nào; (3) đối tượng đơn trả thẳng DTO, không bọc `data`, để tránh lớp vỏ thừa ở mọi response.
+> **[CR-2026-02 / MT-42]** v1.1.0 mô tả **hai hình dạng response danh sách**: mục này và quy ước Chương 8 ghi `{ "data": [...], "meta": { page, pageSize, total, totalPages } }` (kèm `pageSize: 10` lệch với mặc định 12 ở mọi chỗ khác), trong khi FR-RCP-001, FR-SRCH-004 và code Buổi 2 dùng `PagedResult { items, totalCount, totalPages, hasNextPage, hasPreviousPage }`. Mâu thuẫn này sót khỏi cả 41 MT của CR-2026. v1.2.0 chốt **`PagedResult`**: (1) FR-SRCH-004 là yêu cầu chi tiết và đòi đúng các trường `hasNextPage`/`hasPreviousPage` mà hình dạng `{ data, meta }` không có; (2) code và Frontend Buổi 2 đã dùng nó — đổi sang `{ data, meta }` là thay đổi phá vỡ mọi màn hình danh sách mà không đem lại lợi ích chức năng nào; (3) đối tượng đơn trả thẳng DTO, không bọc `data`, để tránh lớp vỏ thừa ở mọi response.
 
 ### 5.3. Giao diện Dịch vụ Bên thứ ba
 
@@ -1699,10 +1735,10 @@ Backend tuân thủ Clean Architecture (Robert C. Martin) với nguyên tắc De
 
 | Tầng | Nội dung |
 | --- | --- |
-| **Domain Layer** (`CulinaryBlog.Domain`) | Nhân lõi hệ thống. Chứa: • Entities: `Recipe`, `Category`, `ApplicationUser`, `RecipeStep`, `RecipeIngredient`, `RecipeImage`. • Value Objects: `Slug`, `EmailAddress`. • Owned Entities: `RecipeNutrition`. • Domain Events (optional): `RecipePublishedEvent`. • Enums: `RecipeDifficulty`, `RecipeStatus`. • Interfaces: `IRepository<T>`, `IRecipeRepository`, `ICategoryRepository`. • Không có NuGet dependencies (chỉ .NET BCL). |
-| **Application Layer** (`CulinaryBlog.Application`) | Orchestration Layer. Chứa: • Commands (CQRS write): `CreateRecipeCommand`, `PublishRecipeCommand`, `LoginCommand`... • Queries (CQRS read): `GetRecipesQuery`, `GetRecipeBySlugQuery`... • Handlers (MediatR `IRequestHandler`): xử lý logic business cho mỗi command/query. • DTOs / Response models: `RecipeDto`, `UserDto`, `PagedResult<T>`. • Validators (FluentValidation): validation rules cho mỗi command. • Pipeline Behaviors (đúng 4, khớp mục 6.3): `LoggingBehavior`, `ValidationBehavior`, `CachingBehavior`, `CacheInvalidationBehavior`. **Không có `PerformanceBehavior` riêng** — việc đo thời gian và cảnh báo > 500ms là trách nhiệm tự nhiên của `LoggingBehavior`. • Service interfaces: `IEmailService`, `IJwtService`, `IFileStorageService`, `ICurrentUser`. |
-| **Infrastructure Layer** (`CulinaryBlog.Infrastructure`) | Implements application interfaces. Chứa: • EF Core: `CulinaryBlogDbContext`, configurations, migrations, repositories. • Repository implementations: `RecipeRepository` (LINQ + EF Core + FTS), `CategoryRepository`. • JWT Service: `JwtService` (`System.IdentityModel.Tokens.Jwt`). • File Storage: `MinioFileStorageService` (`AWSSDK.S3`). • Email: `MailKitEmailService`. • Cache: `RedisCacheService` (`StackExchange.Redis`). • Hangfire job registrations. • EF Core Interceptors: `AuditInterceptor` (auto set CreatedAt/UpdatedAt). |
-| **Presentation Layer** (`CulinaryBlog.API`) | HTTP interface. Chứa: • Minimal API Endpoint Groups: `AuthEndpoints`, `RecipesEndpoints`, `CategoriesEndpoints`. • Middleware: `GlobalExceptionMiddleware`, `CorrelationIdMiddleware`, `RateLimitingMiddleware`. • DI Configuration: `Program.cs` + Extension methods (`AddApplication`, `AddInfrastructure`, `AddPresentation`). • OpenAPI: Scalar UI tại `/scalar`, XML documentation comments. • Authentication: JWT Bearer; Google ID Token được verify bằng `Google.Apis.Auth` (không dùng ASP.NET Google provider, không có redirect callback). • `UseForwardedHeaders` với `KnownIPNetworks` = dải mạng Docker nội bộ (không dùng `KnownProxies`/`KnownNetworks` — xem NFR-SEC-003), đặt **đầu pipeline**, trước middleware rate limiting và authentication, để lấy đúng IP thật. |
+| **Domain Layer** (`CulinaryBlog.Domain`) | Nhân lõi hệ thống. Chứa: • Entities: `Recipe`, `Category`, `RecipeStep`, `RecipeIngredient`, `RecipeImage`, `RefreshToken`. • Value Objects: `Slug`, `EmailAddress`. • Owned Entities: `RecipeNutrition`. • Domain Events (optional): `RecipePublishedEvent`. • Enums: `RecipeDifficulty`, `RecipeStatus`. • **Domain Exceptions** (`Exceptions/{Module}`): lớp gốc trừu tượng `DomainException` mang `Code` = Application Error Code (Phụ lục B), **không mang mã HTTP**; danh mục mã `ErrorCodes`. • Không có NuGet dependencies (chỉ .NET BCL). *[CR-2026-04 / MT-63: `ApplicationUser` kế thừa `IdentityUser` (NuGet `Microsoft.Extensions.Identity.Stores`) nên thuộc **Infrastructure**; các interface repository chuyển sang **Application**.]* |
+| **Application Layer** (`CulinaryBlog.Application`) | Orchestration Layer. Chứa: • Commands (CQRS write): `CreateRecipeCommand`, `PublishRecipeCommand`, `LoginCommand`... • Queries (CQRS read): `GetRecipesQuery`, `GetRecipeBySlugQuery`... • Handlers (MediatR `IRequestHandler`): xử lý logic business cho mỗi command/query. • DTOs / Response models: `RecipeDto`, `UserDto`, `PagedResult<T>`. • Validators (FluentValidation): validation rules cho mỗi command. • Pipeline Behaviors (đúng 4, khớp mục 6.3): `LoggingBehavior`, `ValidationBehavior`, `CachingBehavior`, `CacheInvalidationBehavior`. **Không có `PerformanceBehavior` riêng** — việc đo thời gian và cảnh báo > 500ms là trách nhiệm tự nhiên của `LoggingBehavior`. • Service interfaces: `IEmailService`, `IJwtService`, `IFileStorageService`, `ICurrentUser`. • **Persistence interfaces** *(CR-2026-04 / MT-63)*: `IRepository<T>` (không có xóa cứng, không trả `IQueryable`), `IUnitOfWork` (`SaveChangesAsync`, `ExecuteInTransactionAsync`, các repository theo module: `Users`, `Categories`, `Recipes`), read repository trả DTO cho phía Query. |
+| **Infrastructure Layer** (`CulinaryBlog.Infrastructure`) | Implements application interfaces. Chứa: • EF Core: `CulinaryBlogDbContext`, configurations, migrations, repositories. • Repository implementations: `EfRepository<T>`, `UnitOfWork` (transaction qua execution strategy; dịch `DbUpdateConcurrencyException` và vi phạm ràng buộc `23505` thành domain exception qua bộ dịch của từng module), `RecipeRepository`, `CategoryRepository`, `UserRepository`, read repository (LINQ + EF Core + FTS). • Identity: `ApplicationUser`, `IdentityService` (`UserManager`). • JWT Service: `JwtService` (`System.IdentityModel.Tokens.Jwt`). • File Storage: `MinioFileStorageService` (`AWSSDK.S3`). • Email: `MailKitEmailService`. • Cache: `RedisCacheService` (`StackExchange.Redis`). • Hangfire job registrations. • EF Core Interceptors: `AuditInterceptor` (auto set CreatedAt/UpdatedAt). |
+| **Presentation Layer** (`CulinaryBlog.API`) | HTTP interface. Chứa: • Minimal API Endpoint Groups: `AuthEndpoints`, `RecipesEndpoints`, `CategoriesEndpoints`. • Middleware: `GlobalExceptionMiddleware` (ánh xạ Domain Exception → mã HTTP theo kiểu exception, mỗi module một bảng ánh xạ — CR-2026-04 / MT-63), `CorrelationIdMiddleware`, `RateLimitingMiddleware`. • DI Configuration: `Program.cs` + Extension methods (`AddApplication`, `AddInfrastructure`, `AddPresentation`). • OpenAPI: Scalar UI tại `/scalar`, XML documentation comments. • Authentication: JWT Bearer; Google ID Token được verify bằng `Google.Apis.Auth` (không dùng ASP.NET Google provider, không có redirect callback). • `UseForwardedHeaders` với `KnownIPNetworks` = dải mạng Docker nội bộ (không dùng `KnownProxies`/`KnownNetworks` — xem NFR-SEC-003), đặt **đầu pipeline**, trước middleware rate limiting và authentication, để lấy đúng IP thật. |
 
 ### 6.3. CQRS + MediatR Pipeline
 
@@ -1801,8 +1837,8 @@ server {
 
 > **[CR-2026-02 / MT-50, MT-51]** Hai lỗi kỹ thuật của v1.1.0 được sửa ở mục này. Cả hai đều thuộc loại nguy hiểm nhất: **làm đúng từng chữ của đặc tả thì hệ thống hỏng khi chạy thật.**
 >
-> - **MT-50 — khối `upstream` gây 502 (🔴).** Cấu hình Nginx của v1.1.0 dùng `upstream api_pool { server api:8080; }`. Nginx bản open-source phân giải tên trong khối `upstream` **một lần duy nhất lúc khởi động**. Buổi 1 đã gặp đúng lỗi này khi chạy thật (`BAO_CAO_BUOI_1.md` §5.1 lỗi #2): container `api` được tạo lại và đổi IP từ `172.30.2.3` sang `172.30.2.2` → Nginx vẫn gửi request tới IP cũ → **toàn bộ `/api/*` trả 502** cho tới khi khởi động lại Nginx. Lỗi đã được sửa trong code (commit `064f582`), nhưng v1.1.0 lại đặc tả ngược về cách cũ — ai làm theo SRS sẽ tái tạo nguyên vẹn sự cố. Cơ chế `resolver` + biến vừa sửa tận gốc vừa **tốt hơn cho chính mục tiêu scale ngang** (NFR-SCALE-003): khi tăng từ 3 lên 5 replica, Nginx tự nhận 2 replica mới trong 10 giây mà không cần reload. Phương án thay thế `server api:8080 resolve;` trong khối `upstream` chỉ có ở Nginx Plus hoặc bản open-source rất mới, nên không được chọn làm chuẩn.
-> - **MT-51 — lệnh healthcheck không chạy được (🟡).** v1.1.0 dùng `curl` cho `api`, `frontend`, `minio`: image `aspnet:10.0` **không có** `curl`, `minio/minio` **không có** `curl`, `node:22-alpine` **chỉ có** `wget` của busybox — một healthcheck không chạy được sẽ khiến container luôn `unhealthy`, kéo theo mọi service `depends_on: service_healthy` không bao giờ khởi động. Ngoài ra `pg_isready` không có `-h` kiểm tra qua unix socket và báo "ready" **khi Postgres chưa mở cổng TCP** — chính là nguyên nhân lỗi `57P03 the database system is starting up` Buổi 1 đã gặp (§5.1 lỗi #1). v1.2.0 dùng đúng các lệnh đã được kiểm chứng trên hệ thống thật.
+> - **MT-50 — khối `upstream` gây 502 (🔴).** Cấu hình Nginx của v1.1.0 dùng `upstream api_pool { server api:8080; }`. Nginx bản open-source phân giải tên trong khối `upstream` **một lần duy nhất lúc khởi động**. Buổi 2 đã gặp đúng lỗi này khi chạy thật (`BAO_CAO_BUOI_2.md` §5.1 lỗi #2): container `api` được tạo lại và đổi IP từ `172.30.2.3` sang `172.30.2.2` → Nginx vẫn gửi request tới IP cũ → **toàn bộ `/api/*` trả 502** cho tới khi khởi động lại Nginx. Lỗi đã được sửa trong code (commit `064f582`), nhưng v1.1.0 lại đặc tả ngược về cách cũ — ai làm theo SRS sẽ tái tạo nguyên vẹn sự cố. Cơ chế `resolver` + biến vừa sửa tận gốc vừa **tốt hơn cho chính mục tiêu scale ngang** (NFR-SCALE-003): khi tăng từ 3 lên 5 replica, Nginx tự nhận 2 replica mới trong 10 giây mà không cần reload. Phương án thay thế `server api:8080 resolve;` trong khối `upstream` chỉ có ở Nginx Plus hoặc bản open-source rất mới, nên không được chọn làm chuẩn.
+> - **MT-51 — lệnh healthcheck không chạy được (🟡).** v1.1.0 dùng `curl` cho `api`, `frontend`, `minio`: image `aspnet:10.0` **không có** `curl`, `minio/minio` **không có** `curl`, `node:22-alpine` **chỉ có** `wget` của busybox — một healthcheck không chạy được sẽ khiến container luôn `unhealthy`, kéo theo mọi service `depends_on: service_healthy` không bao giờ khởi động. Ngoài ra `pg_isready` không có `-h` kiểm tra qua unix socket và báo "ready" **khi Postgres chưa mở cổng TCP** — chính là nguyên nhân lỗi `57P03 the database system is starting up` Buổi 2 đã gặp (§5.1 lỗi #1). v1.2.0 dùng đúng các lệnh đã được kiểm chứng trên hệ thống thật.
 > - Đồng thời bổ sung service **`hangfire`** (worker — MT-47) vào bảng, đường dẫn **`/media/`** để ảnh có một địa chỉ công khai duy nhất (trước đây URL `localhost:9000` truy cập được từ trình duyệt nhưng **không** từ container frontend, khiến tối ưu ảnh của Next.js không chạy được), và **ghim phiên bản** thay cho tag `latest` để bản build tái lập được.
 
 > **[CR-2026 / MT-29, MT-32, MT-33.7, MT-38, MT-39]** Ba bổ sung ở mục này đều nhằm làm cho các NFR đã cam kết **có người thực thi**:
@@ -2040,7 +2076,7 @@ Chương này liệt kê tất cả API endpoints của hệ thống Culinary Bl
 | GET | `/auth/me` | Lấy thông tin user hiện tại | Bearer JWT | — | 200: `{ id, email, displayName, avatarUrl, bio, roles }`; 401: Unauthorized |
 | PATCH | `/auth/me` | Cập nhật profile người dùng | Bearer JWT | `{ displayName?, avatarUrl?, bio? }` | 200: `{ id, email, displayName, avatarUrl, bio, roles }`; 400: validation; 401: Unauthorized |
 | GET | `/users` | **Danh sách người dùng** (FR-AUTH-008) — *mới ở v1.2.0* | Bearer + **Admin** | `?page&pageSize&search&isActive` | 200: `PagedResult<UserAdminDto>` = `{ id, email, displayName, avatarUrl, roles, isActive, createdAt, recipeCount }`; 400; 401; 403. Không cache |
-| PATCH | `/users/{id}/status` | **Khóa / mở khóa tài khoản** (FR-AUTH-008) | Bearer + **Admin** | `{ isActive: boolean, reason? }` | 200: `{ id, email, displayName, isActive }`; 400: validation; **403: không phải Admin, hoặc Admin tự khóa chính mình**; 404: user không tồn tại |
+| PATCH | `/users/{id}/status` | **Khóa / mở khóa tài khoản** (FR-AUTH-008) | Bearer + **Admin** | `{ isActive: boolean, reason? }` | 200: `{ id, email, displayName, isActive }`; 400: validation; **403: không phải Admin, hoặc Admin tự khóa chính mình**; 404: user không tồn tại (`AUTH_USER_NOT_FOUND` — MT-59) |
 | GET | `/auth/sessions` | **Danh sách phiên đăng nhập của chính mình** (FR-AUTH-009) — *mới ở v1.2.0* | Bearer JWT | — | 200: `[{ id, createdAt, createdByIp, expiresAt, isCurrent }]` — **không bao giờ trả `TokenHash`**; 401. `Cache-Control: no-store` |
 | DELETE | `/auth/sessions/{id}` | **Thu hồi một phiên** (FR-AUTH-009) — *mới ở v1.2.0* | Bearer JWT | — | 204 (idempotent); 401; **404: không tồn tại hoặc thuộc người khác** |
 | POST | `/auth/sessions/revoke-all` | **Thu hồi mọi phiên** — đăng xuất trên mọi thiết bị (FR-AUTH-009) — *mới ở v1.2.0* | Bearer JWT | — | 204; 401 |
@@ -2067,16 +2103,17 @@ Chương này liệt kê tất cả API endpoints của hệ thống Culinary Bl
 
 ### 8.3. Recipes Module (/recipes)
 
-> **Quy ước Public/Private của module này:** `GET /recipes`, `GET /recipes/{slug}` và `GET /recipes/search` **chỉ trả `Status == Published` cho mọi người gọi, không ngoại lệ — kể cả Admin**. Dữ liệu Draft/Archived **chỉ** truy cập được qua `GET /recipes/mine`.
+> **Quy ước Public/Private của module này:** `GET /recipes`, `GET /recipes/{slug}` và `GET /recipes/search` **chỉ trả `Status == Published` cho mọi người gọi, không ngoại lệ — kể cả Admin**. Dữ liệu Draft/Archived **chỉ** truy cập được qua tiền tố riêng tư **`/recipes/mine`** (`GET /recipes/mine`, `GET /recipes/mine/{id}`).
 
 | Method | Endpoint | Mô tả | Auth / Role | Request | Status Code |
 | --- | --- | --- | --- | --- | --- |
 | GET | `/recipes` | Danh sách recipes (**chỉ Published**, paginated) | Không | `?page&pageSize&sortBy&sortOrder&categoryId&difficulty&maxCookTime&maxPrepTime&minServings` | 200; 400 (tham số ngoài whitelist) |
 | GET | `/recipes/mine` | **Danh sách công thức của chính mình** (Draft/Published/Archived) — **cấm cache**, trả `Cache-Control: no-store` | **Bearer bắt buộc** (Author/Admin) | `?status&page&pageSize&sortBy&sortOrder&authorId` (`authorId` chỉ Admin) | 200; 400; 401; 403 |
+| GET | `/recipes/mine/{id}` | **Chi tiết một công thức của chính mình ở mọi trạng thái** (phục vụ trang sửa) — *mới ở v1.2.2 (CR-2026-04 / MT-62)*: `RecipeDetailDto` kèm `rowVersion`, header `ETag`, **cấm cache** (`Cache-Control: no-store`) | **Bearer bắt buộc** (Owner/Admin) | — | 200; 401; **404** (không tồn tại, đã xóa, hoặc thuộc người khác) |
 | GET | `/recipes/search` | Full-text search công thức (**chỉ Published**) | Không | `?q={keyword}&page&pageSize&categoryId&difficulty` | 200; 400 (`q` < 2 ký tự) |
 | GET | `/recipes/sitemap` | **Danh sách slug phục vụ sitemap** (NFR-SEO-003) — *mới ở v1.2.0*: `[{ slug, updatedAt }]` của **mọi** recipe Published, không phân trang, cache Redis 1 giờ | Không | — | 200 |
 | GET | `/recipes/{slug}` | Chi tiết recipe theo slug (**chỉ Published**; kèm steps, ingredients, images, nutrition) | Không | — | 200; 404 |
-| POST | `/recipes` | Tạo recipe mới (trạng thái Draft) | Bearer (Author/Admin) | `{ title, description, categoryId, prepTime, cookTime, servings, difficulty, instructions?, nutrition?, steps?, ingredients? }` | 201; 400; 401; 403; 404 (categoryId không tồn tại) |
+| POST | `/recipes` | Tạo recipe mới (trạng thái Draft) | Bearer (Author/Admin) | `{ title, description, categoryId, prepTime, cookTime, servings, difficulty, instructions?, nutrition?, steps?, ingredients? }` | 201; 400 (bao gồm `categoryId` không tồn tại — lỗi ở field `categoryId`, CR-2026-04 / MT-61); 401; 403 |
 | PUT | `/recipes/{id}` | Cập nhật thông tin cơ bản recipe | Bearer (Owner/Admin) | `{ title?, description?, categoryId?, prepTime?, cookTime?, servings?, difficulty?, instructions?, nutrition?, rowVersion }` | 200; 400; 403; 404; **409** (`RECIPE_CONCURRENCY_CONFLICT`) |
 | PATCH | `/recipes/{id}/publish` | Publish recipe (Draft → Published) | Bearer (Owner/Admin) | — | 200; **400** (`RECIPE_PUBLISH_INCOMPLETE`); 403; 404; **409** (`RECIPE_INVALID_STATE_TRANSITION`) |
 | PATCH | `/recipes/{id}/unpublish` | Unpublish recipe (Published → Draft) | Bearer (Owner/Admin) | — | 200; 403; 404; 409 |
@@ -2146,7 +2183,7 @@ Endpoint upload/xóa tệp **tổng quát**, dùng cho mọi trường chỉ nh�
 | POST | `/files/upload` | Upload một ảnh (FR-FILE-001) | Bearer (Author/Admin) · rate limit `upload` 5 req/phút/IP | `multipart/form-data`: `file` | 201: `{ key, url, contentType, size }` — lưu tại `uploads/{userId}/{guid}{ext}`; 400: `FILE_SIZE_EXCEEDED` / `FILE_MIME_INVALID`; 401; 429; 503: `FILE_STORAGE_UNAVAILABLE` |
 | DELETE | `/files/{**key}` | Xóa một tệp đã upload (FR-FILE-002) | Bearer (Author/Admin) | — | 204 (idempotent); 400: key không hợp lệ (chứa `..`); 401; **403 `FILE_FORBIDDEN`**: tệp không nằm trong thư mục của người gọi (Admin được xóa mọi tệp) |
 
-> **[CR-2026-02 / MT-43]** Hai endpoint này đã tồn tại trong code từ Buổi 1 nhưng nằm **ngoài SRS**. Chính thức hóa chúng thay vì tạo ba endpoint con riêng cho avatar, ảnh danh mục và ảnh bước nấu, vì một endpoint tổng quát giữ mọi quy tắc bảo mật tệp (5MB, magic bytes, tên GUID, phạm vi thư mục theo người dùng) **ở một chỗ duy nhất**. Tệp đã upload nhưng không được gán vào đâu (người dùng bỏ ngang form) là rác chấp nhận được ở v1.2.0; dọn tệp mồ côi thuộc phiên bản sau.
+> **[CR-2026-02 / MT-43]** Hai endpoint này đã tồn tại trong code từ Buổi 2 nhưng nằm **ngoài SRS**. Chính thức hóa chúng thay vì tạo ba endpoint con riêng cho avatar, ảnh danh mục và ảnh bước nấu, vì một endpoint tổng quát giữ mọi quy tắc bảo mật tệp (5MB, magic bytes, tên GUID, phạm vi thư mục theo người dùng) **ở một chỗ duy nhất**. Tệp đã upload nhưng không được gán vào đâu (người dùng bỏ ngang form) là rác chấp nhận được ở v1.2.0; dọn tệp mồ côi thuộc phiên bản sau.
 
 ---
 
@@ -2189,10 +2226,11 @@ Hệ thống sử dụng Application Error Codes (mã lỗi tùy chỉnh) trong 
 | `AUTH_TOKEN_INVALID` | 401 | Access Token sai định dạng hoặc chữ ký không hợp lệ. | Auth |
 | `AUTH_REFRESH_TOKEN_EXPIRED` | 401 | Refresh Token đã hết hạn (7 ngày). | Auth |
 | `AUTH_REFRESH_TOKEN_REVOKED` | 401 | Refresh Token đã bị thu hồi (reuse detection). | Auth |
-| `AUTH_GOOGLE_TOKEN_INVALID` | 400 | Google ID Token không hợp lệ hoặc đã hết hạn. | Auth |
+| `AUTH_GOOGLE_TOKEN_INVALID` | 400 / 401 | Google ID Token thiếu dữ liệu cần thiết (**400**) hoặc không vượt qua kiểm tra chữ ký/`aud`/`exp` (**401**) — xem FR-AUTH-003 *(làm rõ ở v1.2.2 — MT-61)*. | Auth |
 | `AUTH_GOOGLE_UNAVAILABLE` | **502** | Không truy cập được Google để lấy khóa công khai (JWKS) verify ID Token. | Auth |
 | `AUTH_ACCOUNT_DISABLED` | 403 | Tài khoản bị vô hiệu hóa (`IsActive=false`) bởi Admin (FR-AUTH-008). | Auth |
 | `AUTH_ACCOUNT_LOCKED` | **423** | Tài khoản bị khóa tạm thời do đăng nhập sai quá số lần cho phép (Identity Lockout). | Auth |
+| `AUTH_USER_NOT_FOUND` | **404** | Người dùng được Admin thao tác (FR-AUTH-008) không tồn tại. *(v1.2.2 — MT-59)* | Auth |
 | `RECIPE_NOT_FOUND` | 404 | Recipe với id/slug không tồn tại hoặc đã bị xóa. | Recipe |
 | `RECIPE_SLUG_EXISTS` | 409 | Slug đã tồn tại — tự động thêm suffix (`slug-1`, `slug-2`...). | Recipe |
 | `RECIPE_PUBLISH_INCOMPLETE` | 400 | Recipe thiếu điều kiện publish: phải có ít nhất 1 ingredient và 1 step. | Recipe |
@@ -2208,10 +2246,15 @@ Hệ thống sử dụng Application Error Codes (mã lỗi tùy chỉnh) trong 
 | `FILE_FORBIDDEN` | **403** | Xóa tệp không nằm trong thư mục của người gọi (`DELETE /files/{**key}`); Admin được miễn. *(v1.2.0 — MT-46)* | File |
 | `FILE_STORAGE_UNAVAILABLE` | **503** | MinIO không khả dụng khi upload/xóa tệp (FR-FILE-001/002, FR-RCP-008 A4). *(v1.2.0 — MT-46)* | File |
 | `VALIDATION_ERROR` | 400 | Một hoặc nhiều field không hợp lệ. Xem `"errors"` object. | Common |
+| `CONCURRENCY_CONFLICT` | **409** | Bản ghi (không thuộc module Recipe) đã được cập nhật bởi request khác kể từ lúc đọc (`RowVersion` không khớp). Client cần tải lại. Module Recipe dùng mã riêng `RECIPE_CONCURRENCY_CONFLICT`. *(v1.2.2 — MT-60)* | Common |
 | `RATE_LIMIT_EXCEEDED` | 429 | Quá giới hạn request. Xem `Retry-After` header. | Common |
 | `INTERNAL_ERROR` | **500** | Lỗi không lường trước. `detail` chỉ chứa thông báo chung và CorrelationId để tra log — không lộ chi tiết kỹ thuật. *(v1.2.0 — MT-46)* | Common |
 
-> **[CR-2026-02 / MT-46]** Phụ lục B tăng từ 24 lên **27 mã**. Ba mã mới không phải phát minh trên giấy: chúng **đã được code Buổi 1 sử dụng thực tế** (`ErrorCodes.cs`) cho những tình huống SRS có mô tả status code nhưng không đặt mã — FR-RCP-008 A4 (MinIO lỗi → 503) và lỗi 500 chung. Để chúng nằm ngoài Phụ lục B nghĩa là Frontend nhận về những giá trị `type` không có trong tài liệu, trái với chính mục đích của phụ lục này (*"để frontend xử lý lỗi theo programmatic way"*). Ngược lại, mã `AUTH_USERNAME_EXISTS` mà code Buổi 1 có **không** được đưa vào: nó chỉ tồn tại vì form đăng ký cũ bắt người dùng tự nhập `userName` — điều trái với MT-12 — và sẽ biến mất khi code được sửa theo SRS.
+> **[CR-2026-04 / MT-59, MT-60]** Phụ lục B tăng từ 27 lên **29 mã**:
+> - **`AUTH_USER_NOT_FOUND`** — FR-AUTH-008 A3 và §8.1 đã quy định trả 404 khi user không tồn tại, nhưng không có mã nào cho trường `type`.
+> - **`CONCURRENCY_CONFLICT`** — mọi bảng kế thừa `BaseEntity` đều có `RowVersion` là concurrency token (§7.1), nên xung đột ghi có thể xảy ra ở mọi module (ví dụ hai Admin cùng sửa một danh mục), trong khi Phụ lục B chỉ có mã cho Recipe. Thiếu mã chung thì xung đột ngoài Recipe chỉ còn hai lối ra, đều sai: 500 `INTERNAL_ERROR` (sai bản chất), hoặc mượn mã của Recipe (sai module).
+>
+> **[CR-2026-02 / MT-46]** Phụ lục B tăng từ 24 lên **27 mã**. Ba mã mới không phải phát minh trên giấy: chúng **đã được code Buổi 2 sử dụng thực tế** (`ErrorCodes.cs`) cho những tình huống SRS có mô tả status code nhưng không đặt mã — FR-RCP-008 A4 (MinIO lỗi → 503) và lỗi 500 chung. Để chúng nằm ngoài Phụ lục B nghĩa là Frontend nhận về những giá trị `type` không có trong tài liệu, trái với chính mục đích của phụ lục này (*"để frontend xử lý lỗi theo programmatic way"*). Ngược lại, mã `AUTH_USERNAME_EXISTS` mà code Buổi 2 có **không** được đưa vào: nó chỉ tồn tại vì form đăng ký cũ bắt người dùng tự nhập `userName` — điều trái với MT-12 — và sẽ biến mất khi code được sửa theo SRS.
 
 ## PHỤ LỤC C – TỪ ĐIỂN THUẬT NGỮ
 
@@ -2317,19 +2360,19 @@ Bảng dưới đây truy vết toàn bộ **41 điểm mâu thuẫn / bất nh�
 
 ## PHỤ LỤC E – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-02
 
-Bảng dưới đây truy vết **16 điểm** (MT-42 → MT-57) phát hiện ở lượt rà soát thứ tư — lượt đầu tiên đối chiếu SRS với **code đã chạy thật** (nhánh `main`, `SPEC/BAO_CAO_BUOI_1.md`). Phân tích đầy đủ (hiện trạng, phương án, lý do chọn) nằm trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`, mục "Lượt 4". Mức độ: 🔴 Cao · 🟡 Trung bình · 🟢 Thấp. Loại: **(a)** lỗi kỹ thuật trong chính v1.1.0 · **(b)** yêu cầu mồ côi · **(c)** SRS mâu thuẫn với thiết kế đã được kiểm chứng.
+Bảng dưới đây truy vết **16 điểm** (MT-42 → MT-57) phát hiện ở lượt rà soát thứ tư — lượt đầu tiên đối chiếu SRS với **code đã chạy thật** (nhánh `main`, `SPEC/BAO_CAO_BUOI_2.md`). Phân tích đầy đủ (hiện trạng, phương án, lý do chọn) nằm trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`, mục "Lượt 4". Mức độ: 🔴 Cao · 🟡 Trung bình · 🟢 Thấp. Loại: **(a)** lỗi kỹ thuật trong chính v1.1.0 · **(b)** yêu cầu mồ côi · **(c)** SRS mâu thuẫn với thiết kế đã được kiểm chứng.
 
 | MT | Chủ đề | Mức | Loại | Quyết định trong v1.2.0 | Vị trí áp dụng |
 | --- | --- | --- | --- | --- | --- |
 | MT-42 | Hai hình dạng response danh sách (`{data, meta}` vs `PagedResult`), kèm `pageSize: 10` lệch | 🟡 | (c) | Chốt **`PagedResult<T>`** `{ items, page, pageSize, totalCount, totalPages, hasNextPage, hasPreviousPage }`; đối tượng đơn trả thẳng DTO | §5.2, quy ước Chương 8 |
-| MT-43 | Ba FR chỉ nhận URL ảnh nhưng không có endpoint upload nào | 🟡 | (b) | Chính thức hóa `POST /files/upload`, `DELETE /files/{**key}` (có từ Buổi 1) gắn vào FR-FILE-001/002 | §3.5, Chương 8.8 |
+| MT-43 | Ba FR chỉ nhận URL ảnh nhưng không có endpoint upload nào | 🟡 | (b) | Chính thức hóa `POST /files/upload`, `DELETE /files/{**key}` (có từ Buổi 2) gắn vào FR-FILE-001/002 | §3.5, Chương 8.8 |
 | MT-44 | `/dashboard/users` không có API danh sách người dùng | 🟡 | (b) | Bổ sung `GET /users` vào **FR-AUTH-008** (không tách FR mới) | FR-AUTH-008, Chương 8.1, §5.1 |
 | MT-45 | Quản lý phiên có trong lộ trình nhưng không có FR | 🟢 | (b) | Thêm **FR-AUTH-009** (mức **C**) + 3 endpoint; claim `sid` để nhận diện phiên hiện tại; tổng FR 36 → **37** | FR-AUTH-009, NFR-SEC-002, Chương 8.1, §2.2 |
 | MT-46 | 3 mã lỗi code đã dùng nhưng thiếu trong Phụ lục B | 🟢 | (c) | Thêm `FILE_FORBIDDEN` (403), `FILE_STORAGE_UNAVAILABLE` (503), `INTERNAL_ERROR` (500) — 24 → **27** mã | Phụ lục A, B, FR-RCP-008 |
 | MT-47 | Hangfire "in-process" vs container worker riêng | 🟡 | (c) | Chuẩn hóa **worker riêng** — tách tải nặng CPU (resize ảnh) khỏi luồng request, scale độc lập | §2.1, §2.6.2, §3.6, §5.3, §6.1, §6.5, NFR-SCALE-001 |
 | MT-48 | Sitemap cần toàn bộ slug, API danh sách giới hạn 50 | 🟢 | (b) | Thêm `GET /recipes/sitemap` gọn nhẹ, cache 1 giờ | NFR-SEO-003, Chương 8.3 |
 | MT-49 | "Có thể khôi phục" nhưng không có chức năng khôi phục | 🟡 | (b) | Làm rõ: khôi phục do **quản trị viên vận hành** trên DB trong 30 ngày; tự phục vụ ngoài phạm vi | §1.2.3, NFR-REL-003, Phụ lục C |
-| MT-50 | Cấu hình Nginx `upstream` tái tạo lỗi 502 đã sửa ở Buổi 1 | 🔴 | (a) | **Resolver DNS động** + `proxy_pass` qua biến | §6.1, §6.5, NFR-SCALE-003, Phụ lục D (MT-32) |
+| MT-50 | Cấu hình Nginx `upstream` tái tạo lỗi 502 đã sửa ở Buổi 2 | 🔴 | (a) | **Resolver DNS động** + `proxy_pass` qua biến | §6.1, §6.5, NFR-SCALE-003, Phụ lục D (MT-32) |
 | MT-51 | Lệnh healthcheck dùng `curl` không có trong image; `pg_isready` thiếu `-h` | 🟡 | (a) | Lệnh đã kiểm chứng: `curl` cài thêm cho `api`, `wget` cho `frontend`, `mc ready local`, `pg_isready -h 127.0.0.1` | §6.5 |
 | MT-52 | Admin tự khóa: 403 (FR) vs 409 `VALIDATION_ERROR` (Chương 8) | 🟡 | (a) | Thống nhất **403** | FR-AUTH-008, Chương 8.1, Phụ lục A |
 | MT-53 | Giải thích sai cơ chế route; danh sách slug dành riêng mỗi nơi một kiểu | 🟢 | (a) | Literal luôn thắng `{slug}`; **một danh sách duy nhất** `search, mine, sitemap, new, edit` | NFR-SEO-004, FR-CAT-003, FR-RCP-003, Chương 8, Phụ lục D (MT-33) |
@@ -2342,11 +2385,31 @@ Bảng dưới đây truy vết **16 điểm** (MT-42 → MT-57) phát hiện �
 
 > **Bài học quy trình ghi lại cho các lượt sau:** 7/16 điểm của lượt này thuộc loại (a) — *lỗi do chính bản sửa trước đưa vào*, không có sẵn trong v1.0.0. Chúng chỉ lộ ra khi đối chiếu tài liệu với hệ thống đang chạy. Từ v1.2.0 trở đi, mọi Change Request chạm tới hạ tầng hoặc cấu hình phải được **kiểm chứng trên môi trường thật** trước khi duyệt, không chỉ rà chéo giữa các chương.
 
+
+## PHỤ LỤC F – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-03
+
+| MT | Vấn đề ở v1.2.0 | Quyết định trong v1.2.1 | Mục SRS thay đổi | Hiện thực |
+| --- | --- | --- | --- | --- |
+| MT-58 | §2.6.1 chỉ yêu cầu 50 công thức và 5 tác giả mẫu; giảng viên yêu cầu ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước | Nâng ngưỡng dữ liệu mẫu; nội dung món ăn phải đúng với món; Bogus sinh phần ngẫu nhiên; seed idempotent, tự bù cho database đang có | §2.6.1 | `Infrastructure/Persistence/Seed` (`RecipeSeedCatalog`, `DatabaseSeeder`, `Data/*.json`) — Buổi 2, Dev 4 |
+
+
+## PHỤ LỤC G – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-04
+
+| MT | Vấn đề ở v1.2.1 | Quyết định trong v1.2.2 | Mục SRS thay đổi | Hiện thực |
+| --- | --- | --- | --- | --- |
+| MT-59 | FR-AUTH-008 A3 / §8.1 trả 404 khi user không tồn tại nhưng Phụ lục B không có mã | Thêm `AUTH_USER_NOT_FOUND` (404) | FR-AUTH-008, §8.1, Phụ lục B | `UserNotFoundException` — Buổi 3 Dev 1; ném từ `PATCH /users/{id}/status` — Buổi 4 Dev 1 |
+| MT-60 | Mọi `BaseEntity` có concurrency token nhưng chỉ Recipe có mã lỗi xung đột | Thêm `CONCURRENCY_CONFLICT` (409, Common); Recipe giữ `RECIPE_CONCURRENCY_CONFLICT` | Phụ lục B | `ConcurrencyConflictException` + `UnitOfWork` dịch `DbUpdateConcurrencyException` — Buổi 3 Dev 4 |
+| MT-61 | (a) `AUTH_GOOGLE_TOKEN_INVALID` là 400 ở Phụ lục B nhưng 401 ở FR-AUTH-003 A1; (b) `categoryId` không tồn tại là 404 ở §8.3 nhưng 400 ở FR-RCP-003 A2 | (a) Một mã, hai mã HTTP theo bản chất lỗi (400 thiếu dữ liệu / 401 không xác thực được); (b) **400** với lỗi ở field `categoryId` | FR-AUTH-003, Phụ lục B, §8.3 | Buổi 3 Dev 1 (Google), Buổi 3 Dev 2 (tạo công thức) |
+| MT-62 | Route `/dashboard/recipes/[id]/edit` không có endpoint nào trả trọn một công thức Draft (`/recipes/{slug}` chỉ Published, `/recipes/mine` chỉ tóm tắt) | Thêm `GET /recipes/mine/{id}` (Owner/Admin, mọi trạng thái, `rowVersion` + `ETag`, `no-store`; 404 cho id của người khác) — Chương 8: 44 → **45 endpoint** | FR-RCP-011, §5.1, §8.3 | Buổi 4 Dev 3 |
+| MT-63 | §6.2 đặt `ApplicationUser` (kế thừa `IdentityUser` — có NuGet) và các interface repository ở Domain, trái ràng buộc "Domain chỉ .NET BCL"; FR-CAT-003 A4 đặt việc đọc mã lỗi PostgreSQL ở middleware tầng API | Domain chỉ gồm entity, value object, enum, **domain exception**; interface truy cập dữ liệu (`IRepository<T>`, `IUnitOfWork`, repository theo module) ở **Application**; `ApplicationUser` ở **Infrastructure**; dịch lỗi ghi DB ở Infrastructure, middleware ánh xạ exception → HTTP | §6.2, FR-CAT-003 A4 | Buổi 3 Dev 4 (nền) + Dev 1/2/3 (phần module) |
+
+**Tổng kết:** 5/5 điểm đã xử lý. Toàn tài liệu: **63 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua bốn Change Request.
+
 ---
 
 *— Hết tài liệu —*
 
-> **Nguồn gốc:** bản 1.0.0 được chuyển đổi từ `SPEC/SRS_Culinary_Blog_v1.0.0.pdf` (71 trang) sang Markdown, giữ nguyên 100% nội dung gốc. Bản **1.1.0** áp dụng Change Request **CR-2026** lên bản đó: xử lý toàn bộ 41 điểm mâu thuẫn được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi thay đổi so với 1.0.0 đều được đánh dấu bằng chú thích `[CR-2026 / MT-xx]` tại chỗ và truy vết đầy đủ ở **Phụ lục D**. Bản **1.2.0** áp dụng Change Request **CR-2026-02**: đối chiếu với code đã chạy thật, xử lý thêm 16 điểm (MT-42 → MT-57) — đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ, truy vết ở **Phụ lục E**. Các bản 1.0.0 và 1.1.0 được giữ nguyên để đối chiếu.
+> **Nguồn gốc:** bản 1.0.0 được chuyển đổi từ `SPEC/SRS_Culinary_Blog_v1.0.0.pdf` (71 trang) sang Markdown, giữ nguyên 100% nội dung gốc. Bản **1.1.0** áp dụng Change Request **CR-2026** lên bản đó: xử lý toàn bộ 41 điểm mâu thuẫn được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi thay đổi so với 1.0.0 đều được đánh dấu bằng chú thích `[CR-2026 / MT-xx]` tại chỗ và truy vết đầy đủ ở **Phụ lục D**. Bản **1.2.0** áp dụng Change Request **CR-2026-02**: đối chiếu với code đã chạy thật, xử lý thêm 16 điểm (MT-42 → MT-57) — đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ, truy vết ở **Phụ lục E**. Bản **1.2.1** áp dụng Change Request **CR-2026-03**: cập nhật yêu cầu dữ liệu mẫu ở §2.6.1 (MT-58) — đánh dấu `[CR-2026-03 / MT-58]` tại chỗ, truy vết ở **Phụ lục F**. Bản **1.2.2** áp dụng Change Request **CR-2026-04**: 2 mã lỗi, 1 endpoint, 2 điểm làm rõ và 1 errata kiến trúc (MT-59 → MT-63) — đánh dấu `[CR-2026-04 / MT-xx]` tại chỗ, truy vết ở **Phụ lục G**. Các bản 1.0.0 và 1.1.0 được giữ nguyên để đối chiếu.
 
 
 

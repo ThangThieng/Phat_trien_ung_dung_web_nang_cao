@@ -4,7 +4,7 @@ namespace CulinaryBlog.API.Extensions;
 
 /// <summary>
 /// FR-RCP-001: policy "RecipeList" TTL 15 phút, vary theo query string.
-/// FR-RCP-002: policy "RecipeDetail" TTL 60 phút, tag "recipes" + "recipe:{slug}" để invalidate theo tag (Buổi 4).
+/// FR-RCP-002: policy "RecipeDetail" TTL 60 phút, tag "recipes" + "recipe:{slug}" để invalidate theo tag. Output Cache sẽ được bỏ hẳn ở Buổi 6 (nợ D-6, SRS MT-16/MT-34).
 /// Policy mặc định của .NET không cache request có Authorization → Draft của tác giả không bị lộ qua cache.
 /// </summary>
 public static class OutputCachePolicies
