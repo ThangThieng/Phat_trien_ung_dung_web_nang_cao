@@ -199,7 +199,7 @@ public static class RecipesEndpoints
 
     private static async Task<IResult> AddIngredientAsync(Guid id, IngredientInput body, ISender sender, CancellationToken ct)
     {
-        var result = await sender.Send(new AddIngredientCommand(id, body), ct).ConfigureAwait(false);
+        var result = await sender.Send(new AddIngredientCommand(id, body.Name, body.Quantity, body.QuantityText, body.Unit, body.Notes, body.OrderIndex), ct).ConfigureAwait(false);
         return Results.Created($"/api/v1/recipes/{id}/ingredients/{result.Id}", result);
     }
 
@@ -216,7 +216,7 @@ public static class RecipesEndpoints
 
     private static async Task<IResult> AddStepAsync(Guid id, StepInput body, ISender sender, CancellationToken ct)
     {
-        var result = await sender.Send(new AddStepCommand(id, body), ct).ConfigureAwait(false);
+        var result = await sender.Send(new AddStepCommand(id, body.Title, body.Description, body.TimerMinutes, body.ImageUrl), ct).ConfigureAwait(false);
         return Results.Created($"/api/v1/recipes/{id}/steps/{result.Id}", result);
     }
 

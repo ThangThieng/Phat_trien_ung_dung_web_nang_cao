@@ -308,6 +308,56 @@ public class RecipeContentEndpointsTests(CulinaryBlogApiFactory factory) : IAsyn
         Assert.Contains("categoryId", (await response.ReadValidationErrorsAsync()).Keys, StringComparer.Ordinal);
     }
 
+    /// <summary>Luồng lỗi của ba endpoint bước nấu: body thiếu title → 400, bước không thuộc công thức → 404, người khác → 403.</summary>
+    [Fact]
+    public async Task StepEndpoints_ErrorPaths()
+    {
+        var author = factory.CreateClientAs("Author");
+        var (recipeId, steps) = await CreateDraftWithStepsAsync(author, "Mì Quảng gà", 1);
+        var other = factory.CreateClientAs("Author", TestDataSeeder.OtherAuthorUserId);
+
+        var missingTitle = await author.PostAsJsonAsync($"/api/v1/recipes/{recipeId}/steps", new { description = "Chỉ có mô tả." });
+        await missingTitle.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
+        Assert.Contains("title", (await missingTitle.ReadValidationErrorsAsync()).Keys, StringComparer.Ordinal);
+
+        var updateUnknown = await author.PutAsJsonAsync($"/api/v1/recipes/{recipeId}/steps/{Guid.NewGuid()}", new { title = "Không có" });
+        await updateUnknown.ShouldBeProblemAsync(HttpStatusCode.NotFound, ErrorCodes.RecipeNotFound);
+
+        var deleteUnknown = await author.DeleteAsync(new Uri($"/api/v1/recipes/{recipeId}/steps/{Guid.NewGuid()}", UriKind.Relative));
+        await deleteUnknown.ShouldBeProblemAsync(HttpStatusCode.NotFound, ErrorCodes.RecipeNotFound);
+
+        var deleteByOther = await other.DeleteAsync(new Uri($"/api/v1/recipes/{recipeId}/steps/{steps[0].Id}", UriKind.Relative));
+        await deleteByOther.ShouldBeProblemAsync(HttpStatusCode.Forbidden, ErrorCodes.RecipeForbidden);
+
+        var updateByOther = await other.PutAsJsonAsync($"/api/v1/recipes/{recipeId}/steps/{steps[0].Id}", new { title = "Sửa trộm" });
+        await updateByOther.ShouldBeProblemAsync(HttpStatusCode.Forbidden, ErrorCodes.RecipeForbidden);
+    }
+
+    /// <summary>D-11: khóa của "errors" đúng tên trường JSON để FE gắn vào ô — body phẳng "name", mảng inline "steps[0].title".</summary>
+    [Fact]
+    public async Task ValidationErrorKeys_MatchJsonFieldNames()
+    {
+        var author = factory.CreateClientAs("Author");
+        var draft = await RecipeApi.CreateDraftAsync(author, "Xôi gấc ngày Tết");
+
+        var ingredient = await author.PostAsJsonAsync($"/api/v1/recipes/{draft.Id}/ingredients", new { quantity = 300, unit = "gram" });
+        Assert.Contains("name", (await ingredient.ReadValidationErrorsAsync()).Keys, StringComparer.Ordinal);
+
+        var inline = await author.PostAsJsonAsync("/api/v1/recipes", new
+        {
+            title = "Xôi gấc ngày Tết",
+            description = "Xôi gấc đỏ tươi, dẻo thơm, dùng trong mâm cỗ ngày Tết.",
+            categoryId = TestDataSeeder.MonChinhCategoryId,
+            prepTime = 30,
+            cookTime = 45,
+            servings = 6,
+            difficulty = "Medium",
+            steps = new object[] { new { description = "Ngâm gạo nếp qua đêm." } },
+        });
+        await inline.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
+        Assert.Contains("steps[0].title", (await inline.ReadValidationErrorsAsync()).Keys, StringComparer.Ordinal);
+    }
+
     private static async Task<(Guid RecipeId, List<RecipeStepDto> Steps)> CreateDraftWithStepsAsync(HttpClient author, string title, int count)
     {
         var draft = await RecipeApi.CreateDraftAsync(author, title);

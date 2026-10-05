@@ -27,7 +27,7 @@ public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshToke
 /// Cây quyết định (kế hoạch Buổi 4 — Dev 1, SRS FR-AUTH-004):
 /// 1. Hash không có trong DB → 401 AUTH_TOKEN_INVALID (A1).
 /// 2. Hết hạn → 401 AUTH_REFRESH_TOKEN_EXPIRED (A2).
-/// 3. Đã thu hồi → REUSE DETECTED: thu hồi CẢ token family của người dùng, ghi cảnh báo bảo mật, rồi mới ném
+/// 3. Đã thu hồi: tài khoản đang bị khóa → 403 AUTH_ACCOUNT_DISABLED (thu hồi do Admin, không phải reuse); ngược lại → REUSE DETECTED: thu hồi CẢ token family của người dùng, ghi cảnh báo bảo mật, rồi mới ném
 ///    401 AUTH_REFRESH_TOKEN_REVOKED (A3). Thu hồi phải được ghi xuống DB TRƯỚC khi ném — ném trước thì request kết thúc
 ///    mà lệnh thu hồi chưa bao giờ tới DB.
 /// 4. Người dùng không còn tồn tại → 401 (A5); bị vô hiệu hóa → 403 AUTH_ACCOUNT_DISABLED (A4).
@@ -55,6 +55,14 @@ public sealed partial class RefreshTokenCommandHandler(
 
         if (token.RevokedAt is not null)
         {
+            // Tài khoản đã bị Admin khóa (FR-AUTH-008 thu hồi mọi phiên lúc khóa): token bị thu hồi do QUẢN TRỊ, không phải
+            // bị đánh cắp — trả 403 AUTH_ACCOUNT_DISABLED (FR-AUTH-004 A4) để client báo đúng lý do, không phát cảnh báo
+            // reuse giả và không thu hồi lại cả họ token vốn đã bị thu hồi.
+            if (await identityService.FindByIdAsync(token.UserId, cancellationToken).ConfigureAwait(false) is { IsActive: false })
+            {
+                throw new AccountDisabledException();
+            }
+
             var revokedCount = await unitOfWork.Users.RevokeAllRefreshTokensAsync(token.UserId, now, cancellationToken).ConfigureAwait(false);
             LogReuseDetected(logger, token.UserId, request.IpAddress, revokedCount);
             throw InvalidTokenException.RefreshTokenRevoked();

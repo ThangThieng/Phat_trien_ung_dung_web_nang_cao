@@ -9,13 +9,17 @@ namespace CulinaryBlog.Application.Features.Recipes;
 
 // ================= FR-RCP-009 — nguyên liệu =================
 
-/// <summary>FR-RCP-009 – thêm nguyên liệu (201 RecipeIngredientDto).</summary>
-public sealed record AddIngredientCommand(Guid RecipeId, IngredientInput Ingredient) : RecipeWriteCommand, IRequest<RecipeIngredientDto>;
+/// <summary>FR-RCP-009 – thêm nguyên liệu (201 RecipeIngredientDto). Trường phẳng như body để lỗi 400 nằm đúng khóa của ô.</summary>
+public sealed record AddIngredientCommand(
+    Guid RecipeId,
+    string? Name,
+    decimal? Quantity,
+    string? QuantityText,
+    string? Unit,
+    string? Notes,
+    int? OrderIndex) : RecipeWriteCommand, IRequest<RecipeIngredientDto>, IIngredientInputFields;
 
-public sealed class AddIngredientCommandValidator : AbstractValidator<AddIngredientCommand>
-{
-    public AddIngredientCommandValidator() => RuleFor(x => x.Ingredient).NotNull().SetValidator(new IngredientInputValidator());
-}
+public sealed class AddIngredientCommandValidator : IngredientFieldsValidator<AddIngredientCommand>;
 
 /// <summary>
 /// FR-RCP-009 – cập nhật nguyên liệu (PUT <c>{ name?, quantity?, quantityText?, unit?, notes?, orderIndex? }</c>).
@@ -53,7 +57,13 @@ public sealed class AddIngredientCommandHandler(RecipeContent content) : IReques
     {
         ArgumentNullException.ThrowIfNull(request);
         var added = await content
-            .ApplyAsync(request, request.RecipeId, r => r.AddIngredient(request.Ingredient.ToDetails(), request.Ingredient.OrderIndex), cancellationToken)
+            .ApplyAsync(
+                request,
+                request.RecipeId,
+                r => r.AddIngredient(
+                    new IngredientDetails(request.Name ?? string.Empty, request.Quantity, request.QuantityText, request.Unit, request.Notes),
+                    request.OrderIndex),
+                cancellationToken)
             .ConfigureAwait(false);
         return RecipeIngredientDto.From(added);
     }
@@ -100,12 +110,10 @@ public sealed class DeleteIngredientCommandHandler(RecipeContent content) : IReq
 // ================= FR-RCP-010 — bước nấu =================
 
 /// <summary>FR-RCP-010 – thêm bước; server gán StepNumber = Max + 1 (201 RecipeStepDto).</summary>
-public sealed record AddStepCommand(Guid RecipeId, StepInput Step) : RecipeWriteCommand, IRequest<RecipeStepDto>;
+public sealed record AddStepCommand(Guid RecipeId, string? Title, string? Description, int? TimerMinutes, string? ImageUrl)
+    : RecipeWriteCommand, IRequest<RecipeStepDto>, IStepFields;
 
-public sealed class AddStepCommandValidator : AbstractValidator<AddStepCommand>
-{
-    public AddStepCommandValidator(IFileStorageService storage) => RuleFor(x => x.Step).NotNull().SetValidator(new StepInputValidator(storage));
-}
+public sealed class AddStepCommandValidator(IFileStorageService storage) : StepFieldsValidator<AddStepCommand>(storage);
 
 /// <summary>
 /// FR-RCP-010 – cập nhật NỘI DUNG một bước (PUT <c>{ title?, description?, timerMinutes?, imageUrl? }</c>, không có
@@ -151,9 +159,8 @@ public sealed class AddStepCommandHandler(RecipeContent content) : IRequestHandl
     public async Task<RecipeStepDto> Handle(AddStepCommand request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        var step = request.Step;
         var added = await content
-            .ApplyAsync(request, request.RecipeId, r => r.AddStep(step.Title!, step.Description!, step.TimerMinutes, step.ImageUrl), cancellationToken)
+            .ApplyAsync(request, request.RecipeId, r => r.AddStep(request.Title!, request.Description!, request.TimerMinutes, request.ImageUrl), cancellationToken)
             .ConfigureAwait(false);
         return RecipeStepDto.From(added);
     }

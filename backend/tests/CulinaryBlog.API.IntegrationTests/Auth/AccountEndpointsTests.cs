@@ -129,7 +129,7 @@ public class AccountEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifet
         await invalid.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
     }
 
-    /// <summary>Khóa tài khoản → mọi refresh token bị thu hồi; dùng lại token của họ → 401; đăng nhập lại → 403 DISABLED.</summary>
+    /// <summary>Khóa tài khoản → mọi refresh token bị thu hồi; refresh bằng token cũ → 403 DISABLED; đăng nhập lại → 403 DISABLED.</summary>
     [Fact]
     public async Task Deactivate_RevokesSessions_AndBlocksLogin()
     {
@@ -142,8 +142,9 @@ public class AccountEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifet
         var status = await response.ReadAsAsync<UserStatusDto>();
         Assert.False(status.IsActive);
 
+        // Kế hoạch Buổi 4 — Dev 1 bước 9: refresh token của người bị khóa → 403 AUTH_ACCOUNT_DISABLED (không phải reuse 401).
         var refresh = await AuthApi.RefreshAsync(factory.CreateClient(), victim.RefreshToken);
-        Assert.Equal(HttpStatusCode.Unauthorized, refresh.StatusCode);
+        await refresh.ShouldBeProblemAsync(HttpStatusCode.Forbidden, ErrorCodes.AuthAccountDisabled);
 
         var login = await factory.CreateClient().PostAsJsonAsync("/api/v1/auth/login", new { email = victim.User.Email, password = TestDataSeeder.ValidPassword });
         await login.ShouldBeProblemAsync(HttpStatusCode.Forbidden, ErrorCodes.AuthAccountDisabled);
@@ -263,6 +264,17 @@ public class AccountEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifet
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, (await AuthApi.RefreshAsync(anonymous, phone.RefreshToken)).StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, (await AuthApi.RefreshAsync(anonymous, laptop.RefreshToken)).StatusCode);
+    }
+
+    /// <summary>Ba endpoint phiên đều yêu cầu Bearer — không có access token → 401 (NFR-MAINT-002: luồng lỗi cho mọi endpoint).</summary>
+    [Fact]
+    public async Task SessionEndpoints_WithoutToken_Return401()
+    {
+        var anonymous = factory.CreateClient();
+
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.GetAsync(new Uri("/api/v1/auth/sessions", UriKind.Relative))).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.DeleteAsync(new Uri($"/api/v1/auth/sessions/{Guid.NewGuid()}", UriKind.Relative))).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.PostAsync(new Uri("/api/v1/auth/sessions/revoke-all", UriKind.Relative), content: null)).StatusCode);
     }
 
     private static void AssertNoSensitiveFields(string json)

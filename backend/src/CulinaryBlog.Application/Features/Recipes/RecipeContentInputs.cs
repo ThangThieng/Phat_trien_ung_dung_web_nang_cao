@@ -10,13 +10,13 @@ namespace CulinaryBlog.Application.Features.Recipes;
 /// bất biến Domain, không có bản sao thứ hai phải giữ đồng bộ.
 /// </summary>
 public sealed record IngredientInput(string? Name, decimal? Quantity, string? QuantityText, string? Unit, string? Notes, int? OrderIndex = null)
-    : IIngredientFields
+    : IIngredientInputFields
 {
     public IngredientDetails ToDetails() => new(Name ?? string.Empty, Quantity, QuantityText, Unit, Notes);
 }
 
 /// <summary>Bước gửi lên (SRS §8.5): <c>{ title, description, timerMinutes?, imageUrl? }</c> — KHÔNG có stepNumber (MT-03).</summary>
-public sealed record StepInput(string? Title, string? Description, int? TimerMinutes, string? ImageUrl) : IStepOptionalFields;
+public sealed record StepInput(string? Title, string? Description, int? TimerMinutes, string? ImageUrl) : IStepFields;
 
 /// <summary>Giới hạn theo SRS §7.9 (validator và cột DB bằng nhau — MT-37).</summary>
 public static class RecipeContentLimits
@@ -40,9 +40,18 @@ public static class RecipeContentLimits
 /// Quy tắc ĐỊNH DẠNG của nguyên liệu (400 VALIDATION_ERROR). Quy tắc NGHIỆP VỤ "không rỗng cả quantity, quantityText lẫn
 /// unit" cố ý KHÔNG ở đây: nó thuộc Domain (IngredientDetails) và có mã riêng INGREDIENT_QUANTITY_REQUIRED (FR-RCP-009 A4).
 /// </summary>
-public sealed class IngredientInputValidator : AbstractValidator<IngredientInput>
+public sealed class IngredientInputValidator : IngredientFieldsValidator<IngredientInput>;
+
+/// <summary>
+/// Bộ luật của MỘT nguyên liệu thêm mới, viết một lần cho mọi hình dạng mang đủ trường: phần tử mảng inline của
+/// POST /recipes (<see cref="IngredientInput"/>) và body phẳng của POST /recipes/{id}/ingredients (AddIngredientCommand).
+/// Body phẳng thì lỗi nằm đúng khóa "name", "quantity"… — validator lồng (SetValidator) sẽ sinh "ingredient.Name",
+/// Frontend không gắn được vào ô (D-11).
+/// </summary>
+public abstract class IngredientFieldsValidator<T> : AbstractValidator<T>
+    where T : IIngredientInputFields
 {
-    public IngredientInputValidator()
+    protected IngredientFieldsValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Tên nguyên liệu không được để trống.")
@@ -90,9 +99,22 @@ public interface IIngredientFields
     int? OrderIndex { get; }
 }
 
-public sealed class StepInputValidator : AbstractValidator<StepInput>
+/// <summary>Nguyên liệu thêm mới: thêm <see cref="Name"/> bắt buộc vào các trường chung.</summary>
+public interface IIngredientInputFields : IIngredientFields
 {
-    public StepInputValidator(IFileStorageService storage)
+    string? Name { get; }
+}
+
+public sealed class StepInputValidator(IFileStorageService storage) : StepFieldsValidator<StepInput>(storage);
+
+/// <summary>
+/// Bộ luật của MỘT bước thêm mới — dùng chung cho phần tử mảng inline của POST /recipes (<see cref="StepInput"/>) và body
+/// phẳng của POST /recipes/{id}/steps (AddStepCommand), để lỗi nằm đúng khóa "title"/"description" (D-11).
+/// </summary>
+public abstract class StepFieldsValidator<T> : AbstractValidator<T>
+    where T : IStepFields
+{
+    protected StepFieldsValidator(IFileStorageService storage)
     {
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Tiêu đề bước không được để trống.")
@@ -127,4 +149,12 @@ public interface IStepOptionalFields
     int? TimerMinutes { get; }
 
     string? ImageUrl { get; }
+}
+
+/// <summary>Bước thêm mới: tiêu đề + mô tả bắt buộc cùng các trường tùy chọn.</summary>
+public interface IStepFields : IStepOptionalFields
+{
+    string? Title { get; }
+
+    string? Description { get; }
 }

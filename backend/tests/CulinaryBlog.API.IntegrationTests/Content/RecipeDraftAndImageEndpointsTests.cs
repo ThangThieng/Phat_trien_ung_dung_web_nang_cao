@@ -293,6 +293,26 @@ public class RecipeDraftAndImageEndpointsTests(CulinaryBlogApiFactory factory) :
         Assert.Equal(draft.Id, ex.RecipeId);
     }
 
+    /// <summary>DELETE ảnh: ảnh không tồn tại → 404, người khác → 403; ảnh của người khác không bị đụng tới.</summary>
+    [Fact]
+    public async Task DeleteImage_Unknown404_OtherAuthor403()
+    {
+        var owner = factory.CreateClientAs("Author");
+        var draft = await RecipeApi.CreateDraftAsync(owner, "Bánh khọt Vũng Tàu");
+        var image = await RecipeApi.UploadImageAsync(owner, draft.Id, TestImages.Png(), "image/png", "banh-khot.png");
+        var other = factory.CreateClientAs("Author", TestDataSeeder.OtherAuthorUserId);
+
+        var unknown = await owner.DeleteAsync(new Uri($"/api/v1/recipes/{draft.Id}/images/{Guid.NewGuid()}", UriKind.Relative));
+        await unknown.ShouldBeProblemAsync(HttpStatusCode.NotFound, ErrorCodes.RecipeNotFound);
+
+        var byOther = await other.DeleteAsync(new Uri($"/api/v1/recipes/{draft.Id}/images/{image.ImageId}", UriKind.Relative));
+        await byOther.ShouldBeProblemAsync(HttpStatusCode.Forbidden, ErrorCodes.RecipeForbidden);
+
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
+        Assert.True(await db.RecipeImages.AnyAsync(i => i.Id == image.ImageId));
+    }
+
     private static async Task<HttpResponseMessage> PostImageAsync(HttpClient client, Guid recipeId, byte[] content, string contentType)
     {
         using var form = new MultipartFormDataContent();

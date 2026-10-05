@@ -128,8 +128,14 @@ public sealed partial class GlobalExceptionMiddleware(
         return problem;
     }
 
+    /// <summary>
+    /// Khóa của "errors" theo camelCase của JSON body, TỪNG đoạn: "Title" → "title", "Steps[0].Title" → "steps[0].title"
+    /// — để Frontend gắn lỗi vào đúng ô kể cả với mảng lồng nhau (D-11).
+    /// </summary>
     private static string ToCamelCase(string name) =>
-        string.IsNullOrEmpty(name) ? name : char.ToLowerInvariant(name[0]) + name[1..];
+        string.IsNullOrEmpty(name)
+            ? name
+            : string.Join('.', name.Split('.').Select(part => part.Length == 0 ? part : char.ToLowerInvariant(part[0]) + part[1..]));
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Unhandled exception for {Method} {Path}")]
     private static partial void LogUnhandled(ILogger logger, string method, PathString path, Exception exception);
