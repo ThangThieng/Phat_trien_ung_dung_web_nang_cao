@@ -31,19 +31,26 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Kiểm tra main đã có tool chấm
+        id: tool
+        run: |
+          if [ -f tools/github_board/auto_complete.py ]; then echo "ready=true" >> "$GITHUB_OUTPUT";
+          else echo "::notice::main chưa có tools/github_board — bỏ qua cho tới khi PR tự chấm được merge."; fi
+
       - uses: actions/setup-python@v5
+        if: steps.tool.outputs.ready == 'true'
         with:
           python-version: '3.11'
 
       - name: Chấm nhánh vừa push
-        if: github.event_name == 'push'
+        if: steps.tool.outputs.ready == 'true' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.BOARD_TOKEN }}
           BRANCH: ${{ github.ref_name }}
         run: python tools/github_board/auto_complete.py --fetch --branch "$BRANCH"
 
       - name: Chấm mọi nhánh
-        if: github.event_name != 'push'
+        if: steps.tool.outputs.ready == 'true' && github.event_name != 'push'
         env:
           GH_TOKEN: ${{ secrets.BOARD_TOKEN }}
         run: python tools/github_board/auto_complete.py --fetch --all
