@@ -1,0 +1,15 @@
+{
+  "repo": "ThangThieng/Phat_trien_ung_dung_web_nang_cao",
+  "branch": "main",
+  "project_title": "Culinary Blog – Nhóm 20",
+  "project_description": "Blog Ẩm thực và Nấu ăn – phân công 4 thành viên × 8 buổi, đồng bộ từ README.md",
+  "project_public": true,
+  "done_sessions": [1, 2],
+  "in_progress_sessions": [3],
+  "logins": {
+    "1": "2314236HoangBinhQuan",
+    "2": "2312758-NguyenHongPhucTho",
+    "3": "2314291",
+    "4": "ThangThieng"
+  }
+}

@@ -1,0 +1,56 @@
+# Tự chấm tiến độ lên GitHub Project "Culinary Blog – Nhóm 20".
+# Ai push nhánh {MSSV}_{HoTen}_buoiso{n} lên, nhánh đó làm xong đầu việc nào (theo
+# tools/github_board/completion_rules.json) thì đầu việc đó tự sang cột Done, kèm commit làm minh chứng.
+#
+# Cần secret BOARD_TOKEN: PAT (classic) của chủ Project với scope `repo` + `project`.
+# GITHUB_TOKEN mặc định không ghi được vào Project của tài khoản cá nhân.
+name: project-board
+
+on:
+  push:
+    branches: ['**']
+  schedule:
+    - cron: '*/30 * * * *'   # quét lại mọi nhánh: bắt cả nhánh được tạo trước khi có workflow này
+  workflow_dispatch:
+
+concurrency:
+  group: project-board
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Luôn lấy tool + tiêu chí từ main, kể cả khi nhánh vừa push mang bản cũ hơn
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Kiểm tra main đã có tool chấm
+        id: tool
+        run: |
+          if [ -f tools/github_board/auto_complete.py ]; then echo "ready=true" >> "$GITHUB_OUTPUT";
+          else echo "::notice::main chưa có tools/github_board — bỏ qua cho tới khi PR tự chấm được merge."; fi
+
+      - uses: actions/setup-python@v5
+        if: steps.tool.outputs.ready == 'true'
+        with:
+          python-version: '3.11'
+
+      - name: Chấm nhánh vừa push
+        if: steps.tool.outputs.ready == 'true' && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.BOARD_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+        run: python tools/github_board/auto_complete.py --fetch --branch "$BRANCH"
+
+      - name: Chấm mọi nhánh
+        if: steps.tool.outputs.ready == 'true' && github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ secrets.BOARD_TOKEN }}
+        run: python tools/github_board/auto_complete.py --fetch --all
