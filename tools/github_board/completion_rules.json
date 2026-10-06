@@ -1,0 +1,186 @@
+{
+  "_doc": [
+    "Tiêu chí tự chấm cho từng đầu việc (khóa = khóa issue do readme_parser sinh, vd. b4-dev4-1).",
+    "Lấy từ mục 'Hướng đi' và 'Xong khi' của README Phần 3. Mỗi tiêu chí kiểm một sản phẩm cụ thể trên cây mã của nhánh:",
+    "  grep   : MỌI biểu thức (PCRE) phải xuất hiện trong ít nhất một file thuộc 'in' (git pathspec, * khớp cả thư mục con)",
+    "  absent : biểu thức KHÔNG được xuất hiện trong 'in'",
+    "  file   : có ít nhất 'min' (mặc định 1) file khớp pathspec",
+    "Chỉ chấm đầu việc của chính chủ nhánh (nhận diện bằng MSSV ở đầu tên nhánh). Đạt đủ → Done; đạt một phần ở nhánh đúng buổi → In Progress.",
+    "Tiêu chí kiểm 'có làm và có kiểm thử', không thay cho việc giảng viên đọc code; mọi lần chuyển Done đều có comment liệt kê bằng chứng."
+  ],
+  "b3-dev4-1": [
+    {"label": "Không còn mã 422 trong backend (D-11, MT-08)", "absent": "Status422UnprocessableEntity", "in": "backend/src"},
+    {"label": "Frontend gắn lỗi 400 vào từng ô qua mapProblemDetailsToForm()", "grep": "mapProblemDetailsToForm", "in": "frontend/src"},
+    {"label": "Kiểm thử chặn Status422 quay lại", "grep": "Status422", "in": "backend/tests"}
+  ],
+  "b3-dev4-2": [
+    {"label": "Lớp gốc trừu tượng DomainException + lỗi dùng chung", "grep": ["abstract\\s+class\\s+DomainException", "class\\s+BusinessRuleViolationException", "class\\s+ConcurrencyConflictException"], "in": "backend/src/*.cs"},
+    {"label": "BadGatewayException (502)", "grep": "class\\s+BadGatewayException", "in": "backend/src/*.cs"},
+    {"label": "IRepository<T> và IUnitOfWork", "grep": ["interface\\s+IRepository<", "interface\\s+IUnitOfWork"], "in": "backend/src/*.cs"},
+    {"label": "UnitOfWork chạy transaction qua execution strategy", "grep": ["ExecuteInTransactionAsync", "CreateExecutionStrategy"], "in": "backend/src/*.cs"},
+    {"label": "GlobalExceptionMiddleware tra ExceptionStatusMap (mỗi mảng một file ánh xạ)", "grep": ["class\\s+ExceptionStatusMap", "interface\\s+IExceptionStatusMapping"], "in": "backend/src/*.cs"},
+    {"label": "3 endpoint health check /health, /health/live, /health/ready (FR-OBS-001)", "grep": ["\"/health\"", "\"/health/live\"", "\"/health/ready\""], "in": "backend/src/*.cs"},
+    {"label": "MinioHealthCheck", "grep": "class\\s+MinioHealthCheck", "in": "backend/src/*.cs"},
+    {"label": "Dashboard Hangfire chặn bằng header gate so sánh FixedTimeEquals", "grep": ["NginxGateDashboardFilter", "FixedTimeEquals"], "in": "backend/src/*.cs"},
+    {"label": "Nginx Basic Auth cho /hangfire (template envsubst)", "grep": ["location\\s+/hangfire", "auth_basic"], "in": "nginx/templates"},
+    {"label": "Bộ integration test Testcontainers (CulinaryBlogApiFactory)", "grep": ["class\\s+CulinaryBlogApiFactory", "Testcontainers"], "in": "backend/tests/*.cs"},
+    {"label": "Kiểm thử hợp đồng Problem Details + health + rollback Unit of Work", "grep": ["class\\s+ProblemDetailsContractTests", "class\\s+HealthEndpointsTests", "class\\s+UnitOfWorkTests"], "in": "backend/tests/*.cs"}
+  ],
+  "b3-dev1-1": [
+    {"label": "Lớp gốc AuthDomainException + 6 lớp lỗi Auth", "grep": ["class\\s+AuthDomainException", "class\\s+InvalidCredentialsException", "class\\s+InvalidTokenException", "class\\s+AccountDisabledException", "class\\s+UserNotFoundException", "class\\s+EmailAlreadyExistsException", "class\\s+AccountLockedException"], "in": "backend/src/*.cs"},
+    {"label": "Ánh xạ lỗi Auth → HTTP (AuthExceptionMappings, 423 cho tài khoản bị khóa)", "grep": ["class\\s+AuthExceptionMappings", "Status423Locked|423"], "in": "backend/src/*.cs"},
+    {"label": "IUserRepository", "grep": "interface\\s+IUserRepository", "in": "backend/src/*.cs"},
+    {"label": "D-1: IUserNameGenerator sinh UserName từ email", "grep": "interface\\s+IUserNameGenerator", "in": "backend/src/*.cs"},
+    {"label": "Xác minh ID Token Google ở backend (IGoogleIdTokenValidator)", "grep": ["IGoogleIdTokenValidator", "GoogleJsonWebSignature"], "in": "backend/src/*.cs"},
+    {"label": "GoogleLoginCommand và LogoutCommand", "grep": ["(record|class)\\s+GoogleLoginCommand", "(record|class)\\s+LogoutCommand"], "in": "backend/src/*.cs"},
+    {"label": "API POST /auth/google và POST /auth/logout", "grep": ["MapPost\\(\\s*\"/google\"", "MapPost\\(\\s*\"/logout\""], "in": "backend/src/*.cs"},
+    {"label": "Frontend: nút <GoogleLogin> của @react-oauth/google", "grep": "@react-oauth/google", "in": "frontend/package.json"},
+    {"label": "Integration test cho /auth/google và /auth/logout", "grep": ["auth/google", "auth/logout"], "in": "backend/tests/*.cs"}
+  ],
+  "b3-dev2-1": [
+    {"label": "D-8: migration B3_Recipe_InstructionsNullable có [Migration]", "grep": "\\[Migration\\(\"\\d+_B3_Recipe_InstructionsNullable\"\\)\\]", "in": "backend/src/*.cs"},
+    {"label": "Lớp gốc RecipeDomainException + 5 lớp lỗi Recipe", "grep": ["class\\s+RecipeDomainException", "class\\s+RecipeNotFoundException", "class\\s+RecipeImageNotFoundException", "class\\s+RecipeConcurrencyException", "class\\s+InvalidRecipeStatusException", "class\\s+RecipeSlugConflictException"], "in": "backend/src/*.cs"},
+    {"label": "Ánh xạ lỗi Recipe → HTTP (RecipeExceptionMappings)", "grep": "class\\s+RecipeExceptionMappings", "in": "backend/src/*.cs"},
+    {"label": "IRecipeRepository: GetByIdWithDetailsAsync, GetByIdWithImagesAsync, SlugExistsAsync", "grep": ["interface\\s+IRecipeRepository", "GetByIdWithDetailsAsync", "GetByIdWithImagesAsync", "SlugExistsAsync"], "in": "backend/src/*.cs"},
+    {"label": "CreateRecipeCommand + validator, cấm slug dành riêng (search, mine, sitemap, new, edit)", "grep": ["(record|class)\\s+CreateRecipeCommand", "class\\s+CreateRecipeCommandValidator", "\"edit\""], "in": "backend/src/*.cs"},
+    {"label": "RecipeAuthorizationHandler (resource-based authorization)", "grep": "class\\s+RecipeAuthorizationHandler", "in": "backend/src/*.cs"},
+    {"label": "API ảnh: POST/PATCH/DELETE /recipes/{id}/images…", "grep": ["MapPost\\(\\s*\"/\\{id(:guid)?\\}/images\"", "MapPatch\\(\\s*\"/\\{id(:guid)?\\}/images/", "MapDelete\\(\\s*\"/\\{id(:guid)?\\}/images/"], "in": "backend/src/*.cs"},
+    {"label": "Trang /dashboard/recipes/new (biểu mẫu nhiều bước)", "file": "frontend/src/app/dashboard/recipes/new/page.tsx"},
+    {"label": "Integration test tạo nháp + ảnh", "grep": ["api/v1/recipes", "/images"], "in": "backend/tests/*.cs"}
+  ],
+  "b3-dev3-1": [
+    {"label": "Lớp gốc CategoryDomainException + 3 lớp lỗi Category", "grep": ["class\\s+CategoryDomainException", "class\\s+CategoryNotFoundException", "class\\s+CategoryNameAlreadyExistsException", "class\\s+CategoryHasRecipesException"], "in": "backend/src/*.cs"},
+    {"label": "Ánh xạ lỗi Category → HTTP (CategoryExceptionMappings)", "grep": "class\\s+CategoryExceptionMappings", "in": "backend/src/*.cs"},
+    {"label": "ICategoryRepository: ExistsByNameAsync, CountActiveRecipesAsync", "grep": ["interface\\s+ICategoryRepository", "ExistsByNameAsync", "CountActiveRecipesAsync"], "in": "backend/src/*.cs"},
+    {"label": "Create/Update/DeleteCategoryCommand", "grep": ["(record|class)\\s+CreateCategoryCommand", "(record|class)\\s+UpdateCategoryCommand", "(record|class)\\s+DeleteCategoryCommand"], "in": "backend/src/*.cs"},
+    {"label": "API POST/PUT/DELETE /categories", "grep": ["MapPut\\(\\s*\"/\\{id(:guid)?\\}\"\\s*,\\s*UpdateCategory", "MapDelete\\(\\s*\"/\\{id(:guid)?\\}\"\\s*,\\s*DeleteCategory"], "in": "backend/src/*.cs"},
+    {"label": "Trang quản trị /dashboard/categories", "file": "frontend/src/app/dashboard/categories/page.tsx"},
+    {"label": "Integration test CRUD danh mục Admin", "grep": ["api/v1/categories", "Conflict"], "in": "backend/tests/*.cs"}
+  ],
+  "b4-dev4-1": [
+    {"label": "Recipe là partial class, máy trạng thái ở Recipe.Lifecycle.cs + bảng RecipeStatusTransitions (D-15)", "grep": ["partial\\s+class\\s+Recipe\\b", "RecipeStatusTransitions"], "in": "backend/src/CulinaryBlog.Domain"},
+    {"label": "RecipePublishIncompleteException (400 RECIPE_PUBLISH_INCOMPLETE)", "grep": "class\\s+RecipePublishIncompleteException", "in": "backend/src/*.cs"},
+    {"label": "5 endpoint vòng đời: PATCH publish/unpublish/archive/unarchive, DELETE /recipes/{id}", "grep": ["MapPatch\\(\\s*\"/\\{id(:guid)?\\}/publish\"", "MapPatch\\(\\s*\"/\\{id(:guid)?\\}/unpublish\"", "MapPatch\\(\\s*\"/\\{id(:guid)?\\}/archive\"", "MapPatch\\(\\s*\"/\\{id(:guid)?\\}/unarchive\"", "MapDelete\\(\\s*\"/\\{id(:guid)?\\}\"\\s*,"], "in": "backend/src/*.cs"},
+    {"label": "D-3: migration B4_Recipe_PartialUniqueSlug (unique slug chỉ trên bản ghi chưa xóa)", "grep": "\\[Migration\\(\"\\d+_B4_Recipe_PartialUniqueSlug\"\\)\\]", "in": "backend/src/*.cs"},
+    {"label": "FR-JOB-002 ImageResizeJob (ImageSharp, thử lại 3 lần)", "grep": ["class\\s+ImageResizeJob", "SixLabors\\.ImageSharp", "AutomaticRetry\\(Attempts\\s*=\\s*3\\)"], "in": "backend/src/*.cs"},
+    {"label": "FR-JOB-003 PermanentPurgeJob 03:30 UTC + khóa RedLock", "grep": ["class\\s+PermanentPurgeJob", "IgnoreQueryFilters", "lock:purge-job", "30 3 \\* \\* \\*"], "in": "backend/src/*.cs"},
+    {"label": "Kiểm thử ma trận 12 tổ hợp trạng thái × hành động", "grep": "InvalidRecipeStatusException", "in": "backend/tests/CulinaryBlog.Domain.UnitTests"},
+    {"label": "Integration test vòng đời + purge job + resize job", "grep": ["class\\s+RecipeLifecycleEndpointsTests", "class\\s+PermanentPurgeJobTests", "class\\s+ImageResizeJobTests"], "in": "backend/tests/*.cs"},
+    {"label": "ApiSurfaceTests so route thật với 45 endpoint SRS Chương 8", "grep": "class\\s+ApiSurfaceTests", "in": "backend/tests/*.cs"}
+  ],
+  "b4-dev1-1": [
+    {"label": "D-2: refresh token 32 byte (256-bit)", "grep": "RefreshTokenBytes\\s*=\\s*32\\b", "in": "backend/src/*.cs"},
+    {"label": "RefreshTokenCommand: rotation + phát hiện dùng lại (AUTH_REFRESH_TOKEN_REVOKED)", "grep": ["(record|class)\\s+RefreshTokenCommand", "RefreshTokenRevoked"], "in": "backend/src/*.cs"},
+    {"label": "Claim sid + UseForwardedHeaders với KnownIPNetworks (IP thật)", "grep": ["\"sid\"|ClaimNames\\.Sid", "UseForwardedHeaders", "KnownIPNetworks|KnownNetworks"], "in": "backend/src/*.cs"},
+    {"label": "API POST /auth/refresh, GET/PATCH /auth/me", "grep": ["MapPost\\(\\s*\"/refresh\"", "MapGet\\(\\s*\"/me\"", "MapPatch\\(\\s*\"/me\""], "in": "backend/src/*.cs"},
+    {"label": "API GET /users, PATCH /users/{id}/status", "grep": ["MapGroup\\(\\s*\"/users\"", "MapPatch\\(\\s*\"/\\{id(:guid)?\\}/status\""], "in": "backend/src/*.cs"},
+    {"label": "API GET/DELETE /auth/sessions, POST /auth/sessions/revoke-all", "grep": ["MapGet\\(\\s*\"/sessions\"", "MapDelete\\(\\s*\"/sessions/\\{id", "MapPost\\(\\s*\"/sessions/revoke-all\""], "in": "backend/src/*.cs"},
+    {"label": "Integration test refresh, phiên và quản lý tài khoản", "grep": ["auth/refresh", "auth/sessions", "api/v1/users"], "in": "backend/tests/*.cs"}
+  ],
+  "b4-dev2-1": [
+    {"label": "Migration B4_Recipe_IngredientStep: QuantityText + D-16 DEFERRABLE", "grep": ["\\[Migration\\(\"\\d+_B4_Recipe_IngredientStep\"\\)\\]", "QuantityText", "DEFERRABLE"], "in": "backend/src/*.cs"},
+    {"label": "IngredientQuantityRequiredException (400)", "grep": "class\\s+IngredientQuantityRequiredException", "in": "backend/src/*.cs"},
+    {"label": "Domain: Add/Update/RemoveIngredient, RemoveStep, ReorderSteps", "grep": ["UpdateIngredient\\(", "RemoveIngredient\\(", "RemoveStep\\(", "ReorderSteps\\("], "in": "backend/src/CulinaryBlog.Domain"},
+    {"label": "API nguyên liệu POST/PUT/DELETE /recipes/{id}/ingredients", "grep": ["MapPost\\(\\s*\"/\\{id(:guid)?\\}/ingredients\"", "MapPut\\(\\s*\"/\\{id(:guid)?\\}/ingredients/", "MapDelete\\(\\s*\"/\\{id(:guid)?\\}/ingredients/"], "in": "backend/src/*.cs"},
+    {"label": "API bước POST/PUT/DELETE /recipes/{id}/steps + PATCH /steps/reorder", "grep": ["MapPost\\(\\s*\"/\\{id(:guid)?\\}/steps\"", "MapPut\\(\\s*\"/\\{id(:guid)?\\}/steps/", "MapDelete\\(\\s*\"/\\{id(:guid)?\\}/steps/", "MapPatch\\(\\s*\"/\\{id(:guid)?\\}/steps/reorder\""], "in": "backend/src/*.cs"},
+    {"label": "PUT /recipes/{id} kiểm rowVersion (SetOriginalRowVersion, If-Match, ETag)", "grep": ["MapPut\\(\\s*\"/\\{id(:guid)?\\}\"", "SetOriginalRowVersion", "If-Match|IfMatch", "ETag"], "in": "backend/src/*.cs"},
+    {"label": "Integration test sắp xếp bước + xung đột rowVersion", "grep": ["steps/reorder", "RecipeConcurrencyConflict|RECIPE_CONCURRENCY_CONFLICT"], "in": "backend/tests/*.cs"}
+  ],
+  "b4-dev3-1": [
+    {"label": "Vá MT-34: không còn Output Cache (CacheOutput) trong backend", "absent": "CacheOutput\\(", "in": "backend/src"},
+    {"label": "Migration B4_Search_FTS: cột SearchVector + GIN index", "grep": ["\\[Migration\\(\"\\d+_B4_Search_FTS\"\\)\\]", "SearchVector"], "in": "backend/src/*.cs"},
+    {"label": "RecipeFilterSpec + danh sách cho phép sắp xếp (D-10: sortBy/sortOrder)", "grep": ["RecipeFilterSpec", "sortOrder|SortOrder"], "in": "backend/src/*.cs"},
+    {"label": "API GET /recipes/search, /recipes/mine, /recipes/mine/{id}, /recipes/sitemap", "grep": ["MapGet\\(\\s*\"/search\"", "MapGet\\(\\s*\"/mine\"", "MapGet\\(\\s*\"/mine/\\{id", "MapGet\\(\\s*\"/sitemap\""], "in": "backend/src/*.cs"},
+    {"label": "Dữ liệu riêng tư không cache (Cache-Control: no-store)", "grep": "no-store", "in": "backend/src/*.cs"},
+    {"label": "D-18: bỏ vietnamese_unaccent khỏi init.sql", "absent": "vietnamese_unaccent", "in": "docker"},
+    {"label": "Integration test tìm kiếm / công thức của tôi", "grep": ["recipes/search", "recipes/mine"], "in": "backend/tests/*.cs"}
+  ],
+  "b5-dev1-1": [
+    {"label": "D-12: access token không còn lưu trong localStorage", "absent": "localStorage\\.setItem\\([^)]*[Aa]ccess", "in": "frontend/src"},
+    {"label": "Refresh single-flight trong api-client", "grep": "(?i)single.?flight|refreshPromise|refreshInFlight|inflightRefresh", "in": "frontend/src"},
+    {"label": "Trang /profile", "file": "frontend/src/app/profile/page.tsx"},
+    {"label": "Gọi PATCH /auth/me từ giao diện", "grep": "auth/me", "in": "frontend/src"}
+  ],
+  "b5-dev2-1": [
+    {"label": "Kéo-thả bước bằng dnd-kit", "grep": "@dnd-kit", "in": "frontend/package.json"},
+    {"label": "Trang /dashboard/recipes/[id]/edit", "file": "frontend/src/app/dashboard/recipes/*/edit/page.tsx"},
+    {"label": "Gửi rowVersion và xử lý 409 khi sửa", "grep": ["rowVersion", "409"], "in": "frontend/src"},
+    {"label": "Gọi API sắp xếp bước và xuất bản", "grep": ["steps/reorder", "/publish"], "in": "frontend/src"}
+  ],
+  "b5-dev3-1": [
+    {"label": "Migration B5_Search_CompositeIndexes", "grep": "\\[Migration\\(\"\\d+_B5_Search_CompositeIndexes\"\\)\\]", "in": "backend/src/*.cs"},
+    {"label": "PerformanceSeeder ≥ 10.000 công thức + báo cáo EXPLAIN ANALYZE", "grep": "PerformanceSeeder", "in": "backend/src/*.cs"},
+    {"label": "Báo cáo docs/explain-analyze-b5.md", "file": "docs/explain-analyze-b5.md"},
+    {"label": "Trang /search", "file": "frontend/src/app/search/page.tsx"},
+    {"label": "D-10 phía FE: sortBy/sortOrder, bộ lọc trên URL", "grep": ["sortBy", "sortOrder"], "in": "frontend/src"}
+  ],
+  "b5-dev4-1": [
+    {"label": "Docker healthcheck gọi /health/ready", "grep": ["healthcheck:", "/health/ready"], "in": "docker-compose.yml"},
+    {"label": "Nginx proxy_next_upstream chuyển instance khi 502/503/504", "grep": "proxy_next_upstream", "in": "nginx"},
+    {"label": "HealthIndicator + trang /dashboard/system", "grep": "HealthIndicator", "in": "frontend/src"},
+    {"label": "Trang /dashboard/system", "file": "frontend/src/app/dashboard/system/page.tsx"},
+    {"label": "RecipeCard dùng ThumbnailUrl", "grep": "thumbnailUrl", "in": "frontend/src/*RecipeCard*"}
+  ],
+  "b6-dev1-1": [
+    {"label": "Rate limit theo IP (AddRateLimiter) trả 429 RATE_LIMIT_EXCEEDED + Retry-After", "grep": ["AddRateLimiter", "RateLimitExceeded|RATE_LIMIT_EXCEEDED", "Retry-After|RetryAfter"], "in": "backend/src/*.cs"},
+    {"label": "Content-Security-Policy", "grep": "Content-Security-Policy", "in": ["backend/src", "frontend", "nginx"]},
+    {"label": "Chặn route FE (middleware.ts) + RequireRole", "grep": "RequireRole", "in": "frontend/src"},
+    {"label": "frontend/src/middleware.ts", "file": "frontend/src/middleware.ts"},
+    {"label": "Integration test 429 khi vượt ngưỡng", "grep": "TooManyRequests|429", "in": "backend/tests/*.cs"}
+  ],
+  "b6-dev2-1": [
+    {"label": "Trang /dashboard/recipes gọi /recipes/mine", "file": "frontend/src/app/dashboard/recipes/page.tsx"},
+    {"label": "Giao diện gọi /recipes/mine và xóa mềm", "grep": ["recipes/mine", "method:\\s*'DELETE'|\\.delete\\(|deleteRecipe"], "in": "frontend/src"}
+  ],
+  "b6-dev3-1": [
+    {"label": "JSON-LD Recipe (lib/seo/recipeJsonLd.ts)", "file": "frontend/src/lib/seo/recipeJsonLd.ts"},
+    {"label": "generateMetadata + Open Graph", "grep": ["generateMetadata", "openGraph"], "in": "frontend/src"},
+    {"label": "D-7: revalidate 1800 / 120 khớp TTL cache API", "grep": ["revalidate\\s*[:=]\\s*1800", "revalidate\\s*[:=]\\s*120"], "in": "frontend/src"}
+  ],
+  "b6-dev4-1": [
+    {"label": "Serilog request logging", "grep": "UseSerilogRequestLogging", "in": "backend/src/*.cs"},
+    {"label": "CorrelationIdMiddleware (X-Correlation-ID)", "grep": ["CorrelationIdMiddleware", "X-Correlation-ID"], "in": "backend/src/*.cs"},
+    {"label": "LoggingBehavior > 500ms + DbCommandInterceptor > 100ms", "grep": ["LoggingBehavior", "DbCommandInterceptor"], "in": "backend/src/*.cs"},
+    {"label": "OpenTelemetry trace + metric recipes_published_total", "grep": ["OpenTelemetry", "recipes_published_total"], "in": "backend/src/*.cs"}
+  ],
+  "b7-dev1-1": [
+    {"label": "Trang Admin /dashboard/users", "file": "frontend/src/app/dashboard/users/page.tsx"},
+    {"label": "Tab phiên đăng nhập gọi /auth/sessions", "grep": ["auth/sessions", "revoke-all"], "in": "frontend/src"}
+  ],
+  "b7-dev2-1": [
+    {"label": "Hằng số statusTransitions.ts sao bảng chuyển trạng thái", "file": "frontend/src/*statusTransitions.ts"},
+    {"label": "Nút lưu trữ / khôi phục gọi API", "grep": ["/archive", "/unarchive"], "in": "frontend/src"}
+  ],
+  "b7-dev3-1": [
+    {"label": "app/sitemap.ts + app/robots.ts", "file": "frontend/src/app/sitemap.ts"},
+    {"label": "app/robots.ts", "file": "frontend/src/app/robots.ts"},
+    {"label": "Nguồn sitemap gọi GET /recipes/sitemap", "grep": "recipes/sitemap", "in": "frontend/src"},
+    {"label": "D-14: gỡ unoptimized của next/image", "absent": "unoptimized", "in": ["frontend/src", "frontend/next.config.*"]}
+  ],
+  "b7-dev4-1": [
+    {"label": "docker-compose.prod.yml scale api", "grep": "replicas", "in": "docker-compose.prod.yml"},
+    {"label": "Nginx /media/ proxy MinIO + SSL", "grep": ["location\\s+/media/", "ssl_certificate"], "in": "nginx"},
+    {"label": "D-17: ProtectKeysWithCertificate", "grep": "ProtectKeysWithCertificate", "in": "backend/src/*.cs"},
+    {"label": "Xóa cache theo tiền tố bằng SCAN", "grep": "RemoveByPrefixAsync", "in": "backend/src/*.cs"},
+    {"label": "Báo cáo docs/cache-report.md", "file": "docs/cache-report.md"}
+  ],
+  "b8-dev1-1": [
+    {"label": "E2E Playwright luồng xác thực", "file": "frontend/e2e/*auth*"},
+    {"label": "Báo cáo docs/security-test-report.md", "file": "docs/security-test-report.md"}
+  ],
+  "b8-dev2-1": [
+    {"label": "E2E Playwright vòng đời công thức", "file": "frontend/e2e/*recipe*"},
+    {"label": "Kiểm thử 10 PUT song song (Task.WhenAll)", "grep": "Task\\.WhenAll", "in": "backend/tests/*.cs"}
+  ],
+  "b8-dev3-1": [
+    {"label": "axe-core/playwright quét WCAG", "grep": "@axe-core/playwright", "in": "frontend/package.json"},
+    {"label": "Báo cáo docs/a11y-report.md", "file": "docs/a11y-report.md"},
+    {"label": "Báo cáo docs/lighthouse-report.md", "file": "docs/lighthouse-report.md"}
+  ],
+  "b8-dev4-1": [
+    {"label": "Kịch bản k6 smoke/load/stress", "grep": "from 'k6", "in": ["*.js"]},
+    {"label": "Báo cáo docs/load-test-report.md", "file": "docs/load-test-report.md"},
+    {"label": "CHANGELOG.md", "file": "CHANGELOG.md"},
+    {"label": "6 ADR", "file": "docs/adr/*.md", "min": 6}
+  ]
+}
