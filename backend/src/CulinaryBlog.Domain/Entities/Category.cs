@@ -33,4 +33,24 @@ public class Category : BaseEntity
             OrderIndex = orderIndex,
         };
     }
+
+    /// <summary>
+    /// FR-CAT-004 – cập nhật danh mục. Slug CỐ TÌNH không nằm trong tham số: slug bất biến sau khi tạo
+    /// để link đã chia sẻ / đã được Google lập chỉ mục không chết (NFR-SEO-004 – hệ thống không có bảng lịch sử slug).
+    /// </summary>
+    public void Update(string name, string? description, string? imageUrl, int orderIndex)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        Name = name.Trim();
+        Description = description;
+        ImageUrl = imageUrl;
+        OrderIndex = orderIndex;
+    }
+
+    /// <summary>
+    /// FR-CAT-005 – xóa MỀM (SRS §7.1: mọi entity dùng cờ <c>IsDeleted</c>, không xóa vật lý). Việc chặn xóa khi còn
+    /// công thức là quy tắc của handler (cần đếm ở database), không phải của entity.
+    /// </summary>
+    public void SoftDelete() => IsDeleted = true;
 }

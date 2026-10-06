@@ -124,7 +124,7 @@
       ["Tiêu đen xay", 1, "thìa cà phê"],
       ["Bơ lạt", 20, "gram"],
       ["Xà lách, cà chua", 200, "gram", "lót đĩa"],
-      ["Muối tiêu chanh", null, null, "chấm kèm"]
+      ["Muối tiêu chanh", "vừa đủ", null, "chấm kèm"]
     ],
     "steps": [
       ["Ướp bò", "Ướp thịt bò với dầu hào, xì dầu, đường, tiêu và 1 thìa dầu ăn trong 20 phút.", 20],

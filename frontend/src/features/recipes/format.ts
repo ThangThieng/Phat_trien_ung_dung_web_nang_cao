@@ -22,7 +22,16 @@ export function formatMinutes(minutes: number): string {
   return rest === 0 ? `${hours} giờ` : `${hours} giờ ${rest} phút`;
 }
 
-export function formatQuantity(quantity: number | null, unit: string | null): string {
+/**
+ * FR-RCP-009 – quy tắc hiển thị: ưu tiên `quantityText` (nguyên văn người viết nhập); không có thì format từ
+ * `quantity` + `unit`.
+ */
+export function formatQuantity(
+  quantity: number | null,
+  unit: string | null,
+  quantityText: string | null = null,
+): string {
+  if (quantityText) return quantityText;
   if (quantity === null) return unit ? `vừa đủ (${unit})` : 'vừa đủ';
   const value = Number.isInteger(quantity) ? quantity.toString() : quantity.toLocaleString('vi-VN');
   return unit ? `${value} ${unit}` : value;

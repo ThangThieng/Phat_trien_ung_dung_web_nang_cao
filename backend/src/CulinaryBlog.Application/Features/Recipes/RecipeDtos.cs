@@ -28,9 +28,24 @@ public sealed record RecipeSummaryDto(
 
 public sealed record RecipeNutritionDto(decimal? Calories, decimal? Protein, decimal? Carbohydrates, decimal? Fat, decimal? Fiber, decimal? Sodium);
 
-public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl);
+public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl)
+{
+    public static RecipeStepDto From(CulinaryBlog.Domain.Entities.RecipeStep s)
+    {
+        ArgumentNullException.ThrowIfNull(s);
+        return new(s.Id, s.StepNumber, s.Title, s.Description, s.TimerMinutes, s.ImageUrl);
+    }
+}
 
-public sealed record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? Unit, string? Notes, int OrderIndex);
+/// <summary>SRS §8.6 – <c>{ id, name, quantity, quantityText, unit, notes, orderIndex }</c> (MT-04: định lượng hai cột).</summary>
+public sealed record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? QuantityText, string? Unit, string? Notes, int OrderIndex)
+{
+    public static RecipeIngredientDto From(CulinaryBlog.Domain.Entities.RecipeIngredient i)
+    {
+        ArgumentNullException.ThrowIfNull(i);
+        return new(i.Id, i.Name, i.Quantity, i.QuantityText, i.Unit, i.Notes, i.OrderIndex);
+    }
+}
 
 public sealed record RecipeImageDto(Guid Id, string OriginalUrl, string? MediumUrl, string? ThumbnailUrl, string? AltText, bool IsPrimary, int OrderIndex);
 
@@ -40,7 +55,7 @@ public sealed record RecipeDetailDto(
     string Title,
     string Slug,
     string Description,
-    string Instructions,
+    string? Instructions,
     int PrepTimeMinutes,
     int CookTimeMinutes,
     int Servings,

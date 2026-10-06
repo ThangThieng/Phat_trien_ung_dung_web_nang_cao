@@ -60,6 +60,10 @@ public class RecipeSeedCatalogTests
                 Assert.True(i.Unit is null || i.Unit.Length <= 50, i.Name);
                 Assert.True(i.Notes is null || i.Notes.Length <= 500, i.Name);
                 Assert.True(i.Quantity is null or > 0, i.Name);
+                Assert.True(i.QuantityText is null || i.QuantityText.Length <= 50, i.Name);
+
+                // FR-RCP-009 (Buổi 4): không được rỗng cả Quantity, QuantityText lẫn Unit (INGREDIENT_QUANTITY_REQUIRED).
+                Assert.True(i.Quantity is not null || i.QuantityText is not null || i.Unit is not null, $"{r.Title}: {i.Name}");
             });
             Assert.All(r.Steps, s =>
             {

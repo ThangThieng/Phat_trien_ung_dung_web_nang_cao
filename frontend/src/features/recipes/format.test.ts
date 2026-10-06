@@ -20,4 +20,9 @@ describe('formatQuantity', () => {
     expect(formatQuantity(null, 'thìa canh')).toBe('vừa đủ (thìa canh)');
     expect(formatQuantity(null, null)).toBe('vừa đủ');
   });
+
+  it('ưu tiên quantityText (nguyên văn) hơn quantity + unit', () => {
+    expect(formatQuantity(null, null, 'vừa ăn')).toBe('vừa ăn');
+    expect(formatQuantity(0.5, 'muỗng', '1/2 muỗng')).toBe('1/2 muỗng');
+  });
 });

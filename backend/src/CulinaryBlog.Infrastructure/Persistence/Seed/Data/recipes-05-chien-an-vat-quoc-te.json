@@ -554,7 +554,7 @@
       ["Dầu ô liu", 3, "thìa canh"],
       ["Lá oregano khô", 1, "thìa cà phê"],
       ["Phô mai Parmesan", 50, "gram", "bào"],
-      ["Muối, tiêu đen", null, null, "vừa đủ"]
+      ["Muối, tiêu đen", "vừa đủ", null]
     ],
     "steps": [
       ["Xào soffritto", "Phi hành tây, cà rốt, cần tây và tỏi với dầu ô liu lửa vừa 8 phút đến khi mềm và ngọt.", 8],

@@ -15,9 +15,8 @@ interface AuthSession {
 }
 
 interface RegisterInput {
-  fullName: string;
+  displayName: string;
   email: string;
-  userName: string;
   password: string;
 }
 
@@ -28,8 +27,9 @@ interface AuthContextValue {
   /** false cho tới khi đọc xong session từ storage (tránh nháy UI khi hydrate). */
   isReady: boolean;
   login: (email: string, password: string) => Promise<User>;
+  loginWithGoogle: (idToken: string) => Promise<User>;
   register: (input: RegisterInput) => Promise<User>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -110,10 +110,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [applyAuthResponse],
   );
 
-  const logout = useCallback(() => {
-    writeSession(null);
-    setSession(null);
-  }, []);
+  const loginWithGoogle = useCallback(
+    async (idToken: string) =>
+      applyAuthResponse(
+        await apiFetch<AuthResponse>('/auth/google', { method: 'POST', body: { idToken } }),
+      ),
+    [applyAuthResponse],
+  );
+
+  const logout = useCallback(async () => {
+    try {
+      if (session) {
+        await apiFetch<void>('/auth/logout', {
+          method: 'POST',
+          body: { refreshToken: session.refreshToken },
+          accessToken: session.accessToken,
+        });
+      }
+    } finally {
+      writeSession(null);
+      setSession(null);
+    }
+  }, [session]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -122,10 +140,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: session !== null,
       isReady,
       login,
+      loginWithGoogle,
       register,
       logout,
     }),
-    [session, isReady, login, register, logout],
+    [session, isReady, login, loginWithGoogle, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -61,10 +61,12 @@ export interface RecipeStep {
   imageUrl: string | null;
 }
 
+/** SRS §8.6 – định lượng hai cột (MT-04): `quantity` số tính toán được, `quantityText` nguyên văn ("vừa đủ", "1/2 muỗng"). */
 export interface RecipeIngredient {
   id: string;
   name: string;
   quantity: number | null;
+  quantityText: string | null;
   unit: string | null;
   notes: string | null;
   orderIndex: number;
@@ -72,6 +74,17 @@ export interface RecipeIngredient {
 
 export interface RecipeImage {
   id: string;
+  originalUrl: string;
+  mediumUrl: string | null;
+  thumbnailUrl: string | null;
+  altText: string | null;
+  isPrimary: boolean;
+  orderIndex: number;
+}
+
+/** SRS §8.4 – response của POST/PATCH ảnh công thức (mediumUrl/thumbnailUrl null cho tới khi FR-JOB-002 chạy). */
+export interface RecipeImageResult {
+  imageId: string;
   originalUrl: string;
   mediumUrl: string | null;
   thumbnailUrl: string | null;
@@ -105,12 +118,13 @@ export interface CategoryDetail {
   recipes: PagedResult<RecipeSummary>;
 }
 
+/** SRS §8.1 – UserDto `{ id, email, displayName, avatarUrl, bio, roles }` (D-1). */
 export interface User {
   id: string;
-  fullName: string;
   email: string;
-  userName: string;
+  displayName: string;
   avatarUrl: string | null;
+  bio: string | null;
   roles: string[];
 }
 

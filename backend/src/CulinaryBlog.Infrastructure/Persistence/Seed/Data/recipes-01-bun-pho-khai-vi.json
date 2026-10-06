@@ -44,7 +44,7 @@
       ["Nước mắm", 3, "thìa canh"],
       ["Muối", 2, "thìa cà phê"],
       ["Hành lá", 1, "bó", "thái nhỏ"],
-      ["Chanh, ớt tươi", null, null, "ăn kèm"]
+      ["Chanh, ớt tươi", "vừa đủ", null, "ăn kèm"]
     ],
     "steps": [
       ["Sơ chế gà", "Xát muối và gừng lên da gà rồi rửa sạch. Chần xương gà qua nước sôi 3 phút, đổ bỏ nước đầu.", 10],
@@ -154,7 +154,7 @@
       ["Củ cải trắng", 1, "củ"],
       ["Tỏi phi", 2, "thìa canh"],
       ["Hẹ, cần tàu, xà lách", 200, "gram"],
-      ["Nước mắm, đường phèn", null, null, "nêm vừa ăn"]
+      ["Nước mắm, đường phèn", "vừa ăn", null, "dùng để nêm"]
     ],
     "steps": [
       ["Ninh nước dùng", "Chần xương ống, cho vào nồi 4 lít nước cùng củ cải trắng và mực khô nướng, ninh lửa nhỏ, hớt bọt thường xuyên.", 90],

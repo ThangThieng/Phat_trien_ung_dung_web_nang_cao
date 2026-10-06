@@ -3,22 +3,16 @@ import { z } from 'zod';
 /** Mirror RegisterUserCommandValidator (backend) – NFR-SEC-001. */
 export const registerSchema = z
   .object({
-    fullName: z
+    displayName: z
       .string()
       .trim()
-      .min(2, 'Họ tên phải từ 2 đến 100 ký tự.')
-      .max(100, 'Họ tên phải từ 2 đến 100 ký tự.'),
+      .min(2, 'Tên hiển thị phải từ 2 đến 100 ký tự.')
+      .max(100, 'Tên hiển thị phải từ 2 đến 100 ký tự.'),
     email: z
       .string()
       .trim()
       .min(1, 'Email không được để trống.')
       .email('Email không đúng định dạng.'),
-    userName: z
-      .string()
-      .trim()
-      .min(3, 'Tên đăng nhập phải từ 3 đến 50 ký tự.')
-      .max(50, 'Tên đăng nhập phải từ 3 đến 50 ký tự.')
-      .regex(/^[a-zA-Z0-9_.]+$/, 'Tên đăng nhập chỉ gồm chữ, số, dấu chấm và gạch dưới.'),
     password: z
       .string()
       .min(8, 'Mật khẩu tối thiểu 8 ký tự.')
