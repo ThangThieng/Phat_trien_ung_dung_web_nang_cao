@@ -52,6 +52,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | FluentValidation.DependencyInjectionExtensions | 12.1.1 | CONS-008 | ✅ |
 | Microsoft.Extensions.Logging.Abstractions | 10.0.12 | ILogger cho LoggingBehavior (SRS §6.3) | ✅ *(thêm ở Buổi 2)* |
 | Microsoft.Extensions.Identity.Stores | 10.0.12 | ASP.NET Core Identity (UserManager trong handler) | ✅ |
+| Microsoft.AspNetCore.Authorization | 10.0.12 | Resource-based authorization ở tầng Application — `RecipeAuthorizationHandler` (NFR-SEC-006) | ✅ *(thêm ở Buổi 4 — bù nền Buổi 3 của module Recipe)* |
 
 ### 2.3 Tầng Infrastructure
 | Package | Phiên bản | Mục đích theo SRS | Trạng thái |
@@ -71,6 +72,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | AspNetCore.HealthChecks.NpgSql | 9.0.0 | FR-OBS-001 | ✅ |
 | AspNetCore.HealthChecks.Redis | 9.0.0 | FR-OBS-001 | ✅ |
 | SixLabors.ImageSharp | **3.1.12** | Resize ảnh 800×600 / 300×300 (FR-JOB-002) | ➕📌 xem 6.2 |
+| RedLock.net | 2.3.2 | Distributed lock (RedLock trên Redis) cho FR-JOB-003 Permanent Purge Job — NFR-SCALE-001 chỉ định RedLock | ✅ *(thêm ở Buổi 4)* |
 
 ### 2.4 Tầng API (Presentation)
 | Package | Phiên bản | Mục đích theo SRS | Trạng thái |
@@ -156,7 +158,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | frontend | culinaryblog-web (build) | Node **22.23.2** | Node 22 LTS (khuyến nghị) | 3000:3000 |
 | postgres | postgres:16-alpine | PostgreSQL **16.15** | PostgreSQL 16 | `${POSTGRES_HOST_PORT:-5432}`:5432 – máy này dùng **5434** (xem 6.10) |
 | redis | redis:7-alpine | Redis **7.4.11** (AOF bật) | Redis 7 | 6379:6379 |
-| minio | minio/minio:latest | RELEASE.**2025-09-07** | MinIO RELEASE.2024+ | 9000, 9001 (console) |
+| minio | quay.io/minio/minio | RELEASE.**2025-09-07T16-13-09Z** (ghim) | MinIO RELEASE.2024+ | 9000, 9001 (console) |
 | seq | datalust/seq:latest | latest | Seq | 5341:80 |
 | mailhog | mailhog/mailhog | latest (profile `dev`) | Mailhog (dev only) | 8025, 1025 |
 
@@ -209,7 +211,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 ### 6.4 Health check MinIO – tự viết `IHealthCheck` ⚠️
 - **SRS (FR-OBS-001)** ghi package `AspNetCore.HealthChecks.Minio`.
 - **Thực tế:** tra NuGet ngày 11/09/2026 thì package này **không tồn tại** (0 kết quả).
-- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (ListBuckets) ở Buổi 5. `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
+- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (kiểm tra bucket cấu hình tồn tại — `AmazonS3Util.DoesS3BucketExistV2Async`) ở Buổi 3 (endpoint health kéo từ Buổi 5 lên theo yêu cầu bổ sung ngày 29/09/2026). `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
 - **Đây là thay đổi duy nhất bắt buộc phải khác SRS.**
 
 ### 6.5 Lockfile npm sinh bằng npm 10 📌

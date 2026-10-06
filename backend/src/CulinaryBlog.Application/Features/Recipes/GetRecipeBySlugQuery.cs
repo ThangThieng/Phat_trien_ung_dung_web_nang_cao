@@ -1,6 +1,8 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Domain.Exceptions.Recipes;
 using FluentValidation;
 using MediatR;
 
@@ -23,7 +25,7 @@ public sealed class GetRecipeBySlugQueryHandler(IRecipeReadRepository recipes, I
     public async Task<RecipeDetailDto> Handle(GetRecipeBySlugQuery request, CancellationToken cancellationToken)
     {
         var result = await recipes.GetBySlugAsync(request.Slug, cancellationToken).ConfigureAwait(false)
-            ?? throw new NotFoundException(ErrorCodes.RecipeNotFound, $"Không tìm thấy công thức '{request.Slug}'.");
+            ?? throw new RecipeNotFoundException(request.Slug);
 
         var (recipe, authorId) = result;
 

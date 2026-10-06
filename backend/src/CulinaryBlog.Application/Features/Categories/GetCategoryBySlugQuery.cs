@@ -1,6 +1,6 @@
-using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Features.Recipes;
+using CulinaryBlog.Domain.Exceptions.Categories;
 using FluentValidation;
 using MediatR;
 
@@ -28,7 +28,7 @@ public sealed class GetCategoryBySlugQueryHandler(
     public async Task<CategoryDetailDto> Handle(GetCategoryBySlugQuery request, CancellationToken cancellationToken)
     {
         var category = await categories.GetBySlugAsync(request.Slug, cancellationToken).ConfigureAwait(false)
-            ?? throw new NotFoundException(ErrorCodes.CategoryNotFound, $"Không tìm thấy danh mục '{request.Slug}'.");
+            ?? throw new CategoryNotFoundException(request.Slug);
 
         var criteria = new RecipeListCriteria(
             request.Page,

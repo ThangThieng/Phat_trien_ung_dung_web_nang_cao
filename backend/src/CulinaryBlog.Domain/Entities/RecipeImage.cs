@@ -2,7 +2,7 @@ using CulinaryBlog.Domain.Common;
 
 namespace CulinaryBlog.Domain.Entities;
 
-/// <summary>SRS §7.5 – ảnh công thức trên MinIO. Mỗi Recipe chỉ có 1 ảnh IsPrimary.</summary>
+/// <summary>SRS §7.5 – ảnh công thức trên MinIO. Mỗi Recipe chỉ có 1 ảnh IsPrimary (partial unique index, chỉ tính ảnh chưa xóa).</summary>
 public class RecipeImage : BaseEntity
 {
     private RecipeImage()
@@ -28,16 +28,41 @@ public class RecipeImage : BaseEntity
         {
             RecipeId = recipeId,
             OriginalUrl = originalUrl,
-            AltText = altText,
+            AltText = altText?.Trim(),
             IsPrimary = isPrimary,
             OrderIndex = orderIndex,
         };
 
-    public void Update(string? altText, int? orderIndex)
+    /// <summary>PATCH metadata (FR-RCP-008 bước 10): chỉ đổi trường được gửi — <c>null</c> nghĩa là "giữ nguyên".</summary>
+    public void UpdateMetadata(string? altText, int? orderIndex)
     {
-        AltText = altText?.Trim();
-        if (orderIndex.HasValue) OrderIndex = orderIndex.Value;
+        if (altText is not null)
+        {
+            AltText = altText.Trim();
+        }
+
+        if (orderIndex.HasValue)
+        {
+            OrderIndex = orderIndex.Value;
+        }
     }
 
-    public void SetPrimary(bool isPrimary) => IsPrimary = isPrimary;
+    /// <summary>FR-JOB-002: ghi URL hai biến thể do job đổi kích thước sinh ra.</summary>
+    public void SetResizedVariants(string mediumUrl, string thumbnailUrl)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(mediumUrl);
+        ArgumentException.ThrowIfNullOrWhiteSpace(thumbnailUrl);
+
+        MediumUrl = mediumUrl;
+        ThumbnailUrl = thumbnailUrl;
+    }
+
+    internal void SetPrimary(bool isPrimary) => IsPrimary = isPrimary;
+
+    /// <summary>FR-RCP-008 bước 14: xóa mềm (IsDeleted = true) và rời vai trò ảnh chính.</summary>
+    internal void SoftDelete()
+    {
+        IsDeleted = true;
+        IsPrimary = false;
+    }
 }

@@ -57,7 +57,9 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Navigation(r => r.Ingredients).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(r => r.Images).UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasIndex(r => r.Slug).IsUnique().HasDatabaseName("IDX_Recipe_Slug");
+        // D-3 (MT-05, Buổi 4): unique CHỈ trên công thức chưa xóa mềm, để slug của bản đã xóa được dùng lại
+        // thay vì chiếm chỗ vĩnh viễn như unique thường.
+        builder.HasIndex(r => r.Slug).IsUnique().HasFilter("\"IsDeleted\" = false").HasDatabaseName("IDX_Recipe_Slug");
         builder.HasIndex(r => r.Status).HasDatabaseName("IDX_Recipe_Status");
         builder.HasIndex(r => r.CategoryId).HasDatabaseName("IDX_Recipe_CategoryId");
         builder.HasIndex(r => r.AuthorId).HasDatabaseName("IDX_Recipe_AuthorId");
@@ -84,7 +86,10 @@ internal sealed class RecipeStepConfiguration : IEntityTypeConfiguration<RecipeS
         builder.Property(s => s.Description).HasColumnType("text").IsRequired();
         builder.Property(s => s.ImageUrl).HasMaxLength(500);
 
-        builder.HasIndex(s => new { s.RecipeId, s.StepNumber }).IsUnique().HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
+        // D-16 (MT-56): tính duy nhất (RecipeId, StepNumber) là UNIQUE CONSTRAINT "UQ_RecipeStep_Recipe_StepNumber"
+        // DEFERRABLE INITIALLY DEFERRED, tạo bằng DDL trong migration B4_Recipe_IngredientStep — PostgreSQL không cho unique
+        // INDEX là deferrable, và EF Core không khai báo được constraint deferrable. Index ở đây chỉ phục vụ truy vấn.
+        builder.HasIndex(s => new { s.RecipeId, s.StepNumber }).HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
     }
 }
 
@@ -93,11 +98,13 @@ internal sealed class RecipeIngredientConfiguration : IEntityTypeConfiguration<R
 {
     public void Configure(EntityTypeBuilder<RecipeIngredient> builder)
     {
-        builder.ToTable("RecipeIngredients");
+        builder.ToTable("RecipeIngredients", t =>
+            t.HasCheckConstraint("CK_RecipeIngredient_Quantity", "\"Quantity\" IS NULL OR \"Quantity\" > 0"));
         builder.ConfigureBase();
 
         builder.Property(i => i.Name).HasMaxLength(200).IsRequired();
         builder.Property(i => i.Quantity).HasPrecision(10, 3);
+        builder.Property(i => i.QuantityText).HasMaxLength(50);
         builder.Property(i => i.Unit).HasMaxLength(50);
         builder.Property(i => i.Notes).HasMaxLength(500);
         builder.Property(i => i.OrderIndex).HasDefaultValue(0);
