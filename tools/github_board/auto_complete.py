@@ -19,7 +19,9 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
+import os
 import re
+import sys
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -338,6 +340,11 @@ def main() -> None:
         git("fetch", "--prune", args.remote)
 
     branches = remote_branches(args.remote) if args.all or not args.branch else args.branch
+    if not args.all and args.branch and not any(BRANCH_RE.match(b) for b in branches):
+        print(f"Nhánh {', '.join(branches)} không mang MSSV của sinh viên nào — không có gì để chấm.")
+        return
+    if not args.dry_run and "GH_TOKEN" in os.environ and not os.environ["GH_TOKEN"]:
+        sys.exit("Thiếu secret BOARD_TOKEN (PAT scope repo + project) — xem tools/github_board/README.md.")
     verdicts = grade(plan.tasks, plan.members, rules, args.remote, branches)
     print(f"Chấm {len(branches)} nhánh, {len(verdicts)} đầu việc có tiêu chí:")
     for v in sorted(verdicts, key=lambda v: (v.task.session, v.task.member.dev)):
