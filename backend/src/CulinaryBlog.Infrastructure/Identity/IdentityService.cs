@@ -70,45 +70,6 @@ public sealed class IdentityService(
         return ToInfo(user, [.. roles]);
     }
 
-    public async Task<PagedResult<UserAdminDto>> GetUsersAsync(int page, int pageSize, string? search, bool? isActive, CancellationToken cancellationToken)
-    {
-        var query = db.Users.AsNoTracking().AsQueryable();
-        if (isActive.HasValue)
-        {
-            query = query.Where(user => user.IsActive == isActive.Value);
-        }
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            var term = search.Trim();
-            query = query.Where(user => EF.Functions.ILike(user.Email!, $"%{term}%") || EF.Functions.ILike(user.DisplayName, $"%{term}%"));
-        }
-
-        var total = await query.CountAsync(cancellationToken).ConfigureAwait(false);
-        var users = await query.OrderByDescending(user => user.CreatedAt).ThenBy(user => user.Id)
-            .Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken).ConfigureAwait(false);
-        var ids = users.Select(user => user.Id).ToArray();
-        var counts = await db.Recipes.Where(recipe => ids.Contains(recipe.AuthorId))
-            .GroupBy(recipe => recipe.AuthorId).Select(group => new { UserId = group.Key, Count = group.Count() })
-            .ToDictionaryAsync(item => item.UserId, item => item.Count, cancellationToken).ConfigureAwait(false);
-        var result = new List<UserAdminDto>(users.Count);
-        foreach (var user in users)
-        {
-            var roles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
-            result.Add(new UserAdminDto(
-                user.Id,
-                user.Email ?? string.Empty,
-                user.DisplayName,
-                user.AvatarUrl,
-                [.. roles],
-                user.IsActive,
-                user.CreatedAt,
-                counts.GetValueOrDefault(user.Id)));
-        }
-
-        return new PagedResult<UserAdminDto>(result, total, page, pageSize);
-    }
-
     public async Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken)
     {
         var strategy = db.Database.CreateExecutionStrategy();

@@ -1,6 +1,7 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Entities;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -20,30 +21,30 @@ public sealed partial class RefreshTokenCommandHandler(
     {
         if (string.IsNullOrWhiteSpace(request.RefreshToken))
         {
-            throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Refresh token không hợp lệ.");
+            throw new InvalidTokenException("Refresh token không hợp lệ.");
         }
 
         var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken).ConfigureAwait(false);
         if (token is null)
         {
-            throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Refresh token không hợp lệ.");
+            throw new InvalidTokenException("Refresh token không hợp lệ.");
         }
 
         var now = timeProvider.GetUtcNow().UtcDateTime;
         if (token.ExpiresAt <= now)
         {
-            throw new UnauthorizedException(ErrorCodes.AuthRefreshTokenExpired, "Refresh token đã hết hạn.");
+            throw InvalidTokenException.RefreshTokenExpired();
         }
 
         var user = await identityService.GetByIdAsync(token.UserId, cancellationToken).ConfigureAwait(false);
         if (user is null)
         {
-            throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Tài khoản của refresh token không còn tồn tại.");
+            throw new InvalidTokenException("Tài khoản của refresh token không còn tồn tại.");
         }
 
         if (!user.IsActive)
         {
-            throw new ForbiddenException(ErrorCodes.AuthAccountDisabled, "Tài khoản đã bị vô hiệu hóa.");
+            throw new AccountDisabledException();
         }
 
         if (await identityService.IsLockedOutAsync(user.Id, cancellationToken).ConfigureAwait(false))
@@ -58,7 +59,7 @@ public sealed partial class RefreshTokenCommandHandler(
 
         if (!token.IsActive(now))
         {
-            throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Refresh token không hợp lệ.");
+            throw new InvalidTokenException("Refresh token không hợp lệ.");
         }
 
         var replacement = tokenService.CreateRefreshToken();
@@ -78,7 +79,7 @@ public sealed partial class RefreshTokenCommandHandler(
         await refreshTokens.RevokeFamilyAsync(token.UserId, token.TokenHash, now, cancellationToken).ConfigureAwait(false);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         LogRefreshTokenReuse(logger, token.UserId, ipAddress);
-        throw new UnauthorizedException(ErrorCodes.AuthRefreshTokenRevoked, "Refresh token đã bị thu hồi; vui lòng đăng nhập lại.");
+        throw InvalidTokenException.RefreshTokenRevoked();
     }
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "SECURITY ALERT: refresh token reuse detected for user {UserId} from IP {ipAddress}")]

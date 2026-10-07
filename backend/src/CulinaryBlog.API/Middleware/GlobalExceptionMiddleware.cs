@@ -1,5 +1,7 @@
+using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Domain.Common;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +47,9 @@ public sealed partial class GlobalExceptionMiddleware(
     {
         switch (exception)
         {
+            case AuthDomainException auth:
+                return AuthExceptionMappings.ToProblem(auth, context.Request.Path);
+
             case AppException app:
                 var appProblem = new ProblemDetails
                 {

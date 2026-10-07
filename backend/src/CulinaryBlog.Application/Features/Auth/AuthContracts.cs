@@ -1,4 +1,3 @@
-using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Domain.Entities;
 
 namespace CulinaryBlog.Application.Features.Auth;
@@ -53,8 +52,6 @@ public interface IIdentityService
     Task<bool> IsLockedOutAsync(string userId, CancellationToken cancellationToken);
 
     Task<IdentityUserInfo> UpdateProfileAsync(string userId, ProfileUpdate update, CancellationToken cancellationToken);
-
-    Task<PagedResult<UserAdminDto>> GetUsersAsync(int page, int pageSize, string? search, bool? isActive, CancellationToken cancellationToken);
 
     Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken);
 

@@ -1,6 +1,8 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Models;
+using CulinaryBlog.Domain.Exceptions.Auth;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -8,21 +10,35 @@ namespace CulinaryBlog.Application.Features.Auth;
 
 public sealed record GetUsersQuery(int Page, int PageSize, string? Search, bool? IsActive) : IRequest<PagedResult<UserAdminDto>>;
 
-public sealed class GetUsersQueryHandler(IIdentityService identityService)
+public sealed class GetUsersQueryValidator : AbstractValidator<GetUsersQuery>
+{
+    public GetUsersQueryValidator()
+    {
+        RuleFor(query => query.Page).GreaterThan(0)
+            .Must((query, page) => ((long)page - 1) * query.PageSize <= int.MaxValue);
+        RuleFor(query => query.PageSize).InclusiveBetween(1, 50);
+        RuleFor(query => query.Search).MaximumLength(100);
+    }
+}
+
+public sealed class GetUsersQueryHandler(IUserRepository users)
     : IRequestHandler<GetUsersQuery, PagedResult<UserAdminDto>>
 {
     public Task<PagedResult<UserAdminDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        if (request.Page < 1 || request.PageSize is < 1 or > 50 || request.Search?.Length > 100)
-        {
-            throw new BadRequestException(ErrorCodes.ValidationError, "page phải từ 1 trở lên, pageSize từ 1 đến 50 và search không quá 100 ký tự.");
-        }
-
-        return identityService.GetUsersAsync(request.Page, request.PageSize, request.Search, request.IsActive, cancellationToken);
+        return users.GetUsersAsync(request.Page, request.PageSize, request.Search, request.IsActive, cancellationToken);
     }
 }
 
 public sealed record SetUserStatusCommand(string UserId, bool IsActive, string? Reason) : IRequest<UserStatusDto>;
+
+public sealed class SetUserStatusCommandValidator : AbstractValidator<SetUserStatusCommand>
+{
+    public SetUserStatusCommandValidator()
+    {
+        RuleFor(command => command.Reason).MaximumLength(500);
+    }
+}
 
 public sealed record UserStatusDto(string Id, string Email, string DisplayName, bool IsActive);
 
@@ -37,13 +53,8 @@ public sealed partial class SetUserStatusCommandHandler(ICurrentUser currentUser
             throw new ForbiddenException("about:blank", "Admin không thể tự khóa tài khoản của mình.");
         }
 
-        if (request.Reason?.Length > 500)
-        {
-            throw new BadRequestException(ErrorCodes.ValidationError, "Lý do không được vượt quá 500 ký tự.");
-        }
-
         var user = await identityService.SetActiveAsync(request.UserId, request.IsActive, cancellationToken).ConfigureAwait(false)
-            ?? throw new NotFoundException(ErrorCodes.AuthUserNotFound, "Không tìm thấy người dùng.");
+            ?? throw new UserNotFoundException();
         LogAccountStatusChanged(logger, actorId, user.Id, request.IsActive, request.Reason);
         return new UserStatusDto(user.Id, user.Email, user.DisplayName, user.IsActive);
     }
