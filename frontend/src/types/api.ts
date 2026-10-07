@@ -36,6 +36,7 @@ export interface RecipeSummary {
   servings: number;
   difficulty: RecipeDifficulty;
   status: RecipeStatus;
+  /** Ảnh chính cho card: ThumbnailUrl 300×300 (FR-JOB-002), dự phòng OriginalUrl khi job đổi kích thước chưa chạy xong. */
   primaryImageUrl: string | null;
   category: CategoryRef;
   author: Author;

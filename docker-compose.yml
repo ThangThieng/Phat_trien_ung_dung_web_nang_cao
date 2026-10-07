@@ -41,8 +41,9 @@ services:
       # Sinh trước khi "docker compose up": ./nginx/generate-htpasswd.sh (hoặc .ps1). KHÔNG commit (NFR-SEC-007).
       - ./nginx/.htpasswd:/etc/nginx/.htpasswd:ro
     depends_on:
-      - api
-      - frontend
+      # FR-OBS-001: chỉ nhận traffic khi API đã sẵn sàng (/health/ready trả 200), không chỉ "container đã chạy"
+      api: { condition: service_healthy }
+      frontend: { condition: service_started }
     restart: unless-stopped
 
   api:
@@ -69,6 +70,15 @@ services:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
       minio: { condition: service_healthy }
+    healthcheck:
+      # FR-OBS-001 / NFR-REL-001: readiness = PostgreSQL + Redis (tag "ready"). Lỗi → container "unhealthy": Nginx ngừng
+      # chuyển traffic tới nó nhưng Docker KHÔNG khởi động lại (lỗi nằm ở phụ thuộc, không ở process API).
+      # curl được cài ở stage runtime của backend/Dockerfile (aspnet:10.0 không có sẵn).
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   # Hangfire worker: cùng image API, chỉ chạy BackgroundJobServer (SRS §3.6, NFR-SCALE-001)
@@ -106,6 +116,13 @@ services:
       REVALIDATE_SECRET: ${REVALIDATE_SECRET}
     depends_on:
       - api
+    healthcheck:
+      # node:22-alpine không có curl — dùng wget của busybox (SRS v1.2.0 §6.5 — MT-51)
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   postgres:

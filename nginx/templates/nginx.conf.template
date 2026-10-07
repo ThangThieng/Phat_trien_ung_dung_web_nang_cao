@@ -49,11 +49,24 @@ http {
         add_header X-Frame-Options DENY always;
         add_header Referrer-Policy strict-origin-when-cross-origin always;
 
+        # FR-OBS-001 (Buổi 5): /api/health là Route Handler của Next.js (proxy sang /health của API cho Health UI), không
+        # phải endpoint của API. Khớp chính xác "=" luôn thắng mọi prefix/regex, nên không rơi vào khối /api/ bên dưới.
+        location = /api/health {
+            proxy_pass $frontend_upstream;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
         location /api/ {
             limit_req zone=api_limit burst=20 nodelay;
             limit_req_status 429;
             # Body > 10m: trả RFC 7807 JSON thay vì trang HTML mặc định để Frontend đọc được lỗi
             error_page 413 @payload_too_large;
+            # FR-OBS-001 / NFR-REL-001: instance API lỗi → thử instance kế tiếp. Vẫn hoạt động với resolver động: khi
+            # "api" phân giải ra nhiều địa chỉ (--scale api=3), Nginx luân phiên và bỏ qua địa chỉ đang lỗi. Mặc định Nginx
+            # KHÔNG gửi lại request không idempotent (POST/PATCH) đã tới upstream, nên không có nguy cơ ghi trùng.
+            proxy_next_upstream error timeout http_502 http_503 http_504;
             proxy_pass $api_upstream;
             proxy_http_version 1.1;
             proxy_set_header Host $host;

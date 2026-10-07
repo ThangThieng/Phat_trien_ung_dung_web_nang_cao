@@ -6,6 +6,7 @@ import { ChefHat, LogOut, ImageUp, PenSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
 import CategoryNav from '@/features/categories/components/CategoryNav';
+import HealthIndicator from '@/features/system/components/HealthIndicator';
 
 const NAV = [{ href: '/recipes', label: 'Công thức' }];
 
@@ -62,6 +63,8 @@ export default function SiteHeader() {
                 <ImageUp aria-hidden className="h-4 w-4" />
                 Thư viện ảnh
               </Link>
+              {/* FR-OBS-001: chỉ Admin thấy (và chỉ khi đó mới poll /api/health) */}
+              {user.roles.includes('Admin') && <HealthIndicator />}
               <span
                 className="hidden text-sm font-medium text-gray-900 md:inline"
                 title={user.email}

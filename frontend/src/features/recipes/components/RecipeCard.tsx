@@ -4,7 +4,10 @@ import { Clock, Users } from 'lucide-react';
 import type { RecipeSummary } from '@/types/api';
 import { DIFFICULTY_LABEL, DIFFICULTY_STYLE, formatMinutes } from '../format';
 
-/** Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001). */
+/**
+ * Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001).
+ * `primaryImageUrl` là ảnh thu nhỏ do FR-JOB-002 sinh, hoặc ảnh gốc khi job chưa chạy xong — API đã chọn sẵn.
+ */
 export default function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
