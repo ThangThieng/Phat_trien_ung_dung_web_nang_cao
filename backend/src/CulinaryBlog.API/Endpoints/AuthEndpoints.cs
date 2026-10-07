@@ -46,6 +46,7 @@ public static class AuthEndpoints
             .WithName("Refresh")
             .WithSummary("FR-AUTH-004 – Refresh token rotation và reuse detection")
             .Produces<AuthResponseDto>()
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status403Forbidden);
 
@@ -107,9 +108,9 @@ public static class AuthEndpoints
         return Results.Ok(await sender.Send(command, ct).ConfigureAwait(false));
     }
 
-    private static async Task<IResult> GoogleLoginAsync(GoogleLoginRequest body, HttpContext http, ISender sender, CancellationToken ct)
+    private static async Task<IResult> GoogleLoginAsync(GoogleLoginRequest? body, HttpContext http, ISender sender, CancellationToken ct)
     {
-        var command = new GoogleLoginCommand(body.IdToken ?? string.Empty)
+        var command = new GoogleLoginCommand(body?.IdToken ?? string.Empty)
         {
             IpAddress = http.Connection.RemoteIpAddress?.ToString(),
         };
@@ -122,9 +123,9 @@ public static class AuthEndpoints
         return Results.NoContent();
     }
 
-    private static async Task<IResult> RefreshAsync(RefreshRequest body, HttpContext http, ISender sender, CancellationToken ct)
+    private static async Task<IResult> RefreshAsync(RefreshRequest? body, HttpContext http, ISender sender, CancellationToken ct)
     {
-        var command = new RefreshTokenCommand(body.RefreshToken ?? string.Empty, http.Connection.RemoteIpAddress?.ToString());
+        var command = new RefreshTokenCommand(body?.RefreshToken ?? string.Empty, http.Connection.RemoteIpAddress?.ToString());
         return Results.Ok(await sender.Send(command, ct).ConfigureAwait(false));
     }
 

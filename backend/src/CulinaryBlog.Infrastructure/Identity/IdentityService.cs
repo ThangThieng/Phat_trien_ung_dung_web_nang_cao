@@ -30,7 +30,7 @@ public sealed class IdentityService(
 
     public async Task<IdentityUserInfo?> GetByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        var user = await userManager.Users.SingleOrDefaultAsync(u => u.Id == userId, cancellationToken).ConfigureAwait(false);
+        var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId, cancellationToken).ConfigureAwait(false);
         if (user is null)
         {
             return null;
@@ -72,27 +72,28 @@ public sealed class IdentityService(
 
     public async Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken)
     {
-        var strategy = db.Database.CreateExecutionStrategy();
-        var user = await strategy.ExecuteAsync(async () =>
-        {
-            await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
-            var target = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
-            if (target is null)
+        var user = await UserTokenTransaction.ExecuteAsync<ApplicationUser?>(
+            db,
+            userId,
+            async ct =>
             {
-                return null;
-            }
+                var target = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                if (target is null)
+                {
+                    return null;
+                }
 
-            target.IsActive = isActive;
-            ThrowIfFailed(await userManager.UpdateAsync(target).ConfigureAwait(false));
-            if (!isActive)
-            {
-                await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, cancellationToken).ConfigureAwait(false);
-                await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            }
+                target.IsActive = isActive;
+                ThrowIfFailed(await userManager.UpdateAsync(target).ConfigureAwait(false));
+                if (!isActive)
+                {
+                    await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, cancellationToken).ConfigureAwait(false);
+                    await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                }
 
-            await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
-            return target;
-        }).ConfigureAwait(false);
+                return target;
+            },
+            cancellationToken).ConfigureAwait(false);
         if (user is null)
         {
             return null;

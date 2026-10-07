@@ -80,6 +80,9 @@ public interface ITokenService
 
 public interface IRefreshTokenRepository
 {
+    /// <summary>Serializes token issuance and whole-user revocation in a database transaction.</summary>
+    Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken);
+
     Task AddAsync(RefreshToken token, CancellationToken cancellationToken);
 
     Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken);

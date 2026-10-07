@@ -302,6 +302,8 @@ public sealed class RefreshTokenTests(CulinaryBlogApiFactory factory) : IClassFi
 
     private sealed class SynchronizedRefreshTokenRepository(IRefreshTokenRepository inner, Func<Task> synchronize) : IRefreshTokenRepository
     {
+        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken) => inner.ExecuteForUserAsync(userId, operation, cancellationToken);
+
         public Task AddAsync(RefreshToken token, CancellationToken cancellationToken) => inner.AddAsync(token, cancellationToken);
 
         public async Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken)

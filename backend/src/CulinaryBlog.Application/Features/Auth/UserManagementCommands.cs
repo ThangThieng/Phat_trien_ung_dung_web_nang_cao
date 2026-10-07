@@ -104,7 +104,14 @@ public sealed class RevokeAllMySessionsCommandHandler(ICurrentUser currentUser, 
     public async Task Handle(RevokeAllMySessionsCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId ?? throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Yêu cầu đăng nhập.");
-        await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, cancellationToken).ConfigureAwait(false);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        await refreshTokens.ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                return true;
+            },
+            cancellationToken).ConfigureAwait(false);
     }
 }

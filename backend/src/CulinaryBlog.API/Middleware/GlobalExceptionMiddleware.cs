@@ -73,7 +73,8 @@ public sealed partial class GlobalExceptionMiddleware(
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).Distinct().ToArray());
                 return new ValidationProblemDetails(errors)
                 {
-                    Type = ErrorCodes.ValidationError,
+                    Type = validation.Errors.All(error => error.ErrorCode == ErrorCodes.AuthGoogleTokenInvalid)
+                        ? ErrorCodes.AuthGoogleTokenInvalid : ErrorCodes.ValidationError,
                     Title = "Dữ liệu không hợp lệ",
                     Status = StatusCodes.Status400BadRequest,
                     Detail = "Một hoặc nhiều trường không hợp lệ. Xem \"errors\".",
