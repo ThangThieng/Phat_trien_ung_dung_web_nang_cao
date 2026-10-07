@@ -174,6 +174,17 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasIndex("Difficulty")
                         .HasDatabaseName("IDX_Recipe_Difficulty");
 
+                    b.HasIndex("IsDeleted", "Status", "PublishedAt")
+                        .IsDescending(false, false, true)
+                        .HasDatabaseName("IDX_Recipe_List");
+
+                    b.HasIndex("Status", "CategoryId", "PublishedAt")
+                        .IsDescending(false, false, true)
+                        .HasDatabaseName("IDX_Recipe_ByCategory");
+
+                    b.HasIndex("Status", "CookTimeMinutes")
+                        .HasDatabaseName("IDX_Recipe_CookTime");
+
                     b.HasIndex("IsDeleted")
                         .HasDatabaseName("IDX_Recipe_IsDeleted")
                         .HasFilter("\"IsDeleted\" = false");

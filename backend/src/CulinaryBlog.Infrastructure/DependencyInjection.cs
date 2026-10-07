@@ -46,6 +46,8 @@ public static class DependencyInjection
 
         services.AddOptions<SeedOptions>().Bind(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseSeeder>();
+        services.AddOptions<PerformanceSeedOptions>().Bind(configuration.GetSection(PerformanceSeedOptions.SectionName));
+        services.AddScoped<PerformanceSeeder>();
 
         return services;
     }

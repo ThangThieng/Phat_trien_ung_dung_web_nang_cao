@@ -1,11 +1,13 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChefHat, LogOut, ImageUp } from 'lucide-react';
+import { ChefHat, LogOut, ImageUp, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
 import CategoryNav from '@/features/categories/components/CategoryNav';
+import SearchBar from '@/features/recipes/components/SearchBar';
 
 const NAV = [{ href: '/recipes', label: 'Công thức' }];
 
@@ -46,6 +48,17 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex min-w-[9rem] items-center justify-end gap-2">
+          {/* FR-SRCH-001: useSearchParams cần Suspense để các trang tĩnh vẫn build được. */}
+          <Suspense fallback={null}>
+            <SearchBar className="hidden md:block" />
+          </Suspense>
+          <Link
+            href="/search"
+            aria-label="Tìm kiếm"
+            className="rounded-md p-2 text-gray-600 hover:bg-orange-50 hover:text-orange-700 md:hidden"
+          >
+            <Search aria-hidden className="h-4 w-4" />
+          </Link>
           {isReady && user && (
             <>
               <Link

@@ -43,6 +43,11 @@ export interface RecipeSummary {
   createdAt: string;
 }
 
+/** FR-SRCH-001 – kết quả tìm kiếm: đúng các trường của RecipeSummary cộng `relevanceScore` (ts_rank). */
+export interface RecipeSearchResult extends RecipeSummary {
+  relevanceScore: number;
+}
+
 export interface RecipeNutrition {
   calories: number | null;
   protein: number | null;

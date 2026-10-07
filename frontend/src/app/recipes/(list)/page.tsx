@@ -2,7 +2,16 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Pagination from '@/components/ui/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
-import { getRecipes } from '@/features/recipes/api';
+import FilterPanel from '@/features/recipes/components/FilterPanel';
+import SortSelect from '@/features/recipes/components/SortSelect';
+import { getCategories } from '@/features/categories/api';
+import { getRecipes, toRecipeListParams } from '@/features/recipes/api';
+import {
+  buildHref,
+  countActiveFilters,
+  parseRecipeListState,
+} from '@/features/recipes/search-params';
+import type { Category } from '@/types/api';
 
 export const metadata: Metadata = {
   title: 'Công thức nấu ăn',
@@ -13,71 +22,81 @@ export const metadata: Metadata = {
 // SRS §5.1: /recipes render SSR dynamic
 export const dynamic = 'force-dynamic';
 
-const SORTS = [
-  { value: '-createdAt', label: 'Mới nhất' },
-  { value: 'title', label: 'Tên A → Z' },
-  { value: 'cookTime', label: 'Nấu nhanh' },
-];
-
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
+const PATHNAME = '/recipes';
 
 export default async function RecipesPage({ searchParams }: { searchParams: SearchParams }) {
-  const params = await searchParams;
-  const page = Math.max(1, Number(first(params.page)) || 1);
-  const sort = SORTS.some((s) => s.value === first(params.sort))
-    ? first(params.sort)!
-    : '-createdAt';
+  // FR-SRCH-002/003/004: toàn bộ state nằm trong URL — SSR đọc được ngay, link chia sẻ được, back/forward đúng.
+  const state = parseRecipeListState(await searchParams);
 
-  const result = await getRecipes({ page, pageSize: 12, sort });
+  const [result, categories] = await Promise.all([
+    getRecipes(toRecipeListParams(state)),
+    // Lỗi tải danh mục chỉ làm ô "Danh mục" trong bộ lọc trống, không làm hỏng cả trang.
+    getCategories().catch((): Category[] => []),
+  ]);
 
-  const buildHref = (p: number, s = sort) => {
-    const query = new URLSearchParams({ page: String(p) });
-    if (s !== '-createdAt') query.set('sort', s);
-    return `/recipes?${query.toString()}`;
-  };
+  const filtered = countActiveFilters(state) > 0;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Công thức nấu ăn</h1>
-          <p className="mt-1 text-gray-600">{result.totalCount} công thức đang chờ bạn khám phá.</p>
+          <p className="mt-1 text-gray-600">
+            {filtered
+              ? `${result.totalCount} công thức phù hợp bộ lọc.`
+              : `${result.totalCount} công thức đang chờ bạn khám phá.`}
+          </p>
         </div>
-        <nav aria-label="Sắp xếp" className="flex gap-2">
-          {SORTS.map((s) => (
-            <Link
-              key={s.value}
-              href={buildHref(1, s.value)}
-              aria-current={s.value === sort ? 'true' : undefined}
-              className={`rounded-full border px-3 py-1 text-sm ${
-                s.value === sort
-                  ? 'border-orange-600 bg-orange-600 text-white'
-                  : 'border-gray-300 text-gray-700 hover:border-orange-400'
-              }`}
-            >
-              {s.label}
-            </Link>
-          ))}
-        </nav>
+        <SortSelect pathname={PATHNAME} state={state} />
       </div>
 
-      {result.items.length === 0 ? (
-        <p className="mt-16 text-center text-gray-600">Chưa có công thức nào.</p>
-      ) : (
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {result.items.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-        </div>
-      )}
+      <div className="mt-8 flex flex-col gap-6 lg:grid lg:grid-cols-[16rem_1fr] lg:items-start">
+        <FilterPanel
+          pathname={PATHNAME}
+          state={state}
+          categories={categories}
+          fields={['category', 'difficulty', 'cookTime', 'prepTime', 'servings']}
+        />
 
-      <Pagination
-        page={result.page}
-        totalPages={result.totalPages}
-        buildHref={(p) => buildHref(p)}
-      />
+        <div>
+          {result.items.length === 0 ? (
+            <div className="mt-8 text-center text-gray-600">
+              <p>
+                {filtered ? 'Không có công thức nào phù hợp bộ lọc.' : 'Chưa có công thức nào.'}
+              </p>
+              {filtered && (
+                <Link
+                  href={buildHref(PATHNAME, state, {
+                    categoryId: undefined,
+                    difficulty: undefined,
+                    maxCookTime: undefined,
+                    maxPrepTime: undefined,
+                    minServings: undefined,
+                    page: 1,
+                  })}
+                  className="mt-3 inline-block font-medium text-orange-700 hover:underline"
+                >
+                  Xóa bộ lọc
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {result.items.map((recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
+          )}
+
+          <Pagination
+            page={result.page}
+            totalPages={result.totalPages}
+            buildHref={(p) => buildHref(PATHNAME, state, { page: p })}
+          />
+        </div>
+      </div>
     </div>
   );
 }

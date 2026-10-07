@@ -4,26 +4,34 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import Pagination from '@/components/ui/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
+import SortSelect from '@/features/recipes/components/SortSelect';
 import { getCategoryBySlug } from '@/features/categories/api';
+import {
+  buildHref,
+  parseCategoryState,
+  type RecipeQueryState,
+} from '@/features/recipes/search-params';
 import { ApiError } from '@/lib/api-client';
 
 type Params = Promise<{ slug: string }>;
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-// SRS §5.1: /categories/[slug] – dữ liệu revalidate 600s (fetch Data Cache, xem features/categories/api.ts)
+// SRS §5.1 / MT-57: /categories/[slug] – SSR + Data Cache `revalidate: 120` (xem features/categories/api.ts)
 export const dynamic = 'force-dynamic';
 
-const loadCategory = cache(async (slug: string, page: number) => {
+const loadCategory = cache(async (slug: string, state: string) => {
+  const { page, sortBy, sortOrder } = JSON.parse(state) as RecipeQueryState;
   try {
-    return await getCategoryBySlug(slug, page);
+    return await getCategoryBySlug(slug, { page, sortBy, sortOrder });
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) return null;
     throw error;
   }
 });
 
-const parsePage = (value: string | string[] | undefined) =>
-  Math.max(1, Number(Array.isArray(value) ? value[0] : value) || 1);
+// `cache()` của React so khớp đối số bằng ===, nên truyền trạng thái dạng chuỗi để generateMetadata và trang dùng chung 1 lần gọi API.
+const stateKey = (raw: Record<string, string | string[] | undefined>) =>
+  JSON.stringify(parseCategoryState(raw));
 
 export async function generateMetadata({
   params,
@@ -32,7 +40,7 @@ export async function generateMetadata({
   params: Params;
   searchParams: SearchParams;
 }): Promise<Metadata> {
-  const detail = await loadCategory((await params).slug, parsePage((await searchParams).page));
+  const detail = await loadCategory((await params).slug, stateKey(await searchParams));
   if (!detail) return { title: 'Không tìm thấy danh mục', robots: { index: false } };
   return {
     title: detail.category.name,
@@ -49,10 +57,13 @@ export default async function CategoryDetailPage({
   searchParams: SearchParams;
 }) {
   const { slug } = await params;
-  const detail = await loadCategory(slug, parsePage((await searchParams).page));
+  const rawParams = await searchParams;
+  const state = parseCategoryState(rawParams);
+  const detail = await loadCategory(slug, stateKey(rawParams));
   if (!detail) notFound();
 
   const { category, recipes } = detail;
+  const pathname = `/categories/${category.slug}`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -72,6 +83,11 @@ export default async function CategoryDetailPage({
         <p className="mt-3 text-sm font-medium text-orange-800">{recipes.totalCount} công thức</p>
       </header>
 
+      {/* FR-CAT-002 / SRS §8.2: danh mục chỉ nhận sortBy + sortOrder (không có bộ lọc khác). */}
+      <div className="mt-6 flex justify-end">
+        <SortSelect pathname={pathname} state={state} />
+      </div>
+
       {recipes.items.length === 0 ? (
         <p className="mt-16 text-center text-gray-600">Danh mục này chưa có công thức nào.</p>
       ) : (
@@ -85,7 +101,7 @@ export default async function CategoryDetailPage({
       <Pagination
         page={recipes.page}
         totalPages={recipes.totalPages}
-        buildHref={(p) => `/categories/${category.slug}?page=${p}`}
+        buildHref={(p) => buildHref(pathname, state, { page: p })}
       />
     </div>
   );

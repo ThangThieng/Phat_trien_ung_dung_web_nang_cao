@@ -90,6 +90,9 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
     // D-6 (Buổi 4): Output Cache đã bị gỡ — cơ chế cache duy nhất là Redis cache-aside (NFR-PERF-003). Seeder tự xóa
     // "categories:all"; khóa công thức (recipes:list 2′, recipe:{slug} 5′) hết hạn tự nhiên theo TTL chuẩn.
     await scope.ServiceProvider.GetRequiredService<DatabaseSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false);
+
+    // NFR-PERF-004 (Buổi 5): bộ ≥ 10.000 công thức để đo EXPLAIN ANALYZE — chỉ chạy khi PerformanceSeed:Enabled=true (mặc định tắt).
+    await scope.ServiceProvider.GetRequiredService<PerformanceSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false);
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();

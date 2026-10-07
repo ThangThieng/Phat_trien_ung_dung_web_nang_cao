@@ -3,9 +3,19 @@ import Link from 'next/link';
 import { Clock, Users } from 'lucide-react';
 import type { RecipeSummary } from '@/types/api';
 import { DIFFICULTY_LABEL, DIFFICULTY_STYLE, formatMinutes } from '../format';
+import HighlightText from './HighlightText';
 
-/** Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001). */
-export default function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
+/**
+ * Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001).
+ * `terms` (tùy chọn): từ khóa tìm kiếm đã bỏ dấu để tô sáng trong tiêu đề và mô tả (FR-SRCH-001).
+ */
+export default function RecipeCard({
+  recipe,
+  terms,
+}: {
+  recipe: RecipeSummary;
+  terms?: readonly string[];
+}) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <Link
@@ -46,9 +56,11 @@ export default function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
             {recipe.category.name}
           </p>
           <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 group-hover:text-orange-700">
-            {recipe.title}
+            <HighlightText text={recipe.title} terms={terms} />
           </h3>
-          <p className="line-clamp-2 text-sm text-gray-600">{recipe.description}</p>
+          <p className="line-clamp-2 text-sm text-gray-600">
+            <HighlightText text={recipe.description} terms={terms} />
+          </p>
           <dl className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-2 text-xs text-gray-600">
             <div className="flex items-center gap-1">
               <Clock aria-hidden className="h-3.5 w-3.5" />
