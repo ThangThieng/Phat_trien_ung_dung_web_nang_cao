@@ -17,10 +17,8 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +51,6 @@ builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
     }
 });
 builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddCulinaryOutputCache(builder.Configuration);
 builder.Services.AddOpenApi();
 
 builder.Services.ConfigureHttpJsonOptions(o =>
@@ -106,19 +103,10 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
 {
     await using var scope = app.Services.CreateAsyncScope();
     await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>().Database.MigrateAsync().ConfigureAwait(false);
-    if (await scope.ServiceProvider.GetRequiredService<DatabaseSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false))
-    {
-        // Dữ liệu mẫu vừa được bổ sung/sửa → bỏ response công thức đang nằm trong Output Cache (tag "recipes")
-        try
-        {
-            await scope.ServiceProvider.GetRequiredService<IOutputCacheStore>()
-                .EvictByTagAsync(OutputCachePolicies.RecipesTag, CancellationToken.None).ConfigureAwait(false);
-        }
-        catch (RedisException)
-        {
-            // NFR-REL-002: Redis lỗi không được chặn API khởi động; cache cũ tự hết hạn theo TTL.
-        }
-    }
+
+    // D-6 (Buổi 4): Output Cache đã bị gỡ — cơ chế cache duy nhất là Redis cache-aside (NFR-PERF-003). Seeder tự xóa
+    // "categories:all"; khóa công thức (recipes:list 2′, recipe:{slug} 5′) hết hạn tự nhiên theo TTL chuẩn.
+    await scope.ServiceProvider.GetRequiredService<DatabaseSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false);
 }
 
 // ĐẦU pipeline: mọi middleware phía sau (Authentication, Rate Limiter ở Buổi 6) đều thấy IP thật.
@@ -128,7 +116,6 @@ app.UseStatusCodePages();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseOutputCache();
 
 if (app.Environment.IsDevelopment())
 {
@@ -173,6 +160,7 @@ api.MapUsersEndpoints();
 api.MapCategoriesEndpoints();
 api.MapRecipesGroup()
     .MapRecipesEndpoints()
+    .MapRecipeQueryEndpoints()
     .MapRecipeLifecycleEndpoints();
 api.MapFilesEndpoints();
 

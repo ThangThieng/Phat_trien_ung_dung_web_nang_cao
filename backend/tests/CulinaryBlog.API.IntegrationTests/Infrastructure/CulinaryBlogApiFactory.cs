@@ -101,7 +101,7 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
     }
 
     /// <summary>
-    /// Xóa mọi dữ liệu test sinh ra rồi nạp lại bộ dữ liệu cố định (<see cref="TestDataSeeder"/>).
+    /// Xóa mọi dữ liệu test sinh ra (PostgreSQL + cache Redis) rồi nạp lại bộ dữ liệu cố định (<see cref="TestDataSeeder"/>).
     /// Lớp test nào có ghi dữ liệu thì gọi ở <c>InitializeAsync</c> của mình để không ảnh hưởng lớp khác.
     /// </summary>
     public async Task ResetDatabaseAsync()
@@ -113,6 +113,10 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
 
         await _respawner.ResetAsync(_respawnConnection).ConfigureAwait(false);
         BackgroundJobs.Clear();
+
+        // Buổi 4 (D-6): endpoint công khai nay cache Redis cache-aside. Dữ liệu DB vừa được làm mới thì cache cũng phải sạch,
+        // nếu không một response của lớp test trước (TTL 1–60 phút) sẽ được trả cho lớp test sau.
+        await _redis.ExecAsync(["redis-cli", "FLUSHALL"]).ConfigureAwait(false);
 
         using var scope = Services.CreateScope();
         await TestDataSeeder.SeedAsync(scope.ServiceProvider).ConfigureAwait(false);

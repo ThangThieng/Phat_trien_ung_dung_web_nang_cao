@@ -3,12 +3,26 @@ using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Configurations;
 
 /// <summary>SRS §7.2 – "Recipes" (Aggregate Root) + Owned Entity RecipeNutrition (§7.2.1).</summary>
 internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
 {
+    /// <summary>Cột <c>tsvector</c> của FR-SRCH-001 — shadow property: Domain chỉ dùng .NET BCL nên không mang kiểu Npgsql (CONS-001).</summary>
+    public const string SearchVectorColumn = "SearchVector";
+
+    /// <summary>Text search configuration duy nhất của hệ thống (MT-25): PostgreSQL 16 không có sẵn "vietnamese".</summary>
+    public const string TextSearchConfig = "simple";
+
+    /// <summary>
+    /// SRS §7.2 — biểu thức generated column, dùng hàm wrapper IMMUTABLE <c>unaccent_immutable</c> do migration
+    /// <c>B4_Search_FTS</c> tạo (unaccent() mặc định không IMMUTABLE nên không dùng trực tiếp được).
+    /// </summary>
+    public const string SearchVectorSql =
+        "to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))";
+
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
         builder.ToTable("Recipes", t =>
@@ -67,6 +81,13 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasIndex(r => r.PublishedAt).HasDatabaseName("IDX_Recipe_PublishedAt");
         builder.HasIndex(r => r.CreatedAt).HasDatabaseName("IDX_Recipe_CreatedAt");
         builder.HasIndex(r => r.IsDeleted).HasDatabaseName("IDX_Recipe_IsDeleted").HasFilter("\"IsDeleted\" = false");
+
+        // FR-SRCH-001 / MT-25 (Buổi 4 — Dev 3): generated column STORED, không trigger — PostgreSQL tự tính lại khi Title hoặc
+        // Description đổi, không có đường code nào quên đồng bộ. GIN index cho toán tử @@.
+        builder.Property<NpgsqlTsVector>(SearchVectorColumn)
+            .HasColumnType("tsvector")
+            .HasComputedColumnSql(SearchVectorSql, stored: true);
+        builder.HasIndex(SearchVectorColumn).HasMethod("GIN").HasDatabaseName("IDX_Recipe_Search");
     }
 }
 

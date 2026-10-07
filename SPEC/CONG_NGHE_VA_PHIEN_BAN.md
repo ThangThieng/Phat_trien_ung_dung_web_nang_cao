@@ -80,7 +80,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.12 | JWT Bearer | ✅ |
 | Microsoft.AspNetCore.OpenApi | 10.0.12 | OpenAPI document | ✅ |
 | Scalar.AspNetCore | 2.17.3 | Scalar UI tại `/scalar` | ✅ |
-| Microsoft.AspNetCore.OutputCaching.StackExchangeRedis | 10.0.12 | Output Cache "RecipeList"/"RecipeDetail" (FR-RCP-001/002) lưu trên Redis – distributed (NFR-SCALE-001) | ✅ *(thêm ở Buổi 2)* |
+| ~~Microsoft.AspNetCore.OutputCaching.StackExchangeRedis~~ | ~~10.0.12~~ | **Đã gỡ ở Buổi 4 (Dev 3, retrofit D-6 — MT-16/MT-34):** Output Cache không được dùng (NFR-PERF-003); cache duy nhất là Redis cache-aside qua `CachingBehavior` | ❌ *(thêm ở Buổi 2, gỡ ở Buổi 4)* |
 | Hangfire.AspNetCore | 1.8.25 | Dashboard `/hangfire` | ✅ |
 | Serilog.AspNetCore | 10.0.0 | Structured logging (CONS-010), gồm Console + File sink | ✅ |
 | Serilog.Sinks.Seq | 9.1.0 | Seq (dev) | ✅ |

@@ -1,3 +1,4 @@
+using CulinaryBlog.Application.Common.Caching;
 using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
 
@@ -23,11 +24,14 @@ public static class CategoryCacheKeys
 
     /// <summary>
     /// Tiền tố khóa cache chi tiết danh mục <c>categories:detail:{slug}:{queryHash}</c> (SRS NFR-PERF-003, TTL 2 phút).
-    /// <c>GetCategoryBySlugQuery</c> chưa cache (bật ở Buổi 4 cùng retrofit D-5) nên hiện chưa có khóa nào mang tiền tố này.
-    /// Ba command Create/Update/Delete khai báo sẵn tiền tố này để Buổi 4 không phải nhớ thêm; <c>CacheInvalidationBehavior</c>
-    /// hiện xóa theo khóa chính xác (thao tác không có tác dụng), việc xóa theo tiền tố là <c>RemoveByPrefixAsync</c> (SCAN) của Buổi 7.
+    /// <c>GetCategoryBySlugQuery</c> cache dưới tiền tố này từ Buổi 4 (retrofit D-5/D-6). Ba command Create/Update/Delete khai báo
+    /// sẵn tiền tố; <c>CacheInvalidationBehavior</c> hiện xóa theo khóa chính xác (thao tác chưa có tác dụng) nên khóa chi tiết
+    /// hết hạn tự nhiên sau 2 phút, cho tới khi có <c>RemoveByPrefixAsync</c> (SCAN) ở Buổi 7.
     /// </summary>
     public const string DetailPrefix = "categories:detail:";
+
+    /// <summary>FR-CAT-002 — <c>categories:detail:{slug}:{queryHash}</c>.</summary>
+    public static string Detail(string slug, string normalizedQuery) => $"{DetailPrefix}{slug}:{QueryHash.Compute(normalizedQuery)}";
 }
 
 /// <summary>
