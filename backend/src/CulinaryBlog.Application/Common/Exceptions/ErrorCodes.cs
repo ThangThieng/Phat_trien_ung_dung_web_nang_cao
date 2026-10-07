@@ -13,6 +13,8 @@ public static class ErrorCodes
 
     public const string RecipeNotFound = "RECIPE_NOT_FOUND";
     public const string RecipeForbidden = "RECIPE_FORBIDDEN";
+    public const string RecipeSlugExists = "RECIPE_SLUG_EXISTS";
+    public const string RecipeImageNotFound = "RECIPE_IMAGE_NOT_FOUND";
 
     public const string CategoryNotFound = "CATEGORY_NOT_FOUND";
 

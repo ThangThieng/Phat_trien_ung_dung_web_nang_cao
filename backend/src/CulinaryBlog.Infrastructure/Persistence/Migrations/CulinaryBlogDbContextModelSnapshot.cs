@@ -115,7 +115,6 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                         .HasDefaultValue((short)1);
 
                     b.Property<string>("Instructions")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")

@@ -40,7 +40,7 @@ public sealed record RecipeDetailDto(
     string Title,
     string Slug,
     string Description,
-    string Instructions,
+    string? Instructions,
     int PrepTimeMinutes,
     int CookTimeMinutes,
     int Servings,
