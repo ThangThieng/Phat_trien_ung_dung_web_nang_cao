@@ -1,7 +1,7 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { ApiError, apiFetch } from '@/lib/api-client';
 import type { ProblemDetails } from '@/lib/api-client';
-import type { RecipeDetail, RecipeImageResult } from '@/types/api';
+import type { RecipeDetail, RecipeImageResult, RecipeIngredient, RecipeStep } from '@/types/api';
 import type { CreateRecipeRequest } from './schemas';
 
 /** FR-RCP-003 – POST /recipes → 201 RecipeDetail ở trạng thái Draft. */
@@ -68,4 +68,43 @@ export function deleteRecipeImage(recipeId: string, imageId: string, accessToken
     method: 'DELETE',
     accessToken,
   });
+}
+
+export function getMyRecipe(recipeId: string, accessToken: string) {
+  return apiFetch<RecipeDetail>(`/recipes/mine/${recipeId}`, { accessToken, cache: 'no-store' });
+}
+
+export function updateRecipe(recipeId: string, body: CreateRecipeRequest & { rowVersion: string }, accessToken: string) {
+  return apiFetch<RecipeDetail>(`/recipes/${recipeId}`, { method: 'PUT', body, accessToken });
+}
+
+export type IngredientInput = Pick<RecipeIngredient, 'name' | 'quantity' | 'quantityText' | 'unit' | 'notes' | 'orderIndex'>;
+export type StepInput = Pick<RecipeStep, 'title' | 'description' | 'timerMinutes' | 'imageUrl'>;
+
+export function addIngredient(recipeId: string, body: IngredientInput, accessToken: string) {
+  return apiFetch<RecipeIngredient>(`/recipes/${recipeId}/ingredients`, { method: 'POST', body, accessToken });
+}
+export function updateIngredient(recipeId: string, ingredientId: string, body: IngredientInput, accessToken: string) {
+  return apiFetch<RecipeIngredient>(`/recipes/${recipeId}/ingredients/${ingredientId}`, { method: 'PUT', body, accessToken });
+}
+export function deleteIngredient(recipeId: string, ingredientId: string, accessToken: string) {
+  return apiFetch<void>(`/recipes/${recipeId}/ingredients/${ingredientId}`, { method: 'DELETE', accessToken });
+}
+export function addStep(recipeId: string, body: StepInput, accessToken: string) {
+  return apiFetch<RecipeStep>(`/recipes/${recipeId}/steps`, { method: 'POST', body, accessToken });
+}
+export function updateStep(recipeId: string, stepId: string, body: StepInput, accessToken: string) {
+  return apiFetch<RecipeStep>(`/recipes/${recipeId}/steps/${stepId}`, { method: 'PUT', body, accessToken });
+}
+export function deleteStep(recipeId: string, stepId: string, accessToken: string) {
+  return apiFetch<void>(`/recipes/${recipeId}/steps/${stepId}`, { method: 'DELETE', accessToken });
+}
+export function reorderSteps(recipeId: string, stepIds: string[], accessToken: string) {
+  return apiFetch<RecipeStep[]>(`/recipes/${recipeId}/steps/reorder`, { method: 'PATCH', body: { stepIds }, accessToken });
+}
+export function publishRecipe(recipeId: string, accessToken: string) {
+  return apiFetch<RecipeDetail>(`/recipes/${recipeId}/publish`, { method: 'PATCH', accessToken });
+}
+export function unpublishRecipe(recipeId: string, accessToken: string) {
+  return apiFetch<RecipeDetail>(`/recipes/${recipeId}/unpublish`, { method: 'PATCH', accessToken });
 }

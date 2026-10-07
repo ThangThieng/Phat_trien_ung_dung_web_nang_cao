@@ -8,7 +8,7 @@ import RecipeBasicsForm from '@/features/recipes/components/RecipeBasicsForm';
 import RecipeImageGallery from '@/features/recipes/components/RecipeImageGallery';
 import type { RecipeDetail } from '@/types/api';
 
-const STEPS = ['Thông tin & dinh dưỡng', 'Ảnh món ăn'] as const;
+const STEPS = ['Thông tin & dinh dưỡng', 'Ảnh món ăn', 'Nguyên liệu & bước nấu', 'Xuất bản'] as const;
 
 /**
  * FR-RCP-003 + FR-RCP-008 – trình soạn công thức nhiều bước (Buổi 3): bước 1 tạo bản nháp, bước 2 tải ảnh và chọn ảnh
@@ -77,6 +77,12 @@ export default function NewRecipePage() {
               recipeTitle={draft.title}
               accessToken={accessToken}
             />
+            <Link
+              href={`/dashboard/recipes/${draft.id}/edit`}
+              className="mt-5 inline-block rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+            >
+              Tiếp tục thêm nguyên liệu và bước nấu
+            </Link>
           </>
         )}
       </div>

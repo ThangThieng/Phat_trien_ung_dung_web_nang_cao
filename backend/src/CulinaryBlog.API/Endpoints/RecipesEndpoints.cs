@@ -141,6 +141,15 @@ public static class RecipesEndpoints
             .Produces<PagedResult<RecipeSummaryDto>>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
+        // Endpoint riêng tư: Draft/Archived tuyệt đối không đi qua GET /{slug} công khai và cache chung.
+        group.MapGet("/mine/{id:guid}", GetMyRecipeAsync)
+            .RequireAuthorization(AuthorizationPolicies.Author)
+            .WithName("GetMyRecipe")
+            .WithSummary("FR-RCP-004 – Đọc riêng tư một công thức để chỉnh sửa (no-store)")
+            .Produces<RecipeDetailDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
         group.MapGet("/{slug}", GetRecipeBySlugAsync)
             .WithName("GetRecipeBySlug")
             .WithSummary("FR-RCP-002 – Chi tiết công thức theo slug")
@@ -271,6 +280,12 @@ public static class RecipesEndpoints
 
     private static async Task<IResult> GetRecipeBySlugAsync(string slug, ISender sender, CancellationToken ct) =>
         Results.Ok(await sender.Send(new GetRecipeBySlugQuery(slug), ct).ConfigureAwait(false));
+
+    private static async Task<IResult> GetMyRecipeAsync(Guid id, HttpContext http, ISender sender, CancellationToken ct)
+    {
+        http.Response.Headers.CacheControl = "no-store";
+        return Results.Ok(await sender.Send(new GetMyRecipeByIdQuery(id), ct).ConfigureAwait(false));
+    }
 
     public sealed record CreateRecipeRequest(
         string? Title,

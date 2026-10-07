@@ -15,11 +15,13 @@ import {
   toCreateRecipeRequest,
   type RecipeBasicsValues,
 } from '../schemas';
-import { createRecipe } from '../write-api';
+import { createRecipe, updateRecipe } from '../write-api';
 
 interface RecipeBasicsFormProps {
   accessToken: string;
-  onCreated: (recipe: RecipeDetail) => void;
+  onCreated?: (recipe: RecipeDetail) => void;
+  recipe?: RecipeDetail;
+  onUpdated?: (recipe: RecipeDetail) => void;
 }
 
 const selectClass =
@@ -29,7 +31,7 @@ const selectClass =
  * Wizard bước 1 (FR-RCP-003): thông tin cơ bản + dinh dưỡng, tạo công thức ở trạng thái Draft.
  * Dinh dưỡng gửi cùng body (Owned Entity — MT-02), không có bước/endpoint riêng.
  */
-export default function RecipeBasicsForm({ accessToken, onCreated }: RecipeBasicsFormProps) {
+export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpdated }: RecipeBasicsFormProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const ids = {
     category: useId(),
@@ -44,7 +46,16 @@ export default function RecipeBasicsForm({ accessToken, onCreated }: RecipeBasic
     formState: { errors, isSubmitting },
   } = useForm<RecipeBasicsValues>({
     resolver: zodResolver(recipeBasicsSchema),
-    defaultValues: { difficulty: 'Easy', instructions: '', categoryId: '' },
+    defaultValues: recipe
+      ? {
+          title: recipe.title, description: recipe.description, categoryId: recipe.category.id,
+          prepTime: recipe.prepTimeMinutes, cookTime: recipe.cookTimeMinutes, servings: recipe.servings,
+          difficulty: recipe.difficulty, instructions: recipe.instructions ?? '',
+          calories: recipe.nutrition?.calories ?? Number.NaN, protein: recipe.nutrition?.protein ?? Number.NaN,
+          carbohydrates: recipe.nutrition?.carbohydrates ?? Number.NaN, fat: recipe.nutrition?.fat ?? Number.NaN,
+          fiber: recipe.nutrition?.fiber ?? Number.NaN, sodium: recipe.nutrition?.sodium ?? Number.NaN,
+        }
+      : { difficulty: 'Easy', instructions: '', categoryId: '' },
   });
 
   useEffect(() => {
@@ -55,7 +66,13 @@ export default function RecipeBasicsForm({ accessToken, onCreated }: RecipeBasic
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      onCreated(await createRecipe(toCreateRecipeRequest(values), accessToken));
+      const body = toCreateRecipeRequest(values);
+      if (recipe) {
+        const updated = await updateRecipe(recipe.id, { ...body, rowVersion: recipe.rowVersion }, accessToken);
+        onUpdated?.(updated);
+      } else {
+        onCreated?.(await createRecipe(body, accessToken));
+      }
     } catch (error) {
       // D-11: lỗi 400 gắn vào đúng ô (kể cả categoryId không tồn tại — FR-RCP-003 A2).
       if (mapProblemDetailsToForm(error, RECIPE_BASICS_FIELDS, setError)) return;
@@ -216,7 +233,7 @@ export default function RecipeBasicsForm({ accessToken, onCreated }: RecipeBasic
         disabled={isSubmitting}
         className="self-end rounded-lg bg-orange-600 px-5 py-2.5 font-semibold text-white transition hover:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
       >
-        {isSubmitting ? 'Đang lưu nháp…' : 'Lưu nháp & tiếp tục'}
+        {isSubmitting ? 'Đang lưu…' : recipe ? 'Lưu thay đổi' : 'Lưu nháp & tiếp tục'}
       </button>
     </form>
   );
