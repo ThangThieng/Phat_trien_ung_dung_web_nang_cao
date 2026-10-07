@@ -4,7 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent, KeyboardEvent } from 'react';
 import { ImagePlus, Loader2, Trash2 } from 'lucide-react';
 import { getApiBaseUrl } from '@/lib/config';
-import { ApiError, apiFetch, getErrorMessage } from '@/lib/api-client';
+import { ApiError, apiFetch, getErrorMessage, withAuthRefresh } from '@/lib/api-client';
 import type { ProblemDetails } from '@/lib/api-client';
 import type { UploadedFile } from '@/types/api';
 
@@ -37,29 +37,41 @@ function uploadWithProgress(
   accessToken: string,
   onProgress: (percent: number) => void,
 ): { promise: Promise<UploadedFile>; abort: () => void } {
-  const xhr = new XMLHttpRequest();
+  let xhr: XMLHttpRequest | null = null;
+  let aborted = false;
+  let rejectUpload: (reason: unknown) => void = () => {};
   const promise = new Promise<UploadedFile>((resolve, reject) => {
-    xhr.open('POST', `${getApiBaseUrl()}/files/upload`);
-    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-    xhr.responseType = 'json';
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
-    };
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response as UploadedFile);
-      else
-        reject(
-          new ApiError(xhr.status, (xhr.response ?? { status: xhr.status }) as ProblemDetails),
-        );
-    };
-    xhr.onerror = () => reject(new Error('network'));
-    xhr.onabort = () => reject(new DOMException('Upload bị hủy', 'AbortError'));
-
-    const form = new FormData();
-    form.append('file', file);
-    xhr.send(form);
+    rejectUpload = reject;
+    withAuthRefresh((token) => new Promise<UploadedFile>((resolveAttempt, rejectAttempt) => {
+      if (aborted) {
+        rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
+        return;
+      }
+      const attempt = new XMLHttpRequest();
+      xhr = attempt;
+      onProgress(0);
+      attempt.open('POST', `${getApiBaseUrl()}/files/upload`);
+      if (token) attempt.setRequestHeader('Authorization', `Bearer ${token}`);
+      attempt.responseType = 'json';
+      attempt.upload.onprogress = (event) => {
+        if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
+      };
+      attempt.onload = () => {
+        if (attempt.status >= 200 && attempt.status < 300) resolveAttempt(attempt.response as UploadedFile);
+        else rejectAttempt(new ApiError(attempt.status, (attempt.response ?? { status: attempt.status }) as ProblemDetails));
+      };
+      attempt.onerror = () => rejectAttempt(new Error('network'));
+      attempt.onabort = () => rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
+      const form = new FormData();
+      form.append('file', file);
+      attempt.send(form);
+    }), accessToken).then(resolve, reject);
   });
-  return { promise, abort: () => xhr.abort() };
+  return { promise, abort: () => {
+    aborted = true;
+    xhr?.abort();
+    rejectUpload(new DOMException('Upload bị hủy', 'AbortError'));
+  } };
 }
 
 /**

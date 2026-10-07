@@ -37,6 +37,52 @@ export interface ApiRequestOptions {
   next?: NextFetchRequestConfig;
   cache?: RequestCache;
   signal?: AbortSignal;
+  skipAuthRefresh?: boolean;
+}
+
+interface AuthCallbacks {
+  getAccessToken: () => string | null;
+  refresh: () => Promise<string>;
+  onRefreshFailure: () => void;
+}
+
+let authCallbacks: AuthCallbacks | null = null;
+let refreshPromise: Promise<string> | null = null;
+
+export function configureAuthCallbacks(callbacks: AuthCallbacks | null) {
+  authCallbacks = callbacks;
+}
+
+/** Shared by JSON fetch and progress uploads; only refresh failures invalidate the session. */
+export async function withAuthRefresh<T>(
+  request: (token: string | null) => Promise<T>,
+  accessToken: string | null,
+  skipAuthRefresh = false,
+): Promise<T> {
+  try {
+    return await request(accessToken);
+  } catch (error) {
+    const callbacks = authCallbacks;
+    if (!(error instanceof ApiError) || error.status !== 401 || !callbacks) throw error;
+    if (error.code === 'AUTH_TOKEN_INVALID' && accessToken) callbacks.onRefreshFailure();
+    if (error.code !== 'AUTH_TOKEN_EXPIRED' || skipAuthRefresh) throw error;
+    // A late 401 may belong to the previous token after another request already refreshed it.
+    let renewedToken = callbacks.getAccessToken();
+    if (!renewedToken || renewedToken === accessToken) {
+      refreshPromise ??= Promise.resolve().then(() => callbacks.refresh())
+        .catch((refreshError: unknown) => {
+          callbacks.onRefreshFailure();
+          throw refreshError;
+        }).finally(() => { refreshPromise = null; });
+      try {
+        renewedToken = await refreshPromise;
+      } catch {
+        throw error;
+      }
+    }
+    // Outside the refresh catch: business/network failures must reach the caller unchanged.
+    return withAuthRefresh(request, renewedToken, true);
+  }
 }
 
 async function parseProblem(response: Response): Promise<ProblemDetails> {
@@ -49,25 +95,29 @@ async function parseProblem(response: Response): Promise<ProblemDetails> {
 
 /** Gọi Backend REST API (/api/v1). Lỗi HTTP → ném ApiError chứa Problem Details. */
 export async function apiFetch<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' };
-  if (options.body !== undefined) headers['Content-Type'] = 'application/json';
-  if (options.accessToken) headers.Authorization = `Bearer ${options.accessToken}`;
+  const accessToken = options.accessToken !== undefined ? options.accessToken : authCallbacks?.getAccessToken() ?? null;
+  return withAuthRefresh(async (token) => {
+    const headers: Record<string, string> = { Accept: 'application/json' };
+    if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+    if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    method: options.method ?? 'GET',
-    headers,
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    next: options.next,
-    cache: options.cache,
-    signal: options.signal,
-  });
+    const response = await fetch(`${getApiBaseUrl()}${path}`, {
+      method: options.method ?? 'GET',
+      headers,
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      next: options.next,
+      cache: options.cache,
+      signal: options.signal,
+    });
 
-  if (!response.ok) {
-    throw new ApiError(response.status, await parseProblem(response));
-  }
+    if (!response.ok) {
+      const problem = await parseProblem(response);
+      throw new ApiError(response.status, problem);
+    }
 
-  if (response.status === 204) return undefined as T;
-  return (await response.json()) as T;
+    if (response.status === 204) return undefined as T;
+    return (await response.json()) as T;
+  }, accessToken, options.skipAuthRefresh);
 }
 
 /** Hàm setError của react-hook-form (thu hẹp để lib/ không phụ thuộc react-hook-form). */
