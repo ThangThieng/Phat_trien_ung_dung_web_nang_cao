@@ -74,7 +74,7 @@ Phạm vi bộ lọc theo từng trang bám đúng hợp đồng API của SRS: 
 |---|---|
 | `dotnet build CulinaryBlog.sln` (TreatWarningsAsErrors, SonarAnalyzer, StyleCop) | ✅ Build succeeded, 0 warning |
 | `dotnet test` Domain.UnitTests / Application.UnitTests / ArchitectureTests | ✅ 64 / 91 / 18 đạt |
-| `dotnet test` API.IntegrationTests (PostgreSQL 16 + Redis thật, không có MinIO) | ✅ 135/146 đạt; 11 test còn lại đều cần MinIO (upload ảnh, job resize/purge ảnh, health MinIO) — lỗi 503 `FILE_STORAGE_UNAVAILABLE` do môi trường đo không có MinIO, không liên quan code Buổi 5 |
+| `dotnet test` toàn bộ solution trên máy dev với Docker (Testcontainers: PostgreSQL 16, Redis, MinIO) | ✅ **319/319 đạt, 0 lỗi, 0 bỏ qua** (64 Domain + 91 Application + 18 Architecture + 146 Integration) |
 | Migration B1 → B5 trên database trống + `HasPendingModelChanges()` | ✅ áp dụng đủ 5 migration; `False` (snapshot sửa tay khớp model) |
 | `PerformanceSeeder` qua API thật | ✅ "đã tạo 10000 công thức mẫu hiệu năng"; 10.100 bản ghi, 8.523 Published |
 | `EXPLAIN ANALYZE` 10 truy vấn thật | ✅ sau B5 không còn Seq Scan trên `Recipes` |
@@ -98,11 +98,11 @@ Phạm vi bộ lọc theo từng trang bám đúng hợp đồng API của SRS: 
 | Mobile 390 px: mở drawer, Escape, áp dụng lọc trong drawer | ✅ mở/đóng đúng; URL `?difficulty=Easy`; badge "Bộ lọc 1" |
 | Lỗi JavaScript trên trang | ✅ không có |
 
-### 6.2 Môi trường kiểm chứng và giới hạn
+### 6.2 Môi trường kiểm chứng
 
-- Môi trường đo không có Docker daemon và không tải được gói từ nuget.org, nên backend được build bằng .NET SDK 10.0.112 với các gói NuGet lấy từ cache trên máy dev; PostgreSQL 16.15 và Redis chạy trực tiếp thay cho container. Schema, dữ liệu và SQL đều là của dự án.
-- `global.json` của repo ghim SDK `10.0.401`; bản build kiểm chứng tạm dùng SDK 10.0.112 và **không đổi** `global.json` trong repo.
-- 11 integration test cần MinIO và `docker compose` của dự án nên chạy lại trên máy có Docker trước khi merge.
+- Lần chạy đầu trong môi trường đo của tôi không có Docker nên 11 integration test cần MinIO không chạy được (135/146). Sau đó chạy lại toàn bộ solution trên máy dev bằng Docker thật: **319/319 đạt**.
+- `EXPLAIN ANALYZE` đo trên PostgreSQL 16.15 chạy trực tiếp (không phải container `docker compose`); schema, dữ liệu và SQL đều là của dự án. Cách chạy lại trên Docker ở `docs/explain-analyze-b5.md`.
+- `global.json` của repo ghim SDK `10.0.401`; bản build đo của tôi tạm dùng SDK 10.0.112 và **không đổi** `global.json` trong repo.
 
 ## 7. Danh sách file thay đổi
 
