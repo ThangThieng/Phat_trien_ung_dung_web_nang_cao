@@ -45,7 +45,7 @@ backend/
 Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 ### 2.2 Tầng Application
-| Package | Phiên bản | SRS | Trạng thái |
+| Gói thư viện | Phiên bản | SRS | Trạng thái |
 |---|---|---|---|
 | MediatR | **12.5.0** | CQRS + MediatR (CONS-002) | 📌 xem 6.1 |
 | FluentValidation | 12.1.1 | CONS-008 | ✅ |
@@ -55,7 +55,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Microsoft.AspNetCore.Authorization | 10.0.12 | Resource-based authorization ở tầng Application — `RecipeAuthorizationHandler` (NFR-SEC-006) | ✅ *(thêm ở Buổi 4 — bù nền Buổi 3 của module Recipe)* |
 
 ### 2.3 Tầng Infrastructure
-| Package | Phiên bản | Mục đích theo SRS | Trạng thái |
+| Gói thư viện | Phiên bản | Mục đích theo SRS | Trạng thái |
 |---|---|---|---|
 | Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.3 | EF Core 10 + PostgreSQL 16, FTS tsvector | ✅ |
 | Microsoft.EntityFrameworkCore.Design | 10.0.12 | Migrations Code-First | ✅ |
@@ -67,7 +67,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | MailKit | 4.17.0 | Welcome email (FR-JOB-001) | ✅ |
 | Hangfire.Core | 1.8.25 | Background jobs (§3.6) | ✅ |
 | Hangfire.PostgreSql | 1.21.1 | Hangfire storage trên PostgreSQL | ✅ |
-| Bogus | 35.6.5 | Seed 50 recipe / 5 tác giả (§2.6.1) | ✅ |
+| Bogus | 35.6.5 | tạo mẫu (seed) 50 recipe / 5 tác giả (§2.6.1) | ✅ |
 | Hangfire.AspNetCore | 1.8.25 | Đăng ký `AddHangfire` / `AddHangfireServer` trong DI Infrastructure | ✅ *(thêm ở Buổi 2)* |
 | AspNetCore.HealthChecks.NpgSql | 9.0.0 | FR-OBS-001 | ✅ |
 | AspNetCore.HealthChecks.Redis | 9.0.0 | FR-OBS-001 | ✅ |
@@ -75,7 +75,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | RedLock.net | 2.3.2 | Distributed lock (RedLock trên Redis) cho FR-JOB-003 Permanent Purge Job — NFR-SCALE-001 chỉ định RedLock | ✅ *(thêm ở Buổi 4)* |
 
 ### 2.4 Tầng API (Presentation)
-| Package | Phiên bản | Mục đích theo SRS | Trạng thái |
+| Gói thư viện | Phiên bản | Mục đích theo SRS | Trạng thái |
 |---|---|---|---|
 | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.12 | JWT Bearer | ✅ |
 | Microsoft.AspNetCore.OpenApi | 10.0.12 | OpenAPI document | ✅ |
@@ -89,21 +89,21 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | OpenTelemetry.Instrumentation.AspNetCore | 1.18.0 | Trace HTTP | ✅ |
 | OpenTelemetry.Instrumentation.Http | 1.18.0 | Trace HttpClient | ✅ |
 | OpenTelemetry.Exporter.OpenTelemetryProtocol | 1.18.0 | OTLP exporter | ✅ |
-| Npgsql.OpenTelemetry | 10.0.3 | Trace truy vấn database (EF Core → Npgsql) | ✅ |
+| Npgsql.OpenTelemetry | 10.0.3 | Trace truy vấn cơ sở dữ liệu (EF Core → Npgsql) | ✅ |
 | AspNetCore.HealthChecks.UI.Client | 9.0.0 | JSON response `/health` | ✅ |
-| *(Rate Limiting)* | built-in ASP.NET Core 10 | NFR-SEC-003 | ✅ không cần package |
-| *(Output Cache)* | built-in ASP.NET Core 10 | FR-RCP-001/002 | ✅ không cần package |
+| *(Rate Limiting)* | built-in ASP.NET Core 10 | NFR-SEC-003 | ✅ không cần gói thư viện |
+| *(Output Cache)* | built-in ASP.NET Core 10 | FR-RCP-001/002 | ✅ không cần gói thư viện |
 | *(Health check MinIO)* | tự viết `MinioHealthCheck : IHealthCheck` | FR-OBS-001 | ⚠️ xem 6.4 |
 
 ### 2.5 Chất lượng mã & kiểm thử (NFR-MAINT-001/002/004)
-| Package | Phiên bản | SRS | Trạng thái |
+| Gói thư viện | Phiên bản | SRS | Trạng thái |
 |---|---|---|---|
 | SonarAnalyzer.CSharp | 10.34.0.3385 | NFR-MAINT-001 | ✅ |
 | StyleCop.Analyzers | 1.2.0-beta.556 | NFR-MAINT-001 | ✅ (bản beta là bản mới nhất, bản stable 1.1.118 không hỗ trợ C# mới) |
 | EditorConfig | `backend/.editorconfig` | NFR-MAINT-001 | ✅ |
 | xunit / xunit.runner.visualstudio | 2.9.3 / 3.1.4 | xUnit (NFR-MAINT-002) | ✅ |
 | Microsoft.NET.Test.Sdk / coverlet.collector | 17.14.1 / 6.0.4 | Test runner + coverage ≥80% | ✅ |
-| TngTech.ArchUnitNET.xUnit | 0.13.4 | ArchUnit.NET (NFR-MAINT-004) | ✅ đã có 3 test Dependency Rule |
+| TngTech.ArchUnitNET.xUnit | 0.13.4 | ArchUnit.NET (NFR-MAINT-004) | ✅ đã có 3 kiểm thử Dependency Rule |
 | Microsoft.AspNetCore.Mvc.Testing | 10.0.12 | Integration test endpoints | ✅ |
 | Testcontainers.PostgreSql / Redis | 4.15.0 | Integration test trên DB thật | ➕ |
 | NSubstitute | 6.2.0 | Mock trong unit test | ➕ |
@@ -112,7 +112,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 ## 3. Frontend – Next.js App Router
 
-| Package | Phiên bản | SRS | Trạng thái |
+| Gói thư viện | Phiên bản | SRS | Trạng thái |
 |---|---|---|---|
 | next | **15.5.25** | Next.js 15 App Router (tài liệu tham chiếu #10) | ✅ |
 | react / react-dom | 19.1.0 | (đi kèm Next 15) | ✅ |
@@ -122,13 +122,13 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | react-hook-form | 7.87.0 | React Hook Form | ✅ |
 | zod | 4.6.2 | Zod | ✅ |
 | @hookform/resolvers | 5.9.1 | Kết nối RHF ↔ Zod | ✅ |
-| next-auth | 5.0.0-beta.32 | **Auth.js v5** (Google OAuth PKCE) | ✅ Auth.js v5 chỉ phát hành dưới tag beta |
+| next-auth | 5.0.0-beta.32 | **Auth.js v5** (Google OAuth PKCE) — theo SRS v1.0.0 | ⚠️ SRS v1.1.0 (MT-11) đã thay luồng này bằng Google Identity Services (`@react-oauth/google`, Buổi 3); `git grep next-auth frontend/src` = 0 chỗ dùng → **dự kiến gỡ ở Buổi 5** (xem 6.12) |
 | sonner | 2.0.8 | Toast notification (NFR-USE-004) | ➕ |
 | clsx / tailwind-merge | 2.1.1 / 3.6.0 | Gộp className Tailwind | ➕ |
 | lucide-react | 1.44.0 | Icon | ➕ |
 
 **Chất lượng mã & kiểm thử**
-| Package | Phiên bản | SRS | Trạng thái |
+| Gói thư viện | Phiên bản | SRS | Trạng thái |
 |---|---|---|---|
 | eslint | **8.57.1** | ESLint | 📌 xem 6.3 |
 | eslint-config-airbnb | 19.0.4 | **ESLint Airbnb ruleset** (NFR-MAINT-001) | ✅ |
@@ -136,7 +136,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | @typescript-eslint/eslint-plugin / parser | 7.18.0 | Peer của airbnb-typescript | ✅ |
 | eslint-plugin-import / react / jsx-a11y | 2.32.0 / 7.37.5 / 6.10.2 | Peer của Airbnb | ✅ |
 | eslint-plugin-react-hooks | **5.2.0** | Peer của Airbnb (`airbnb/hooks`) | 📌 xem 6.3 |
-| eslint-config-next | 15.5.25 | Rule của Next.js | ✅ |
+| eslint-config-next | 15.5.25 | Quy tắc của Next.js | ✅ |
 | prettier / eslint-config-prettier | 3.9.6 / 10.1.8 | Prettier | ✅ |
 | prettier-plugin-tailwindcss | 0.8.1 | Sắp xếp class Tailwind | ➕ |
 | ajv | **8.20.0** | — | 📌 xem 6.3 |
@@ -145,6 +145,23 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | @playwright/test | 1.63.0 | Playwright E2E | ✅ |
 | @axe-core/playwright | 4.13.0 | Kiểm tra WCAG 2.1 AA (NFR-USE-002) | ✅ |
 | @lhci/cli | 0.15.1 | Lighthouse CI (NFR-PERF-005) | ✅ |
+
+### 3.1 Gói thư viện dự kiến bổ sung ở Buổi 5 → 8 (chưa cài — theo yêu cầu Lab 5 → Lab 8, 12/10/2026)
+
+> Bảng này ghi **phiên bản mới nhất trên npm/NuGet ngày 12/10/2026** để cả nhóm cài cùng một bản. Khi cài xong, chuyển dòng tương ứng lên bảng chính (§2.4 hoặc §3) với **phiên bản thực tế** lấy từ `package-lock.json` / `*.csproj`. Mọi gói dưới đây là **bổ sung (➕)** — SRS không chỉ định công cụ cho các việc này, nên không có công nghệ nào của SRS bị thay thế. Lý do chọn: mục 6.12.
+
+| Gói thư viện | Phiên bản (12/10/2026) | Dùng cho | Buổi — Dev | Trạng thái |
+|---|---|---|---|---|
+| `zustand` | 5.0.15 | Store phiên đăng nhập phía client (`stores/auth-store.ts`) | B5 cài (Dev 4) · B6 dùng (Dev 1) | ➕ |
+| `ky` | 2.2.0 | Lớp gọi API bọc `fetch` (`lib/api-client.ts`) | B5 cài (Dev 4) · B6 dùng (Dev 4) | ➕ (Lab cho chọn `axios`/`ky` — xem 6.12) |
+| `shadcn` (CLI, không phải phụ thuộc runtime) | 4.21.4 | Chép component vào `components/ui/` | B6 (Dev 2) | ➕ |
+| `radix-ui` | 1.8.0 | Hành vi & accessibility của component shadcn (Dialog, DropdownMenu, Select, Tabs…) | B6 (Dev 2, cài qua CLI) | ➕ |
+| `class-variance-authority` | 0.7.1 | Biến thể (variant) của component shadcn | B6 (Dev 2, cài qua CLI) | ➕ |
+| `tw-animate-css` | 1.4.0 | Hiệu ứng mở/đóng của component shadcn trên Tailwind v4 | B6 (Dev 2, cài qua CLI) | ➕ |
+| `Asp.Versioning.Http` | 10.2.3 | API versioning theo URL `/api/v{version}` cho Minimal APIs | B5 (Dev 1) | ➕ |
+| `Asp.Versioning.OpenApi` | 10.2.3 | Tài liệu OpenAPI theo phiên bản cho Scalar `/scalar/v1` | B5 (Dev 1, Dev 2) | ➕ |
+| `next-auth` | — | — | **gỡ** ở B5 (Dev 4) | ❌ (xem 6.12) |
+| k6 (công cụ, chạy bằng Docker image `grafana/k6`, không phải gói npm) | ghim tag khi chạy | Load test (NFR-PERF-001/002) | B8 (Dev 4) | ✅ (SRS NFR-PERF-001/002 chỉ định *"k6 smoke test → load test → stress test"*) |
 
 ---
 
@@ -165,8 +182,8 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 **PostgreSQL extensions** (`docker/postgres/init.sql`): `unaccent`, `pg_trgm`, cùng text search configuration `vietnamese_unaccent`. Đã kiểm tra: `to_tsvector('vietnamese_unaccent','Phở bò Hà Nội') @@ to_tsquery('pho & bo')` = **true**.
 
 **Dockerfile multi-stage (CONS-009):**
-- `backend/Dockerfile`: `dotnet/sdk:10.0` → `dotnet/aspnet:10.0`, chạy bằng user non-root `app`.
-- `frontend/Dockerfile`: `node:22-alpine` ×3 stage → Next.js `output: 'standalone'`, chạy bằng user non-root `nextjs`.
+- `backend/Dockerfile`: `dotnet/sdk:10.0` → `dotnet/aspnet:10.0`, chạy bằng người dùng non-root `app`.
+- `frontend/Dockerfile`: `node:22-alpine` ×3 stage → Next.js `output: 'standalone'`, chạy bằng người dùng non-root `nextjs`.
 
 ---
 
@@ -174,7 +191,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 | Hạng mục | Thực hiện |
 |---|---|
-| Secret local | `.env` sinh ngẫu nhiên (mật khẩu Postgres/MinIO, JWT key, AUTH_SECRET); nằm trong `.gitignore` |
+| Secret trên máy cá nhân | `.env` sinh ngẫu nhiên (mật khẩu Postgres/MinIO, JWT key, AUTH_SECRET); nằm trong `.gitignore` |
 | Secret khi `dotnet run` | **ASP.NET Core User Secrets** (connection string, JWT key, MinIO key). `appsettings*.json` không chứa mật khẩu |
 | Mẫu cấu hình | `.env.example`, `frontend/.env.local.example` (không có giá trị thật) |
 | Quét secret | Pre-commit hook `.githooks/pre-commit` chạy **gitleaks** qua Docker (`zricethezav/gitleaks`), cấu hình `.gitleaks.toml` |
@@ -190,7 +207,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Ảnh hưởng:** không có. Vẫn là công nghệ MediatR mà CONS-002 yêu cầu.
 
 ### 6.2 SixLabors.ImageSharp – ghim phiên bản 3.1.12 ➕📌
-- **Bối cảnh:** SRS (FR-JOB-002) yêu cầu tạo ảnh medium 800×600 và thumbnail 300×300 nhưng **không chỉ định thư viện**, nên đây là thư viện bổ sung.
+- **Bối cảnh:** SRS (FR-JOB-002) yêu cầu tạo ảnh medium 800×600 và ảnh thu nhỏ (thumbnail) 300×300 nhưng **không chỉ định thư viện**, nên đây là thư viện bổ sung.
 - **Thay đổi:** ban đầu cài bản 4.1.1, sau đó hạ về **3.1.12**.
 - **Lý do:** bản 4.x làm build báo lỗi *"No Six Labors license found"* nếu thiếu license key. Vì dự án bật `TreatWarningsAsErrors`, lỗi này làm hỏng build. Bản 3.1.x dùng **Six Labors Split License**: miễn phí cho dự án mã nguồn mở, học tập và doanh nghiệp doanh thu dưới 1 triệu USD, không cần key.
 
@@ -204,29 +221,29 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Thay đổi đã làm:**
   1. Gỡ ESLint 9 và `eslint.config.mjs`, cài **`eslint@8.57.1`** với file `.eslintrc.json` (Next.js 15 vẫn hỗ trợ ESLint 8).
   2. `extends: ["airbnb", "airbnb/hooks", "airbnb-typescript", "next/core-web-vitals", "prettier"]`.
-  3. **`eslint-plugin-react-hooks` override lên 5.2.0** (trong `package.json` → `overrides`). Airbnb khai báo peer `^4.3.0`, còn `eslint-config-next@15` phụ thuộc `^5.0.0`, nên hai bản không cùng tồn tại được ở top-level. Bản 5.x vẫn tương thích ESLint 8 và giữ nguyên 2 rule `rules-of-hooks` và `exhaustive-deps` mà `airbnb/hooks` bật. Cách này **không dùng** `--legacy-peer-deps` toàn cục.
+  3. **`eslint-plugin-react-hooks` ghi đè lên 5.2.0** (trong `package.json` → `overrides`). Airbnb khai báo peer `^4.3.0`, còn `eslint-config-next@15` phụ thuộc `^5.0.0`, nên hai bản không cùng tồn tại được ở top-level. Bản 5.x vẫn tương thích ESLint 8 và giữ nguyên 2 quy tắc `rules-of-hooks` và `exhaustive-deps` mà `airbnb/hooks` bật. Cách này **không dùng** `--legacy-peer-deps` toàn cục.
   4. **Thêm `ajv@8.20.0`** vào devDependencies. `@hookform/resolvers` khai báo peer `ajv ^8.12`, trong khi ESLint 8 kéo `ajv@6` lên top-level, làm `npm ci` báo lockfile không hợp lệ. Khai báo rõ `ajv@8` thì npm đặt `ajv@6` lồng riêng dưới `eslint`, và mỗi bên dùng đúng bản của mình.
 - **Lưu ý:** ESLint 8 đã hết hỗ trợ chính thức (EOL 10/2024), nhưng chỉ dùng lúc phát triển, không ảnh hưởng runtime hay bảo mật sản phẩm. Khi Airbnb phát hành bản hỗ trợ ESLint 9 thì nâng cấp.
 
 ### 6.4 Health check MinIO – tự viết `IHealthCheck` ⚠️
-- **SRS (FR-OBS-001)** ghi package `AspNetCore.HealthChecks.Minio`.
-- **Thực tế:** tra NuGet ngày 11/09/2026 thì package này **không tồn tại** (0 kết quả).
-- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (kiểm tra bucket cấu hình tồn tại — `AmazonS3Util.DoesS3BucketExistV2Async`) ở Buổi 3 (endpoint health kéo từ Buổi 5 lên theo yêu cầu bổ sung ngày 29/09/2026). `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm package ngoài.
+- **SRS (FR-OBS-001)** ghi gói thư viện `AspNetCore.HealthChecks.Minio`.
+- **Thực tế:** tra NuGet ngày 11/09/2026 thì gói thư viện này **không tồn tại** (0 kết quả).
+- **Giải pháp:** viết `MinioHealthCheck : IHealthCheck` dùng `AWSSDK.S3` (kiểm tra bucket cấu hình tồn tại — `AmazonS3Util.DoesS3BucketExistV2Async`) ở Buổi 3 (endpoint health kéo từ Buổi 5 lên theo yêu cầu bổ sung ngày 29/09/2026). `IHealthCheck` cũng nằm trong danh sách kỹ thuật của FR-OBS-001, nên vẫn bám SRS và không thêm gói thư viện ngoài.
 - **Đây là thay đổi duy nhất bắt buộc phải khác SRS.**
 
 ### 6.5 Lockfile npm sinh bằng npm 10 📌
-- **Lý do:** máy dùng Node 24 / npm 11, còn container dùng **Node 22 LTS / npm 10** theo khuyến nghị SRS §2.4.1. Lockfile do npm 11 sinh ra khiến `npm ci` trong container báo lỗi thiếu package (khác biệt cách ghi optional dependency).
+- **Lý do:** máy dùng Node 24 / npm 11, còn container dùng **Node 22 LTS / npm 10** theo khuyến nghị SRS §2.4.1. Lockfile do npm 11 sinh ra khiến `npm ci` trong container báo lỗi thiếu gói thư viện (khác biệt cách ghi phụ thuộc tùy chọn).
 - **Thay đổi:** sinh lại `package-lock.json` bằng `npx npm@10 install`. Đã kiểm tra `npm ci` chạy được với **cả npm 10 và npm 11**, nên thành viên dùng Node 20/22/24 đều cài được.
 
 ### 6.6 Jest config dùng `.mjs` thay vì `.ts`
-- **Lý do:** Jest cần thêm package `ts-node` mới đọc được `jest.config.ts`. Dùng `jest.config.mjs` thì không phải cài thêm dependency. Công cụ vẫn là Jest.
+- **Lý do:** Jest cần thêm gói thư viện `ts-node` mới đọc được `jest.config.ts`. Dùng `jest.config.mjs` thì không phải cài thêm phụ thuộc. Công cụ vẫn là Jest.
 
 ### 6.7 Font Inter (subset `vietnamese`) thay font Geist mặc định
 - **Lý do:** font Geist do `create-next-app` sinh ra **không có subset tiếng Việt**, nên dấu hiển thị bằng font dự phòng, lệch và gây layout shift (ảnh hưởng CLS, NFR-PERF-005). Inter có subset `vietnamese`. SRS không chỉ định font.
 
-### 6.8 Cấu hình StyleCop – tắt một số rule
-- **Rule đã tắt** (trong `.editorconfig`): `SA1101` (bắt buộc `this.`), `SA1309` (cấm `_field`), `SA1200`, `SA1600–1602` (bắt buộc XML doc mọi element), `SA1633` (file header), `SA1402/SA1649` (1 type / file), `SA1413`, `SA1010`, `SA1000`.
-- **Lý do:** các rule này xung đột với convention của team (`_camelCase` field, gom Command + Handler + Validator trong 1 file CQRS, collection expression C# 12+). StyleCop vẫn được dùng đúng như NFR-MAINT-001; phần còn lại của bộ rule vẫn bật và **coi warning là lỗi**.
+### 6.8 Cấu hình StyleCop – tắt một số quy tắc
+- **Quy tắc đã tắt** (trong `.editorconfig`): `SA1101` (bắt buộc `this.`), `SA1309` (cấm `_field`), `SA1200`, `SA1600–1602` (bắt buộc XML doc mọi element), `SA1633` (file header), `SA1402/SA1649` (1 type / file), `SA1413`, `SA1010`, `SA1000`.
+- **Lý do:** các quy tắc này xung đột với convention của team (`_camelCase` trường, gom Command + Handler + Validator trong 1 file CQRS, collection expression C# 12+). StyleCop vẫn được dùng đúng như NFR-MAINT-001; phần còn lại của bộ quy tắc vẫn bật và **coi cảnh báo là lỗi**.
 
 ### 6.10 Cổng PostgreSQL phía host cấu hình được (Buổi 2)
 - **Vấn đề:** máy phát triển đã có service Windows `postgresql-x64-18` chiếm `0.0.0.0:5432`, và container `lms-postgres-dwh` chiếm 5433. Kết nối `localhost:5432` rơi vào Postgres của Windows nên xác thực thất bại.
@@ -237,8 +254,15 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Thực hiện:** trang render theo request (ƒ), còn dữ liệu lấy qua `fetch(..., { next: { revalidate: 3600 | 600 } })` (Data Cache của Next.js), nên API chỉ bị gọi tối đa 1 lần mỗi chu kỳ. `/recipes/[slug]` là ISR đầy đủ (●, `x-nextjs-cache: HIT`, `s-maxage=300`).
 - **Lý do:** (1) Khi `next build` image Docker, backend chưa chạy, nên prerender `/categories` lúc build sẽ lỗi. (2) `/categories/[slug]` đọc `?page=` (searchParams), nên Next bắt buộc render động. Cả hai vẫn đạt mục tiêu "tái sinh dữ liệu theo chu kỳ".
 
+### 6.12 Gói bổ sung theo yêu cầu Lab 5 → Lab 8 (12/10/2026) ➕
+- **Bối cảnh:** yêu cầu tối thiểu Lab 5 → Lab 8 của giảng viên nêu tên `zustand`, `axios`/`ky`, shadcn/ui và API Versioning. SRS chỉ định Next.js + TypeScript + Tailwind + TanStack Query + React Hook Form + Zod cho Frontend và không chỉ định công cụ cho state phía client, thư viện gọi HTTP, thư viện component hay versioning — nên đây đều là **bổ sung**, không thay thế công nghệ nào của SRS.
+- **`ky` thay vì `axios`:** Next.js App Router gắn Data Cache và ISR (`next: { revalidate }`) vào hàm `fetch`. `axios` dùng `XMLHttpRequest` (trình duyệt) và module `http` (Node), không đi qua `fetch`, nên mọi trang Server Component gọi qua `axios` mất `revalidate` — quy tắc "ISR ≤ TTL cache API" (SRS §5.1, NFR-PERF-003) không còn cơ chế thực thi. `ky` bọc `fetch`, giữ nguyên option của Next.js. Hai điểm phải kiểm chứng ngay khi cài (kế hoạch Buổi 5 — Dev 4): option `next` tới được `fetch`; Jest biên dịch được `ky` (gói ESM thuần → `transformIgnorePatterns`).
+- **shadcn/ui không vi phạm NFR-USE-001** (*"Tailwind CSS utility-first, không sử dụng CSS framework override"*): component shadcn viết bằng chính class Tailwind và được chép vào repo, không mang CSS framework riêng.
+- **Gỡ `next-auth`:** gói này được cài ở Buổi 2 theo SRS v1.0.0 (Auth.js v5 xử lý callback PKCE). SRS v1.1.0 (MT-11, Change Request CR-2026 đã duyệt) đổi sang **ID Token flow** với Google Identity Services, đã hiện thực bằng `@react-oauth/google` ở Buổi 3; `next-auth` không còn chỗ nào dùng. Gỡ gói không dùng là việc dọn dẹp theo SRS hiện hành, **không phải thay công nghệ** — công nghệ của SRS v1.0.0 đã được chính quy trình CR thay trước đó.
+- **Cài bằng npm 10** (`npx npm@10 install …`) theo mục 6.5 để lockfile tương thích container.
+
 ### 6.9 Các điểm SRS tự mâu thuẫn
-Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện publish, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`.
+Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện xuất bản, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`.
 
 ---
 
@@ -254,7 +278,7 @@ docker compose --profile dev up -d --build && docker compose ps
 | Kiểm tra (11/09/2026) | Kết quả |
 |---|---|
 | `dotnet build` | ✅ 0 Warning, 0 Error |
-| ArchUnit.NET | ✅ 3/3 passed |
+| ArchUnit.NET | ✅ 3/3 đạt |
 | Frontend lint (Airbnb) / typecheck / build | ✅ – First Load JS 103 kB (ngưỡng NFR ≤ 200 kB) |
 | 9 container | ✅ Up; postgres/redis/minio healthy |
 | HTTP :80 / :3000 / :5000 / :9001 / :5341 / :8025 | ✅ 200 |
