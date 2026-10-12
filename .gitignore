@@ -34,3 +34,7 @@ next-env.d.ts
 !.vscode/extensions.json
 .DS_Store
 Thumbs.db
+
+# tools/github_board: file xem trước do sync_board.py --dry-run sinh, cache Python
+tools/github_board/preview.md
+__pycache__/
