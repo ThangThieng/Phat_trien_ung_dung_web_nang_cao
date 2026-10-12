@@ -96,91 +96,151 @@
     {"label": "Integration test tìm kiếm / công thức của tôi", "grep": ["recipes/search", "recipes/mine"], "in": "backend/tests/*.cs"}
   ],
   "b5-dev1-1": [
-    {"label": "D-12: access token không còn lưu trong localStorage", "absent": "localStorage\\.setItem\\([^)]*[Aa]ccess", "in": "frontend/src"},
-    {"label": "Refresh single-flight trong api-client", "grep": "(?i)single.?flight|refreshPromise|refreshInFlight|inflightRefresh", "in": "frontend/src"},
-    {"label": "Trang /profile", "file": "frontend/src/app/profile/page.tsx"},
-    {"label": "Gọi PATCH /auth/me từ giao diện", "grep": "auth/me", "in": "frontend/src"}
+    {"label": "UserTokenTransaction (thu hồi phiên trong một transaction)", "grep": "UserTokenTransaction", "in": "backend/src/*.cs"},
+    {"label": "Kiểm thử thu hồi phiên song song + hợp đồng request Auth", "grep": ["class\\s+TokenRevocationConcurrencyTests", "class\\s+AuthRequestContractTests"], "in": "backend/tests/*.cs"}
+  ],
+  "b5-dev1-2": [
+    {"label": "Rate limit: AddRateLimiter với SlidingWindow (auth) + FixedWindow (toàn cục, upload)", "grep": ["AddRateLimiter|AddCulinaryRateLimiting", "SlidingWindowRateLimiter|GetSlidingWindowLimiter", "FixedWindowRateLimiter|GetFixedWindowLimiter"], "in": "backend/src/*.cs"},
+    {"label": "429 RATE_LIMIT_EXCEEDED + Retry-After", "grep": ["RateLimitExceeded|RATE_LIMIT_EXCEEDED", "Retry-After|RetryAfter"], "in": "backend/src/*.cs"},
+    {"label": "CORS named policy expose ETag/Retry-After, cho phép If-Match", "grep": ["WithExposedHeaders", "ETag", "If-Match"], "in": "backend/src/*.cs"},
+    {"label": "API Versioning (Asp.Versioning) route /api/v{version:apiVersion}", "grep": ["AddApiVersioning", "NewApiVersionSet|ApiVersionSet", "v\\{version:apiVersion\\}"], "in": "backend/src/*.cs"},
+    {"label": "Integration test rate limit, CORS, versioning", "grep": ["class\\s+RateLimitingTests", "class\\s+CorsTests", "class\\s+ApiVersioningTests"], "in": "backend/tests/*.cs"}
   ],
   "b5-dev2-1": [
-    {"label": "Kéo-thả bước bằng dnd-kit", "grep": "@dnd-kit", "in": "frontend/package.json"},
-    {"label": "Trang /dashboard/recipes/[id]/edit", "file": "frontend/src/app/dashboard/recipes/*/edit/page.tsx"},
+    {"label": "Trang /dashboard/recipes/[id]/edit", "file": "frontend/src/app/*recipes/*/edit/page.tsx"},
     {"label": "Gửi rowVersion và xử lý 409 khi sửa", "grep": ["rowVersion", "409"], "in": "frontend/src"},
     {"label": "Gọi API sắp xếp bước và xuất bản", "grep": ["steps/reorder", "/publish"], "in": "frontend/src"}
   ],
+  "b5-dev2-2": [
+    {"label": "OpenAPI (AddOpenApi + transformer) và Scalar", "grep": ["AddOpenApi", "MapScalarApiReference", "AddDocumentTransformer|IOpenApiDocumentTransformer"], "in": "backend/src/*.cs"},
+    {"label": "Metadata endpoint: WithSummary + WithTags + WithName", "grep": ["\\.WithSummary\\(", "\\.WithTags\\(", "\\.WithName\\("], "in": "backend/src/*.cs"},
+    {"label": "OpenApiDocumentTests", "grep": "class\\s+OpenApiDocumentTests", "in": "backend/tests/*.cs"},
+    {"label": "Ảnh chụp hợp đồng docs/api/openapi.v1.json", "file": "docs/api/openapi.v1.json"},
+    {"label": "frontend/src/types/recipe.ts có RECIPE_DIFFICULTIES và kiểu Recipe/Nutrition", "grep": ["RECIPE_DIFFICULTIES", "interface\\s+Recipe\\b|type\\s+Recipe\\b", "Nutrition"], "in": "frontend/src/types/recipe.ts"}
+  ],
   "b5-dev3-1": [
     {"label": "Migration B5_Search_CompositeIndexes", "grep": "\\[Migration\\(\"\\d+_B5_Search_CompositeIndexes\"\\)\\]", "in": "backend/src/*.cs"},
-    {"label": "PerformanceSeeder ≥ 10.000 công thức + báo cáo EXPLAIN ANALYZE", "grep": "PerformanceSeeder", "in": "backend/src/*.cs"},
+    {"label": "PerformanceSeeder ≥ 10.000 công thức", "grep": "PerformanceSeeder", "in": "backend/src/*.cs"},
     {"label": "Báo cáo docs/explain-analyze-b5.md", "file": "docs/explain-analyze-b5.md"},
-    {"label": "Trang /search", "file": "frontend/src/app/search/page.tsx"},
+    {"label": "Trang /search", "file": "frontend/src/app/*search/page.tsx"},
     {"label": "D-10 phía FE: sortBy/sortOrder, bộ lọc trên URL", "grep": ["sortBy", "sortOrder"], "in": "frontend/src"}
+  ],
+  "b5-dev3-2": [
+    {"label": "frontend/src/types/category.ts", "file": "frontend/src/types/category.ts"},
+    {"label": "frontend/src/types/search.ts có SORT_FIELDS, DEFAULT_PAGE_SIZE", "grep": ["SORT_FIELDS", "DEFAULT_PAGE_SIZE"], "in": "frontend/src/types/search.ts"},
+    {"label": "Component dùng chung chuyển sang components/shared", "file": "frontend/src/components/shared/*.tsx", "min": 3},
+    {"label": "Hook dùng chung trong src/hooks", "file": "frontend/src/hooks/*.ts"},
+    {"label": "ESLint chặn import sai chiều (import/no-restricted-paths)", "grep": "no-restricted-paths", "in": "frontend"}
   ],
   "b5-dev4-1": [
     {"label": "Docker healthcheck gọi /health/ready", "grep": ["healthcheck:", "/health/ready"], "in": "docker-compose.yml"},
     {"label": "Nginx proxy_next_upstream chuyển instance khi 502/503/504", "grep": "proxy_next_upstream", "in": "nginx"},
     {"label": "HealthIndicator + trang /dashboard/system", "grep": "HealthIndicator", "in": "frontend/src"},
-    {"label": "Trang /dashboard/system", "file": "frontend/src/app/dashboard/system/page.tsx"},
-    {"label": "RecipeCard dùng ThumbnailUrl", "grep": "thumbnailUrl", "in": "frontend/src/*RecipeCard*"}
+    {"label": "Trang /dashboard/system", "file": "frontend/src/app/*dashboard/system/page.tsx"},
+    {"label": "Thẻ công thức dùng ảnh thu nhỏ: Backend chọn ThumbnailUrl ?? OriginalUrl, RecipeCard hiển thị primaryImageUrl", "grep": ["ThumbnailUrl\\s*\\?\\?\\s*\\w+\\.OriginalUrl"], "in": "backend/src/*.cs"},
+    {"label": "RecipeCard dùng primaryImageUrl", "grep": "primaryImageUrl", "in": "frontend/src/*RecipeCard*"}
+  ],
+  "b5-dev4-2": [
+    {"label": "Cài zustand và ky", "grep": ["\"zustand\"", "\"ky\""], "in": "frontend/package.json"},
+    {"label": "Gỡ next-auth không dùng", "absent": "\"next-auth\"", "in": "frontend/package.json"},
+    {"label": "frontend/src/types/auth.ts", "file": "frontend/src/types/auth.ts"},
+    {"label": "types/api.ts có ERROR_CODES", "grep": "ERROR_CODES", "in": "frontend/src/types/api.ts"},
+    {"label": "Kiểm thử chống lệch mã lỗi Frontend ↔ ErrorCodes.cs", "grep": "ErrorCodes\\.cs", "in": "frontend/src"}
   ],
   "b6-dev1-1": [
-    {"label": "Rate limit theo IP (AddRateLimiter) trả 429 RATE_LIMIT_EXCEEDED + Retry-After", "grep": ["AddRateLimiter", "RateLimitExceeded|RATE_LIMIT_EXCEEDED", "Retry-After|RetryAfter"], "in": "backend/src/*.cs"},
-    {"label": "Content-Security-Policy", "grep": "Content-Security-Policy", "in": ["backend/src", "frontend", "nginx"]},
-    {"label": "Chặn route FE (middleware.ts) + RequireRole", "grep": "RequireRole", "in": "frontend/src"},
-    {"label": "frontend/src/middleware.ts", "file": "frontend/src/middleware.ts"},
-    {"label": "Integration test 429 khi vượt ngưỡng", "grep": "TooManyRequests|429", "in": "backend/tests/*.cs"}
+    {"label": "Zustand auth store frontend/src/stores/auth-store.ts", "file": "frontend/src/stores/auth-store.ts"},
+    {"label": "persist + partialize (không lưu access token)", "grep": ["persist\\(", "partialize"], "in": "frontend/src/stores"},
+    {"label": "AuthGuard + RequireRole", "grep": ["AuthGuard", "RequireRole"], "in": "frontend/src"},
+    {"label": "Chặn chuyển hướng mở (safe-redirect)", "file": "frontend/src/lib/safe-redirect.ts"},
+    {"label": "CSP có nonce sinh ở src/middleware.ts (MT-67)", "file": "frontend/src/middleware.ts"},
+    {"label": "CSP: nonce + 'strict-dynamic', root layout đọc x-nonce", "grep": ["Content-Security-Policy", "strict-dynamic", "x-nonce"], "in": "frontend/src"},
+    {"label": "E2E kiểm 0 vi phạm CSP", "file": "frontend/e2e/*csp*"}
   ],
   "b6-dev2-1": [
-    {"label": "Trang /dashboard/recipes gọi /recipes/mine", "file": "frontend/src/app/dashboard/recipes/page.tsx"},
-    {"label": "Giao diện gọi /recipes/mine và xóa mềm", "grep": ["recipes/mine", "method:\\s*'DELETE'|\\.delete\\(|deleteRecipe"], "in": "frontend/src"}
+    {"label": "shadcn/ui components.json", "file": "frontend/components.json"},
+    {"label": "button.tsx", "file": "frontend/src/components/ui/button.tsx"},
+    {"label": "input.tsx", "file": "frontend/src/components/ui/input.tsx"},
+    {"label": "dialog.tsx", "file": "frontend/src/components/ui/dialog.tsx"},
+    {"label": "dropdown-menu.tsx", "file": "frontend/src/components/ui/dropdown-menu.tsx"},
+    {"label": "sonner.tsx (thay Toast)", "file": "frontend/src/components/ui/sonner.tsx"},
+    {"label": "form.tsx", "file": "frontend/src/components/ui/form.tsx"},
+    {"label": "card.tsx", "file": "frontend/src/components/ui/card.tsx"},
+    {"label": "badge.tsx", "file": "frontend/src/components/ui/badge.tsx"},
+    {"label": "RecipeStatusBadge + trang tổng quan /dashboard", "grep": "RecipeStatusBadge", "in": "frontend/src"}
   ],
   "b6-dev3-1": [
-    {"label": "JSON-LD Recipe (lib/seo/recipeJsonLd.ts)", "file": "frontend/src/lib/seo/recipeJsonLd.ts"},
-    {"label": "generateMetadata + Open Graph", "grep": ["generateMetadata", "openGraph"], "in": "frontend/src"},
-    {"label": "D-7: revalidate 1800 / 120 khớp TTL cache API", "grep": ["revalidate\\s*[:=]\\s*1800", "revalidate\\s*[:=]\\s*120"], "in": "frontend/src"}
+    {"label": "Header, Footer, SidebarCategory", "grep": ["Header", "Footer", "SidebarCategory"], "in": "frontend/src/components/layout"},
+    {"label": "Pagination, LoadingSkeleton, EmptyState, ErrorBoundary", "grep": ["Pagination", "LoadingSkeleton", "EmptyState", "ErrorBoundary"], "in": "frontend/src/components/shared"},
+    {"label": "Giao diện tĩnh /mockups dùng dữ liệu mẫu có kiểu", "file": "frontend/src/app/*mockups/*/page.tsx", "min": 3},
+    {"label": "MT-66: integration test /recipes/search với maxCookTime", "grep": "recipes/search\\?[^\"]*maxCookTime", "in": "backend/tests/*.cs"}
   ],
   "b6-dev4-1": [
-    {"label": "Serilog request logging", "grep": "UseSerilogRequestLogging", "in": "backend/src/*.cs"},
-    {"label": "CorrelationIdMiddleware (X-Correlation-ID)", "grep": ["CorrelationIdMiddleware", "X-Correlation-ID"], "in": "backend/src/*.cs"},
-    {"label": "LoggingBehavior > 500ms + DbCommandInterceptor > 100ms", "grep": ["LoggingBehavior", "DbCommandInterceptor"], "in": "backend/src/*.cs"},
-    {"label": "OpenTelemetry trace + metric recipes_published_total", "grep": ["OpenTelemetry", "recipes_published_total"], "in": "backend/src/*.cs"}
+    {"label": "api-client chạy trên ky", "grep": "from\\s+'ky'", "in": "frontend/src/lib/api-client.ts"},
+    {"label": "lib/error-handler.ts + thông báo cho mọi ErrorCode", "grep": "satisfies\\s+Record<ErrorCode", "in": "frontend/src"},
+    {"label": "Frontend gửi X-Correlation-ID", "grep": "X-Correlation-ID", "in": "frontend/src"},
+    {"label": "Layout (public)", "file": "frontend/src/app/(public)/layout.tsx"},
+    {"label": "Layout (auth)", "file": "frontend/src/app/(auth)/layout.tsx"},
+    {"label": "Layout (dashboard)", "file": "frontend/src/app/(dashboard)/layout.tsx"}
   ],
   "b7-dev1-1": [
-    {"label": "Trang Admin /dashboard/users", "file": "frontend/src/app/dashboard/users/page.tsx"},
-    {"label": "Tab phiên đăng nhập gọi /auth/sessions", "grep": ["auth/sessions", "revoke-all"], "in": "frontend/src"}
+    {"label": "API change-password, forgot-password, reset-password", "grep": ["\"/change-password\"", "\"/forgot-password\"", "\"/reset-password\""], "in": "backend/src/*.cs"},
+    {"label": "Mã AUTH_PASSWORD_RESET_TOKEN_INVALID + PasswordResetEmailJob", "grep": ["AUTH_PASSWORD_RESET_TOKEN_INVALID", "class\\s+PasswordResetEmailJob"], "in": "backend/src/*.cs"},
+    {"label": "Integration test đổi/quên/đặt lại mật khẩu", "grep": ["auth/change-password", "auth/forgot-password", "auth/reset-password"], "in": "backend/tests/*.cs"},
+    {"label": "Trang /auth/forgot-password", "file": "frontend/src/app/*auth/forgot-password/page.tsx"},
+    {"label": "Trang /auth/reset-password", "file": "frontend/src/app/*auth/reset-password/page.tsx"},
+    {"label": "Trang /profile", "file": "frontend/src/app/*profile/page.tsx"},
+    {"label": "Hồ sơ + tab phiên gọi /auth/me và /auth/sessions", "grep": ["auth/me", "auth/sessions", "revoke-all"], "in": "frontend/src"}
   ],
   "b7-dev2-1": [
-    {"label": "Hằng số statusTransitions.ts sao bảng chuyển trạng thái", "file": "frontend/src/*statusTransitions.ts"},
-    {"label": "Nút lưu trữ / khôi phục gọi API", "grep": ["/archive", "/unarchive"], "in": "frontend/src"}
+    {"label": "Điều chỉnh khẩu phần (IngredientList)", "grep": "IngredientList", "in": "frontend/src"},
+    {"label": "In và chia sẻ (window.print, navigator.share)", "grep": ["window\\.print", "navigator\\.share"], "in": "frontend/src"},
+    {"label": "Trang /dashboard/recipes gọi /recipes/mine", "file": "frontend/src/app/*dashboard/recipes/page.tsx"},
+    {"label": "Giao diện gọi /recipes/mine", "grep": "recipes/mine", "in": "frontend/src"}
   ],
   "b7-dev3-1": [
-    {"label": "app/sitemap.ts + app/robots.ts", "file": "frontend/src/app/sitemap.ts"},
-    {"label": "app/robots.ts", "file": "frontend/src/app/robots.ts"},
-    {"label": "Nguồn sitemap gọi GET /recipes/sitemap", "grep": "recipes/sitemap", "in": "frontend/src"},
-    {"label": "D-14: gỡ unoptimized của next/image", "absent": "unoptimized", "in": ["frontend/src", "frontend/next.config.*"]}
+    {"label": "Trang chủ trong route group (public)", "file": "frontend/src/app/(public)/page.tsx"},
+    {"label": "D-7: không còn revalidate 3600 / 600", "absent": "revalidate:\\s*(3600|600)\\b", "in": "frontend/src"},
+    {"label": "revalidate 1800 / 120 khớp TTL cache API", "grep": ["revalidate\\s*[:=]\\s*1800", "revalidate\\s*[:=]\\s*120"], "in": "frontend/src"},
+    {"label": "SidebarCategory dùng trên trang", "grep": "SidebarCategory", "in": "frontend/src/app"}
   ],
   "b7-dev4-1": [
+    {"label": "Trang /search: HydrationBoundary + history.pushState", "grep": ["HydrationBoundary", "history\\.pushState"], "in": "frontend/src"},
+    {"label": "Bộ lọc thời gian trên /search (MT-66)", "grep": ["maxCookTime", "maxPrepTime"], "in": "frontend/src"},
     {"label": "docker-compose.prod.yml scale api", "grep": "replicas", "in": "docker-compose.prod.yml"},
     {"label": "Nginx /media/ proxy MinIO + SSL", "grep": ["location\\s+/media/", "ssl_certificate"], "in": "nginx"},
-    {"label": "D-17: ProtectKeysWithCertificate", "grep": "ProtectKeysWithCertificate", "in": "backend/src/*.cs"},
-    {"label": "Xóa cache theo tiền tố bằng SCAN", "grep": "RemoveByPrefixAsync", "in": "backend/src/*.cs"},
-    {"label": "Báo cáo docs/cache-report.md", "file": "docs/cache-report.md"}
+    {"label": "D-17: ProtectKeysWithCertificate", "grep": "ProtectKeysWithCertificate", "in": "backend/src/*.cs"}
   ],
   "b8-dev1-1": [
+    {"label": "Trang Admin /dashboard/users", "file": "frontend/src/app/*dashboard/users/page.tsx"},
+    {"label": "Khóa/mở khóa gọi PATCH /users/{id}/status", "grep": "/status", "in": "frontend/src/features/users"},
     {"label": "E2E Playwright luồng xác thực", "file": "frontend/e2e/*auth*"},
     {"label": "Báo cáo docs/security-test-report.md", "file": "docs/security-test-report.md"}
   ],
   "b8-dev2-1": [
+    {"label": "Biểu mẫu React Hook Form + Zod + useFieldArray", "grep": ["useFieldArray", "zodResolver"], "in": "frontend/src/features/recipes"},
+    {"label": "Bảng chuyển trạng thái status-transitions.ts", "file": "frontend/src/*status-transitions.ts"},
+    {"label": "Nút lưu trữ / khôi phục / xóa gọi API", "grep": ["/archive", "/unarchive"], "in": "frontend/src"},
     {"label": "E2E Playwright vòng đời công thức", "file": "frontend/e2e/*recipe*"},
     {"label": "Kiểm thử 10 PUT song song (Task.WhenAll)", "grep": "Task\\.WhenAll", "in": "backend/tests/*.cs"}
   ],
   "b8-dev3-1": [
-    {"label": "axe-core/playwright quét WCAG", "grep": "@axe-core/playwright", "in": "frontend/package.json"},
+    {"label": "JSON-LD Recipe (lib/seo/recipe-json-ld.ts)", "file": "frontend/src/lib/seo/recipe-json-ld.ts"},
+    {"label": "Ảnh Open Graph opengraph-image.tsx", "file": "frontend/src/app/*opengraph-image.tsx"},
+    {"label": "app/sitemap.ts", "file": "frontend/src/app/sitemap.ts"},
+    {"label": "app/robots.ts", "file": "frontend/src/app/robots.ts"},
+    {"label": "D-14: gỡ unoptimized của next/image", "absent": "unoptimized", "in": ["frontend/src", "frontend/next.config.*"]},
     {"label": "Báo cáo docs/a11y-report.md", "file": "docs/a11y-report.md"},
     {"label": "Báo cáo docs/lighthouse-report.md", "file": "docs/lighthouse-report.md"}
   ],
   "b8-dev4-1": [
+    {"label": "Serilog request logging", "grep": "UseSerilogRequestLogging", "in": "backend/src/*.cs"},
+    {"label": "CorrelationIdMiddleware (X-Correlation-ID)", "grep": ["CorrelationIdMiddleware", "X-Correlation-ID"], "in": "backend/src/*.cs"},
+    {"label": "DbCommandInterceptor > 100ms", "grep": "DbCommandInterceptor", "in": "backend/src/*.cs"},
+    {"label": "Kiểm thử log không chứa bí mật", "grep": "class\\s+LogRedactionTests", "in": "backend/tests/*.cs"},
     {"label": "Kịch bản k6 smoke/load/stress", "grep": "from 'k6", "in": ["*.js"]},
     {"label": "Báo cáo docs/load-test-report.md", "file": "docs/load-test-report.md"},
+    {"label": "Báo cáo docs/cache-report.md", "file": "docs/cache-report.md"},
     {"label": "CHANGELOG.md", "file": "CHANGELOG.md"},
-    {"label": "6 ADR", "file": "docs/adr/*.md", "min": 6}
+    {"label": "10 ADR", "file": "docs/adr/*.md", "min": 10}
   ]
 }
