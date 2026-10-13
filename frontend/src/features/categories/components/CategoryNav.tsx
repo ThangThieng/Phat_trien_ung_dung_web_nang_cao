@@ -22,6 +22,8 @@ export default function CategoryNav() {
   const { data: categories } = useQuery({
     queryKey: CATEGORIES_QUERY_KEY,
     queryFn: () => getCategories(),
+    // Lỗi chỉ làm menu thu gọn (xem chú thích trên) — không toast từ bộ xử lý lỗi toàn cục (Buổi 6).
+    meta: { suppressGlobalError: true },
   });
 
   // Nhấn Escape hoặc bấm ra ngoài thì đóng menu.

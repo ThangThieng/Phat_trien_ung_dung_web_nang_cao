@@ -34,6 +34,8 @@ export default function CategoriesDashboardPage() {
     queryKey: CATEGORIES_QUERY_KEY,
     queryFn: ({ signal }) => getCategoriesForAdmin(signal),
     enabled: isAdmin,
+    // Lỗi tải danh sách hiện ngay trên trang (khối role="alert" bên dưới) — bộ xử lý toàn cục không toast lần hai.
+    meta: { suppressGlobalError: true },
   });
 
   const refreshCategories = () => queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
@@ -43,6 +45,8 @@ export default function CategoriesDashboardPage() {
       dialog?.mode === 'edit'
         ? updateCategory(dialog.category.id, payload, accessToken)
         : createCategory(payload, accessToken),
+    // CategoryFormDialog tự hiện lỗi dưới từng ô (trùng tên, errors{}) — bộ xử lý toàn cục không toast lần hai.
+    meta: { suppressGlobalError: true },
     onSuccess: async () => {
       toast.success(dialog?.mode === 'edit' ? 'Đã cập nhật danh mục.' : 'Đã tạo danh mục mới.');
       setDialog(null);
