@@ -1,7 +1,7 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { ApiError, apiFetch } from '@/lib/api-client';
 import type { ProblemDetails } from '@/lib/api-client';
-import type { RecipeDetail, RecipeImageResult } from '@/types/api';
+import type { RecipeDetail, RecipeImageResult } from '@/types/recipe';
 import type { CreateRecipeRequest } from './schemas';
 
 /** FR-RCP-003 – POST /recipes → 201 RecipeDetail ở trạng thái Draft. */

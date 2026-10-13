@@ -8,7 +8,8 @@ import { Loader2, X } from 'lucide-react';
 import FormField from '@/components/ui/FormField';
 import ImageUploader from '@/components/ui/ImageUploader';
 import { ApiError, getErrorMessage } from '@/lib/api-client';
-import type { Category, UploadedFile } from '@/types/api';
+import type { UploadedFile } from '@/types/api';
+import type { Category } from '@/types/category';
 import type { CategoryPayload } from '../admin-api';
 
 /**

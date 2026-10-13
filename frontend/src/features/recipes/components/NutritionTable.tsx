@@ -1,4 +1,4 @@
-import type { RecipeNutrition } from '@/types/api';
+import type { RecipeNutrition } from '@/types/recipe';
 
 const ROWS: { key: keyof RecipeNutrition; label: string; unit: string }[] = [
   { key: 'calories', label: 'Năng lượng', unit: 'kcal' },

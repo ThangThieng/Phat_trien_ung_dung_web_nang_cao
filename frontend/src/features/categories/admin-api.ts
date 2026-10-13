@@ -1,5 +1,5 @@
 import { apiFetch } from '@/lib/api-client';
-import type { Category } from '@/types/api';
+import type { Category } from '@/types/category';
 
 /**
  * FR-CAT-003/004/005 – lời gọi API GHI cho trang quản trị (Bearer token, không cache).

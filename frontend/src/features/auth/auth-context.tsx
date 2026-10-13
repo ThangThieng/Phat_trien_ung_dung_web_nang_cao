@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import type { ReactNode } from 'react';
 import { apiFetch, configureAuthCallbacks } from '@/lib/api-client';
 import { getQueryClient } from '@/lib/query-client';
-import type { AuthResponse, User } from '@/types/api';
+import type { AuthResponse, User } from '@/types/auth';
 import { coordinateRefresh } from './refresh-coordinator';
 
 const STORAGE_KEY = 'culinaryblog.auth';

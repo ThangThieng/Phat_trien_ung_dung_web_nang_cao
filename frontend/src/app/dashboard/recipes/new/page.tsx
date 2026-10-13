@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
 import RecipeBasicsForm from '@/features/recipes/components/RecipeBasicsForm';
 import RecipeImageGallery from '@/features/recipes/components/RecipeImageGallery';
-import type { RecipeDetail } from '@/types/api';
+import type { RecipeDetail } from '@/types/recipe';
 
 const STEPS = ['Thông tin & dinh dưỡng', 'Ảnh món ăn'] as const;
 

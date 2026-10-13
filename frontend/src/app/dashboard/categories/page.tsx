@@ -16,7 +16,7 @@ import {
 import type { CategoryPayload } from '@/features/categories/admin-api';
 import { ApiError, getErrorMessage } from '@/lib/api-client';
 import { useAuth } from '@/features/auth/auth-context';
-import type { Category } from '@/types/api';
+import type { Category } from '@/types/category';
 
 type DialogState = { mode: 'create' } | { mode: 'edit'; category: Category } | null;
 

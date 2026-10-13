@@ -1,5 +1,6 @@
 import { apiFetch } from '@/lib/api-client';
-import type { PagedResult, RecipeDetail, RecipeSummary } from '@/types/api';
+import type { PagedResult } from '@/types/api';
+import type { RecipeDetail, RecipeSummary } from '@/types/recipe';
 
 export interface RecipeListParams {
   page?: number;

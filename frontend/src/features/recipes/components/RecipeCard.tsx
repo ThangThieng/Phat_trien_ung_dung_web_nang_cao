@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, Users } from 'lucide-react';
-import type { RecipeSummary } from '@/types/api';
+import type { RecipeSummary } from '@/types/recipe';
 import { DIFFICULTY_LABEL, DIFFICULTY_STYLE, formatMinutes } from '../format';
 
 /**

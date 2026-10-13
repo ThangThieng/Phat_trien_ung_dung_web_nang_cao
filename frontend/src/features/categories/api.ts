@@ -1,5 +1,5 @@
 import { apiFetch } from '@/lib/api-client';
-import type { Category, CategoryDetail } from '@/types/api';
+import type { Category, CategoryDetail } from '@/types/category';
 
 /** FR-CAT-001 – dữ liệu revalidate mỗi 3600s (SRS §5.1). Backend cache Redis 60 phút. */
 export function getCategories() {
