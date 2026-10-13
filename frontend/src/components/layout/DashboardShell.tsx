@@ -21,6 +21,16 @@ function DashboardFrame({ children }: { children: ReactNode }) {
   // Đổi trang (kể cả bấm Back) thì đóng menu điện thoại.
   useEffect(() => setMobileNavOpen(false), [pathname]);
 
+  // Escape đóng menu như một ngăn kéo thật.
+  useEffect(() => {
+    if (!mobileNavOpen) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileNavOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [mobileNavOpen]);
+
   return (
     <div className="flex flex-1">
       <aside className="hidden w-60 shrink-0 border-r border-orange-100 bg-white md:block">
@@ -55,8 +65,13 @@ function DashboardFrame({ children }: { children: ReactNode }) {
           </div>
         </header>
 
+        {/* Lớp phủ cố định ngay dưới thanh trên cùng, không chèn vào luồng trang: chèn vào luồng thì trình duyệt giữ
+            nguyên vị trí nội dung (scroll anchoring) bằng cách cuộn xuống đúng chiều cao menu — bấm mở mà không thấy menu. */}
         {mobileNavOpen && (
-          <div id={MOBILE_NAV_ID} className="border-b border-orange-100 bg-white md:hidden">
+          <div
+            id={MOBILE_NAV_ID}
+            className="fixed inset-x-0 top-14 bottom-0 z-40 overflow-y-auto border-t border-orange-100 bg-white md:hidden"
+          >
             <DashboardSidebar roles={roles} onNavigate={() => setMobileNavOpen(false)} />
           </div>
         )}

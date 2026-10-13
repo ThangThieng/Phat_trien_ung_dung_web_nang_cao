@@ -67,6 +67,12 @@ describe('DashboardShell', () => {
       'true',
     );
     expect(screen.getAllByRole('navigation', { name: 'Bảng điều khiển' })).toHaveLength(2);
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.getByRole('button', { name: 'Mở menu' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    expect(screen.getAllByRole('navigation', { name: 'Bảng điều khiển' })).toHaveLength(1);
   });
 
   it('shows the health indicator to an Admin only', () => {
