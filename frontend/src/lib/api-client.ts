@@ -1,14 +1,5 @@
+import type { ProblemDetails } from '@/types/api';
 import { getApiBaseUrl } from './config';
-
-/** RFC 7807 Problem Details do backend trả về (type = Application Error Code – SRS Phụ lục B). */
-export interface ProblemDetails {
-  type?: string;
-  title?: string;
-  status?: number;
-  detail?: string;
-  errors?: Record<string, string[]>;
-  [key: string]: unknown;
-}
 
 export class ApiError extends Error {
   readonly status: number;

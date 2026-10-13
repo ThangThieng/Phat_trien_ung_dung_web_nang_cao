@@ -1,6 +1,6 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { ApiError, apiFetch } from '@/lib/api-client';
-import type { ProblemDetails } from '@/lib/api-client';
+import type { ProblemDetails } from '@/types/api';
 import type { RecipeDetail, RecipeImageResult } from '@/types/recipe';
 import type { CreateRecipeRequest } from './schemas';
 

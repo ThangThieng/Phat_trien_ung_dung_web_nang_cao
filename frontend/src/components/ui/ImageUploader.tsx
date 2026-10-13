@@ -5,8 +5,7 @@ import type { ChangeEvent, DragEvent, KeyboardEvent } from 'react';
 import { ImagePlus, Loader2, Trash2 } from 'lucide-react';
 import { getApiBaseUrl } from '@/lib/config';
 import { ApiError, apiFetch, getErrorMessage, withAuthRefresh } from '@/lib/api-client';
-import type { ProblemDetails } from '@/lib/api-client';
-import type { UploadedFile } from '@/types/api';
+import type { ProblemDetails, UploadedFile } from '@/types/api';
 
 /** Ràng buộc CONS-007 (kiểm tra sớm phía client; backend vẫn kiểm tra lại MIME + magic bytes). */
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
