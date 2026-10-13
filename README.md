@@ -960,7 +960,7 @@ Không đưa dữ liệu server vào Zustand.
      - `(public)` (Header + Footer);
      - `(auth)` (khung tối giản + `GuestOnly`);
      - `(dashboard)` (Server Component có `robots: noindex` + `DashboardShell`: `AuthGuard`, sidebar theo vai trò, `Sheet` trên điện thoại);
-     - `loading.tsx`/`error.tsx` mỗi nhóm.
+     - `error.tsx` mỗi nhóm; `loading.tsx` ở `(auth)`, `(dashboard)` — `(public)` giữ khung chờ ở từng trang danh sách để `/recipes/[slug]` vẫn trả 404 thật.
 - **Vì sao:**
   - Giữ chữ ký `apiFetch` thì hơn 40 chỗ gọi không phải sửa, và kiểm thử cũ thành kiểm thử hồi quy.
   - Tự thử lại lệnh ghi có thể tạo công thức trùng.

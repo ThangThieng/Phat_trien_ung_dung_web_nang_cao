@@ -2359,8 +2359,9 @@ feat(ui-shell,search): shared layout and accessible pagination, skeleton, empty 
 2. **`lib/api-client.ts` — viết lại phần bên trong bằng `ky`, giữ nguyên API công khai.** `apiFetch<T>(path, options)`, `ApiError`, `withAuthRefresh`, `configureAuthCallbacks`, `mapProblemDetailsToForm` giữ tên và chữ ký → hơn 40 chỗ gọi trong `features/*/api.ts` **không phải sửa**.
    ```ts
    const http = ky.create({
-     prefixUrl: getApiBaseUrl(), timeout: 15_000,
-     retry: { limit: 2, methods: ['get'], statusCodes: [408, 429, 502, 503, 504], maxRetryAfter: 5_000 },
+     timeout: 15_000,                             // `prefix: getApiBaseUrl()` truyền theo từng lời gọi (server/trình duyệt khác URL)
+     retry: { limit: 2, methods: ['get'], statusCodes: [408, 429, 502, 503, 504], maxRetryAfter: 5_000,
+              shouldRetry },                      // Retry-After > 5 giây → dừng hẳn (ky chỉ kẹp về 5 giây rồi vẫn gửi lại)
      hooks: {
        beforeRequest: [attachCorrelationId, attachBearerToken],
        afterResponse: [refreshOnExpiredToken],   // 401 AUTH_TOKEN_EXPIRED → refresh single-flight → thử lại đúng 1 lần
@@ -2368,6 +2369,7 @@ feat(ui-shell,search): shared layout and accessible pagination, skeleton, empty 
      },
    });
    ```
+   - **`ky` 2.x đổi tên `prefixUrl` → `prefix`** (bản 2.2.0 đã ghim ở Buổi 5); đoạn code trên dùng tên mới.
    - **Gắn token:** `attachBearerToken` đọc token qua `authCallbacks.getAccessToken()` — callback do `AuthStoreProvider` của Dev 1 đăng ký. `lib/` không import `stores/`, đúng quy tắc phụ thuộc Buổi 5.
    - **Refresh:** `refreshOnExpiredToken` dùng lại **đúng** logic single-flight đã có kiểm thử (biến `refreshPromise` dùng chung; token đã được request khác làm mới thì không refresh lần hai). Refresh thất bại → `onRefreshFailure()` → xóa phiên, về `/auth/login?callbackUrl=…`. Lỗi `AUTH_TOKEN_INVALID` (token hỏng, không phải hết hạn) → đăng xuất ngay, không thử refresh.
    - **Thử lại:** chỉ `GET`, chỉ lỗi tạm thời. `429` chờ đúng `Retry-After` nếu ≤ 5 giây, lâu hơn thì trả lỗi để giao diện báo người dùng. **`POST`/`PUT`/`PATCH`/`DELETE` không bao giờ tự thử lại** — thử lại một lệnh ghi có thể tạo hai công thức hoặc xuất bản hai lần.
@@ -2386,11 +2388,11 @@ feat(ui-shell,search): shared layout and accessible pagination, skeleton, empty 
      |---|---|
      | `validation` + có `form` | `mapProblemDetailsToForm` → lỗi từng ô; không có ô nào khớp thì toast |
      | `rate-limited` | toast *"Bạn thao tác quá nhanh, thử lại sau N giây"* (N từ `Retry-After`) |
-     | `conflict` | trả về cho nơi gọi tự xử lý — ví dụ dialog "dữ liệu đã thay đổi" của trang sửa công thức |
+     | `conflict` | toast câu theo mã (ví dụ *"Tên danh mục đã tồn tại"*) và trả `AppError` cho nơi gọi. Màn hình cần dialog riêng (*"dữ liệu đã thay đổi"* của trang sửa công thức) khai báo `meta: { suppressGlobalError: true }` rồi tự xử lý — không để lỗi 409 của một mutation không có `onError` trôi qua im lặng |
      | `server`, `network` | thông báo thân thiện + *"Mã tra cứu: {correlationId}"* (không lộ stack trace — NFR-USE-003) |
      | `forbidden` | toast *"Bạn không có quyền thực hiện thao tác này"* |
    - `lib/query-client.ts`:
-     - `QueryCache({ onError })` và `MutationCache({ onError })` gọi `handleApiError`, trừ khi truy vấn khai báo `meta: { suppressGlobalError: true }`;
+     - `QueryCache({ onError })` và `MutationCache({ onError })` gọi `handleApiError`, trừ khi truy vấn khai báo `meta: { suppressGlobalError: true }`; mutation **tự khai báo `onError`** cũng được bỏ qua (nó đã tự xử lý — không toast lần hai);
      - `retry: (count, err) => ['network','server'].includes(normalizeError(err).kind) && count < 2` — **không thử lại lỗi 4xx**.
    - `getErrorMessage()` (Buổi 2) giữ lại như lớp vỏ mỏng gọi `normalizeError(...).message`.
 4. **Bố cục — `app/`:**
@@ -2402,7 +2404,8 @@ feat(ui-shell,search): shared layout and accessible pagination, skeleton, empty 
      - `components/layout/DashboardSidebar.tsx`: Tổng quan, Công thức của tôi, Viết công thức, Hồ sơ; Danh mục, Người dùng, Hệ thống (chỉ Admin); mục đang mở theo `usePathname()` có `aria-current="page"`;
      - thanh trên cùng có `UserMenu`;
      - điện thoại: sidebar thành `Sheet`.
-   - Mỗi group có `loading.tsx` (dùng `LoadingSkeleton`) và `error.tsx` (dùng `ErrorFallback`). Riêng `/recipes/[slug]` **không** có `loading.tsx` — xem Buổi 7 — Dev 2.
+   - Mỗi group có `error.tsx` (dùng `ErrorFallback`). `loading.tsx` (dùng `LoadingSkeleton`) đặt ở gốc `(auth)` và `(dashboard)`; **`(public)` không có `loading.tsx` ở gốc group** — nó bao luôn `/recipes/[slug]` và `/categories/[slug]`, bật streaming và làm trang không tồn tại trả 200 thay vì 404 (Buổi 7 — Dev 2). Khung chờ của trang công khai nằm ở `recipes/(list)/loading.tsx`, `categories/(list)/loading.tsx` (có từ Buổi 2).
+   - `app/not-found.tsx` nằm ngoài mọi group nên tự bọc `PublicShell` (header + `main` + footer dùng chung với `(public)/layout.tsx`) — không có bước này, trang 404 mất header/footer khi root layout không còn chứa chúng.
 5. **Kiểm thử:**
    - Hồi quy: toàn bộ `api-client.test.ts` của Buổi 2 – 4 xanh nguyên vẹn.
    - Mới:
@@ -2413,6 +2416,25 @@ feat(ui-shell,search): shared layout and accessible pagination, skeleton, empty 
      - chạy phía server không có header `Authorization`.
    - `error-handler.test.ts` — lặp qua `ERROR_CODES`: mã nào cũng có `kind` và thông báo; 429 lấy đúng `retryAfterSeconds`.
    - `DashboardSidebar.test.tsx` — Author không thấy mục Admin.
+
+**Ghi chú khi thực hiện (14/10/2026 — nhánh `2312755_NguyenThangThieng_buoiso6`, tách từ `…_buoiso5`):**
+
+- **Chưa merge nhánh `buoiso5` của Dev 1/2/3** (trưởng nhóm chọn ngày 14/10/2026): merge thử thì xung đột — Dev 1: 15 file Auth backend; Dev 3: 5 file Frontend (`types/api.ts`, `SiteHeader`, `features/*/api.ts`, `RecipeCard`); Dev 2: 3 file (`RecipesEndpoints.cs`, `GetMyRecipeByIdQuery.cs`, `write-api.ts`). Commit route group vì vậy chỉ chuyển các route đang có trên nhánh. Khi merge, chủ trang chuyển nốt trang của mình vào group (file mới thêm ở đường dẫn cũ Git không tự chuyển):
+  ```
+  git mv frontend/src/app/search "frontend/src/app/(public)/search"                                     # Dev 3
+  git mv "frontend/src/app/dashboard/recipes/[id]" "frontend/src/app/(dashboard)/dashboard/recipes/[id]"  # Dev 2
+  ```
+  Phần Dev 3 thêm vào `types/api.ts` chuyển sang `types/search.ts` (file đã tách ở Buổi 5).
+- **Bản tạm cho component của ba dev khác làm cùng buổi** — gom trong **một** file `components/layout/interim-shell.tsx`: `InterimAuthGuard` → `AuthGuard`, `InterimRequireRole` → `RequireRole` (Dev 1); `InterimUserMenu` → `UserMenu`, `InterimErrorFallback` → `ErrorFallback`, `InterimPageLoading` → `LoadingSkeleton` (Dev 3); nút mở/đóng menu điện thoại → `Sheet` (Dev 2). Chủ component đổi một dòng import ở nơi dùng rồi xóa phần tương ứng. Header/footer công khai nằm ở `components/layout/PublicShell.tsx` — Dev 3 thay `SiteHeader`/`<footer>` tại đó.
+- **`(public)` không có `loading.tsx` ở gốc group — đã đo:** thêm tạm `app/(public)/loading.tsx`, build production, gọi trang không tồn tại → `/recipes/khong-ton-tai-123` và `/categories/khong-ton-tai` đều trả **200**; bỏ file đó → cả hai trả **404**. Mục 4 ở trên đã sửa theo kết quả này.
+- **Trang `/recipes/[slug]` (ISR, `generateStaticParams`) trả 404 với khung `<html id="__next_error__">`** rồi mới hiện trang "Không tìm thấy" sau khi hydrate. Đối chứng trên bản build `buoiso5` cho kết quả giống hệt → hành vi sẵn có của trang ISR, không do route group; hết khi Dev 2 chuyển trang sang SSR + Data Cache ở Buổi 7 (MT-67).
+- **Sửa lỗi sẵn có làm mất `callbackUrl`:** `AuthCard` (Buổi 3) thấy đã đăng nhập là `router.replace('/recipes')`, đè lên `callbackUrl` mà `LoginForm` vừa chuyển tới — người bị chặn ở dashboard đăng nhập xong không quay lại trang đang mở. `AuthCard` nay dùng chung `safeCallbackUrl` của `LoginForm` (kiểm thử `AuthCard.test.tsx`). Dev 1 thay cả hai bằng `GuestOnly` + `lib/safe-redirect.ts` trong buổi này.
+- **Bốn chỗ tự hiển thị lỗi khai báo `meta: { suppressGlobalError: true }`** để không toast trùng khi bật bộ xử lý toàn cục: `HealthIndicator` (chấm đỏ), `CategoryNav` (menu thu gọn khi lỗi), truy vấn và mutation lưu của `/dashboard/categories` (khối `role="alert"` trên trang, lỗi dưới từng ô của `CategoryFormDialog`). Mutation tự khai báo `onError` (xóa danh mục) được bỏ qua tự động.
+- **`ImageUploader`** (đường XHR) cũng gửi `X-Correlation-ID`; lỗi mạng của XHR ném `TypeError` như `fetch` để `normalizeError` xếp vào nhóm `network`. `apiFetch` nhận thêm `FormData`/`Blob` (gửi nguyên) — tương thích ngược.
+- **Kiểm thử:** jsdom không có Fetch API mà `ky` cần → `frontend/test-utils/jsdom-fetch-environment.js` (jsdom + `Request`/`Response`/`Headers`/`AbortSignal`/`FormData` của Node; không thêm gói). 15 ca của `api-client.test.ts` Buổi 2 – 4 giữ nguyên tên và kỳ vọng, chỉ đổi lớp giả lập `fetch` (`ky` gửi `Request` thật). Tổng **180/180** Jest xanh.
+- **Kiểm chứng trên stack Docker thật** (Playwright + Edge, `http://localhost` qua Nginx): **22/22** — khách vào `/dashboard/system?tab=jobs` → `/auth/login?callbackUrl=%2Fdashboard%2Fsystem%3Ftab%3Djobs` → đăng nhập xong quay lại đúng trang; Author không thấy mục Admin, `/dashboard/media` hiện 403; dashboard có `noindex, nofollow`; mọi request `/api/v1` có `X-Correlation-ID` UUID khác nhau; 401 `AUTH_TOKEN_EXPIRED` → đúng 1 lần `/auth/refresh` thật rồi gửi lại với token mới; 429 `Retry-After: 30` → 1 lần gọi; 503 → 9 lần gọi (ky 3 × TanStack Query 3) trong 6,0 giây; `POST` 503 → 1 lần gọi; menu điện thoại 375 px; 404 có header/footer.
+- **Hook gitleaks không quét được trong git worktree** (Buổi 2): file `.git` của worktree trỏ tới `<repo chính>/.git/worktrees/<tên>`, đường dẫn đó không có trong container → gitleaks quét 0 byte nhưng vẫn trả 0 (đã thử: khóa giả đã stage vẫn lọt). `.githooks/pre-commit` nay gắn thêm thư mục `.git` chung và đặt `GIT_DIR`/`GIT_WORK_TREE`; thử lại: worktree có khóa giả → chặn (mã 1), worktree sạch → quét 740 byte, repo chính → chặn như cũ.
+- **First Load JS** (bản build production): lớn nhất `/dashboard/categories` **187 kB** ≤ 200 kB (NFR-PERF-005); trang công khai không đổi (`/` 106 kB, `/recipes` 113 kB).
 
 **3. Định hướng & lý do kiến trúc:**
 
