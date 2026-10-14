@@ -82,6 +82,17 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasIndex(r => r.CreatedAt).HasDatabaseName("IDX_Recipe_CreatedAt");
         builder.HasIndex(r => r.IsDeleted).HasDatabaseName("IDX_Recipe_IsDeleted").HasFilter("\"IsDeleted\" = false");
 
+        // NFR-PERF-004 / MT-26 (Buổi 5 — Dev 3): ba composite index THEO HÌNH DẠNG TRUY VẤN THẬT (mọi truy vấn danh sách lọc
+        // Status = Published trước rồi mới sắp xếp), thay cho một loạt index đơn cột. Chứng minh bằng EXPLAIN ANALYZE — docs/explain-analyze-b5.md.
+        builder.HasIndex(r => new { r.IsDeleted, r.Status, r.PublishedAt })
+            .IsDescending(false, false, true)
+            .HasDatabaseName("IDX_Recipe_List");
+        builder.HasIndex(r => new { r.Status, r.CategoryId, r.PublishedAt })
+            .IsDescending(false, false, true)
+            .HasDatabaseName("IDX_Recipe_ByCategory");
+        builder.HasIndex(r => new { r.Status, r.CookTimeMinutes })
+            .HasDatabaseName("IDX_Recipe_CookTime");
+
         // FR-SRCH-001 / MT-25 (Buổi 4 — Dev 3): generated column STORED, không trigger — PostgreSQL tự tính lại khi Title hoặc
         // Description đổi, không có đường code nào quên đồng bộ. GIN index cho toán tử @@.
         builder.Property<NpgsqlTsVector>(SearchVectorColumn)

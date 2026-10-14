@@ -1,15 +1,25 @@
 import { apiFetch } from '@/lib/api-client';
-import type { Category, CategoryDetail } from '@/types/category';
+import type { Category, CategoryDetail, CategoryDetailParams } from '@/types/category';
+import { DEFAULT_PAGE_SIZE } from '@/types/search';
 
 /** FR-CAT-001 – dữ liệu revalidate mỗi 3600s (SRS §5.1). Backend cache Redis 60 phút. */
 export function getCategories() {
   return apiFetch<Category[]>('/categories', { next: { revalidate: 3600, tags: ['categories'] } });
 }
 
-/** FR-CAT-002 – dữ liệu revalidate mỗi 600s (SRS §5.1). */
-export function getCategoryBySlug(slug: string, page = 1, pageSize = 12) {
-  return apiFetch<CategoryDetail>(
-    `/categories/${encodeURIComponent(slug)}?page=${page}&pageSize=${pageSize}`,
-    { next: { revalidate: 600, tags: ['categories', `category:${slug}`] } },
-  );
+/**
+ * FR-CAT-002 – SSR + Data Cache `revalidate: 120` (SRS §5.1 / MT-57: thời gian tái sinh ≤ TTL cache API
+ * `categories:detail` = 2 phút). SRS §8.2: chỉ nhận page, pageSize, sortBy, sortOrder.
+ */
+export function getCategoryBySlug(slug: string, params: CategoryDetailParams = {}) {
+  const query = new URLSearchParams({
+    page: String(params.page ?? 1),
+    pageSize: String(params.pageSize ?? DEFAULT_PAGE_SIZE),
+  });
+  if (params.sortBy) query.set('sortBy', params.sortBy);
+  if (params.sortOrder) query.set('sortOrder', params.sortOrder);
+
+  return apiFetch<CategoryDetail>(`/categories/${encodeURIComponent(slug)}?${query.toString()}`, {
+    next: { revalidate: 120, tags: ['categories', `category:${slug}`] },
+  });
 }

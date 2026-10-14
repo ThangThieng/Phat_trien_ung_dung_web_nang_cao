@@ -45,14 +45,12 @@ describe('GET /api/health', () => {
   });
 
   it('Degraded (MinIO lỗi) vẫn là 200 — không phải sự cố khiến ngừng phục vụ', async () => {
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue(
-        jsonResponse(200, {
-          status: 'Degraded',
-          entries: { minio: { status: 'Degraded', tags: [] } },
-        }),
-      );
+    global.fetch = jest.fn().mockResolvedValue(
+      jsonResponse(200, {
+        status: 'Degraded',
+        entries: { minio: { status: 'Degraded', tags: [] } },
+      }),
+    );
 
     const response = await GET();
 
