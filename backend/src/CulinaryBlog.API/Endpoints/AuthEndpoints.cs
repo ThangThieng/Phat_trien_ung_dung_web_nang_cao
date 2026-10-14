@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CulinaryBlog.API.Extensions;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Auth;
 using MediatR;
@@ -10,7 +11,8 @@ public static class AuthEndpoints
 {
     public static RouteGroupBuilder MapAuthEndpoints(this RouteGroupBuilder api)
     {
-        var group = api.MapGroup("/auth").WithTags("Auth");
+        var group = api.MapGroup("/auth").WithTags("Auth")
+            .WithMetadata(new SecurityRateLimitMetadata(SecurityRateLimits.Auth));
 
         group.MapPost("/register", RegisterAsync)
             .WithName("Register")

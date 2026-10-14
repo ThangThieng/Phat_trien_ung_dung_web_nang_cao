@@ -1,3 +1,4 @@
+using CulinaryBlog.API.Extensions;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Infrastructure.Storage;
 using Microsoft.AspNetCore.Hosting;
@@ -62,6 +63,9 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
         builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(settings));
         builder.ConfigureTestServices(services =>
         {
+            // Regression fixtures intentionally make many auth requests from one IP.
+            // Security tests opt back into the real production limiter in their isolated host.
+            services.PostConfigure<SecurityRateLimitingOptions>(options => options.Enabled = false);
             var initializer = services.Single(descriptor => descriptor.ServiceType == typeof(IHostedService) &&
                 descriptor.ImplementationType == typeof(MinioBucketInitializer));
             services.Remove(initializer);
