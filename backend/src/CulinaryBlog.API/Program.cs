@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using CulinaryBlog.API.Endpoints;
 using CulinaryBlog.API.Extensions;
-using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Services;
 using CulinaryBlog.Application;
 using CulinaryBlog.Application.Common.Exceptions;
@@ -31,7 +30,9 @@ if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath
 }
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTrustedForwardedHeaders(builder.Configuration);
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddUrlSegmentVersioning();
 builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 {
     // Body vượt RequestSizeLimit (> 10MB) bị chặn trước khi tới handler → vẫn trả Application Error Code (Phụ lục B)
@@ -42,8 +43,9 @@ builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
     }
 });
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddSecurityRateLimiting(builder.Configuration);
 builder.Services.AddCulinaryOutputCache(builder.Configuration);
-builder.Services.AddOpenApi();
+builder.Services.AddVersionedOpenApi();
 
 builder.Services.ConfigureHttpJsonOptions(o =>
 {
@@ -52,10 +54,7 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 });
 
 // NFR-SEC-005: CORS chỉ cho phép origin cấu hình (không wildcard)
-builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
-    .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
-    .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-    .WithHeaders("Content-Type", "Authorization", "X-Correlation-ID")));
+builder.Services.AddSecurityCors(builder.Configuration);
 
 var app = builder.Build();
 
@@ -88,11 +87,7 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
     }
 }
 
-app.UseMiddleware<GlobalExceptionMiddleware>();
-app.UseStatusCodePages();
-app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseRequestSecurity();
 app.UseOutputCache();
 
 if (app.Environment.IsDevelopment())
@@ -104,10 +99,19 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.API", version = "v1", docs = "/scalar" }))
     .ExcludeFromDescription();
 
-var api = app.MapGroup("/api/v1");
+var api = app.MapV1Api()
+    .ProducesProblem(StatusCodes.Status429TooManyRequests);
 api.MapAuthEndpoints();
+api.MapUsersEndpoints();
 api.MapCategoriesEndpoints();
 api.MapRecipesEndpoints();
 api.MapFilesEndpoints();
 
 await app.RunAsync().ConfigureAwait(false);
+
+public partial class Program
+{
+    protected Program()
+    {
+    }
+}

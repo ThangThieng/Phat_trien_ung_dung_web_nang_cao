@@ -10,6 +10,8 @@ public interface ICurrentUser
     bool IsAdmin { get; }
 
     string? IpAddress { get; }
+
+    string? SessionId { get; }
 }
 
 public static class Roles

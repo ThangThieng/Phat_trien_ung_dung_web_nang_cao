@@ -59,12 +59,15 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CulinaryBlogDbContext>());
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
     }
 
     private static void AddIdentity(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddOptions<GoogleAuthOptions>().Bind(configuration.GetSection(GoogleAuthOptions.SectionName));
+
         services.AddOptions<JwtOptions>()
             .Bind(configuration.GetSection(JwtOptions.SectionName))
             .ValidateDataAnnotations()

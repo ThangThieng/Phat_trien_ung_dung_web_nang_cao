@@ -1,5 +1,7 @@
+using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Domain.Common;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +47,9 @@ public sealed partial class GlobalExceptionMiddleware(
     {
         switch (exception)
         {
+            case AuthDomainException auth:
+                return AuthExceptionMappings.ToProblem(auth, context.Request.Path);
+
             case AppException app:
                 var appProblem = new ProblemDetails
                 {
@@ -68,9 +73,10 @@ public sealed partial class GlobalExceptionMiddleware(
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).Distinct().ToArray());
                 return new ValidationProblemDetails(errors)
                 {
-                    Type = ErrorCodes.ValidationError,
+                    Type = validation.Errors.All(error => error.ErrorCode == ErrorCodes.AuthGoogleTokenInvalid)
+                        ? ErrorCodes.AuthGoogleTokenInvalid : ErrorCodes.ValidationError,
                     Title = "Dữ liệu không hợp lệ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = "Một hoặc nhiều trường không hợp lệ. Xem \"errors\".",
                     Instance = context.Request.Path,
                 };
@@ -80,7 +86,7 @@ public sealed partial class GlobalExceptionMiddleware(
                 {
                     Type = ErrorCodes.ValidationError,
                     Title = "Vi phạm quy tắc nghiệp vụ",
-                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Status = StatusCodes.Status400BadRequest,
                     Detail = domain.Message,
                     Instance = context.Request.Path,
                 };

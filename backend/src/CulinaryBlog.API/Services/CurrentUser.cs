@@ -13,4 +13,6 @@ public sealed class CurrentUser(IHttpContextAccessor accessor) : ICurrentUser
     public bool IsAdmin => accessor.HttpContext?.User.IsInRole(Roles.Admin) == true;
 
     public string? IpAddress => accessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+
+    public string? SessionId => IsAuthenticated ? accessor.HttpContext?.User.FindFirst("sid")?.Value : null;
 }
