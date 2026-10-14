@@ -80,6 +80,8 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
     }
   });
 
+  const submitLabel = isSubmitting ? 'Đang lưu…' : (recipe && 'Lưu thay đổi') || 'Lưu nháp & tiếp tục';
+
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
       {errors.root && (
@@ -233,7 +235,7 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
         disabled={isSubmitting}
         className="self-end rounded-lg bg-orange-600 px-5 py-2.5 font-semibold text-white transition hover:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
       >
-        {isSubmitting ? 'Đang lưu…' : recipe ? 'Lưu thay đổi' : 'Lưu nháp & tiếp tục'}
+        {submitLabel}
       </button>
     </form>
   );

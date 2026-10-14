@@ -3,12 +3,17 @@ using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Configurations;
 
 /// <summary>SRS §7.2 – "Recipes" (Aggregate Root) + Owned Entity RecipeNutrition (§7.2.1).</summary>
 internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
 {
+    public const string SearchVectorColumn = "SearchVector";
+    public const string TextSearchConfig = "simple";
+    public const string SearchVectorSql = "to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))";
+
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
         builder.ToTable("Recipes", t =>
@@ -67,6 +72,8 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasIndex(r => r.PublishedAt).HasDatabaseName("IDX_Recipe_PublishedAt");
         builder.HasIndex(r => r.CreatedAt).HasDatabaseName("IDX_Recipe_CreatedAt");
         builder.HasIndex(r => r.IsDeleted).HasDatabaseName("IDX_Recipe_IsDeleted").HasFilter("\"IsDeleted\" = false");
+        builder.Property<NpgsqlTsVector>(SearchVectorColumn).HasColumnType("tsvector").HasComputedColumnSql(SearchVectorSql, stored: true);
+        builder.HasIndex(SearchVectorColumn).HasMethod("GIN").HasDatabaseName("IDX_Recipe_Search");
     }
 }
 

@@ -53,4 +53,18 @@ public class ValidatorTests
             Assert.Equal(descending, actualDescending);
         }
     }
+
+    [Theory]
+    [InlineData("Phở  bò!", "pho:* & bo:*")]
+    [InlineData("pho:* | !bo", "pho:* & bo:*")]
+    [InlineData("!!", "")]
+    public void SearchTermBuilder_NormalizesVietnameseAndOperators(string input, string expected) =>
+        Assert.Equal(expected, SearchTermBuilder.Build(input));
+
+    [Theory]
+    [InlineData("", false)]
+    [InlineData("p", false)]
+    [InlineData("phở", true)]
+    public void SearchRecipes_QueryRequiresAtLeastTwoCharacters(string q, bool valid) =>
+        Assert.Equal(valid, new SearchRecipesQueryValidator().Validate(new SearchRecipesQuery(q)).IsValid);
 }

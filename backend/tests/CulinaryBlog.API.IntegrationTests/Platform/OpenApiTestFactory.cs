@@ -29,6 +29,7 @@ public sealed class OpenApiTestFactory : WebApplicationFactory<Program>
         builder.UseSetting("Hangfire:WorkerOnly", "false");
         builder.UseSetting("Hangfire:RegisterRecurringJobs", "false");
         builder.UseSetting("Hangfire:DashboardGateSecret", "openapi-test-gate");
+        builder.UseSetting("Hangfire:DashboardEnabled", "false");
         builder.UseSetting("OpenApi:Enabled", "true");
         builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
     }
