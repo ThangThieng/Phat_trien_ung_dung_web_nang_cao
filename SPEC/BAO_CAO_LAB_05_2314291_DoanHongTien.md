@@ -2,10 +2,58 @@
 
 **Dev 3:** Đoàn Hồng Tiến — MSSV 2314291 — Nhóm 20 — Kỹ sư Nội dung (Category / Recipe read / Search)
 **Nhánh:** [`2314291_DoanHongTien_buoiso5`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/tree/2314291_DoanHongTien_buoiso5) — tách từ nhánh Buổi 4 vì `develop` chưa có code Buổi 3–4. **PR vào `develop`:** mở sau khi PR Buổi 4 (#41) được merge và nhánh đã rebase lên `develop`.
-**Phạm vi (KE_HOACH_PHAT_TRIEN_8_BUOI.md — Buổi 5, Dev 3):** giao diện FR-SRCH-001 (thanh tìm kiếm + trang `/search`), giao diện FR-SRCH-002/003/004 (`FilterPanel`, `SortSelect`, `Pagination` đồng bộ URL) kèm **retrofit D-10 phía FE**, composite index + `EXPLAIN ANALYZE` (NFR-PERF-004).
-**Tài liệu bám sát:** `SPEC/SRS_Culinary_Blog_v1.2.2.md` (§3.4 FR-SRCH, §5.1, §7.2, §8.2, §8.3, NFR-PERF-004) và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (MT-01, MT-26, MT-57; §4 D-10).
+**Phạm vi (KE_HOACH_PHAT_TRIEN_8_BUOI.md — Buổi 5, Dev 3, dòng 1916–1986):** **Phần A (Lab 5)** chuẩn hóa cấu trúc Frontend, quy tắc lint, kiểu Category/Search, test hợp đồng; **Phần B** giao diện FR-SRCH-001 (thanh tìm kiếm + trang `/search`), giao diện FR-SRCH-002/003/004 (`FilterPanel`, `SortSelect`, `Pagination` đồng bộ URL) kèm **retrofit D-10 phía FE**, composite index + `EXPLAIN ANALYZE` (NFR-PERF-004).
+**Tài liệu bám sát:** `SPEC/SRS_Culinary_Blog_v1.2.3.md` (§3.4 FR-SRCH, §5.1, §7.2, §8.2, §8.3, NFR-PERF-004) và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (MT-01, MT-26, MT-57; §4 D-10).
 
 ---
+
+## 0. PHẦN A — Yêu cầu tối thiểu Lab 5 (làm bổ sung 14/10/2026)
+
+**1. Tính năng & mã yêu cầu:** CONS-003 (Next.js App Router) · SRS §2.4.2, §6.1 · hợp đồng SRS §8.2 (Category) và FR-SRCH-001 → 004 (Search) cho phần kiểu.
+
+**Thứ tự đã làm:** (1) gộp `origin/develop` (SRS v1.2.3 + kế hoạch mới) vào nhánh, rồi gộp commit nền `b9acca2` của Dev 4 (hai file `types/category.ts`, `types/search.ts` do Dev 4 tách sẵn) — sửa trên chính các file đó, không tạo mới; (2) làm 5 hạng mục; (3) chạy `typecheck`, `lint`, `test`, `build`.
+
+| # | Hạng mục (kế hoạch) | Kết quả |
+|---|---|---|
+| A1 | Không khởi tạo lại Next.js; ghi hiện trạng vào `frontend/README.md` mục *Kiến trúc Frontend* | ✅ Đối chiếu `package.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs` rồi mới ghi |
+| A2 | `git mv` `FormField`, `ImageUploader`, `Pagination`, `RecipeGridSkeleton` → `components/shared/`; `hooks/` có `use-debounced-value.ts`, `use-media-query.ts`; quy tắc `stores/` | ✅ `components/ui/` để trống (`.gitkeep`) cho shadcn; hook tách từ `SearchBar` / `FilterPanel`; quy tắc ở README + `stores/README.md` |
+| A3 | ESLint `import/no-restricted-paths` theo bảng 4 dòng | ✅ Bắt được import cố ý sai chiều `lib/` → `features/`, đã xóa file thử |
+| A4 | Hoàn thiện `types/category.ts`, `types/search.ts` (chuyển từ `search-params.ts`) | ✅ Đổi `SortField` → `SortBy`; `admin-api.ts` dùng `CreateCategoryRequest`/`UpdateCategoryRequest` |
+| A5 | `category-contract.test.ts`, `search-contract.test.ts`; build xanh | ✅ 12 test hợp đồng; `typecheck` / `lint` / `jest` 127 / `build` xanh |
+
+**Quy tắc phụ thuộc (ESLint `import/no-restricted-paths`, chạy mỗi lần `npm run lint`):**
+
+| Thư mục | Không được import từ |
+|---|---|
+| `types/` | mọi thư mục khác (chỉ import lẫn nhau trong `types/`) |
+| `lib/` | `app`, `components`, `features`, `stores`, `hooks` |
+| `components/ui/` | `app`, `features`, `stores` |
+| `features/*`, `components/*`, `hooks/`, `stores/` | `app/` |
+
+### Điểm lệch giữa kế hoạch và thực tế (đã xử lý, cần nhóm biết)
+
+| # | Kế hoạch ghi | Thực tế | Cách xử lý |
+|---|---|---|---|
+| 1 | `RecipeSearchResult = PagedResult<RecipeSummary>` | `RecipeSearchResultDto` (backend) và SRS §8.3 trả thêm `relevanceScore` mỗi phần tử | `RecipeSearchHit extends RecipeSummary { relevanceScore }`, `RecipeSearchResult = PagedResult<RecipeSearchHit>`; test hợp đồng khóa điều này |
+| 2 | Test so với `docs/api/openapi.v1.json` của Dev 2 | File chưa có trong repo | Helper so với openapi **nếu file tồn tại**; nếu không thì đọc khai báo `record` C# trong `backend/`; không có nguồn nào thì test tự bỏ qua. Khi Dev 2 đưa file vào, test tự dùng nó |
+| 3 | README: "Jest + Testing Library, **Playwright**" | Chỉ có gói `@playwright/test` + script `npm run e2e`; **không có** `playwright.config.*` và `e2e/` | README ghi đúng hiện trạng (chưa cấu hình), không ghi sai |
+| 4 | "Chờ commit nền `b9acca2` vào `develop`" | `b9acca2` mới nằm trên nhánh `2312755_NguyenThangThieng_buoiso5` | Gộp thẳng `b9acca2` vào nhánh này nên nhánh mang theo cả các commit Buổi 4/5 nằm dưới nó; khi Dev 4 gộp vào `develop` trước (§2.4) sẽ không còn xung đột |
+
+### Chưa kiểm chứng được trong môi trường của tôi
+
+- `npm run build`: môi trường không tải được Google Fonts (`Inter`) nên build chỉ chạy được khi thay tạm font ở **bản sao** thư mục tạm (code trong repo không đổi); kết quả xanh, 11 route. Cần chạy lại `docker compose --profile dev up -d --build frontend` trên máy có mạng.
+- Hành vi trình duyệt của hai hook mới (`useDebouncedValue` trong `SearchBar`, `useMediaQuery` trong `FilterPanel`) được phủ bởi jest/tsc/lint, **chưa** chạy lại 23 kịch bản Playwright của phần B sau khi tách hook.
+
+### Commit (phần A)
+
+1. [`4d63685`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/4d63685) — gộp commit nền `b9acca2` của Dev 4 (đã gộp `origin/develop` ở `787c5c8`)
+2. [`4de3141`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/4de3141) — `refactor(frontend): standardize app/components/lib/stores/types/hooks structure with lint-enforced import boundaries and category & search types`
+
+**Vì sao không "khởi tạo dự án" và giữ `features/`:** `create-next-app` sẽ ghi đè `package.json`, `tsconfig.json`, `next.config.ts`, cấu hình ESLint Airbnb và xóa code Buổi 2–5 (xung đột X-9 §3); mục tiêu thật — một dự án Next.js 15 + TS + Tailwind có cấu trúc rõ — đạt bằng chuẩn hóa và **chứng minh bằng quy tắc lint**. `features/{module}` gom API, component, schema của một module, trùng ranh giới phân công 4 dev; sáu thư mục còn lại chứa phần dùng chung. `components/ui/` dành riêng cho shadcn vì Windows/macOS không phân biệt hoa thường: `Pagination.tsx` và `pagination.tsx` (shadcn, Buổi 6) là cùng một file.
+
+---
+
+# PHẦN B — Search UI, bộ lọc, composite index (đã hoàn thành trước 12/10/2026)
 
 ## 1. Tóm tắt công việc
 
@@ -49,7 +97,7 @@ Ba truy vấn còn Seq Scan trước B5 đều chuyển sang dùng index; cả b
 | `FilterPanel` | `.../FilterPanel.tsx` | `/recipes`: danh mục, độ khó (4 mức), thời gian nấu, chuẩn bị, khẩu phần. `/search`: chỉ danh mục + độ khó (SRS §8.3). Dưới `lg` là drawer (Escape/nền/nút đóng), có badge số bộ lọc |
 | `SortSelect` | `.../SortSelect.tsx` | Hai dropdown cột/chiều ↔ `sortBy`/`sortOrder` (whitelist 5 cột) |
 | Highlight | `features/recipes/highlight.ts`, `HighlightText.tsx`, `RecipeCard.tsx` (prop `terms`) | So khớp không dấu (`pho` tô `Phở`), khớp tiền tố như `pho:*` ở backend |
-| Lớp gọi API | `features/recipes/api.ts`, `features/categories/api.ts` | `searchRecipes`, `toRecipeListParams`; kiểu `RecipeSearchResult` trong `types/api.ts` |
+| Lớp gọi API | `features/recipes/api.ts`, `features/categories/api.ts` | `searchRecipes`, `toRecipeListParams`; kiểu `RecipeSearchResult` (nay ở `types/search.ts`, sau phần A) |
 
 Phạm vi bộ lọc theo từng trang bám đúng hợp đồng API của SRS: `/recipes` đủ 5 bộ lọc + sort (§8.3); `/search` chỉ `categoryId`, `difficulty` và xếp theo `ts_rank` nên không có sắp xếp (§8.3); `/categories/[slug]` chỉ `sortBy`/`sortOrder` (§8.2). **Không mở rộng API** ngoài SRS.
 
@@ -78,7 +126,7 @@ Phạm vi bộ lọc theo từng trang bám đúng hợp đồng API của SRS: 
 | Migration B1 → B5 trên database trống + `HasPendingModelChanges()` | ✅ áp dụng đủ 5 migration; `False` (snapshot sửa tay khớp model) |
 | `PerformanceSeeder` qua API thật | ✅ "đã tạo 10000 công thức mẫu hiệu năng"; 10.100 bản ghi, 8.523 Published |
 | `EXPLAIN ANALYZE` 10 truy vấn thật | ✅ sau B5 không còn Seq Scan trên `Recipes` |
-| Frontend `tsc --noEmit` / `npm run lint` / `jest` | ✅ không lỗi / không lỗi / 52 test đạt |
+| Frontend `tsc --noEmit` / `npm run lint` / `jest` | ✅ không lỗi / không lỗi / 52 test đạt (khi làm phần B); sau phần A: 127 test đạt, `next build` xanh |
 | Trình duyệt thật (Playwright + Chromium, `next dev` nối API thật) | ✅ 23 kiểm tra đạt — xem mục 6.1 |
 
 ### 6.1 Kiểm tra giao diện bằng trình duyệt
