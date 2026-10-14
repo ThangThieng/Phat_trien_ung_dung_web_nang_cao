@@ -8,8 +8,8 @@
 
 | Thuộc tính | Giá trị |
 | --- | --- |
-| Phiên bản tài liệu | 1.2.2 |
-| Ngày phát hành | 29/09/2026 |
+| Phiên bản tài liệu | 1.2.3 |
+| Ngày phát hành | 12/10/2026 |
 | Trạng thái | Đã duyệt (Approved) |
 | Công nghệ Backend | .NET 10 Minimal APIs, C# |
 | Công nghệ Frontend | Next.js App Router, TypeScript |
@@ -25,6 +25,7 @@
 
 | Phiên bản | Ngày | Tác giả / Vai trò | Nội dung thay đổi | Trạng thái |
 | --- | --- | --- | --- | --- |
+| 1.2.3 | 12/10/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-05** (MT-64 → MT-68), phát sinh khi lập kế hoạch cho **yêu cầu tối thiểu Lab 5 → Lab 8** của giảng viên: (1) bổ sung **FR-AUTH-010** Đổi mật khẩu và **FR-AUTH-011** Quên & đặt lại mật khẩu qua email — tổng FR 37 → **39**; (2) bổ sung **3 endpoint** `POST /auth/change-password`, `POST /auth/forgot-password`, `POST /auth/reset-password` — Chương 8: 45 → **48 endpoint**; (3) bổ sung **1 mã lỗi** `AUTH_PASSWORD_RESET_TOKEN_INVALID` (400) — Phụ lục B 29 → **30 mã**, và mã HTTP 202 ở Phụ lục A; (4) `GET /recipes/search` nhận thêm `maxCookTime`, `maxPrepTime`, `minServings` (tùy chọn, tương thích ngược); (5) NFR-SEC-007 cấm ghi log token đặt lại mật khẩu; §5.1 thêm hai route `/auth/forgot-password`, `/auth/reset-password`; (6) **CSP dùng nonce (NFR-SEC-005) buộc mọi trang HTML render động** — §5.1 đổi `/`, `/recipes/[slug]`, `/categories` từ ISR sang **SSR + Data Cache** với cùng giá trị `revalidate` (MT-67, đã kiểm chứng thực nghiệm trên Next.js 15.5.25); (7) §5.2 bổ sung `If-Match` vào `Access-Control-Allow-Headers` và danh sách `Access-Control-Expose-Headers` (MT-68). Không đổi schema. | Đã duyệt (Approved) |
 | 1.2.2 | 29/09/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-04** (MT-59 → MT-63), phát sinh khi lập kế hoạch cho hai yêu cầu của giảng viên — Buổi 3 *"cài đặt domain exceptions, repository & Unit of Work, middleware Problem Details"* và Buổi 4 *"hoàn thành việc cài đặt tất cả API endpoints"*: (1) bổ sung **2 mã lỗi** `AUTH_USER_NOT_FOUND` (404) và `CONCURRENCY_CONFLICT` (409) — Phụ lục B 27 → **29 mã**; (2) bổ sung **1 endpoint** `GET /recipes/mine/{id}` để trang sửa công thức đọc được bản nháp — Chương 8: 44 → **45 endpoint**; (3) làm rõ 2 chỗ tự mâu thuẫn (`AUTH_GOOGLE_TOKEN_INVALID` 400/401; `categoryId` không tồn tại → 400); (4) errata §6.2: interface truy cập dữ liệu thuộc tầng Application, `ApplicationUser` thuộc Infrastructure. Không thay đổi FR, schema hay hành vi của endpoint đang chạy. | Đã duyệt (Approved) |
 | 1.2.1 | 21/09/2026 | Principal Systems Architect | Change Request **CR-2026-03** (MT-58): cập nhật §2.6.1 theo yêu cầu của giảng viên cho Buổi 2 — dữ liệu mẫu có **ít nhất 20 danh mục, 100 công thức; mỗi công thức ít nhất 10 nguyên liệu và 5 bước chế biến** (trước đây: 50 công thức, 5 tác giả). Không thay đổi FR, endpoint, mã lỗi hay schema. | Đã duyệt (Approved) |
 | 1.2.0 | 19/09/2026 | Principal Systems Architect | Change Request **CR-2026-02**: đối chiếu SRS v1.1.0 với code Buổi 2 đang chạy trên `main`, xử lý 16 mâu thuẫn mới (MT-42 → MT-57) — sửa 3 lỗi kỹ thuật trong chính v1.1.0 (cấu hình Nginx gây 502, lệnh healthcheck không chạy được, mã lỗi Admin tự khóa), chuẩn hóa hình dạng response phân trang, chính thức hóa endpoint upload tệp, bổ sung `FR-AUTH-009` Quản lý phiên và 7 endpoint, chuẩn hóa topology Hangfire worker, làm rõ cơ chế khôi phục dữ liệu và nơi lưu token phía Frontend. | Đã duyệt (Approved) |
@@ -34,7 +35,7 @@
 | 0.8.0 | 05/05/2026 | Senior BA | Hoàn thiện Chương 3 (FR), bổ sung FR-FILE, FR-JOB, FR-OBS. | Draft |
 | 0.5.0 | 15/04/2026 | Senior BA | Phác thảo ban đầu: Chương 1–4 (skeleton). | Draft |
 
-**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.2 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-04**, kế thừa toàn bộ quyết định của **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G).
+**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.3 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-05**, kế thừa toàn bộ quyết định của **CR-2026-04** (v1.2.2), **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G).
 
 **Phạm vi CR-2026 (v1.1.0):** xử lý toàn bộ 41 điểm mâu thuẫn/bất nhất (MT-01 → MT-41) được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi quyết định đều được chọn theo tiêu chí **kiến trúc dài hạn**: toàn vẹn dữ liệu (DDD/ràng buộc DB), cách ly bảo mật cache, giảm gánh nặng cho client, và chuẩn hóa RESTful API. Bảng truy vết đầy đủ 41 quyết định nằm tại **Phụ lục D**.
 
@@ -49,6 +50,13 @@
 - **(d)** mô tả tầng ở §6.2 lệch với chính ràng buộc "Domain không có NuGet".
 
 Bảng truy vết nằm tại **Phụ lục G**.
+
+**Phạm vi CR-2026-05 (v1.2.3):** giảng viên ban hành yêu cầu tối thiểu cho Lab 5 → Lab 8 (Buổi 5 → 8). Đối chiếu từng yêu cầu với v1.2.2, nhóm thấy:
+- **sáu điểm** Lab mô tả cách làm khác SRS (thuật toán rate limit, nơi lưu token, quyền gọi `GET /users`, thư viện gọi API…) — giải quyết **theo SRS**, không đổi tài liệu (ghi ở `SRS_MAU_THUAN_VA_GIAI_PHAP.md` §5);
+- **ba chức năng** Lab đòi mà SRS chưa có — đưa vào SRS qua CR này (MT-64 → MT-66): đổi mật khẩu, quên/đặt lại mật khẩu, và bộ lọc thời gian cho tìm kiếm toàn văn;
+- **hai lỗi kỹ thuật của chính SRS** lộ ra khi thiết kế phần bảo mật API (Lab 5) và Zustand store + CSP (Lab 6) — MT-67, MT-68: CSP dùng nonce không thể đi cùng ISR, và danh sách header CORS thiếu những header mà §8.3, §5.2 tự dùng.
+
+Bảng truy vết nằm tại **Phụ lục H**.
 
 ---
 
@@ -87,6 +95,7 @@ Bảng truy vết nằm tại **Phụ lục G**.
 - [Phụ lục E – Bảng Truy vết Quyết định CR-2026-02](#phụ-lục-e--bảng-truy-vết-quyết-định-cr-2026-02)
 - [Phụ lục F – Bảng Truy vết Quyết định CR-2026-03](#phụ-lục-f--bảng-truy-vết-quyết-định-cr-2026-03)
 - [Phụ lục G – Bảng Truy vết Quyết định CR-2026-04](#phụ-lục-g--bảng-truy-vết-quyết-định-cr-2026-04)
+- [Phụ lục H – Bảng Truy vết Quyết định CR-2026-05](#phụ-lục-h--bảng-truy-vết-quyết-định-cr-2026-05)
 
 ---
 
@@ -127,7 +136,7 @@ Culinary Blog là một nền tảng web cho phép người dùng chia sẻ, kh�
 - **Tổ chức nội dung:** Phân loại công thức theo danh mục (Category), độ khó (Difficulty Level), thời gian chuẩn bị và nấu.
 - **Tìm kiếm thông minh:** Full-Text Search tiếng Việt sử dụng PostgreSQL `tsvector`/`tsquery` với `unaccent` extension.
 - **Bảo mật đa lớp:** Xác thực JWT stateless, phân quyền theo vai trò (RBAC) và theo tài nguyên (Resource-Based Authorization), đăng nhập Google OAuth 2.0.
-- **Tối ưu hiệu năng và SEO:** Redis distributed cache, Next.js ISR, Open Graph Protocol, JSON-LD Schema.org Recipe markup.
+- **Tối ưu hiệu năng và SEO:** Redis distributed cache, Data Cache của Next.js (`fetch` với `revalidate` theo TTL), Open Graph Protocol, JSON-LD Schema.org Recipe markup.
 - **Quan sát hệ thống:** Structured logging (Serilog), distributed tracing (OpenTelemetry), health check endpoints.
 
 #### 1.2.3. Những gì KHÔNG thuộc phạm vi
@@ -165,7 +174,7 @@ Các tính năng sau đây nằm ngoài phạm vi phiên bản 1.0.0:
 | CI/CD | Continuous Integration / Continuous Delivery – Tích hợp và triển khai liên tục. |
 | TTL | Time-To-Live – Thời gian sống của dữ liệu trong cache. |
 | SSR | Server-Side Rendering – Render HTML trên server. |
-| SSG | Static Site Generation – Tạo trang tĩnh lúc build time. *(Không sử dụng trong v1.1.0 — hệ thống dùng ISR/SSR/CSR, xem mục 5.1.)* |
+| SSG | Static Site Generation – Tạo trang tĩnh lúc build time. *(Không sử dụng — hệ thống dùng SSR kèm Data Cache và CSR, xem mục 5.1; từ v1.2.3 ISR chỉ còn ở `sitemap.xml` — MT-67.)* |
 | CSR | Client-Side Rendering – Render phía trình duyệt. |
 | Owned Entity | Thực thể phụ thuộc trong DDD, không có định danh/vòng đời độc lập; EF Core ánh xạ các cột của nó vào chính bảng của chủ sở hữu (ví dụ `RecipeNutrition`). |
 | MoSCoW | Must Have / Should Have / Could Have / Won't Have – Mô hình phân loại ưu tiên. |
@@ -203,18 +212,18 @@ Các tính năng sau đây nằm ngoài phạm vi phiên bản 1.0.0:
 
 ### 1.5. Tổng quan Tài liệu
 
-Tài liệu SRS này được tổ chức thành 8 chương chính và **5 phụ lục**, theo cấu trúc từ tổng quan đến chi tiết:
+Tài liệu SRS này được tổ chức thành 8 chương chính và **8 phụ lục**, theo cấu trúc từ tổng quan đến chi tiết:
 
 - **Chương 2 – Mô tả Tổng quan:** Bối cảnh sản phẩm, chức năng tóm tắt, các lớp người dùng, môi trường vận hành và ràng buộc thiết kế.
-- **Chương 3 – Yêu cầu Chức năng:** 37 FR được đặc tả chi tiết theo format chuẩn, nhóm thành 7 module chức năng.
+- **Chương 3 – Yêu cầu Chức năng:** 39 FR được đặc tả chi tiết theo format chuẩn, nhóm thành 7 module chức năng.
 - **Chương 4 – Yêu cầu Phi chức năng:** Hiệu năng, bảo mật, khả năng sử dụng, độ tin cậy, khả năng bảo trì/mở rộng và SEO.
 - **Chương 5 – Giao diện Ngoài:** Tích hợp với các hệ thống và dịch vụ ngoài (Google OAuth, MinIO, Redis, SMTP/MailKit).
 - **Chương 6 – Kiến trúc Hệ thống:** Clean Architecture Backend, Next.js App Router Frontend, chiến lược caching và deployment.
 - **Chương 7 – Mô hình Dữ liệu:** ERD mô tả văn bản và bảng định nghĩa chi tiết từng entity/table, kèm Bảng Giới hạn Dữ liệu Chuẩn (mục 7.9) là nguồn sự thật duy nhất cho mọi validator và cột DB.
-- **Chương 8 – Đặc tả API REST:** Quy ước, chuẩn lỗi RFC 7807, và bảng tổng hợp tất cả **45 endpoint** (37 của v1.1.0 + 7 bổ sung ở CR-2026-02 + 1 bổ sung ở v1.2.2).
-- **Phụ lục A–E:** HTTP Status Codes, Application Error Codes, Từ điển thuật ngữ, Bảng truy vết CR-2026 (v1.1.0) và Bảng truy vết CR-2026-02 (v1.2.0).
+- **Chương 8 – Đặc tả API REST:** Quy ước, chuẩn lỗi RFC 7807, và bảng tổng hợp tất cả **48 endpoint** (37 của v1.1.0 + 7 bổ sung ở CR-2026-02 + 1 bổ sung ở v1.2.2 + 3 bổ sung ở v1.2.3).
+- **Phụ lục A–H:** HTTP Status Codes, Application Error Codes, Từ điển thuật ngữ và các bảng truy vết Change Request: CR-2026 (v1.1.0), CR-2026-02 (v1.2.0), CR-2026-03 (v1.2.1), CR-2026-04 (v1.2.2), CR-2026-05 (v1.2.3).
 
-> **Cách đếm FR:** 37 FR được liệt kê ở bảng mục 2.2. Trong đó **26 FR** có mục đặc tả đầy đủ theo template chuẩn (FR-AUTH-001 → 009, FR-CAT, FR-RCP, FR-SRCH-001); **11 FR** (FR-SRCH-002/003/004, FR-FILE-001/002, FR-JOB-001/002/003, FR-OBS-001/002/003) được trình bày dạng bảng gộp vì nội dung ngắn — nhưng từ v1.1.0 tất cả đều **có đầy đủ mức ưu tiên MoSCoW**.
+> **Cách đếm FR:** 39 FR được liệt kê ở bảng mục 2.2. Trong đó **28 FR** có mục đặc tả đầy đủ theo template chuẩn (FR-AUTH-001 → 011, FR-CAT, FR-RCP, FR-SRCH-001); **11 FR** (FR-SRCH-002/003/004, FR-FILE-001/002, FR-JOB-001/002/003, FR-OBS-001/002/003) được trình bày dạng bảng gộp vì nội dung ngắn — nhưng từ v1.1.0 tất cả đều **có đầy đủ mức ưu tiên MoSCoW**.
 
 ---
 
@@ -262,11 +271,11 @@ Culinary Blog vận hành theo mô hình **API-Driven Architecture**, trong đó
 
 ### 2.2. Chức năng Sản phẩm Tổng quát
 
-Culinary Blog cung cấp 7 nhóm chức năng chính, được hiện thực hóa qua **37 Functional Requirements** chi tiết tại Chương 3:
+Culinary Blog cung cấp 7 nhóm chức năng chính, được hiện thực hóa qua **39 Functional Requirements** chi tiết tại Chương 3:
 
 | Nhóm chức năng | Mã nhóm | Số FR | Mô tả tóm tắt |
 | --- | --- | --- | --- |
-| Xác thực & Quản lý Người dùng | FR-AUTH | 9 | Đăng ký, đăng nhập (email + Google), JWT refresh token rotation, logout, quản lý profile, khóa/mở khóa tài khoản (Admin), quản lý phiên đăng nhập (FR-AUTH-009). |
+| Xác thực & Quản lý Người dùng | FR-AUTH | 11 | Đăng ký, đăng nhập (email + Google), JWT refresh token rotation, logout, quản lý profile, khóa/mở khóa tài khoản (Admin), quản lý phiên đăng nhập (FR-AUTH-009), đổi mật khẩu (FR-AUTH-010), quên & đặt lại mật khẩu qua email (FR-AUTH-011). |
 | Quản lý Danh mục | FR-CAT | 5 | CRUD danh mục công thức (Category) – phân quyền Admin. |
 | Quản lý Công thức nấu ăn | FR-RCP | 11 | CRUD recipe, publish/unpublish/archive/unarchive, quản lý ảnh/bước/nguyên liệu, danh sách công thức cá nhân (`/recipes/mine`). |
 | Tìm kiếm & Phân trang | FR-SRCH | 4 | Full-Text Search (PostgreSQL), filter, sort, offset pagination. |
@@ -280,8 +289,8 @@ Hệ thống định nghĩa 3 loại tác nhân (Actor) với quyền hạn khá
 
 | Vai trò | Mô tả | Điều kiện | Quyền hạn chính | Ưu tiên phục vụ |
 | --- | --- | --- | --- | --- |
-| Khách (Guest / Anonymous) | Người dùng chưa xác thực, truy cập ứng dụng mà không có tài khoản. | Không cần tài khoản | Xem danh sách & chi tiết recipe (Published), xem danh mục, tìm kiếm. KHÔNG được tạo/sửa/xóa. | Cao (đây là đại đa số người dùng) |
-| Tác giả (Author) | Người dùng đã đăng ký và xác thực thành công. Được tự động gán khi đăng ký. | Có tài khoản & JWT hợp lệ | + Tất cả quyền của Guest. + Tạo/sửa/xóa recipe CỦA MÌNH. + Upload ảnh, quản lý steps/ingredients. + Publish/Archive recipe của mình. + Xem và thu hồi các phiên đăng nhập của chính mình (FR-AUTH-009). | Cao (nhà sản xuất nội dung) |
+| Khách (Guest / Anonymous) | Người dùng chưa xác thực, truy cập ứng dụng mà không có tài khoản. | Không cần tài khoản | Xem danh sách & chi tiết recipe (Published), xem danh mục, tìm kiếm. Yêu cầu đặt lại mật khẩu qua email (FR-AUTH-011). KHÔNG được tạo/sửa/xóa. | Cao (đây là đại đa số người dùng) |
+| Tác giả (Author) | Người dùng đã đăng ký và xác thực thành công. Được tự động gán khi đăng ký. | Có tài khoản & JWT hợp lệ | + Tất cả quyền của Guest. + Tạo/sửa/xóa recipe CỦA MÌNH. + Upload ảnh, quản lý steps/ingredients. + Publish/Archive recipe của mình. + Xem và thu hồi các phiên đăng nhập của chính mình (FR-AUTH-009). + Đổi mật khẩu (FR-AUTH-010). | Cao (nhà sản xuất nội dung) |
 | Quản trị viên (Admin) | Người quản lý hệ thống với quyền cao nhất. Được gán thủ công qua database seeding. | Có tài khoản & role Admin | + Tất cả quyền của Author. + Quản lý (CRUD) danh mục. + Sửa/xóa bất kỳ recipe của bất kỳ Author. + Xem danh sách, khóa/mở khóa tài khoản người dùng (FR-AUTH-008). + Truy cập Hangfire Dashboard (bảo vệ ở tầng Nginx, xem mục 5.3). + Xem structured logs qua công cụ vận hành (Seq/Elastic — ngoài phạm vi ứng dụng). | Trung bình (số lượng ít) |
 
 **Ghi chú về phân quyền:** Hệ thống triển khai **2 tầng phân quyền** ở tầng ứng dụng.
@@ -380,7 +389,7 @@ Các ràng buộc sau đây là **bắt buộc và không thể thương lượn
 
 ## CHƯƠNG 3. YÊU CẦU CHỨC NĂNG CHI TIẾT
 
-Chương này đặc tả chi tiết **37 Functional Requirements (FR)** được nhóm thành 7 module chức năng. Mỗi FR được mô tả theo template chuẩn bao gồm: Mã yêu cầu, Tên, Nhóm chức năng, Tác nhân, Mức ưu tiên (MoSCoW), Mô tả, Điều kiện tiên quyết, Luồng chính, Luồng thay thế/Ngoại lệ, HTTP Endpoint, Kết quả mong đợi và HTTP Status Code.
+Chương này đặc tả chi tiết **39 Functional Requirements (FR)** được nhóm thành 7 module chức năng. Mỗi FR được mô tả theo template chuẩn bao gồm: Mã yêu cầu, Tên, Nhóm chức năng, Tác nhân, Mức ưu tiên (MoSCoW), Mô tả, Điều kiện tiên quyết, Luồng chính, Luồng thay thế/Ngoại lệ, HTTP Endpoint, Kết quả mong đợi và HTTP Status Code.
 
 **Quy ước mức ưu tiên MoSCoW:** M (Must Have – Bắt buộc), S (Should Have – Nên có), C (Could Have – Có thể có), W (Won't Have – Không trong scope hiện tại; xem danh sách "ngoài phạm vi" tại mục 1.2.3).
 
@@ -717,6 +726,77 @@ Module này quản lý toàn bộ vòng đời xác thực người dùng: từ 
 - **A2 – Phiên đã thu hồi trước đó:** HTTP 204 (idempotent).
 
 > **[CR-2026-02 / MT-45]** Yêu cầu này phát sinh từ lộ trình phát triển (Buổi 7) nhưng v1.1.0 **không có FR nào** đỡ — nếu hiện thực thẳng thì hệ thống sẽ có 3 endpoint không truy vết được về yêu cầu nào, phá vỡ nguyên tắc "SRS là nguồn sự thật". FR được đặt riêng (không gộp vào FR-AUTH-005 Đăng xuất) vì phạm vi khác nhau: FR-AUTH-005 thu hồi **phiên đang dùng**, còn FR này quản lý **mọi phiên trên mọi thiết bị**. Mức **C** được chọn có chủ đích để tuân thủ quy tắc MoSCoW của mục 3: cắt FR này không làm hỏng bất kỳ chức năng Must Have nào. Trả **404 cho phiên của người khác** để endpoint không thể bị dùng để dò id token hợp lệ.
+
+#### FR-AUTH-010: Đổi Mật khẩu
+
+| Trường | Nội dung |
+| --- | --- |
+| **Mã yêu cầu** | FR-AUTH-010 *(mới ở v1.2.3 — CR-2026-05 / MT-64)* |
+| **Tên yêu cầu** | Đổi Mật khẩu của Chính mình (Change Password) |
+| **Nhóm chức năng** | Module Xác thực và Quản lý Người dùng (FR-AUTH) |
+| **Tác nhân** | Người dùng đã đăng nhập (Author / Admin) |
+| **Mức ưu tiên (MoSCoW)** | M – Must Have *(yêu cầu tối thiểu Lab 7 của giảng viên)* |
+| **Mô tả** | Người dùng đã đăng nhập đổi mật khẩu bằng cách cung cấp mật khẩu hiện tại và mật khẩu mới. Sau khi đổi thành công, mọi phiên đăng nhập **khác** phiên hiện tại bị thu hồi — người dùng thường đổi mật khẩu vì nghi ngờ tài khoản bị lộ, nên phiên của kẻ đã đăng nhập trước đó không được phép tồn tại tiếp. |
+| **Điều kiện tiên quyết** | 1. JWT hợp lệ. 2. Tài khoản đã có mật khẩu (không phải tài khoản chỉ đăng nhập bằng Google). |
+| **HTTP Method & Endpoint** | `POST /api/v1/auth/change-password` |
+| **Request Body** | `{ "currentPassword": "string", "newPassword": "string" }` |
+| **Kết quả mong đợi** | Mật khẩu được cập nhật qua `UserManager.ChangePasswordAsync` (đổi luôn `SecurityStamp`); mọi `RefreshToken` còn hiệu lực của người dùng, **trừ** bản ghi có `Id` bằng claim `sid` của access token hiện tại, được gán `RevokedAt = DateTime.UtcNow` — trong cùng một transaction. |
+| **HTTP Status Code trả về** | `204 No Content` – Thành công. `400 Bad Request` – Mật khẩu hiện tại sai (`VALIDATION_ERROR`, lỗi ở trường `currentPassword`), mật khẩu mới không đạt chính sách NFR-SEC-001 hoặc trùng mật khẩu hiện tại (lỗi ở trường `newPassword`), hoặc tài khoản chưa có mật khẩu. `401 Unauthorized` – Thiếu/sai token. `429 Too Many Requests` – Vượt rate limit `/auth/*`. |
+
+**Luồng chính (Happy Path):**
+
+1. Client gửi `POST /api/v1/auth/change-password` kèm Bearer token và body.
+2. `ChangePasswordCommandValidator`: `newPassword` theo đúng `IdentityOptions.Password` (≥ 8 ký tự, đủ chữ hoa, chữ thường, số, ký tự đặc biệt); `newPassword ≠ currentPassword`.
+3. Handler lấy `UserId` và claim `sid` từ `ICurrentUser`; gọi `IIdentityService.ChangePasswordAsync(userId, currentPassword, newPassword)`.
+4. Trong cùng transaction: thu hồi mọi refresh token còn hiệu lực của người dùng, trừ phiên `sid`.
+5. Ghi audit log `SECURITY: password changed for user {UserId}, {RevokedCount} other sessions revoked` — **không** ghi mật khẩu (NFR-SEC-007). Trả 204.
+
+**Luồng thay thế / Ngoại lệ:**
+
+- **A1 – Mật khẩu hiện tại sai** (`IdentityError` mã `PasswordMismatch`): HTTP **400** `VALIDATION_ERROR` với `errors.currentPassword`. **Không** trả 401 — người gọi đã xác thực hợp lệ bằng access token; 401 sẽ khiến client hiểu nhầm là phiên hết hạn.
+- **A2 – Tài khoản chưa có mật khẩu** (chỉ đăng nhập bằng Google — `HasPasswordAsync == false`): HTTP **400** `VALIDATION_ERROR`, `detail` hướng dẫn dùng FR-AUTH-011 để đặt mật khẩu lần đầu.
+- **A3 – Access token không có claim `sid`** (token phát trước khi có claim này): thu hồi **mọi** phiên, kể cả phiên hiện tại; client đăng nhập lại.
+
+> **[CR-2026-05 / MT-64]** Yêu cầu tối thiểu Lab 7 của giảng viên có *"Đổi mật khẩu (`POST /api/v1/auth/change-password`)"*, trong khi v1.2.2 không có FR hay endpoint nào cho chức năng này. Đưa vào SRS qua Change Request thay vì thêm thẳng vào code, vì Chương 8 bị khóa bởi kiểm thử bề mặt API (`ApiSurfaceTests`) — endpoint không truy vết được về yêu cầu nào không được phép tồn tại. Giữ phiên hiện tại (nhờ claim `sid` của FR-AUTH-009) để người dùng không bị đăng xuất ngay trên thiết bị đang thao tác, nhưng mọi thiết bị khác phải đăng nhập lại.
+
+#### FR-AUTH-011: Quên Mật khẩu & Đặt lại Mật khẩu qua Email
+
+| Trường | Nội dung |
+| --- | --- |
+| **Mã yêu cầu** | FR-AUTH-011 *(mới ở v1.2.3 — CR-2026-05 / MT-65)* |
+| **Tên yêu cầu** | Quên Mật khẩu và Đặt lại Mật khẩu (Forgot / Reset Password) |
+| **Nhóm chức năng** | Module Xác thực và Quản lý Người dùng (FR-AUTH) |
+| **Tác nhân** | Guest (người dùng chưa đăng nhập) |
+| **Mức ưu tiên (MoSCoW)** | M – Must Have *(yêu cầu tối thiểu Lab 7 của giảng viên)* |
+| **Mô tả** | Người dùng quên mật khẩu nhập email; nếu email thuộc một tài khoản đang hoạt động, hệ thống gửi email chứa liên kết đặt lại mật khẩu. Liên kết mang token **dùng một lần, hiệu lực 30 phút**. Trang đích gửi token cùng mật khẩu mới để đặt lại. Phản hồi của bước 1 **không bao giờ cho biết email có tồn tại hay không**. Tài khoản chỉ đăng nhập bằng Google dùng chức năng này để đặt mật khẩu lần đầu. |
+| **Điều kiện tiên quyết** | 1. SMTP khả dụng qua `IEmailService` (MailKit; Mailhog ở môi trường dev — mục 5.3). 2. Khóa DataProtection dùng chung giữa container `api` và `hangfire` (mục 6.5) để token do worker sinh được API xác minh. |
+| **HTTP Method & Endpoint** | `POST /api/v1/auth/forgot-password` · `POST /api/v1/auth/reset-password` |
+| **Request Body** | Forgot: `{ "email": "string" }` · Reset: `{ "email": "string", "token": "string", "newPassword": "string" }` |
+| **Kết quả mong đợi** | Forgot: nếu tài khoản tồn tại và `IsActive = true` thì một job Hangfire được đưa vào hàng đợi với tham số **chỉ gồm `userId`** (và CorrelationId); worker sinh token bằng `UserManager.GeneratePasswordResetTokenAsync`, mã hóa Base64Url và gửi liên kết `{FrontendBaseUrl}/auth/reset-password?email={email}&token={token}`. Reset: mật khẩu được đặt qua `UserManager.ResetPasswordAsync` (đổi `SecurityStamp` → mọi token đặt lại đã phát trước đó mất hiệu lực); **mọi** refresh token của người dùng bị thu hồi; bộ đếm đăng nhập sai và thời điểm khóa tạm thời được xóa. |
+| **HTTP Status Code trả về** | Forgot: `202 Accepted` – **luôn luôn** khi request hợp lệ, kể cả email không tồn tại; `400` – email sai định dạng; `429` – vượt rate limit `/auth/*`. Reset: `204 No Content` – thành công; `400 Bad Request` – token sai định dạng, sai, hết hạn hoặc đã dùng, hoặc email không tồn tại (**cùng một mã `AUTH_PASSWORD_RESET_TOKEN_INVALID`**), hoặc mật khẩu mới không đạt chính sách (`VALIDATION_ERROR`); `403 Forbidden` – tài khoản đã bị Admin vô hiệu hóa (`AUTH_ACCOUNT_DISABLED`); `429`. |
+
+**Luồng chính (Happy Path):**
+
+1. Client gửi `POST /api/v1/auth/forgot-password` với `{ email }`. Validator kiểm định dạng email.
+2. Handler tìm người dùng theo email. Có và `IsActive` → `IBackgroundJobClient.Enqueue<PasswordResetEmailJob>(userId, correlationId)`. Trả **202** trong mọi trường hợp.
+3. Worker (`hangfire`) chạy `PasswordResetEmailJob`: nạp người dùng, sinh token, gửi email qua `IEmailService` với template đặt lại mật khẩu. Thử lại theo chính sách của FR-JOB-001 (1′/5′/30′). Log chỉ ghi `userId` và CorrelationId.
+4. Người dùng mở liên kết; trang `/auth/reset-password` (CSR) gửi `POST /api/v1/auth/reset-password` với `{ email, token, newPassword }`.
+5. Handler giải mã token Base64Url, tìm người dùng, kiểm `IsActive`, gọi `UserManager.ResetPasswordAsync`; trong cùng transaction thu hồi mọi refresh token, gọi `ResetAccessFailedCountAsync` và `SetLockoutEndDateAsync(null)`. Ghi audit log. Trả 204.
+
+**Luồng thay thế / Ngoại lệ:**
+
+- **A1 – Email không tồn tại hoặc tài khoản bị vô hiệu hóa (bước 2):** vẫn trả **202**, không đưa job nào vào hàng đợi — endpoint không thể bị dùng để dò xem email nào đã đăng ký (chống dò tài khoản – user enumeration).
+- **A2 – Token sai, hết hạn (> 30 phút), đã dùng, sai định dạng, hoặc email không khớp (bước 5):** HTTP **400** `AUTH_PASSWORD_RESET_TOKEN_INVALID` — một mã duy nhất cho mọi trường hợp, không cho biết trường hợp nào.
+- **A3 – Tài khoản bị Admin vô hiệu hóa sau khi email đã được gửi:** HTTP **403** `AUTH_ACCOUNT_DISABLED`.
+- **A4 – SMTP lỗi:** job thử lại theo lịch; request ở bước 1 đã trả 202 nên người dùng không bị chặn chờ.
+
+**Quy tắc bảo mật bắt buộc:**
+
+- Token đặt lại mật khẩu **không bao giờ** nằm trong tham số job Hangfire (được lưu dạng rõ trong schema `hangfire` và hiển thị trên dashboard) và **không bao giờ** được ghi log ở bất kỳ sink nào (NFR-SEC-007).
+- Thời hạn token cấu hình qua `DataProtectionTokenProviderOptions.TokenLifespan` = **30 phút**.
+- Trang `/auth/reset-password` đặt `Referrer-Policy: no-referrer` và xóa token khỏi thanh địa chỉ ngay sau khi đọc (mục 5.1).
+
+> **[CR-2026-05 / MT-65]** Yêu cầu tối thiểu Lab 7 có *"Quên mật khẩu (`POST /api/v1/auth/forgot-password`)"*, nhưng quên mật khẩu là luồng **hai bước**: chỉ có bước gửi email thì người dùng nhận liên kết mà không có endpoint nào để đặt mật khẩu mới. Vì vậy CR bổ sung cả `POST /auth/reset-password`. Phản hồi luôn 202 và một mã lỗi duy nhất cho mọi token hỏng theo cùng nguyên tắc với FR-AUTH-005 (đăng xuất idempotent) và FR-AUTH-009 (404 cho phiên của người khác): không endpoint nào được trở thành công cụ dò dữ liệu. Sinh token trong worker (thay vì truyền token vào job) là hệ quả của topology Hangfire worker riêng (MT-47) và khóa DataProtection dùng chung trên volume `dpkeys`.
 
 ### 3.2. Module Quản lý Danh mục (FR-CAT)
 
@@ -1412,7 +1492,7 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 | **Mức ưu tiên (MoSCoW)** | M – Must Have |
 | **Mô tả** | Hệ thống cung cấp tính năng tìm kiếm toàn văn bản (FTS) cho công thức sử dụng PostgreSQL `tsvector`/`tsquery` với text search configuration **`simple`** kết hợp **`unaccent`**. Cột `SearchVector` là **generated column `STORED`** — PostgreSQL tự tính lại mỗi khi `Title` hoặc `Description` thay đổi, không cần trigger và không thể quên đồng bộ. Kết quả được xếp hạng bởi `ts_rank()`. Bỏ dấu tiếng Việt nên "pho" tìm được "phở". |
 | **Điều kiện tiên quyết** | 1. PostgreSQL extensions `unaccent` và `pg_trgm` đã được install. 2. Hàm wrapper `unaccent_immutable(text)` đã được tạo (xem mục 7.2). 3. GIN index trên cột `SearchVector` đã được tạo. 4. Tham số `q` không rỗng, tối thiểu 2 ký tự. |
-| **HTTP Method & Endpoint** | `GET /api/v1/recipes/search?q={searchTerm}&page={n}&pageSize={n}&categoryId={guid}&difficulty={d}` |
+| **HTTP Method & Endpoint** | `GET /api/v1/recipes/search?q={searchTerm}&page={n}&pageSize={n}&categoryId={guid}&difficulty={d}&maxCookTime={minutes}&maxPrepTime={minutes}&minServings={n}` *(ba tham số cuối: v1.2.3 — CR-2026-05 / MT-66)* |
 | **Kết quả mong đợi** | `PagedResult<RecipeSummaryDto>` được xếp hạng theo độ liên quan (`ts_rank`), chỉ chứa công thức `Published`. Hỗ trợ tìm kiếm không dấu tiếng Việt. |
 | **HTTP Status Code trả về** | `200 OK` – Thành công (kể cả kết quả rỗng). `400 Bad Request` – Query không hợp lệ (`VALIDATION_ERROR`). |
 
@@ -1432,6 +1512,9 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 - **A1 – Query rỗng hoặc < 2 ký tự:** HTTP **400 Bad Request** (`VALIDATION_ERROR`).
 - **A2 – Không tìm thấy kết quả:** HTTP 200 với `items = []` và message gợi ý.
 - **A3 – Ký tự đặc biệt trong query (SQL injection attempt):** EF Core parameterize tự động; tsquery sanitization loại bỏ ký tự nguy hiểm.
+- **A4 – Bộ lọc kèm theo** (`categoryId`, `difficulty`, `maxCookTime`, `maxPrepTime`, `minServings`): kết hợp với điều kiện tìm kiếm bằng AND, cùng quy tắc kiểm tra hợp lệ với FR-SRCH-002 (giá trị ngoài miền → **400** `VALIDATION_ERROR`). Thứ tự kết quả **vẫn theo `ts_rank`** — endpoint này không nhận `sortBy`/`sortOrder`. Khóa cache `search:{queryHash}` băm toàn bộ tham số, nên hai tổ hợp bộ lọc khác nhau không bao giờ dùng chung một mục cache.
+
+> **[CR-2026-05 / MT-66]** Yêu cầu tối thiểu Lab 7 có trang `/search` *"kèm bộ lọc đa tiêu chí (danh mục, độ khó, thời gian)"*, trong khi v1.2.2 chỉ cho endpoint này nhận `categoryId` và `difficulty`. Lọc thời gian ở trình duyệt trên một trang kết quả đã phân trang là **sai về dữ liệu** (sai `totalCount`, giấu kết quả ở các trang sau), nên bộ lọc phải chạy ở cơ sở dữ liệu. Ba tham số được thêm dưới dạng **tùy chọn** — client cũ không gửi thì kết quả không đổi — và dùng lại đúng bộ lọc của `GET /recipes` (FR-SRCH-002) để hai endpoint không bao giờ hiểu cùng một tham số theo hai cách.
 
 > **[CR-2026 / MT-25]** v1.0.0 mắc **ba lỗi chồng nhau** ở cùng một tính năng, trong đó một lỗi làm tìm kiếm chết hẳn lúc chạy:
 >
@@ -1445,7 +1528,7 @@ Ba FR còn lại của module Search được tích hợp sẵn vào FR-RCP-001,
 
 | Mã FR | Tên | Ưu tiên | Tham số Query | Mô tả |
 | --- | --- | --- | --- | --- |
-| FR-SRCH-002 | Lọc công thức | **M** | `categoryId={guid}`, `difficulty={Easy\|Medium\|Hard\|Expert}`, `maxCookTime={minutes}`, `maxPrepTime={minutes}`, `minServings={n}` | Lọc kết quả theo một hoặc nhiều tiêu chí. Các filter kết hợp bằng AND logic. Giá trị `difficulty` ngoài enum → HTTP 400. |
+| FR-SRCH-002 | Lọc công thức | **M** | `categoryId={guid}`, `difficulty={Easy\|Medium\|Hard\|Expert}`, `maxCookTime={minutes}`, `maxPrepTime={minutes}`, `minServings={n}` | Lọc kết quả theo một hoặc nhiều tiêu chí — áp cho `GET /recipes` và (từ v1.2.3, MT-66) `GET /recipes/search`. Các filter kết hợp bằng AND logic. Giá trị `difficulty` ngoài enum → HTTP 400. |
 | FR-SRCH-003 | Sắp xếp kết quả | **M** | `sortBy={field}` với `field ∈ { createdAt, publishedAt, title, cookTime, prepTime }`; `sortOrder ∈ { asc, desc }` | Hai tham số độc lập. Mặc định: `sortBy=createdAt&sortOrder=desc` (mới nhất trước). Giá trị ngoài whitelist → **HTTP 400**, không im lặng bỏ qua. |
 | FR-SRCH-004 | Phân trang (Offset-based) | **M** | `page={n}` (default: 1), `pageSize={n}` (default: 12, max: 50) | Offset-based pagination (SKIP/TAKE). Response bao gồm `totalCount`, `totalPages`, `hasNextPage`, `hasPreviousPage`. |
 
@@ -1545,7 +1628,7 @@ Toàn bộ các chỉ số hiệu năng được đo trong môi trường produc
 > **Cấm tuyệt đối:** không endpoint nào phụ thuộc danh tính được phép xuất hiện trong bảng trên. `GET /recipes/mine` (FR-RCP-011) nằm ngoài bảng này và mang header `Cache-Control: no-store`.
 >
 > NFR-PERF-004 đổi từ tiêu chí *"mọi cột WHERE/ORDER BY đều có B-tree index"* sang tiêu chí **đo được bằng `EXPLAIN ANALYZE`**. Lý do dài hạn: yêu cầu cũ dẫn tới việc tạo một loạt index đơn cột làm chậm mọi lệnh ghi và tốn dung lượng, trong khi PostgreSQL thường chỉ chọn **một** index cho một truy vấn — phần lớn số index đó nằm không. Ba composite index được chọn theo hình dạng truy vấn thật (mọi truy vấn danh sách đều lọc `Status = Published` trước rồi mới sort), nên phủ đúng nhu cầu với số index ít hơn.
-| **NFR-PERF-005** Frontend Performance (Core Web Vitals) | Next.js frontend đạt chuẩn Google Core Web Vitals (đo bằng Lighthouse CI): • LCP (Largest Contentful Paint) ≤ 2.5s. • CLS (Cumulative Layout Shift) ≤ 0.1. • INP (Interaction to Next Paint) ≤ 200ms. • First Load JS Bundle ≤ 200KB (gzipped). Kỹ thuật: ISR (Incremental Static Regeneration), Image Optimization (`next/image`), Code Splitting. |
+| **NFR-PERF-005** Frontend Performance (Core Web Vitals) | Next.js frontend đạt chuẩn Google Core Web Vitals (đo bằng Lighthouse CI): • LCP (Largest Contentful Paint) ≤ 2.5s. • CLS (Cumulative Layout Shift) ≤ 0.1. • INP (Interaction to Next Paint) ≤ 200ms. • First Load JS Bundle ≤ 200KB (gzipped). Kỹ thuật: SSR kèm Data Cache của `fetch` (dữ liệu công khai không gọi lại API trong khoảng `revalidate`), Image Optimization (`next/image`), Code Splitting, Server Components (khung trang không gửi JavaScript). *(v1.2.3 — thay ISR, MT-67.)* |
 
 ### 4.2. Bảo mật (NFR-SEC)
 
@@ -1569,9 +1652,9 @@ Toàn bộ yêu cầu bảo mật tuân thủ OWASP Top 10 (2021) và được k
 | **NFR-SEC-002** JWT Token Security | Access Token: JWT signed bằng HS256, TTL = 15 phút, claim: `userId`, `email`, `roles`, `jti`, **`sid`** (Id của bản ghi `RefreshToken` phát cùng cặp — dùng để nhận biết phiên hiện tại ở FR-AUTH-009). **Lưu trữ phía Frontend:** access token **chỉ giữ trong bộ nhớ** (biến/React state — không ghi `localStorage`, `sessionStorage` hay cookie); refresh token là dữ liệu xác thực **duy nhất** được lưu bền phía client, và khi tải lại trang client dùng nó để lấy access token mới. Rủi ro XSS còn lại đối với refresh token được kiểm soát bằng Rotation + Reuse Detection (bên dưới) và Content-Security-Policy (NFR-SEC-005). Refresh Token: **256-bit (32 bytes) cryptographically secure random bytes** (`RandomNumberGenerator.GetBytes(32)`, encode Base64URL), **hash SHA-256 trước khi lưu DB — DB chỉ chứa `TokenHash`, không bao giờ chứa raw token**, TTL = 7 ngày. Trạng thái thu hồi có **một nguồn sự thật duy nhất**: `RevokedAt IS NULL AND ExpiresAt > NOW()` (không tồn tại cột `IsRevoked`). Rotation: Refresh token bị revoke ngay sau khi dùng, cấp token mới, lưu `ReplacedByTokenHash` để trace token family. Detection: Nếu refresh token đã bị revoke được dùng lại → revoke toàn bộ family (Reuse Detection). |
 | **NFR-SEC-003** Rate Limiting | Giới hạn yêu cầu theo IP để ngăn brute force và DDoS: • Auth endpoints (`/auth/*`): 10 request/phút/IP. • API chung: 100 request/phút/IP. • Upload endpoints: 5 request/phút/IP. Implementation: ASP.NET Core Rate Limiting middleware (Fixed Window, sliding window cho auth). HTTP 429 khi vượt giới hạn với `Retry-After` header. **Bắt buộc:** API PHẢI bật **`UseForwardedHeaders`** với `ForwardedHeaders.XForwardedFor \| ForwardedHeaders.XForwardedProto` và chỉ tin header này khi request đến từ **dải mạng Docker nội bộ** — trên .NET 10 khai báo bằng **`ForwardedHeadersOptions.KnownIPNetworks`** (kiểu `System.Net.IPNetwork`, ví dụ `172.16.0.0/12`, cấu hình được qua appsettings). **Không dùng** `KnownProxies` (chỉ nhận từng IP cố định — không phù hợp vì IP container đổi mỗi lần tạo lại) và **không dùng** `KnownNetworks` (đã obsolete trên .NET 10 — với `TreatWarningsAsErrors` sẽ làm gãy build). `UseForwardedHeaders` phải đứng **đầu pipeline**, trước `UseRateLimiter` và `UseAuthentication`. Rate limit và `RefreshToken.CreatedByIp` lấy IP thật từ header `X-Forwarded-For`. Nginx phải set `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for` (mục 6.5). |
 | **NFR-SEC-004** Input Validation & File Upload Security | Toàn bộ input được validate tại Application Layer (FluentValidation) TRƯỚC khi xử lý: • SQL Injection: EF Core parameterized queries (không raw SQL với user input). • XSS: Input sanitization + Content-Security-Policy header. • MIME Validation: Đọc magic bytes (không tin vào Content-Type header) khi upload. • File size: Kiểm tra trước khi read stream (không buffer toàn bộ vào memory trước). • Path Traversal: GUID-based filename generation (không dùng tên file của user). |
-| **NFR-SEC-005** HTTPS, CORS & CSP | Toàn bộ traffic phải qua HTTPS (TLS 1.2+): • Nginx: redirect HTTP → HTTPS, HSTS header (`max-age=31536000`). • CORS Policy: Chỉ cho phép origin được cấu hình qua appsettings (không wildcard `*`). • Allowed Origins: `http://localhost:3000` (dev), `https://domain.com` (prod). • **Content-Security-Policy** chặt (`script-src 'self'` + nonce cho script inline của Next.js, `object-src 'none'`, `frame-ancestors 'none'`) — lớp phòng vệ cuối cho refresh token lưu phía client (NFR-SEC-002). • Cookie: hệ thống **không dùng cookie** cho xác thực (SRS §5.2); nếu một phiên bản sau chuyển refresh token sang cookie thì bắt buộc `HttpOnly`, `SameSite=Strict`, `Secure=true` và phải qua Change Request. |
+| **NFR-SEC-005** HTTPS, CORS & CSP | Toàn bộ traffic phải qua HTTPS (TLS 1.2+): • Nginx: redirect HTTP → HTTPS, HSTS header (`max-age=31536000`). • CORS Policy: Chỉ cho phép origin được cấu hình qua appsettings (không wildcard `*`). • Allowed Origins: `http://localhost:3000` (dev), `https://domain.com` (prod). • **Content-Security-Policy** chặt: `script-src 'self' 'nonce-{giá trị mới cho mỗi request}' 'strict-dynamic'` — nonce do `middleware.ts` của Next.js sinh và Next.js tự gắn vào mọi script của framework; **không** dùng `'unsafe-inline'` cho script; `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`; nguồn của Google Identity Services (FR-AUTH-003) khai báo tường minh. Vì nonce phải mới cho mỗi lượt xem, **mọi trang HTML render động** (mục 5.1 — CR-2026-05 / MT-67) — lớp phòng vệ cuối cho refresh token lưu phía client (NFR-SEC-002). • Cookie: hệ thống **không dùng cookie** cho xác thực (SRS §5.2); nếu một phiên bản sau chuyển refresh token sang cookie thì bắt buộc `HttpOnly`, `SameSite=Strict`, `Secure=true` và phải qua Change Request. |
 | **NFR-SEC-006** Authorization & Resource Ownership | Kiểm tra phân quyền tại Application Layer (không chỉ ở Presentation Layer): • Authorization Handler: `RecipeAuthorizationHandler` xác minh ResourceOwnership (Author chỉ xóa recipe của mình). • Role-based policies: `"AuthorPolicy"`, `"AdminPolicy"` (không hardcode role string). Role của ASP.NET Core Identity **không phân cấp** — `AuthorPolicy` khai báo `RequireRole("Author", "Admin")` và tài khoản Admin được seed **cả hai** role. • Sensitive endpoints (DELETE, PATCH publish): double-check user ID trước khi commit. • Audit trail: Log mọi write operation với userId + timestamp (Serilog). • **Nguyên tắc cách ly cache (bắt buộc):** *Không bao giờ đặt dữ liệu phụ thuộc danh tính người gọi vào cache dùng chung dưới khóa công khai.* Endpoint công khai chỉ phục vụ dữ liệu công khai; dữ liệu riêng tư đi qua endpoint riêng và mang `Cache-Control: no-store`. Kiểm tra phân quyền ở handler là **vô hiệu** nếu response được trả thẳng từ cache trước khi tới handler. |
-| **NFR-SEC-007** Secrets Management | Không bao giờ commit secrets vào Git: • Development: ASP.NET Core User Secrets (`dotnet user-secrets`). • Production: Environment variables (Docker Compose `env_file`, quyền đọc giới hạn). • Rotation: Khuyến nghị rotate JWT signing key mỗi 90 ngày. • Scanning: Pre-commit hook kiểm tra với truffleHog/gitleaks. • **Cấm ghi log dữ liệu nhạy cảm:** raw refresh token, password, `Authorization` header và Google `idToken` **không bao giờ** được đưa vào log ở bất kỳ sink nào; raw refresh token chỉ tồn tại trong response HTTP trả về client. |
+| **NFR-SEC-007** Secrets Management | Không bao giờ commit secrets vào Git: • Development: ASP.NET Core User Secrets (`dotnet user-secrets`). • Production: Environment variables (Docker Compose `env_file`, quyền đọc giới hạn). • Rotation: Khuyến nghị rotate JWT signing key mỗi 90 ngày. • Scanning: Pre-commit hook kiểm tra với truffleHog/gitleaks. • **Cấm ghi log dữ liệu nhạy cảm:** raw refresh token, password, `Authorization` header, Google `idToken` và **token đặt lại mật khẩu** (FR-AUTH-011 — v1.2.3) **không bao giờ** được đưa vào log ở bất kỳ sink nào, và token đặt lại mật khẩu không được nằm trong tham số job Hangfire; raw refresh token chỉ tồn tại trong response HTTP trả về client. |
 
 ### 4.3. Khả năng Sử dụng (NFR-USE)
 
@@ -1635,31 +1718,39 @@ Chương này mô tả tất cả giao diện giữa hệ thống Culinary Blog 
 
 ### 5.1. Giao diện Người dùng (UI)
 
-Hệ thống cung cấp giao diện web duy nhất trên nền Next.js App Router, hoạt động như Single Page Application (SPA) với Server-Side Rendering (SSR) và Incremental Static Regeneration (ISR).
+Hệ thống cung cấp giao diện web duy nhất trên nền Next.js App Router, hoạt động như Single Page Application (SPA) với Server-Side Rendering (SSR) kèm **Data Cache** của `fetch` cho trang công khai và Client-Side Rendering (CSR) cho trang riêng tư.
 
 | Màn hình / Route | Mô tả | Loại Rendering | Yêu cầu Auth |
 | --- | --- | --- | --- |
-| `/` | Trang chủ: **danh sách công thức mới xuất bản** (`GET /recipes?sortBy=publishedAt&sortOrder=desc&pageSize=8`) + categories | ISR (revalidate=120) | Không |
+| `/` | Trang chủ: **danh sách công thức mới xuất bản** (`GET /recipes?sortBy=publishedAt&sortOrder=desc&pageSize=8`) + categories | **SSR + Data Cache** (`fetch` với `revalidate: 120`) *(v1.2.3 — MT-67)* | Không |
 | `/recipes` | Danh sách tất cả recipes với filter/sort/search | SSR (dynamic) | Không |
-| `/recipes/[slug]` | Chi tiết recipe: ingredients, steps, nutrition, JSON-LD | ISR (revalidate=300) | Không |
-| `/categories` | Danh sách category | ISR (revalidate=1800) | Không |
+| `/recipes/[slug]` | Chi tiết recipe: ingredients, steps, nutrition, JSON-LD | **SSR + Data Cache** (`revalidate: 300`) *(v1.2.3 — MT-67)* | Không |
+| `/categories` | Danh sách category | **SSR + Data Cache** (`revalidate: 1800`) *(v1.2.3 — MT-67)* | Không |
 | `/categories/[slug]` | Danh sách recipe theo category (phân trang qua `?page=`) | **SSR + Data Cache** (`fetch` với `revalidate: 120`) | Không |
 | `/auth/login` | Form đăng nhập (email/password + Google OAuth button) | CSR | Không (redirect nếu đã login) |
 | `/auth/register` | Form đăng ký tài khoản mới | CSR | Không |
+| `/auth/forgot-password` | Form nhập email để nhận liên kết đặt lại mật khẩu (FR-AUTH-011) — luôn hiển thị cùng một thông báo | CSR | Không *(v1.2.3)* |
+| `/auth/reset-password` | Form đặt mật khẩu mới từ liên kết trong email (FR-AUTH-011); `noindex`, `Referrer-Policy: no-referrer`, xóa token khỏi thanh địa chỉ sau khi đọc | CSR | Không *(v1.2.3)* |
 | `/dashboard` | Trang tổng quan của Author/Admin | CSR | Bắt buộc (Author/Admin) |
 | `/dashboard/recipes` | Quản lý danh sách recipe của user — gọi **`GET /recipes/mine`** (FR-RCP-011), không dùng `GET /recipes` | CSR | Bắt buộc |
 | `/dashboard/recipes/new` | Form tạo recipe mới (multi-step wizard) | CSR | Bắt buộc (Author/Admin) |
 | `/dashboard/recipes/[id]/edit` | Form chỉnh sửa recipe — nạp dữ liệu bằng **`GET /recipes/mine/{id}`** (mọi trạng thái, kèm `rowVersion`) *(CR-2026-04 / MT-62)* | CSR | Bắt buộc (Owner/Admin) |
 | `/dashboard/categories` | Quản lý categories (chỉ Admin) | CSR | Bắt buộc (Admin) |
 | `/dashboard/users` | Danh sách người dùng + khóa / mở khóa tài khoản (FR-AUTH-008) | CSR | Bắt buộc (Admin) |
-| `/profile` | Xem và chỉnh sửa thông tin cá nhân; tab "Phiên đăng nhập" (FR-AUTH-009) | CSR | Bắt buộc |
+| `/profile` | Xem và chỉnh sửa thông tin cá nhân; tab "Bảo mật" — đổi mật khẩu (FR-AUTH-010, v1.2.3); tab "Phiên đăng nhập" (FR-AUTH-009) | CSR | Bắt buộc |
 | `/search` | Trang kết quả full-text search | SSR | Không |
 
 > **[CR-2026 / MT-23, MT-33.3, MT-34]** Trang chủ v1.0.0 hứa *"danh sách recipe nổi bật"* nhưng bảng `Recipes` **không có** cột `IsFeatured`/`ViewCount`/`Rating` nào, và `GET /recipes` không có tham số nào lấy "nổi bật" — Frontend không có cách nào dựng đúng đặc tả. v1.1.0 định nghĩa lại "nổi bật" = **mới xuất bản nhất**, dùng ngay index `IDX_Recipe_PublishedAt` có sẵn: không thêm cột, không thêm endpoint, không đụng mục tiêu p95 ≤ 500ms (phương án đếm lượt xem sẽ tạo write nóng mỗi lượt truy cập, phá cả cache lẫn hiệu năng).
 >
-> Giá trị `revalidate` của ISR được đồng bộ **≤ TTL cache API tương ứng** ở bảng NFR-PERF-003 — nếu ISR dài hơn TTL thì tầng Next.js trở thành tầng cache cũ nhất và mọi nỗ lực invalidate ở Backend đều vô nghĩa. Riêng `/dashboard/*` là CSR và gọi endpoint riêng tư nên không có tầng cache nào.
+> Giá trị `revalidate` (của Data Cache — trước v1.2.3 là của ISR) được đồng bộ **≤ TTL cache API tương ứng** ở bảng NFR-PERF-003 — nếu tầng Next.js giữ dữ liệu lâu hơn TTL thì nó trở thành tầng cache cũ nhất và mọi nỗ lực invalidate ở Backend đều vô nghĩa. Riêng `/dashboard/*` là CSR và gọi endpoint riêng tư nên không có tầng cache nào.
 >
 > **[CR-2026-02 / MT-57]** v1.1.0 ghi `/categories/[slug]` là **ISR**, nhưng trang này phân trang bằng tham số truy vấn `?page=` — trong Next.js App Router, một trang đọc `searchParams` **bắt buộc render động theo request** và không thể dựng tĩnh (ISR). Buổi 2 đã gặp đúng điều này khi build (`BAO_CAO_BUOI_2.md` §4.5). Yêu cầu thật sự đằng sau chữ "ISR" là *dữ liệu không được cũ hơn TTL của API*; v1.2.0 diễn đạt đúng cơ chế đạt được yêu cầu đó: **SSR + Data Cache** với `fetch(..., { next: { revalidate: 120 } })`. Quy tắc "thời gian tái sinh ≤ TTL cache API" ở trên áp dụng cho **cả** `revalidate` của ISR lẫn `revalidate` của Data Cache. Phương án chuyển phân trang sang segment đường dẫn (`/categories/[slug]/page/[n]`) để giữ ISR thuần bị loại vì làm URL phức tạp và phải sinh trước số trang chưa biết trước.
+>
+> **[CR-2026-05 / MT-67]** v1.2.2 yêu cầu đồng thời **ISR** cho `/`, `/recipes/[slug]`, `/categories` và **CSP có nonce** (NFR-SEC-005). Hai yêu cầu loại trừ nhau: nonce phải mới cho mỗi lượt xem, nên Next.js chỉ gắn được nonce khi trang **render theo request**; trang tĩnh/ISR được dựng sẵn khi chưa có request nào. Nhóm kiểm chứng trên Next.js 15.5.25 (app tối giản, trình duyệt Edge headless):
+> - **CSP dựa trên hash qua `experimental.sri`** (cách tài liệu Next.js giới thiệu để giữ trang tĩnh): SRI chỉ gắn `integrity` cho file script ngoài; **6 script inline** chứa dữ liệu RSC (`self.__next_f.push`) bị `script-src 'self'` chặn → trang **không hydrate**.
+> - **Nonce + `'strict-dynamic'`:** trang hydrate bình thường, **0 vi phạm CSP**; mọi trang chuyển sang render động, nhưng **Data Cache của `fetch` vẫn giữ** — tải trang nhiều lần không gọi lại API cho tới hết `revalidate`.
+>
+> v1.2.3 giữ nguyên CSP có nonce (lớp phòng vệ cuối cho refresh token lưu phía client — NFR-SEC-002) và chuyển ba trang trên sang **SSR + Data Cache** với đúng giá trị `revalidate` cũ — cùng lý lẽ MT-57: yêu cầu thật sự đằng sau chữ "ISR" là *dữ liệu không cũ hơn TTL và không tạo thêm tải cho API*, Data Cache đáp ứng đủ cả hai. Phương án bỏ nonce, dùng `'unsafe-inline'` để giữ ISR bị loại: CSP cho phép mọi script inline thì không còn chặn được XSS — đúng loại tấn công CSP được đặt ra để chặn. Cái giá được chấp nhận: máy chủ Next.js render HTML ở mỗi request (không tốn thêm lượt gọi API); `sitemap.xml` và `robots.txt` không chứa script nên vẫn sinh định kỳ như cũ (NFR-SEO-003).
 
 ### 5.2. Giao diện Phần mềm – REST API
 
@@ -1673,11 +1764,13 @@ Backend cung cấp RESTful API theo chuẩn JSON. Toàn bộ endpoints được 
 | Content-Type | `application/json; charset=utf-8` (request và response). `multipart/form-data` cho file upload endpoints. |
 | Authentication | Bearer Token trong Authorization header: `Authorization: Bearer <access_token>`. Refresh token: trong request body (không dùng cookie để tránh CSRF). |
 | Response Format | **Đối tượng đơn:** trả thẳng DTO (ví dụ `RecipeDetailDto`). **Danh sách phân trang:** `PagedResult<T>` = `{ "items": [...], "page": 1, "pageSize": 12, "totalCount": 100, "totalPages": 9, "hasNextPage": true, "hasPreviousPage": false }` (FR-SRCH-004). **Lỗi:** RFC 7807 Problem Details `{ "type", "title", "status", "detail", "errors":{} }`. *(CR-2026-02 / MT-42)* |
-| Versioning | URL Path versioning: `/api/v1/`. Khi có breaking changes → `/api/v2/` (v1 được duy trì tối thiểu 6 tháng). |
-| CORS Headers | `Access-Control-Allow-Origin: <configured-origins>`; `Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS`; `Access-Control-Allow-Headers: Content-Type, Authorization, X-Correlation-ID` |
+| Versioning | URL Path versioning: `/api/v1/`. Khi có breaking changes → `/api/v2/` (v1 được duy trì tối thiểu 6 tháng). Response mang header `api-supported-versions`; phiên bản không hỗ trợ → 400 `VALIDATION_ERROR`. |
+| CORS Headers | `Access-Control-Allow-Origin: <configured-origins>`; `Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS`; `Access-Control-Allow-Headers: Content-Type, Authorization, X-Correlation-ID, If-Match`; **`Access-Control-Expose-Headers: ETag, Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-Correlation-ID, api-supported-versions`**; `Access-Control-Max-Age: 600`; **không** gửi `Access-Control-Allow-Credentials` (hệ thống không dùng cookie). *(v1.2.3 — MT-68)* |
 | Rate Limit Headers | `X-RateLimit-Limit: 100`; `X-RateLimit-Remaining: 87`; `X-RateLimit-Reset: 1700000000` (Unix timestamp); `Retry-After: 30` (seconds, khi 429) |
 | Correlation ID | `X-Correlation-ID` header: sinh tự động nếu không có trong request, trả về trong response. Gán vào tất cả log entries (Serilog MDC). |
 
+> **[CR-2026-05 / MT-68]** Danh sách header CORS của v1.2.2 thiếu `If-Match`, trong khi `PUT /recipes/{id}` (§8.3) nhận `rowVersion` qua chính header này — Frontend gọi API khác origin (môi trường dev `localhost:3000` → `localhost:5000`) sẽ bị trình duyệt chặn ngay ở preflight. Nghiêm trọng hơn và khó thấy hơn: trình duyệt **ẩn mọi response header ngoài danh sách an toàn** khỏi JavaScript khi gọi khác origin, nên `ETag` (§8.3), `Retry-After` và `X-RateLimit-*` (chính bảng này) đến nơi nhưng code đọc ra `null` — cơ chế chống ghi đè đồng thời hỏng âm thầm mà không request nào báo lỗi. v1.2.3 bổ sung `If-Match` và khai báo tường minh `Access-Control-Expose-Headers`.
+>
 > **[CR-2026-02 / MT-42]** v1.1.0 mô tả **hai hình dạng response danh sách**: mục này và quy ước Chương 8 ghi `{ "data": [...], "meta": { page, pageSize, total, totalPages } }` (kèm `pageSize: 10` lệch với mặc định 12 ở mọi chỗ khác), trong khi FR-RCP-001, FR-SRCH-004 và code Buổi 2 dùng `PagedResult { items, totalCount, totalPages, hasNextPage, hasPreviousPage }`. Mâu thuẫn này sót khỏi cả 41 MT của CR-2026. v1.2.0 chốt **`PagedResult`**: (1) FR-SRCH-004 là yêu cầu chi tiết và đòi đúng các trường `hasNextPage`/`hasPreviousPage` mà hình dạng `{ data, meta }` không có; (2) code và Frontend Buổi 2 đã dùng nó — đổi sang `{ data, meta }` là thay đổi phá vỡ mọi màn hình danh sách mà không đem lại lợi ích chức năng nào; (3) đối tượng đơn trả thẳng DTO, không bọc `data`, để tránh lớp vỏ thừa ở mọi response.
 
 ### 5.3. Giao diện Dịch vụ Bên thứ ba
@@ -1689,7 +1782,7 @@ Backend cung cấp RESTful API theo chuẩn JSON. Toàn bộ endpoints được 
 | Hangfire | Background job processing | NuGet: `Hangfire.Core`, `Hangfire.AspNetCore`, `Hangfire.PostgreSql`. Job server chạy ở **container worker riêng** (`hangfire`); container `api` chỉ enqueue job và phục vụ Dashboard (mục 3.6, MT-47). Dashboard `/hangfire` được bảo vệ bằng **HTTP Basic Auth tại tầng Nginx** (`auth_basic` + `htpasswd`), **không dùng JWT** — JWT Bearer không khả dụng cho điều hướng trình duyệt. | Dùng chung ConnectionString với PostgreSQL. `HANGFIRE_SCHEMA = hangfire`. Thông tin đăng nhập dashboard quản lý riêng qua file `htpasswd`, không dùng tài khoản Admin của ứng dụng. |
 | Serilog + Seq | Structured logging & log aggregation | `Serilog.Sinks.Console` (JSON), `Serilog.Sinks.File`, `Serilog.Sinks.Seq`. HTTP ingest API. | `Seq__ServerUrl = http://seq:5341` (Docker). Production: Elastic / Azure Monitor. |
 | OpenTelemetry | Distributed tracing & metrics | OpenTelemetry .NET SDK. OTLP exporter. Tracing: HttpClient, EF Core, AspNetCore. | `OTEL_EXPORTER_OTLP_ENDPOINT`. Development: Seq OTLP. Production: Grafana Tempo / Jaeger. |
-| SMTP / Email | Gửi welcome email (FR-JOB-001) | MailKit qua interface **`IEmailService`** (không đặt tên `IEmailSender` để tránh trùng với `IEmailSender` của ASP.NET Core Identity). Kết nối qua SMTP với TLS. | `Smtp__Host`, `Smtp__Port`, `Smtp__Username`, `Smtp__Password`. Development: Mailhog (Docker). |
+| SMTP / Email | Gửi welcome email (FR-JOB-001) và email đặt lại mật khẩu (FR-AUTH-011 — v1.2.3) | MailKit qua interface **`IEmailService`** (không đặt tên `IEmailSender` để tránh trùng với `IEmailSender` của ASP.NET Core Identity). Kết nối qua SMTP với TLS. | `Smtp__Host`, `Smtp__Port`, `Smtp__Username`, `Smtp__Password`. Development: Mailhog (Docker). |
 
 > **[CR-2026 / MT-11, MT-33.1, MT-39]** Ba chỗ trong v1.0.0 mô tả **ba kiến trúc Google OAuth khác nhau**: FR-AUTH-003 nói Authorization Code + PKCE với Auth.js xử lý callback, mục 5.3 khai báo redirect URI ở Backend, Chương 8 nhận `{ idToken }` (tức Implicit/ID-token flow). Thêm nữa, `ExternalLoginInfo` mà FR-AUTH-003 yêu cầu Frontend gửi lên là **kiểu nội bộ của ASP.NET Core Identity — không serialize qua HTTP được**, nên đặc tả đó không khả thi. v1.1.0 chốt **ID Token flow**: đơn giản nhất, Backend stateless chỉ cần `GoogleClientId`, không phải quản lý state/PKCE verifier hay vòng redirect qua lại. Điều kiện an toàn bắt buộc: Backend **phải tự verify chữ ký** ID Token, tuyệt đối không tin dữ liệu người dùng Frontend gửi lên.
 >
@@ -1720,7 +1813,7 @@ Chương này mô tả tổng quan kiến trúc phần mềm của hệ thống 
 | Tầng | Technology | Vai trò | Giao tiếp với |
 | --- | --- | --- | --- |
 | Client (Browser/Mobile) | Browser (Chrome/Firefox/Safari) | Người dùng tương tác qua giao diện web | Next.js App |
-| Frontend | **Next.js 15** App Router, TypeScript, Tailwind CSS, **Google Identity Services** (lấy `idToken`), TanStack Query, React Hook Form + Zod | Rendering UI, route management, client-side state. SSR/ISR cho SEO. Sinh `sitemap.xml` và `robots.txt` (NFR-SEO-003). | Backend REST API |
+| Frontend | **Next.js 15** App Router, TypeScript, Tailwind CSS, **Google Identity Services** (lấy `idToken`), TanStack Query, React Hook Form + Zod | Rendering UI, route management, client-side state. SSR + Data Cache cho SEO; sinh nonce CSP mỗi request (`middleware.ts`). Sinh `sitemap.xml` và `robots.txt` (NFR-SEO-003). | Backend REST API |
 | Nginx Reverse Proxy | Nginx Alpine (Docker) | SSL termination, load balancing bằng **phân giải DNS động** (`resolver 127.0.0.11` + `proxy_pass` qua biến — không dùng khối `upstream`, xem 6.5), static file caching, phục vụ ảnh công khai tại `/media/` (proxy tới MinIO), chuyển tiếp `X-Forwarded-For`, Basic Auth cho `/hangfire`. | Frontend :3000, Backend API qua network nội bộ `api:8080` |
 | Backend API | ASP.NET Core .NET 10 Minimal API | Business logic, authentication, data access; **enqueue** background job (không xử lý job). | PostgreSQL, Redis, MinIO, Email |
 | Background Worker | Container `hangfire` — cùng image với Backend API, `Hangfire__WorkerOnly=true` | Xử lý mọi background job (FR-JOB-001/002/003), tách tải nặng CPU/I-O khỏi luồng phục vụ request (MT-47). | PostgreSQL (hàng đợi), MinIO, SMTP |
@@ -2080,12 +2173,17 @@ Chương này liệt kê tất cả API endpoints của hệ thống Culinary Bl
 | GET | `/auth/sessions` | **Danh sách phiên đăng nhập của chính mình** (FR-AUTH-009) — *mới ở v1.2.0* | Bearer JWT | — | 200: `[{ id, createdAt, createdByIp, expiresAt, isCurrent }]` — **không bao giờ trả `TokenHash`**; 401. `Cache-Control: no-store` |
 | DELETE | `/auth/sessions/{id}` | **Thu hồi một phiên** (FR-AUTH-009) — *mới ở v1.2.0* | Bearer JWT | — | 204 (idempotent); 401; **404: không tồn tại hoặc thuộc người khác** |
 | POST | `/auth/sessions/revoke-all` | **Thu hồi mọi phiên** — đăng xuất trên mọi thiết bị (FR-AUTH-009) — *mới ở v1.2.0* | Bearer JWT | — | 204; 401 |
+| POST | `/auth/change-password` | **Đổi mật khẩu** (FR-AUTH-010) — *mới ở v1.2.3* | Bearer JWT · rate limit `/auth/*` | `{ currentPassword, newPassword }` | 204 — mọi phiên khác phiên hiện tại (claim `sid`) bị thu hồi; 400: `VALIDATION_ERROR` (mật khẩu hiện tại sai → `errors.currentPassword`; mật khẩu mới không đạt chính sách; tài khoản chưa có mật khẩu); 401; 429 |
+| POST | `/auth/forgot-password` | **Yêu cầu đặt lại mật khẩu qua email** (FR-AUTH-011) — *mới ở v1.2.3* | Không · rate limit `/auth/*` | `{ email }` | **202 luôn luôn** (không tiết lộ email có tồn tại); 400: email sai định dạng; 429 |
+| POST | `/auth/reset-password` | **Đặt lại mật khẩu bằng token trong email** (FR-AUTH-011) — *mới ở v1.2.3* | Không · rate limit `/auth/*` | `{ email, token, newPassword }` | 204 — mọi phiên bị thu hồi, xóa khóa đăng nhập sai; 400: `AUTH_PASSWORD_RESET_TOKEN_INVALID` (token sai/hết hạn/đã dùng hoặc email không khớp) hoặc `VALIDATION_ERROR`; 403: `AUTH_ACCOUNT_DISABLED`; 429 |
 
 > **[CR-2026 / MT-10, MT-12, MT-20.10, MT-22]** `POST /auth/register` **trả về cặp token** (auto-login). v1.0.0 mâu thuẫn trực tiếp ở điểm này: FR-AUTH-001 mô tả 12 bước có cả việc persist refresh token và ghi rõ "auto-login sau đăng ký", trong khi Chương 8 lại trả `{ userId, email, displayName }` không có token. Quyết định này thay đổi hẳn luồng Frontend — có token thì vào thẳng `/dashboard`, không có token thì phải đẩy sang `/auth/login` — nên làm sai một bên là phải viết lại màn hình đăng ký. Auto-login không tạo rủi ro vì SRS đã loại xác thực email khỏi phạm vi (MT-21).
 >
 > Endpoint **`PATCH /users/{id}/status`** được bổ sung để cột `IsActive` (mục 7.7) và mã lỗi `AUTH_ACCOUNT_DISABLED` (Phụ lục B) không còn là những lời hứa suông: v1.0.0 có cả cột lẫn mã lỗi nhưng **không có FR hay endpoint nào** bật/tắt được cờ này, và FR-AUTH-002 cũng không kiểm tra nó — nghĩa là kể cả khi Admin sửa tay trong DB, người dùng bị khóa **vẫn đăng nhập được**.
 >
 > **[CR-2026-02 / MT-44, MT-45, MT-52]** v1.2.0 bổ sung 4 endpoint cho module này: `GET /users` (Admin tìm người cần khóa — route `/dashboard/users` của mục 5.1 không dựng được nếu thiếu nó) và 3 endpoint quản lý phiên của FR-AUTH-009. Đồng thời sửa mã lỗi khi Admin tự khóa mình từ **409 (`VALIDATION_ERROR`) thành 403**: bản thân v1.1.0 tự mâu thuẫn ba chiều ở đây — FR-AUTH-008 A2 ghi 403, bảng này ghi 409, còn Phụ lục B quy định `VALIDATION_ERROR` luôn là 400. Giải trình chi tiết tại cuối FR-AUTH-008 và FR-AUTH-009.
+>
+> **[CR-2026-05 / MT-64, MT-65]** v1.2.3 bổ sung 3 endpoint cho module này theo yêu cầu tối thiểu Lab 7: `POST /auth/change-password` (FR-AUTH-010) và cặp `POST /auth/forgot-password` + `POST /auth/reset-password` (FR-AUTH-011). Lab chỉ ghi `forgot-password`, nhưng thiếu bước đặt lại thì liên kết trong email không có đích để gửi mật khẩu mới. Giải trình chi tiết tại cuối FR-AUTH-010 và FR-AUTH-011.
 
 ### 8.2. Categories Module (/categories)
 
@@ -2110,7 +2208,7 @@ Chương này liệt kê tất cả API endpoints của hệ thống Culinary Bl
 | GET | `/recipes` | Danh sách recipes (**chỉ Published**, paginated) | Không | `?page&pageSize&sortBy&sortOrder&categoryId&difficulty&maxCookTime&maxPrepTime&minServings` | 200; 400 (tham số ngoài whitelist) |
 | GET | `/recipes/mine` | **Danh sách công thức của chính mình** (Draft/Published/Archived) — **cấm cache**, trả `Cache-Control: no-store` | **Bearer bắt buộc** (Author/Admin) | `?status&page&pageSize&sortBy&sortOrder&authorId` (`authorId` chỉ Admin) | 200; 400; 401; 403 |
 | GET | `/recipes/mine/{id}` | **Chi tiết một công thức của chính mình ở mọi trạng thái** (phục vụ trang sửa) — *mới ở v1.2.2 (CR-2026-04 / MT-62)*: `RecipeDetailDto` kèm `rowVersion`, header `ETag`, **cấm cache** (`Cache-Control: no-store`) | **Bearer bắt buộc** (Owner/Admin) | — | 200; 401; **404** (không tồn tại, đã xóa, hoặc thuộc người khác) |
-| GET | `/recipes/search` | Full-text search công thức (**chỉ Published**) | Không | `?q={keyword}&page&pageSize&categoryId&difficulty` | 200; 400 (`q` < 2 ký tự) |
+| GET | `/recipes/search` | Full-text search công thức (**chỉ Published**), xếp theo `ts_rank` | Không | `?q={keyword}&page&pageSize&categoryId&difficulty&maxCookTime&maxPrepTime&minServings` *(3 tham số cuối: v1.2.3 — MT-66)* | 200; 400 (`q` < 2 ký tự, hoặc bộ lọc ngoài miền giá trị) |
 | GET | `/recipes/sitemap` | **Danh sách slug phục vụ sitemap** (NFR-SEO-003) — *mới ở v1.2.0*: `[{ slug, updatedAt }]` của **mọi** recipe Published, không phân trang, cache Redis 1 giờ | Không | — | 200 |
 | GET | `/recipes/{slug}` | Chi tiết recipe theo slug (**chỉ Published**; kèm steps, ingredients, images, nutrition) | Không | — | 200; 404 |
 | POST | `/recipes` | Tạo recipe mới (trạng thái Draft) | Bearer (Author/Admin) | `{ title, description, categoryId, prepTime, cookTime, servings, difficulty, instructions?, nutrition?, steps?, ingredients? }` | 201; 400 (bao gồm `categoryId` không tồn tại — lỗi ở field `categoryId`, CR-2026-04 / MT-61); 401; 403 |
@@ -2195,8 +2293,9 @@ Bảng dưới đây liệt kê tất cả HTTP Status Codes được sử dụn
 | --- | --- | --- |
 | 200 | OK | GET request thành công; PATCH trả về resource đã cập nhật; POST `/auth/login` thành công. |
 | 201 | Created | POST tạo resource mới thành công (Recipe, Category, Step, Ingredient, Image). Response body chứa resource vừa tạo. |
+| **202** | **Accepted** | Request hợp lệ đã được nhận và sẽ xử lý bất đồng bộ — `POST /auth/forgot-password` (FR-AUTH-011): email (nếu có) được gửi bởi job nền; trả 202 cả khi email không tồn tại. Không có response body. *(v1.2.3 — MT-65)* |
 | 204 | No Content | DELETE thành công; POST `/auth/logout` thành công. Không có response body. |
-| 400 | Bad Request | **Mọi lỗi validation** (FluentValidation), request body malformed, tham số ngoài whitelist (`sortBy`, `sortOrder`, `difficulty`, `status`), file MIME không hợp lệ, vi phạm business rule (ví dụ: publish recipe thiếu step hoặc ingredient). |
+| 400 | Bad Request | **Mọi lỗi validation** (FluentValidation), request body malformed, tham số ngoài whitelist (`sortBy`, `sortOrder`, `difficulty`, `status`), file MIME không hợp lệ, vi phạm business rule (ví dụ: publish recipe thiếu step hoặc ingredient), mật khẩu hiện tại sai khi đổi mật khẩu, token đặt lại mật khẩu không hợp lệ (`AUTH_PASSWORD_RESET_TOKEN_INVALID`). |
 | 401 | Unauthorized | Access Token thiếu hoặc invalid; Refresh Token hết hạn / bị revoke / reuse detection; Google ID Token không vượt qua kiểm tra chữ ký. |
 | 403 | Forbidden | Đã xác thực nhưng không có quyền: Author truy cập endpoint Admin; Author cố xóa recipe của người khác; **tài khoản bị Admin vô hiệu hóa** (`IsActive = false`); **Admin tự khóa chính mình** (FR-AUTH-008); xóa tệp không thuộc thư mục của mình (`FILE_FORBIDDEN`). |
 | 404 | Not Found | Resource không tồn tại hoặc đã soft-delete (`IsDeleted=true`). |
@@ -2231,6 +2330,7 @@ Hệ thống sử dụng Application Error Codes (mã lỗi tùy chỉnh) trong 
 | `AUTH_ACCOUNT_DISABLED` | 403 | Tài khoản bị vô hiệu hóa (`IsActive=false`) bởi Admin (FR-AUTH-008). | Auth |
 | `AUTH_ACCOUNT_LOCKED` | **423** | Tài khoản bị khóa tạm thời do đăng nhập sai quá số lần cho phép (Identity Lockout). | Auth |
 | `AUTH_USER_NOT_FOUND` | **404** | Người dùng được Admin thao tác (FR-AUTH-008) không tồn tại. *(v1.2.2 — MT-59)* | Auth |
+| `AUTH_PASSWORD_RESET_TOKEN_INVALID` | 400 | Token đặt lại mật khẩu sai, hết hạn (> 30 phút), đã được dùng, sai định dạng, hoặc email không khớp — một mã cho mọi trường hợp để không lộ trường hợp nào (FR-AUTH-011). *(v1.2.3 — MT-65)* | Auth |
 | `RECIPE_NOT_FOUND` | 404 | Recipe với id/slug không tồn tại hoặc đã bị xóa. | Recipe |
 | `RECIPE_SLUG_EXISTS` | 409 | Slug đã tồn tại — tự động thêm suffix (`slug-1`, `slug-2`...). | Recipe |
 | `RECIPE_PUBLISH_INCOMPLETE` | 400 | Recipe thiếu điều kiện publish: phải có ít nhất 1 ingredient và 1 step. | Recipe |
@@ -2250,6 +2350,8 @@ Hệ thống sử dụng Application Error Codes (mã lỗi tùy chỉnh) trong 
 | `RATE_LIMIT_EXCEEDED` | 429 | Quá giới hạn request. Xem `Retry-After` header. | Common |
 | `INTERNAL_ERROR` | **500** | Lỗi không lường trước. `detail` chỉ chứa thông báo chung và CorrelationId để tra log — không lộ chi tiết kỹ thuật. *(v1.2.0 — MT-46)* | Common |
 
+> **[CR-2026-05 / MT-65]** Phụ lục B tăng từ 29 lên **30 mã**: **`AUTH_PASSWORD_RESET_TOKEN_INVALID`** cho bước đặt lại mật khẩu của FR-AUTH-011. Không dùng lại `AUTH_TOKEN_INVALID` (401) vì token đặt lại mật khẩu không phải access token — trả 401 sẽ khiến client chạy luồng refresh phiên vốn không liên quan. Đổi mật khẩu (FR-AUTH-010) **không** cần mã mới: mật khẩu hiện tại sai là lỗi dữ liệu đầu vào → `VALIDATION_ERROR` với lỗi ở trường `currentPassword`.
+>
 > **[CR-2026-04 / MT-59, MT-60]** Phụ lục B tăng từ 27 lên **29 mã**:
 > - **`AUTH_USER_NOT_FOUND`** — FR-AUTH-008 A3 và §8.1 đã quy định trả 404 khi user không tồn tại, nhưng không có mã nào cho trường `type`.
 > - **`CONCURRENCY_CONFLICT`** — mọi bảng kế thừa `BaseEntity` đều có `RowVersion` là concurrency token (§7.1), nên xung đột ghi có thể xảy ra ở mọi module (ví dụ hai Admin cùng sửa một danh mục), trong khi Phụ lục B chỉ có mã cho Recipe. Thiếu mã chung thì xung đột ngoài Recipe chỉ còn hai lối ra, đều sai: 500 `INTERNAL_ERROR` (sai bản chất), hoặc mượn mã của Recipe (sai module).
@@ -2271,7 +2373,9 @@ Hệ thống sử dụng Application Error Codes (mã lỗi tùy chỉnh) trong 
 | Clean Architecture | CA | Kiến trúc phần mềm của Robert C. Martin tách biệt concerns theo layers (Domain, Application, Infrastructure, Presentation). Dependency chỉ đi vào trong (hướng Domain). |
 | Command Query Responsibility Segregation | CQRS | Pattern tách biệt write model (Commands) và read model (Queries) để tối ưu từng luồng riêng. |
 | Content Delivery Network | CDN | Mạng phân phối nội dung tĩnh (ảnh, JS, CSS) từ server gần người dùng nhất. |
+| Content-Security-Policy | CSP | Header HTTP khai báo nguồn script/style/ảnh… trình duyệt được phép tải và thực thi; chặn script lạ (XSS). Hệ thống dùng CSP có **nonce** (NFR-SEC-005). *(v1.2.3)* |
 | Core Web Vitals | CWV | Chỉ số đo lường UX của Google: LCP (tải trang), CLS (ổn định layout), INP (phản hồi tương tác). |
+| Data Cache (Next.js) | — | Bộ nhớ đệm phía máy chủ Next.js cho kết quả `fetch(..., { next: { revalidate } })`; hoạt động cả khi trang render theo request. Giữ dữ liệu công khai đúng TTL mà không gọi lại API (mục 5.1 — MT-57, MT-67). *(v1.2.3)* |
 | Docker Compose | — | Công cụ định nghĩa và chạy multi-container Docker application qua file YAML. |
 | Draft | — | Trạng thái mặc định của Recipe khi mới tạo. Chỉ Author/Admin thấy. |
 | Forwarded Headers | — | Cơ chế ASP.NET Core đọc `X-Forwarded-For` / `X-Forwarded-Proto` để khôi phục IP và scheme thật của client khi đứng sau reverse proxy. Bắt buộc bật kèm danh sách mạng proxy tin cậy — trên .NET 10 là `KnownIPNetworks` (NFR-SEC-003). |
@@ -2283,6 +2387,7 @@ Hệ thống sử dụng Application Error Codes (mã lỗi tùy chỉnh) trong 
 | JSON Web Token | JWT | Chuẩn mở (RFC 7519) định nghĩa cách truyền thông tin an toàn giữa các bên dưới dạng JSON object được ký. |
 | MediatR | — | Thư viện .NET triển khai Mediator pattern. Dispatch Commands/Queries qua Handler có pipeline behaviors. |
 | MinIO | — | Object storage server mã nguồn mở tương thích Amazon S3 API. Dùng để lưu trữ ảnh. |
+| Nonce | — | Chuỗi ngẫu nhiên dùng một lần, sinh mới cho **mỗi request**, ghi trong CSP (`'nonce-…'`) và trên thẻ `<script>` hợp lệ; script không mang nonce đúng bị chặn. *(v1.2.3)* |
 | Non-Functional Requirement | NFR | Yêu cầu chất lượng hệ thống: hiệu năng, bảo mật, độ tin cậy, khả năng bảo trì... |
 | Nginx | — | Web server hiệu năng cao, dùng làm reverse proxy, load balancer và SSL termination. |
 | OpenTelemetry | OTEL | Framework quan sát hệ thống phân tán: distributed tracing, metrics, logs. |
@@ -2403,13 +2508,25 @@ Bảng dưới đây truy vết **16 điểm** (MT-42 → MT-57) phát hiện �
 | MT-62 | Route `/dashboard/recipes/[id]/edit` không có endpoint nào trả trọn một công thức Draft (`/recipes/{slug}` chỉ Published, `/recipes/mine` chỉ tóm tắt) | Thêm `GET /recipes/mine/{id}` (Owner/Admin, mọi trạng thái, `rowVersion` + `ETag`, `no-store`; 404 cho id của người khác) — Chương 8: 44 → **45 endpoint** | FR-RCP-011, §5.1, §8.3 | Buổi 4 Dev 3 |
 | MT-63 | §6.2 đặt `ApplicationUser` (kế thừa `IdentityUser` — có NuGet) và các interface repository ở Domain, trái ràng buộc "Domain chỉ .NET BCL"; FR-CAT-003 A4 đặt việc đọc mã lỗi PostgreSQL ở middleware tầng API | Domain chỉ gồm entity, value object, enum, **domain exception**; interface truy cập dữ liệu (`IRepository<T>`, `IUnitOfWork`, repository theo module) ở **Application**; `ApplicationUser` ở **Infrastructure**; dịch lỗi ghi DB ở Infrastructure, middleware ánh xạ exception → HTTP | §6.2, FR-CAT-003 A4 | Buổi 3 Dev 4 (nền) + Dev 1/2/3 (phần module) |
 
-**Tổng kết:** 5/5 điểm đã xử lý. Toàn tài liệu: **63 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua bốn Change Request.
+**Tổng kết:** 5/5 điểm đã xử lý. Toàn tài liệu (tính tới v1.2.2): **63 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua bốn Change Request.
+
+## PHỤ LỤC H – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-05
+
+| MT | Vấn đề ở v1.2.2 | Quyết định trong v1.2.3 | Mục SRS thay đổi | Hiện thực |
+| --- | --- | --- | --- | --- |
+| MT-64 | Yêu cầu tối thiểu Lab 7 có đổi mật khẩu (`POST /auth/change-password`) nhưng SRS không có FR/endpoint | Thêm **FR-AUTH-010** (M): kiểm mật khẩu hiện tại, mật khẩu mới theo NFR-SEC-001, thu hồi mọi phiên khác phiên hiện tại (claim `sid`); sai mật khẩu hiện tại → 400 `VALIDATION_ERROR` | §2.2, §2.3, FR-AUTH-010, §5.1, §8.1 | Buổi 7 — Dev 1 |
+| MT-65 | Yêu cầu tối thiểu Lab 7 có quên mật khẩu (`POST /auth/forgot-password`) nhưng SRS không có; chỉ một endpoint thì không hoàn thành được luồng | Thêm **FR-AUTH-011** (M) + `POST /auth/forgot-password` (luôn 202) + `POST /auth/reset-password` (204); mã **`AUTH_PASSWORD_RESET_TOKEN_INVALID`** (400); token 30 phút, dùng một lần, sinh trong worker, không vào log/kho job; mã HTTP 202 | §2.2, §2.3, FR-AUTH-011, NFR-SEC-007, §5.1, §5.3, §8.1, Phụ lục A, Phụ lục B | Buổi 7 — Dev 1 |
+| MT-66 | Yêu cầu tối thiểu Lab 7 có trang `/search` lọc theo thời gian, nhưng `GET /recipes/search` chỉ nhận `categoryId`, `difficulty` | Thêm tham số tùy chọn `maxCookTime`, `maxPrepTime`, `minServings` (cùng bộ lọc với FR-SRCH-002); thứ tự vẫn theo `ts_rank`; không thêm endpoint | FR-SRCH-001, bảng FR-SRCH-002/003/004, §8.3 | API Buổi 6 — Dev 3 · giao diện Buổi 7 — Dev 4 |
+| MT-67 | NFR-SEC-005 đòi CSP có nonce, §5.1 đòi ISR cho `/`, `/recipes/[slug]`, `/categories` — nonce chỉ gắn được khi render theo request. Kiểm chứng trên Next.js 15.5.25: CSP hash (`experimental.sri`) chặn 6 script inline RSC, trang không hydrate; nonce cho 0 vi phạm và Data Cache vẫn giữ | Giữ CSP nonce + `'strict-dynamic'` (sinh ở `middleware.ts`); ba trang chuyển sang **SSR + Data Cache** với cùng `revalidate`; không dùng `'unsafe-inline'` cho script | §1.2.2, §5.1, §6.1, NFR-SEC-005, NFR-PERF-005, Phụ lục C | Buổi 6 — Dev 1 (CSP), Buổi 7 — Dev 2, Dev 3 (trang) |
+| MT-68 | `Access-Control-Allow-Headers` (§5.2) thiếu `If-Match` mà §8.3 dùng; không khai báo `Access-Control-Expose-Headers` nên `ETag`, `Retry-After`, `X-RateLimit-*` bị trình duyệt ẩn khỏi JavaScript khi gọi khác origin | Bổ sung `If-Match`; khai báo danh sách header expose; `Access-Control-Max-Age: 600`; không `Allow-Credentials`; ghi header `api-supported-versions` ở dòng Versioning | §5.2 | Buổi 5 — Dev 1 |
+
+**Tổng kết:** 5/5 điểm đã xử lý — 3 chức năng mới cho yêu cầu Lab 7 (MT-64 → MT-66) và 2 lỗi kỹ thuật của chính SRS (MT-67, MT-68). Số liệu sau v1.2.3: **39 FR**, **48 endpoint**, **30 mã lỗi**. Toàn tài liệu: **68 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua năm Change Request.
 
 ---
 
 *— Hết tài liệu —*
 
-> **Nguồn gốc:** bản 1.0.0 được chuyển đổi từ `SPEC/SRS_Culinary_Blog_v1.0.0.pdf` (71 trang) sang Markdown, giữ nguyên 100% nội dung gốc. Bản **1.1.0** áp dụng Change Request **CR-2026** lên bản đó: xử lý toàn bộ 41 điểm mâu thuẫn được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi thay đổi so với 1.0.0 đều được đánh dấu bằng chú thích `[CR-2026 / MT-xx]` tại chỗ và truy vết đầy đủ ở **Phụ lục D**. Bản **1.2.0** áp dụng Change Request **CR-2026-02**: đối chiếu với code đã chạy thật, xử lý thêm 16 điểm (MT-42 → MT-57) — đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ, truy vết ở **Phụ lục E**. Bản **1.2.1** áp dụng Change Request **CR-2026-03**: cập nhật yêu cầu dữ liệu mẫu ở §2.6.1 (MT-58) — đánh dấu `[CR-2026-03 / MT-58]` tại chỗ, truy vết ở **Phụ lục F**. Bản **1.2.2** áp dụng Change Request **CR-2026-04**: 2 mã lỗi, 1 endpoint, 2 điểm làm rõ và 1 errata kiến trúc (MT-59 → MT-63) — đánh dấu `[CR-2026-04 / MT-xx]` tại chỗ, truy vết ở **Phụ lục G**. Các bản 1.0.0 và 1.1.0 được giữ nguyên để đối chiếu.
+> **Nguồn gốc:** bản 1.0.0 được chuyển đổi từ `SPEC/SRS_Culinary_Blog_v1.0.0.pdf` (71 trang) sang Markdown, giữ nguyên 100% nội dung gốc. Bản **1.1.0** áp dụng Change Request **CR-2026** lên bản đó: xử lý toàn bộ 41 điểm mâu thuẫn được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi thay đổi so với 1.0.0 đều được đánh dấu bằng chú thích `[CR-2026 / MT-xx]` tại chỗ và truy vết đầy đủ ở **Phụ lục D**. Bản **1.2.0** áp dụng Change Request **CR-2026-02**: đối chiếu với code đã chạy thật, xử lý thêm 16 điểm (MT-42 → MT-57) — đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ, truy vết ở **Phụ lục E**. Bản **1.2.1** áp dụng Change Request **CR-2026-03**: cập nhật yêu cầu dữ liệu mẫu ở §2.6.1 (MT-58) — đánh dấu `[CR-2026-03 / MT-58]` tại chỗ, truy vết ở **Phụ lục F**. Bản **1.2.2** áp dụng Change Request **CR-2026-04**: 2 mã lỗi, 1 endpoint, 2 điểm làm rõ và 1 errata kiến trúc (MT-59 → MT-63) — đánh dấu `[CR-2026-04 / MT-xx]` tại chỗ, truy vết ở **Phụ lục G**. Bản **1.2.3** áp dụng Change Request **CR-2026-05**: 2 FR, 3 endpoint, 1 mã lỗi và mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7, cùng 2 errata về CSP/render và header CORS (MT-64 → MT-68) — đánh dấu `[CR-2026-05 / MT-xx]` tại chỗ, truy vết ở **Phụ lục H**. Các bản 1.0.0 và 1.1.0 được giữ nguyên để đối chiếu.
 
 
 
