@@ -90,7 +90,6 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
     private static readonly (string Method, string Route, string Owner)[] PendingEndpoints =
     [
         ("GET", "/api/v1/recipes/mine", "Dev 3 — 2314291_DoanHongTien_buoiso4 (FR-RCP-011)"),
-        ("GET", "/api/v1/recipes/mine/{id}", "Dev 3 — 2314291_DoanHongTien_buoiso4 (CR-2026-04 d)"),
         ("GET", "/api/v1/recipes/search", "Dev 3 — 2314291_DoanHongTien_buoiso4 (FR-SRCH-001)"),
         ("GET", "/api/v1/recipes/sitemap", "Dev 3 — 2314291_DoanHongTien_buoiso4 (MT-48)"),
     ];

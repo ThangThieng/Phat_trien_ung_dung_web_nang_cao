@@ -1,8 +1,17 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { ApiError, apiFetch } from '@/lib/api-client';
 import type { ProblemDetails } from '@/lib/api-client';
-import type { RecipeDetail, RecipeImageResult, RecipeIngredient, RecipeStep } from '@/types/api';
-import type { CreateRecipeRequest } from './schemas';
+import type {
+  CreateRecipeRequest,
+  IngredientInput,
+  RecipeDetail,
+  RecipeImageResult,
+  RecipeIngredient,
+  RecipeStep,
+  StepInput,
+  UpdateRecipeImageRequest,
+  UpdateRecipeRequest,
+} from '@/types/api';
 
 /** FR-RCP-003 – POST /recipes → 201 RecipeDetail ở trạng thái Draft. */
 export function createRecipe(body: CreateRecipeRequest, accessToken: string) {
@@ -52,7 +61,7 @@ export async function uploadRecipeImage(
 export function updateRecipeImage(
   recipeId: string,
   imageId: string,
-  body: { altText?: string; isPrimary?: boolean; orderIndex?: number },
+  body: UpdateRecipeImageRequest,
   accessToken: string,
 ) {
   return apiFetch<RecipeImageResult>(`/recipes/${recipeId}/images/${imageId}`, {
@@ -74,12 +83,9 @@ export function getMyRecipe(recipeId: string, accessToken: string) {
   return apiFetch<RecipeDetail>(`/recipes/mine/${recipeId}`, { accessToken, cache: 'no-store' });
 }
 
-export function updateRecipe(recipeId: string, body: CreateRecipeRequest & { rowVersion: string }, accessToken: string) {
+export function updateRecipe(recipeId: string, body: UpdateRecipeRequest, accessToken: string) {
   return apiFetch<RecipeDetail>(`/recipes/${recipeId}`, { method: 'PUT', body, accessToken });
 }
-
-export type IngredientInput = Pick<RecipeIngredient, 'name' | 'quantity' | 'quantityText' | 'unit' | 'notes' | 'orderIndex'>;
-export type StepInput = Pick<RecipeStep, 'title' | 'description' | 'timerMinutes' | 'imageUrl'>;
 
 export function addIngredient(recipeId: string, body: IngredientInput, accessToken: string) {
   return apiFetch<RecipeIngredient>(`/recipes/${recipeId}/ingredients`, { method: 'POST', body, accessToken });

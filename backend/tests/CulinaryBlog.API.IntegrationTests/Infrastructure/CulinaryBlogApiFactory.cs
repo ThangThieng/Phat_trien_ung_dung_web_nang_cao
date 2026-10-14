@@ -194,6 +194,7 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
         // Migration + seed do InitializeAsync chủ động gọi; tắt ở startup để test kiểm soát được thời điểm.
         builder.UseSetting("Database:MigrateOnStartup", "false");
         builder.UseSetting("Seed:Enabled", "false");
+        builder.UseSetting("OpenApi:Enabled", "true");
 
         // Không chạy BackgroundJobServer: job chạy song song làm kết quả test mất tính tất định.
         builder.UseSetting("Hangfire:ServerEnabled", "false");

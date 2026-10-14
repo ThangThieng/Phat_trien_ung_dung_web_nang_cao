@@ -18,6 +18,7 @@ public static class FilesEndpoints
         group.MapPost("/upload", UploadAsync)
             .WithName("UploadFile")
             .WithSummary("FR-FILE-001 – Upload ảnh (JPEG/PNG/WebP/AVIF, ≤ 5MB, kiểm tra magic bytes)")
+            .WithDescription("FR-FILE-001 — SRS §8.8. Upload ảnh an toàn vào thư mục riêng của người dùng.")
             .DisableAntiforgery()
             .WithMetadata(new RequestSizeLimitAttribute(MaxRequestBodyBytes))
             .Accepts<IFormFile>("multipart/form-data")
@@ -28,6 +29,7 @@ public static class FilesEndpoints
         group.MapDelete("/{**key}", DeleteAsync)
             .WithName("DeleteFile")
             .WithSummary("FR-FILE-002 – Xóa ảnh theo object key (idempotent)")
+            .WithDescription("FR-FILE-002 — SRS §8.8. Xóa object thuộc người dùng, thao tác idempotent.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status403Forbidden);
 

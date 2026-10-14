@@ -3,6 +3,7 @@ using CulinaryBlog.API.Endpoints;
 using CulinaryBlog.API.Extensions;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Middleware.ExceptionMapping;
+using CulinaryBlog.API.OpenApi;
 using CulinaryBlog.API.Services;
 using CulinaryBlog.Application;
 using CulinaryBlog.Application.Common.Interfaces;
@@ -17,8 +18,10 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Scalar.AspNetCore;
 using StackExchange.Redis;
 
@@ -54,7 +57,7 @@ builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 });
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCulinaryOutputCache(builder.Configuration);
-builder.Services.AddOpenApi();
+builder.Services.AddCulinaryOpenApi();
 
 builder.Services.ConfigureHttpJsonOptions(o =>
 {
@@ -86,8 +89,12 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
 
 var app = builder.Build();
 
-// API (migrate) và worker Hangfire (tạo schema) đều cần DB – chờ DB thay vì crash khi Docker khởi động song song
-await app.Services.WaitForDatabaseAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
+// API (migrate) và worker Hangfire (tạo schema) đều cần DB – chờ DB thay vì crash khi Docker khởi động song song.
+// Harness tạo tài liệu OpenAPI không gọi dữ liệu nên có thể bỏ qua bước này để không phụ thuộc Docker.
+if (!builder.Configuration.GetValue<bool>("Database:SkipWait"))
+{
+    await app.Services.WaitForDatabaseAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
+}
 
 // FR-JOB-003 (Buổi 4): lịch recurring job nằm trong storage Hangfire dùng chung — AddOrUpdate idempotent.
 if (builder.Configuration.GetValue("Hangfire:RegisterRecurringJobs", true))
@@ -130,10 +137,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseOutputCache();
 
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue<bool>("OpenApi:Enabled"))
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(o => o.WithTitle("Culinary Blog API v1"));
+    app.MapScalarApiReference("/scalar/v1", o => o
+        .WithTitle("Culinary Blog API v1")
+        .WithOpenApiRoutePattern("/openapi/{documentName}.json")
+        .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Fetch));
+    app.MapGet("/scalar", () => Results.Redirect("/scalar/v1", permanent: false)).ExcludeFromDescription();
 }
 
 // FR-JOB-001 / MT-39: Dashboard chỉ chạy ở container "api" (worker đã return ở trên).
@@ -156,15 +167,31 @@ app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.API", version = "
 //   /health/live  → không chạy check nào: process còn sống là 200 (lỗi thì Docker restart container).
 //   /health/ready → chỉ check tag "ready" (PostgreSQL + Redis): 503 thì ngừng chuyển traffic, KHÔNG restart.
 // Đi thẳng qua HealthCheckService, không qua MediatR: Docker gọi mỗi 10 giây nên phải phụ thuộc ít thành phần nhất.
-app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse })
+app.MapGet("/health", (HttpContext context, HealthCheckService healthChecks) => WriteHealthResponseAsync(context, healthChecks, _ => true))
+    .WithName("Health_All")
+    .WithSummary("Tình trạng toàn bộ phụ thuộc")
+    .WithDescription("FR-OBS-001 — SRS §8.7. Kiểm tra PostgreSQL, Redis và MinIO.")
+    .WithTags("Health")
+    .WithMetadata(
+        new ProducesResponseTypeMetadata(StatusCodes.Status200OK, typeof(object), ["application/json"]),
+        new ProducesResponseTypeMetadata(StatusCodes.Status503ServiceUnavailable, typeof(ProblemDetails), ["application/problem+json"]))
     .AllowAnonymous();
-app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false })
+app.MapGet("/health/live", (HttpContext context, HealthCheckService healthChecks) => WriteHealthResponseAsync(context, healthChecks, _ => false))
+    .WithName("Health_Live")
+    .WithSummary("Liveness của tiến trình API")
+    .WithDescription("FR-OBS-001 — SRS §8.7. Trả 200 khi tiến trình còn sống, không gọi phụ thuộc ngoài.")
+    .WithTags("Health")
+    .WithMetadata(
+        new ProducesResponseTypeMetadata(StatusCodes.Status200OK, typeof(object), ["application/json"]))
     .AllowAnonymous();
-app.MapHealthChecks("/health/ready", new HealthCheckOptions
-    {
-        Predicate = check => check.Tags.Contains("ready"),
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-    })
+app.MapGet("/health/ready", (HttpContext context, HealthCheckService healthChecks) => WriteHealthResponseAsync(context, healthChecks, check => check.Tags.Contains("ready")))
+    .WithName("Health_Ready")
+    .WithSummary("Readiness nhận lưu lượng")
+    .WithDescription("FR-OBS-001 — SRS §8.7. Kiểm tra các phụ thuộc gắn tag ready.")
+    .WithTags("Health")
+    .WithMetadata(
+        new ProducesResponseTypeMetadata(StatusCodes.Status200OK, typeof(object), ["application/json"]),
+        new ProducesResponseTypeMetadata(StatusCodes.Status503ServiceUnavailable, typeof(ProblemDetails), ["application/problem+json"]))
     .AllowAnonymous();
 
 var api = app.MapGroup("/api/v1");
@@ -177,6 +204,15 @@ api.MapRecipesGroup()
 api.MapFilesEndpoints();
 
 await app.RunAsync().ConfigureAwait(false);
+
+static async Task WriteHealthResponseAsync(HttpContext context, HealthCheckService healthChecks, Func<HealthCheckRegistration, bool> predicate)
+{
+    var report = await healthChecks.CheckHealthAsync(predicate, context.RequestAborted).ConfigureAwait(false);
+    context.Response.StatusCode = report.Status == HealthStatus.Unhealthy
+        ? StatusCodes.Status503ServiceUnavailable
+        : StatusCodes.Status200OK;
+    await UIResponseWriter.WriteHealthCheckUIResponse(context, report).ConfigureAwait(false);
+}
 
 /// <summary>
 /// Top-level statements sinh ra lớp Program ẩn. Khai báo tường minh để

@@ -1,0 +1,4678 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Culinary Blog API",
+    "description": "REST API theo SRS Culinary Blog v1.2.3, c\u00E1c m\u1EE5c 8.1 \u0111\u1EBFn 8.8.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "M\u00E1y ch\u1EE7 hi\u1EC7n t\u1EA1i"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "T\u00ECnh tr\u1EA1ng to\u00E0n b\u1ED9 ph\u1EE5 thu\u1ED9c",
+        "description": "FR-OBS-001 \u2014 SRS \u00A78.7. Ki\u1EC3m tra PostgreSQL, Redis v\u00E0 MinIO.",
+        "operationId": "Health_All",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/live": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Liveness c\u1EE7a ti\u1EBFn tr\u00ECnh API",
+        "description": "FR-OBS-001 \u2014 SRS \u00A78.7. Tr\u1EA3 200 khi ti\u1EBFn tr\u00ECnh c\u00F2n s\u1ED1ng, kh\u00F4ng g\u1ECDi ph\u1EE5 thu\u1ED9c ngo\u00E0i.",
+        "operationId": "Health_Live",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Readiness nh\u1EADn l\u01B0u l\u01B0\u1EE3ng",
+        "description": "FR-OBS-001 \u2014 SRS \u00A78.7. Ki\u1EC3m tra c\u00E1c ph\u1EE5 thu\u1ED9c g\u1EAFn tag ready.",
+        "operationId": "Health_Ready",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-001 \u2013 \u0110\u0103ng k\u00FD t\u00E0i kho\u1EA3n (role Author, t\u1EF1 \u0111\u1ED9ng \u0111\u0103ng nh\u1EADp)",
+        "description": "FR-AUTH-001 \u2014 SRS \u00A78.1. T\u1EA1o t\u00E0i kho\u1EA3n Author v\u00E0 tr\u1EA3 access/refresh token.",
+        "operationId": "Register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-002 \u2013 \u0110\u0103ng nh\u1EADp Email/M\u1EADt kh\u1EA9u",
+        "description": "FR-AUTH-002 \u2014 SRS \u00A78.1. X\u00E1c th\u1EF1c email/m\u1EADt kh\u1EA9u v\u00E0 t\u1EA1o phi\u00EAn \u0111\u0103ng nh\u1EADp.",
+        "operationId": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "423": {
+            "description": "Locked",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-003 \u2013 \u0110\u0103ng nh\u1EADp ho\u1EB7c \u0111\u0103ng k\u00FD b\u1EB1ng Google ID Token",
+        "description": "FR-AUTH-003 \u2014 SRS \u00A78.1. X\u00E1c minh Google ID token r\u1ED3i \u0111\u0103ng nh\u1EADp ho\u1EB7c t\u1EA1o t\u00E0i kho\u1EA3n.",
+        "operationId": "GoogleLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-004 \u2013 L\u00E0m m\u1EDBi access token (Token Rotation \u002B Reuse Detection)",
+        "description": "FR-AUTH-004 \u2014 SRS \u00A78.1. Xoay refresh token v\u00E0 ph\u00E1t hi\u1EC7n token b\u1ECB t\u00E1i s\u1EED d\u1EE5ng.",
+        "operationId": "RefreshToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-005 \u2013 Thu h\u1ED3i refresh token c\u1EE7a phi\u00EAn hi\u1EC7n t\u1EA1i",
+        "description": "FR-AUTH-005 \u2014 SRS \u00A78.1. Thu h\u1ED3i refresh token \u0111\u01B0\u1EE3c g\u1EEDi trong body.",
+        "operationId": "Logout",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-006 \u2013 H\u1ED3 s\u01A1 c\u1EE7a ng\u01B0\u1EDDi \u0111ang \u0111\u0103ng nh\u1EADp",
+        "description": "FR-AUTH-006 \u2014 SRS \u00A78.1. Tr\u1EA3 h\u1ED3 s\u01A1 v\u00E0 vai tr\u00F2 t\u1EEB ngu\u1ED3n d\u1EEF li\u1EC7u ph\u00EDa server.",
+        "operationId": "GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-007 \u2013 C\u1EADp nh\u1EADt h\u1ED3 s\u01A1 (displayName, avatarUrl, bio)",
+        "description": "FR-AUTH-007 \u2014 SRS \u00A78.1. C\u1EADp nh\u1EADt t\u1EEBng ph\u1EA7n th\u00F4ng tin h\u1ED3 s\u01A1 c\u00F4ng khai.",
+        "operationId": "UpdateCurrentUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/sessions": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-009 \u2013 Danh s\u00E1ch phi\u00EAn \u0111\u0103ng nh\u1EADp c\u1EE7a ch\u00EDnh m\u00ECnh",
+        "description": "FR-AUTH-009 \u2014 SRS \u00A78.1. D\u1EEF li\u1EC7u ri\u00EAng t\u01B0, response kh\u00F4ng \u0111\u01B0\u1EE3c cache.",
+        "operationId": "GetMySessions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SessionDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/sessions/{id}": {
+      "delete": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-009 \u2013 Thu h\u1ED3i m\u1ED9t phi\u00EAn (404 n\u1EBFu kh\u00F4ng t\u1ED3n t\u1EA1i ho\u1EB7c thu\u1ED9c ng\u01B0\u1EDDi kh\u00E1c)",
+        "description": "FR-AUTH-009 \u2014 SRS \u00A78.1. Ch\u1EC9 thu h\u1ED3i phi\u00EAn thu\u1ED9c ng\u01B0\u1EDDi d\u00F9ng hi\u1EC7n t\u1EA1i.",
+        "operationId": "RevokeSession",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/sessions/revoke-all": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-009 \u2013 \u0110\u0103ng xu\u1EA5t tr\u00EAn m\u1ECDi thi\u1EBFt b\u1ECB (k\u1EC3 c\u1EA3 phi\u00EAn hi\u1EC7n t\u1EA1i)",
+        "description": "FR-AUTH-009 \u2014 SRS \u00A78.1. Thu h\u1ED3i to\u00E0n b\u1ED9 phi\u00EAn c\u1EE7a ng\u01B0\u1EDDi d\u00F9ng hi\u1EC7n t\u1EA1i.",
+        "operationId": "RevokeAllSessions",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "FR-AUTH-008 \u2013 Danh s\u00E1ch ng\u01B0\u1EDDi d\u00F9ng (ph\u00E2n trang, t\u00ECm theo email/t\u00EAn, l\u1ECDc isActive)",
+        "description": "FR-AUTH-008 \u2014 SRS \u00A78.1. Admin tra c\u1EE9u v\u00E0 ph\u00E2n trang t\u00E0i kho\u1EA3n.",
+        "operationId": "GetUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 12
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfUserAdminDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}/status": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "FR-AUTH-008 \u2013 Kh\u00F3a / m\u1EDF kh\u00F3a t\u00E0i kho\u1EA3n (kh\u00F3a th\u00EC thu h\u1ED3i m\u1ECDi phi\u00EAn)",
+        "description": "FR-AUTH-008 \u2014 SRS \u00A78.1. Admin thay \u0111\u1ED5i tr\u1EA1ng th\u00E1i v\u00E0 thu h\u1ED3i phi\u00EAn khi kh\u00F3a.",
+        "operationId": "SetUserStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetUserStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserStatusDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "FR-CAT-001 \u2013 Danh s\u00E1ch danh m\u1EE5c (Redis cache 30 ph\u00FAt)",
+        "description": "FR-CAT-001 \u2014 SRS \u00A78.2. Danh s\u00E1ch danh m\u1EE5c c\u00F4ng khai k\u00E8m s\u1ED1 c\u00F4ng th\u1EE9c.",
+        "operationId": "GetCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "FR-CAT-003 \u2013 T\u1EA1o danh m\u1EE5c, slug t\u1EF1 sinh (Admin)",
+        "description": "FR-CAT-003 \u2014 SRS \u00A78.2. Admin t\u1EA1o danh m\u1EE5c v\u1EDBi slug duy nh\u1EA5t.",
+        "operationId": "CreateCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/categories/{slug}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "FR-CAT-002 \u2013 Chi ti\u1EBFt danh m\u1EE5c \u002B c\u00F4ng th\u1EE9c ph\u00E2n trang",
+        "description": "FR-CAT-002 \u2014 SRS \u00A78.2. Chi ti\u1EBFt danh m\u1EE5c v\u00E0 c\u00F4ng th\u1EE9c Published ph\u00E2n trang.",
+        "operationId": "GetCategoryBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 12
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories/{id}": {
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "FR-CAT-004 \u2013 C\u1EADp nh\u1EADt danh m\u1EE5c, slug kh\u00F4ng \u0111\u1ED5i (Admin)",
+        "description": "FR-CAT-004 \u2014 SRS \u00A78.2. Admin c\u1EADp nh\u1EADt metadata nh\u01B0ng gi\u1EEF nguy\u00EAn slug.",
+        "operationId": "UpdateCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "FR-CAT-005 \u2013 X\u00F3a m\u1EC1m danh m\u1EE5c, ch\u1EB7n khi c\u00F2n c\u00F4ng th\u1EE9c (Admin)",
+        "description": "FR-CAT-005 \u2014 SRS \u00A78.2. X\u00F3a m\u1EC1m khi danh m\u1EE5c kh\u00F4ng c\u00F2n c\u00F4ng th\u1EE9c.",
+        "operationId": "DeleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-003 \u2013 T\u1EA1o c\u00F4ng th\u1EE9c \u1EDF tr\u1EA1ng th\u00E1i Draft (k\u00E8m steps?/ingredients? t\u00F9y ch\u1ECDn)",
+        "description": "FR-RCP-003 \u2014 SRS \u00A78.3. T\u1EA1o b\u1EA3n nh\u00E1p, c\u00F3 th\u1EC3 k\u00E8m nguy\u00EAn li\u1EC7u v\u00E0 b\u01B0\u1EDBc n\u1EA5u.",
+        "operationId": "CreateRecipe",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRecipeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-001 \u2013 Danh s\u00E1ch c\u00F4ng th\u1EE9c (ph\u00E2n trang, l\u1ECDc, s\u1EAFp x\u1EBFp)",
+        "description": "FR-RCP-001 \u2014 SRS \u00A78.3. Tr\u1EA3 c\u00F4ng th\u1EE9c Published theo b\u1ED9 l\u1ECDc v\u00E0 ph\u00E2n trang.",
+        "operationId": "GetRecipes",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 12
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/RecipeDifficulty"
+            }
+          },
+          {
+            "name": "maxCookTime",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfRecipeSummaryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recipes/{id}": {
+      "put": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-004 \u2013 C\u1EADp nh\u1EADt c\u00F4ng th\u1EE9c (Optimistic Concurrency: If-Match ho\u1EB7c rowVersion trong body)",
+        "description": "FR-RCP-004 \u2014 SRS \u00A78.3. C\u1EADp nh\u1EADt b\u1EB1ng optimistic concurrency v\u00E0 rowVersion.",
+        "operationId": "UpdateRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRecipeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-007 \u2013 X\u00F3a m\u1EC1m c\u00F4ng th\u1EE9c (d\u1ECDn v\u0129nh vi\u1EC5n sau 30 ng\u00E0y b\u1EDFi FR-JOB-003)",
+        "description": "FR-RCP-007 \u2014 SRS \u00A78.3. X\u00F3a m\u1EC1m v\u00E0 d\u1ECDn v\u0129nh vi\u1EC5n sau 30 ng\u00E0y.",
+        "operationId": "DeleteRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/ingredients": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-009 \u2013 Th\u00EAm nguy\u00EAn li\u1EC7u (quantity s\u1ED1 v\u00E0/ho\u1EB7c quantityText nguy\u00EAn v\u0103n)",
+        "description": "FR-RCP-009 \u2014 SRS \u00A78.6. Th\u00EAm nguy\u00EAn li\u1EC7u v\u00E0o aggregate Recipe.",
+        "operationId": "AddRecipeIngredient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngredientInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeIngredientDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/ingredients/{ingId}": {
+      "put": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-009 \u2013 C\u1EADp nh\u1EADt nguy\u00EAn li\u1EC7u",
+        "description": "FR-RCP-009 \u2014 SRS \u00A78.6. C\u1EADp nh\u1EADt \u0111\u1ECBnh l\u01B0\u1EE3ng v\u00E0 metadata nguy\u00EAn li\u1EC7u.",
+        "operationId": "UpdateRecipeIngredient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngredientInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeIngredientDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-009 \u2013 X\u00F3a nguy\u00EAn li\u1EC7u",
+        "description": "FR-RCP-009 \u2014 SRS \u00A78.6. X\u00F3a nguy\u00EAn li\u1EC7u kh\u1ECFi c\u00F4ng th\u1EE9c.",
+        "operationId": "DeleteRecipeIngredient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/steps": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-010 \u2013 Th\u00EAm b\u01B0\u1EDBc (server g\u00E1n StepNumber = Max \u002B 1)",
+        "description": "FR-RCP-010 \u2014 SRS \u00A78.5. Server t\u1EF1 c\u1EA5p stepNumber li\u00EAn t\u1EE5c.",
+        "operationId": "AddRecipeStep",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StepInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeStepDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/steps/reorder": {
+      "patch": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-010 \u2013 S\u1EAFp x\u1EBFp l\u1EA1i b\u01B0\u1EDBc ({ stepIds: [...] } \u0111\u1EA7y \u0111\u1EE7 theo th\u1EE9 t\u1EF1 m\u1EDBi \u2192 1..N)",
+        "description": "FR-RCP-010 \u2014 SRS \u00A78.5. \u0110\u00E1nh s\u1ED1 l\u1EA1i th\u1EE9 t\u1EF1 trong m\u1ED9t transaction.",
+        "operationId": "ReorderRecipeSteps",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderStepsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeStepDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/steps/{stepId}": {
+      "put": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-010 \u2013 C\u1EADp nh\u1EADt n\u1ED9i dung m\u1ED9t b\u01B0\u1EDBc",
+        "description": "FR-RCP-010 \u2014 SRS \u00A78.5. C\u1EADp nh\u1EADt n\u1ED9i dung, timer v\u00E0 \u1EA3nh c\u1EE7a b\u01B0\u1EDBc.",
+        "operationId": "UpdateRecipeStep",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StepInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeStepDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-010 \u2013 X\u00F3a b\u01B0\u1EDBc (server \u0111\u00E1nh s\u1ED1 l\u1EA1i c\u00E1c b\u01B0\u1EDBc c\u00F2n l\u1EA1i)",
+        "description": "FR-RCP-010 \u2014 SRS \u00A78.5. X\u00F3a b\u01B0\u1EDBc v\u00E0 \u0111\u00E1nh s\u1ED1 l\u1EA1i c\u00E1c b\u01B0\u1EDBc c\u00F2n l\u1EA1i.",
+        "operationId": "DeleteRecipeStep",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/images": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-008 \u2013 T\u1EA3i \u1EA3nh l\u00EAn cho c\u00F4ng th\u1EE9c (multipart: file, altText?, isPrimary?, orderIndex?)",
+        "description": "FR-RCP-008 \u2014 SRS \u00A78.4. L\u01B0u \u1EA3nh g\u1ED1c v\u00E0 x\u1EBFp h\u00E0ng t\u1EA1o c\u00E1c k\u00EDch th\u01B0\u1EDBc nh\u1ECF.",
+        "operationId": "UploadRecipeImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "file": {
+                        "$ref": "#/components/schemas/IFormFile"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "altText": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "isPrimary": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "orderIndex": {
+                        "pattern": "^-?(?:0|[1-9]\\d*)$",
+                        "type": [
+                          "integer",
+                          "string"
+                        ],
+                        "format": "int32"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeImageResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/images/{imageId}": {
+      "patch": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-008 \u2013 C\u1EADp nh\u1EADt metadata \u1EA3nh (altText, isPrimary, orderIndex)",
+        "description": "FR-RCP-008 \u2014 SRS \u00A78.4. C\u1EADp nh\u1EADt metadata v\u00E0 b\u1EA3o \u0111\u1EA3m ch\u1EC9 m\u1ED9t \u1EA3nh ch\u00EDnh.",
+        "operationId": "UpdateRecipeImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRecipeImageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeImageResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-008 \u2013 X\u00F3a \u1EA3nh (t\u1EC7p MinIO x\u00F3a b\u1EA5t \u0111\u1ED3ng b\u1ED9 qua Hangfire)",
+        "description": "FR-RCP-008 \u2014 SRS \u00A78.4. X\u00F3a metadata v\u00E0 d\u1ECDn object b\u1EB1ng background job.",
+        "operationId": "DeleteRecipeImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/mine/{id}": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-004 \u2013 \u0110\u1ECDc ri\u00EAng t\u01B0 m\u1ED9t c\u00F4ng th\u1EE9c \u0111\u1EC3 ch\u1EC9nh s\u1EEDa (no-store)",
+        "description": "CR-2026-04 d \u2014 SRS \u00A78.3. Owner/Admin \u0111\u1ECDc m\u1ECDi tr\u1EA1ng th\u00E1i c\u00F9ng rowVersion.",
+        "operationId": "GetMyRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{slug}": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-002 \u2013 Chi ti\u1EBFt c\u00F4ng th\u1EE9c theo slug",
+        "description": "FR-RCP-002 \u2014 SRS \u00A78.3. Chi ti\u1EBFt c\u00F4ng th\u1EE9c c\u00F4ng khai theo slug.",
+        "operationId": "GetRecipeBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recipes/{id}/publish": {
+      "patch": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-005 \u2013 Xu\u1EA5t b\u1EA3n (Draft \u2192 Published; c\u1EA7n \u2265 1 b\u01B0\u1EDBc v\u00E0 \u2265 1 nguy\u00EAn li\u1EC7u)",
+        "description": "FR-RCP-005 \u2014 SRS \u00A78.3. Xu\u1EA5t b\u1EA3n khi \u0111\u1EE7 nguy\u00EAn li\u1EC7u v\u00E0 b\u01B0\u1EDBc n\u1EA5u.",
+        "operationId": "PublishRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/unpublish": {
+      "patch": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-005 \u2013 H\u1EE7y xu\u1EA5t b\u1EA3n (Published \u2192 Draft)",
+        "description": "FR-RCP-005 \u2014 SRS \u00A78.3. \u0110\u01B0a c\u00F4ng th\u1EE9c Published tr\u1EDF l\u1EA1i Draft.",
+        "operationId": "UnpublishRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/archive": {
+      "patch": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-006 \u2013 L\u01B0u tr\u1EEF (Draft ho\u1EB7c Published \u2192 Archived)",
+        "description": "FR-RCP-006 \u2014 SRS \u00A78.3. L\u01B0u tr\u1EEF c\u00F4ng th\u1EE9c Draft ho\u1EB7c Published.",
+        "operationId": "ArchiveRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}/unarchive": {
+      "patch": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-006 \u2013 Kh\u00F4i ph\u1EE5c t\u1EEB l\u01B0u tr\u1EEF (Archived \u2192 Draft)",
+        "description": "FR-RCP-006 \u2014 SRS \u00A78.3. Kh\u00F4i ph\u1EE5c c\u00F4ng th\u1EE9c Archived v\u1EC1 Draft.",
+        "operationId": "UnarchiveRecipe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/files/upload": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "FR-FILE-001 \u2013 Upload \u1EA3nh (JPEG/PNG/WebP/AVIF, \u2264 5MB, ki\u1EC3m tra magic bytes)",
+        "description": "FR-FILE-001 \u2014 SRS \u00A78.8. Upload \u1EA3nh an to\u00E0n v\u00E0o th\u01B0 m\u1EE5c ri\u00EAng c\u1EE7a ng\u01B0\u1EDDi d\u00F9ng.",
+        "operationId": "UploadFile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/files/{key}": {
+      "delete": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "FR-FILE-002 \u2013 X\u00F3a \u1EA3nh theo object key (idempotent)",
+        "description": "FR-FILE-002 \u2014 SRS \u00A78.8. X\u00F3a object thu\u1ED9c ng\u01B0\u1EDDi d\u00F9ng, thao t\u00E1c idempotent.",
+        "operationId": "DeleteFile",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthorDto": {
+        "required": [
+          "id",
+          "displayName",
+          "avatarUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "AuthResponseDto": {
+        "required": [
+          "accessToken",
+          "refreshToken",
+          "expiresAt",
+          "expiresIn",
+          "user"
+        ],
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresIn": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "description": "FR-AUTH-001 b\u01B0\u1EDBc 12 \u2013 AuthResponseDto."
+      },
+      "CategoryDetailDto": {
+        "required": [
+          "category",
+          "recipes"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryDto"
+          },
+          "recipes": {
+            "$ref": "#/components/schemas/PagedResultOfRecipeSummaryDto"
+          }
+        },
+        "description": "FR-CAT-002 \u2013 { category, recipes: PagedResult }."
+      },
+      "CategoryDto": {
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "description",
+          "imageUrl",
+          "orderIndex",
+          "recipeCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "imageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "recipeCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "FR-CAT-001 \u2013 { id, name, slug, description, imageUrl, recipeCount } (recipeCount ch\u1EC9 \u0111\u1EBFm Published)."
+      },
+      "CategoryRefDto": {
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "CategoryRequest": {
+        "required": [
+          "name",
+          "description",
+          "imageUrl",
+          "orderIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "imageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "Body d\u00F9ng chung cho POST (FR-CAT-003) v\u00E0 PUT (FR-CAT-004) \u2013 SRS \u00A78.2."
+      },
+      "CreateRecipeRequest": {
+        "required": [
+          "title",
+          "description",
+          "categoryId",
+          "prepTime",
+          "cookTime",
+          "servings",
+          "difficulty",
+          "instructions",
+          "nutrition",
+          "steps",
+          "ingredients"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "prepTime": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "cookTime": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "servings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/RecipeDifficulty"
+          },
+          "instructions": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nutrition": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/NutritionInput"
+              }
+            ]
+          },
+          "steps": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/StepInput"
+            }
+          },
+          "ingredients": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/IngredientInput"
+            }
+          }
+        }
+      },
+      "ErrorCode": {
+        "enum": [
+          "AUTH_ACCOUNT_DISABLED",
+          "AUTH_ACCOUNT_LOCKED",
+          "AUTH_EMAIL_EXISTS",
+          "AUTH_GOOGLE_TOKEN_INVALID",
+          "AUTH_GOOGLE_UNAVAILABLE",
+          "AUTH_INVALID_CREDENTIALS",
+          "AUTH_REFRESH_TOKEN_EXPIRED",
+          "AUTH_REFRESH_TOKEN_REVOKED",
+          "AUTH_TOKEN_EXPIRED",
+          "AUTH_TOKEN_INVALID",
+          "AUTH_USER_NOT_FOUND",
+          "CATEGORY_DELETE_HAS_RECIPES",
+          "CATEGORY_NAME_EXISTS",
+          "CATEGORY_NOT_FOUND",
+          "CONCURRENCY_CONFLICT",
+          "FILE_FORBIDDEN",
+          "FILE_MIME_INVALID",
+          "FILE_SIZE_EXCEEDED",
+          "FILE_STORAGE_UNAVAILABLE",
+          "INGREDIENT_QUANTITY_REQUIRED",
+          "INTERNAL_ERROR",
+          "RATE_LIMIT_EXCEEDED",
+          "RECIPE_CONCURRENCY_CONFLICT",
+          "RECIPE_FORBIDDEN",
+          "RECIPE_INVALID_STATE_TRANSITION",
+          "RECIPE_NOT_FOUND",
+          "RECIPE_PUBLISH_INCOMPLETE",
+          "RECIPE_SLUG_EXISTS",
+          "VALIDATION_ERROR"
+        ],
+        "type": "string",
+        "description": "M\u00E3 l\u1ED7i \u1EE9ng d\u1EE5ng trong SRS Ph\u1EE5 l\u1EE5c B."
+      },
+      "FileUploadResultDto": {
+        "required": [
+          "key",
+          "url",
+          "contentType",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "GoogleLoginRequest": {
+        "required": [
+          "idToken"
+        ],
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
+      },
+      "IngredientInput": {
+        "required": [
+          "name",
+          "quantity",
+          "quantityText",
+          "unit",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "quantityText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "unit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "Nguy\u00EAn li\u1EC7u g\u1EEDi l\u00EAn (SRS \u00A78.6): \u0060{ name, quantity?, quantityText?, unit?, notes?, orderIndex? }\u0060. D\u00F9ng CHUNG cho\r\n\u0060POST /recipes/{id}/ingredients\u0060 v\u00E0 m\u1EA3ng inline \u0060ingredients?\u0060 c\u1EE7a \u0060POST /recipes\u0060 \u2014 m\u1ED9t validator, m\u1ED9t\r\nb\u1EA5t bi\u1EBFn Domain, kh\u00F4ng c\u00F3 b\u1EA3n sao th\u1EE9 hai ph\u1EA3i gi\u1EEF \u0111\u1ED3ng b\u1ED9."
+      },
+      "LoginRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "password": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "LogoutRequest": {
+        "required": [
+          "refreshToken"
+        ],
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "NutritionInput": {
+        "required": [
+          "calories",
+          "protein",
+          "carbohydrates",
+          "fat",
+          "fiber",
+          "sodium"
+        ],
+        "type": "object",
+        "properties": {
+          "calories": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "protein": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "carbohydrates": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "fat": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "fiber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "sodium": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "PagedResultOfRecipeSummaryDto": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeSummaryDto"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          }
+        },
+        "description": "FR-RCP-001 / FR-SRCH-004 \u2013 k\u1EBFt qu\u1EA3 ph\u00E2n trang offset."
+      },
+      "PagedResultOfUserAdminDto": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAdminDto"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          }
+        },
+        "description": "FR-RCP-001 / FR-SRCH-004 \u2013 k\u1EBFt qu\u1EA3 ph\u00E2n trang offset."
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RecipeDetailDto": {
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "description",
+          "instructions",
+          "prepTimeMinutes",
+          "cookTimeMinutes",
+          "servings",
+          "difficulty",
+          "status",
+          "category",
+          "author",
+          "nutrition",
+          "steps",
+          "ingredients",
+          "images",
+          "publishedAt",
+          "createdAt",
+          "updatedAt",
+          "rowVersion"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "prepTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "cookTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "servings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/RecipeDifficulty"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RecipeStatus"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryRefDto"
+          },
+          "author": {
+            "$ref": "#/components/schemas/AuthorDto"
+          },
+          "nutrition": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RecipeNutritionDto"
+              }
+            ]
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeStepDto"
+            }
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientDto"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeImageDto"
+            }
+          },
+          "publishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "rowVersion": {
+            "type": "string"
+          },
+          "totalTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "FR-RCP-002 \u2013 to\u00E0n b\u1ED9 nested data c\u1EE7a m\u1ED9t c\u00F4ng th\u1EE9c."
+      },
+      "RecipeDifficulty": {
+        "enum": [
+          "Easy",
+          "Medium",
+          "Hard",
+          "Expert"
+        ],
+        "description": "SRS \u00A77.2 \u2013 smallint: 1=Easy, 2=Medium, 3=Hard, 4=Expert."
+      },
+      "RecipeImageDto": {
+        "required": [
+          "id",
+          "originalUrl",
+          "mediumUrl",
+          "thumbnailUrl",
+          "altText",
+          "isPrimary",
+          "orderIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "originalUrl": {
+            "type": "string"
+          },
+          "mediumUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "thumbnailUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "altText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "RecipeImageResultDto": {
+        "required": [
+          "imageId",
+          "originalUrl",
+          "mediumUrl",
+          "thumbnailUrl",
+          "altText",
+          "isPrimary",
+          "orderIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "imageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "originalUrl": {
+            "type": "string"
+          },
+          "mediumUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "thumbnailUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "altText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "SRS \u00A78.4 \u2013 response \u1EA3nh: \u0060{ imageId, originalUrl, mediumUrl, thumbnailUrl, altText, isPrimary, orderIndex }\u0060."
+      },
+      "RecipeIngredientDto": {
+        "required": [
+          "id",
+          "name",
+          "quantity",
+          "quantityText",
+          "unit",
+          "notes",
+          "orderIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "quantityText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "unit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "SRS \u00A78.6 \u2013 \u0060{ id, name, quantity, quantityText, unit, notes, orderIndex }\u0060 (MT-04: \u0111\u1ECBnh l\u01B0\u1EE3ng hai c\u1ED9t)."
+      },
+      "RecipeNutritionDto": {
+        "required": [
+          "calories",
+          "protein",
+          "carbohydrates",
+          "fat",
+          "fiber",
+          "sodium"
+        ],
+        "type": "object",
+        "properties": {
+          "calories": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "protein": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "carbohydrates": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "fat": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "fiber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "sodium": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "RecipeStatus": {
+        "enum": [
+          "Draft",
+          "Published",
+          "Archived"
+        ],
+        "description": "SRS \u00A77.2 \u2013 smallint: 0=Draft, 1=Published, 2=Archived."
+      },
+      "RecipeStepDto": {
+        "required": [
+          "id",
+          "stepNumber",
+          "title",
+          "description",
+          "timerMinutes",
+          "imageUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stepNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "timerMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RecipeSummaryDto": {
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "description",
+          "prepTimeMinutes",
+          "cookTimeMinutes",
+          "servings",
+          "difficulty",
+          "status",
+          "primaryImageUrl",
+          "category",
+          "author",
+          "publishedAt",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "prepTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "cookTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "servings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/RecipeDifficulty"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RecipeStatus"
+          },
+          "primaryImageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryRefDto"
+          },
+          "author": {
+            "$ref": "#/components/schemas/AuthorDto"
+          },
+          "publishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "Card hi\u1EC3n th\u1ECB trong danh s\u00E1ch (FR-RCP-001, FR-CAT-002)."
+      },
+      "RefreshRequest": {
+        "required": [
+          "refreshToken"
+        ],
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RegisterRequest": {
+        "required": [
+          "displayName",
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "password": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ReorderStepsRequest": {
+        "required": [
+          "stepIds"
+        ],
+        "type": "object",
+        "properties": {
+          "stepIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "SessionDto": {
+        "required": [
+          "id",
+          "createdAt",
+          "createdByIp",
+          "expiresAt",
+          "isCurrent"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdByIp": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isCurrent": {
+            "type": "boolean"
+          }
+        },
+        "description": "SRS \u00A78.1 \u2013 m\u1ED9t phi\u00EAn = m\u1ED9t refresh token c\u00F2n hi\u1EC7u l\u1EF1c. TUY\u1EC6T \u0110\u1ED0I kh\u00F4ng c\u00F3 TokenHash."
+      },
+      "SetUserStatusRequest": {
+        "required": [
+          "isActive",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "StepInput": {
+        "required": [
+          "title",
+          "description",
+          "timerMinutes",
+          "imageUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "timerMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "description": "B\u01B0\u1EDBc g\u1EEDi l\u00EAn (SRS \u00A78.5): \u0060{ title, description, timerMinutes?, imageUrl? }\u0060 \u2014 KH\u00D4NG c\u00F3 stepNumber (MT-03)."
+      },
+      "UpdateProfileRequest": {
+        "required": [
+          "displayName",
+          "avatarUrl",
+          "bio"
+        ],
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "avatarUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "bio": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UpdateRecipeImageRequest": {
+        "required": [
+          "altText",
+          "isPrimary",
+          "orderIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "altText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isPrimary": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateRecipeRequest": {
+        "required": [
+          "title",
+          "description",
+          "categoryId",
+          "prepTime",
+          "cookTime",
+          "servings",
+          "difficulty",
+          "instructions",
+          "nutrition",
+          "rowVersion"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "categoryId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "prepTime": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "cookTime": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "servings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "difficulty": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RecipeDifficulty"
+              }
+            ]
+          },
+          "instructions": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nutrition": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/NutritionInput"
+              }
+            ]
+          },
+          "rowVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserAdminDto": {
+        "required": [
+          "id",
+          "email",
+          "displayName",
+          "avatarUrl",
+          "roles",
+          "isActive",
+          "createdAt",
+          "recipeCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "recipeCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "SRS \u00A78.1 \u2013 \u0060UserAdminDto { id, email, displayName, avatarUrl, roles, isActive, createdAt, recipeCount }\u0060; kh\u00F4ng c\u00F3 PasswordHash/SecurityStamp/UserName."
+      },
+      "UserDto": {
+        "required": [
+          "id",
+          "email",
+          "displayName",
+          "avatarUrl",
+          "bio",
+          "roles"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "bio": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "SRS \u00A78.1 \u2013 \u0060{ id, email, displayName, avatarUrl, bio, roles }\u0060 (D-1, MT-12). Kh\u00F4ng c\u00F3 UserName/PasswordHash/SecurityStamp."
+      },
+      "UserStatusDto": {
+        "required": [
+          "id",
+          "email",
+          "displayName",
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "description": "SRS \u00A78.1 \u2013 response kh\u00F3a/m\u1EDF kh\u00F3a: \u0060{ id, email, displayName, isActive }\u0060."
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Nh\u1EADp access token JWT. Scalar t\u1EF1 th\u00EAm ti\u1EC1n t\u1ED1 Bearer.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Health"
+    },
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Users"
+    },
+    {
+      "name": "Categories"
+    },
+    {
+      "name": "Recipes"
+    },
+    {
+      "name": "Files"
+    }
+  ]
+}
