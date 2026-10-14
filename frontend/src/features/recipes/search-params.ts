@@ -1,4 +1,12 @@
-import type { RecipeDifficulty } from '@/types/api';
+import type { RecipeDifficulty } from '@/types/recipe';
+import type { RecipeQueryState, SortBy, SortOrder } from '@/types/search';
+import {
+  DEFAULT_SORT_BY,
+  DEFAULT_SORT_ORDER,
+  DIFFICULTIES,
+  SORT_FIELDS,
+  SORT_ORDERS,
+} from '@/types/search';
 
 /**
  * FR-SRCH-002/003/004 (Buổi 5 — Dev 3): TOÀN BỘ trạng thái lọc / sắp xếp / phân trang nằm trong `searchParams` của URL —
@@ -7,38 +15,7 @@ import type { RecipeDifficulty } from '@/types/api';
  * nơi nào tự parse hay tự ghép query string theo cách riêng (SRS §3.4: "một specification lọc dùng chung").
  */
 
-/** Whitelist 5 cột sắp xếp (FR-SRCH-003) — khớp `SortMapper` phía backend. */
-export const SORT_FIELDS = ['createdAt', 'publishedAt', 'title', 'cookTime', 'prepTime'] as const;
-export type SortField = (typeof SORT_FIELDS)[number];
-export type SortOrder = 'asc' | 'desc';
-export const SORT_ORDERS: readonly SortOrder[] = ['asc', 'desc'];
-
-/** Mặc định của SRS FR-SRCH-003: mới nhất trước. */
-export const DEFAULT_SORT_BY: SortField = 'createdAt';
-export const DEFAULT_SORT_ORDER: SortOrder = 'desc';
-
-/** FR-SRCH-004: pageSize mặc định 12 (chia hết cho lưới 2/3/4 cột). */
-export const DEFAULT_PAGE_SIZE = 12;
-
-/** FR-SRCH-001: `q` tối thiểu 2 ký tự, dưới ngưỡng này API trả 400. */
-export const MIN_SEARCH_LENGTH = 2;
-
-/** FR-SRCH-002: 4 mức độ khó, gồm cả `Expert`. */
-export const DIFFICULTIES: readonly RecipeDifficulty[] = ['Easy', 'Medium', 'Hard', 'Expert'];
-
 export type RawSearchParams = Record<string, string | string[] | undefined>;
-
-export interface RecipeQueryState {
-  q?: string;
-  page: number;
-  categoryId?: string;
-  difficulty?: RecipeDifficulty;
-  maxCookTime?: number;
-  maxPrepTime?: number;
-  minServings?: number;
-  sortBy?: SortField;
-  sortOrder?: SortOrder;
-}
 
 const GUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_MINUTES = 100_000;
@@ -70,7 +47,7 @@ function parseDifficulty(value: string | undefined): RecipeDifficulty | undefine
   return DIFFICULTIES.find((d) => d.toLowerCase() === value?.toLowerCase());
 }
 
-function parseSortBy(value: string | undefined): SortField {
+function parseSortBy(value: string | undefined): SortBy {
   return SORT_FIELDS.find((f) => f.toLowerCase() === value?.toLowerCase()) ?? DEFAULT_SORT_BY;
 }
 

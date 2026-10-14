@@ -49,7 +49,22 @@ public interface IIdentityService
 
     /// <summary>Xác minh mật khẩu có xử lý lockout: sai 5 lần → khóa 15 phút (FR-AUTH-002 A3).</summary>
     Task<PasswordCheckResult> CheckPasswordAsync(string email, string password, CancellationToken cancellationToken);
+
+    /// <summary>FR-AUTH-004/006: người dùng theo Id (null nếu không còn tồn tại).</summary>
+    Task<IdentityUserInfo?> FindByIdAsync(string userId, CancellationToken cancellationToken);
+
+    /// <summary>FR-AUTH-007: cập nhật hồ sơ qua UserManager.UpdateAsync (null nếu người dùng không còn tồn tại).</summary>
+    Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken);
+
+    /// <summary>FR-AUTH-008: bật/tắt IsActive qua UserManager.UpdateAsync (null nếu người dùng không tồn tại).</summary>
+    Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken);
 }
+
+/// <summary>
+/// PATCH hồ sơ (FR-AUTH-007): <c>null</c> = giữ nguyên trường đó; chuỗi rỗng ở <see cref="AvatarUrl"/>/<see cref="Bio"/>
+/// = xóa giá trị. Email và UserName CỐ Ý không có ở đây — không đổi được qua endpoint này.
+/// </summary>
+public sealed record ProfileChanges(string? DisplayName, string? AvatarUrl, string? Bio);
 
 /// <summary>Dữ liệu đã được Google ký mà hệ thống cần từ ID Token (FR-AUTH-003).</summary>
 public sealed record GoogleIdTokenPayload(string Subject, string? Email, bool EmailVerified, string? Name, string? Picture);
@@ -77,10 +92,13 @@ public sealed record AccessToken(string Token, DateTime ExpiresAt, int ExpiresIn
 
 public sealed record GeneratedRefreshToken(string RawToken, string TokenHash, DateTime ExpiresAt);
 
-/// <summary>Sinh JWT access token (HS256, 15 phút) và refresh token (7 ngày, DB chỉ lưu SHA-256).</summary>
+/// <summary>Sinh JWT access token (HS256, 15 phút) và refresh token (256-bit, 7 ngày, DB chỉ lưu SHA-256).</summary>
 public interface ITokenService
 {
-    AccessToken CreateAccessToken(IdentityUserInfo user);
+    /// <summary>Access token JWT HS256 15 phút cho <paramref name="user"/>.</summary>
+    /// <param name="user">Chủ token.</param>
+    /// <param name="sessionId">Id của RefreshToken phát cùng cặp → claim <c>sid</c> (FR-AUTH-009, đánh dấu "phiên hiện tại").</param>
+    AccessToken CreateAccessToken(IdentityUserInfo user, Guid? sessionId = null);
 
     GeneratedRefreshToken CreateRefreshToken();
 

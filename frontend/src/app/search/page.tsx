@@ -10,12 +10,11 @@ import { splitSearchTerms } from '@/features/recipes/highlight';
 import {
   buildHref,
   countActiveFilters,
-  DEFAULT_PAGE_SIZE,
-  MIN_SEARCH_LENGTH,
   parseSearchState,
   type RawSearchParams,
 } from '@/features/recipes/search-params';
-import type { Category } from '@/types/api';
+import type { Category } from '@/types/category';
+import { DEFAULT_PAGE_SIZE, MIN_SEARCH_LENGTH } from '@/types/search';
 
 // SRS §5.1: /search render SSR
 export const dynamic = 'force-dynamic';

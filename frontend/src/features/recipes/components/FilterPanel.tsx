@@ -3,16 +3,12 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { Filter, X } from 'lucide-react';
-import type { Category, RecipeDifficulty } from '@/types/api';
+import type { Category } from '@/types/category';
+import type { RecipeDifficulty } from '@/types/recipe';
+import type { RecipeQueryState } from '@/types/search';
+import { DIFFICULTIES } from '@/types/search';
 import { DIFFICULTY_LABEL } from '../format';
-import {
-  buildHref,
-  buildQueryString,
-  countActiveFilters,
-  DIFFICULTIES,
-  toOptionalInt,
-  type RecipeQueryState,
-} from '../search-params';
+import { buildHref, buildQueryString, countActiveFilters, toOptionalInt } from '../search-params';
 
 export type FilterField = 'category' | 'difficulty' | 'cookTime' | 'prepTime' | 'servings';
 

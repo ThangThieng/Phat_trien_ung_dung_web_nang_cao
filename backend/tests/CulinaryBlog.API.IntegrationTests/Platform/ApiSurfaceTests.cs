@@ -89,22 +89,6 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
     /// </summary>
     private static readonly (string Method, string Route, string Owner)[] PendingEndpoints =
     [
-        ("POST", "/api/v1/auth/refresh", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-004)"),
-        ("GET", "/api/v1/auth/me", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-006)"),
-        ("PATCH", "/api/v1/auth/me", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-007)"),
-        ("GET", "/api/v1/users", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-008)"),
-        ("PATCH", "/api/v1/users/{id}/status", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-008)"),
-        ("GET", "/api/v1/auth/sessions", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-009)"),
-        ("DELETE", "/api/v1/auth/sessions/{id}", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-009)"),
-        ("POST", "/api/v1/auth/sessions/revoke-all", "Dev 1 — 2314236_HoangBinhQuan_buoiso4 (FR-AUTH-009)"),
-        ("PUT", "/api/v1/recipes/{id}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-004)"),
-        ("POST", "/api/v1/recipes/{id}/ingredients", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-009)"),
-        ("PUT", "/api/v1/recipes/{id}/ingredients/{ingId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-009)"),
-        ("DELETE", "/api/v1/recipes/{id}/ingredients/{ingId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-009)"),
-        ("POST", "/api/v1/recipes/{id}/steps", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
-        ("PUT", "/api/v1/recipes/{id}/steps/{stepId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
-        ("PATCH", "/api/v1/recipes/{id}/steps/reorder", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
-        ("DELETE", "/api/v1/recipes/{id}/steps/{stepId}", "Dev 2 — 2312758_NguyenHongPhucTho_buoiso4 (FR-RCP-010)"),
     ];
 
     [Fact]

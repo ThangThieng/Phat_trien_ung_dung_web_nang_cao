@@ -1,6 +1,9 @@
+using System.Net;
 using Amazon.S3;
 using CulinaryBlog.API.IntegrationTests.Content;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
+using CulinaryBlog.Application.Common.Models;
+using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Infrastructure.Jobs;
 using CulinaryBlog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +52,30 @@ public class ImageResizeJobTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
         Assert.True(await MinioObject.ExistsAsync(s3, image.OriginalUrl), "Ảnh gốc phải được giữ nguyên.");
     }
 
+    /// <summary>
+    /// Buổi 5 — Dev 4 (chuyển từ Buổi 4): card danh sách (<c>RecipeSummaryDto.primaryImageUrl</c>) dùng ThumbnailUrl 300×300,
+    /// và dự phòng OriginalUrl khi job chưa chạy xong — card không bao giờ trống ảnh chỉ vì job còn trong hàng đợi.
+    /// Đọc qua <c>/recipes/mine</c> (no-store) để không dính cache <c>recipes:list</c> 2 phút của danh sách công khai.
+    /// </summary>
+    [Fact]
+    public async Task RecipeCard_UsesOriginalUntilJobRuns_ThenThumbnail()
+    {
+        var author = factory.CreateClientAs("Author");
+        var recipe = await RecipeApi.CreateDraftAsync(author, "Gỏi cuốn tôm thịt");
+        var uploaded = await RecipeApi.UploadImageAsync(author, recipe.Id, JpegPhoto(1200, 900), "image/jpeg", "goi-cuon.jpg");
+        Assert.True(uploaded.IsPrimary, "Ảnh đầu tiên của công thức phải tự thành ảnh chính.");
+
+        Assert.Equal(uploaded.OriginalUrl, await CardImageUrlAsync(author, recipe.Id));
+
+        using var scope = factory.Services.CreateScope();
+        await scope.ServiceProvider.GetRequiredService<ImageResizeJob>().ExecuteAsync(uploaded.ImageId, CancellationToken.None);
+        var image = await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>()
+            .RecipeImages.AsNoTracking().SingleAsync(i => i.Id == uploaded.ImageId);
+
+        Assert.NotNull(image.ThumbnailUrl);
+        Assert.Equal(image.ThumbnailUrl, await CardImageUrlAsync(author, recipe.Id));
+    }
+
     /// <summary>Ảnh bị xóa trước khi job chạy → job kết thúc êm, không ném lỗi (không có gì để thử lại).</summary>
     [Fact]
     public async Task Run_ForDeletedImage_CompletesWithoutError()
@@ -59,6 +86,14 @@ public class ImageResizeJobTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
             scope.ServiceProvider.GetRequiredService<ImageResizeJob>().ExecuteAsync(Guid.NewGuid(), CancellationToken.None));
 
         Assert.Null(exception);
+    }
+
+    private static async Task<string?> CardImageUrlAsync(HttpClient client, Guid recipeId)
+    {
+        var response = await client.GetAsync(new Uri("/api/v1/recipes/mine?pageSize=50", UriKind.Relative));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var page = await response.ReadAsAsync<PagedResult<RecipeSummaryDto>>();
+        return page.Items.Single(r => r.Id == recipeId).PrimaryImageUrl;
     }
 
     private static async Task<Size> DimensionsAsync(IAmazonS3 s3, string url)

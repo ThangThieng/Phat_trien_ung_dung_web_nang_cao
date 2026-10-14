@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, Users } from 'lucide-react';
-import type { RecipeSummary } from '@/types/api';
+import type { RecipeSummary } from '@/types/recipe';
 import { DIFFICULTY_LABEL, DIFFICULTY_STYLE, formatMinutes } from '../format';
 import HighlightText from './HighlightText';
 
 /**
  * Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001).
+ * `primaryImageUrl` là ảnh thu nhỏ do FR-JOB-002 sinh, hoặc ảnh gốc khi job chưa chạy xong — API đã chọn sẵn.
  * `terms` (tùy chọn): từ khóa tìm kiếm đã bỏ dấu để tô sáng trong tiêu đề và mô tả (FR-SRCH-001).
  */
 export default function RecipeCard({

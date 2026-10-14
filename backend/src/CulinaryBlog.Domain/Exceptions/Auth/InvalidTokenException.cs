@@ -20,4 +20,12 @@ public sealed class InvalidTokenException : AuthDomainException
     /// <summary>AUTH_GOOGLE_TOKEN_INVALID — chữ ký, <c>aud</c> hoặc <c>exp</c> của Google ID Token không hợp lệ (FR-AUTH-003 A1, MT-61).</summary>
     public static InvalidTokenException GoogleTokenRejected(Exception? innerException = null) =>
         new(ErrorCodes.AuthGoogleTokenInvalid, "Google ID token không hợp lệ hoặc đã hết hạn.", innerException);
+
+    /// <summary>AUTH_REFRESH_TOKEN_EXPIRED — refresh token quá 7 ngày (FR-AUTH-004 A2); client phải đăng nhập lại.</summary>
+    public static InvalidTokenException RefreshTokenExpired() =>
+        new(ErrorCodes.AuthRefreshTokenExpired, "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+
+    /// <summary>AUTH_REFRESH_TOKEN_REVOKED — refresh token đã bị thu hồi mà vẫn được dùng lại: reuse detection (FR-AUTH-004 A3).</summary>
+    public static InvalidTokenException RefreshTokenRevoked() =>
+        new(ErrorCodes.AuthRefreshTokenRevoked, "Phiên đăng nhập đã bị thu hồi. Vui lòng đăng nhập lại.");
 }

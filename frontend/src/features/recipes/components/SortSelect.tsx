@@ -2,18 +2,11 @@
 
 import { useId } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  buildHref,
-  DEFAULT_SORT_BY,
-  DEFAULT_SORT_ORDER,
-  SORT_FIELDS,
-  SORT_ORDERS,
-  type RecipeQueryState,
-  type SortField,
-  type SortOrder,
-} from '../search-params';
+import type { RecipeQueryState, SortBy, SortOrder } from '@/types/search';
+import { DEFAULT_SORT_BY, DEFAULT_SORT_ORDER, SORT_FIELDS, SORT_ORDERS } from '@/types/search';
+import { buildHref } from '../search-params';
 
-const FIELD_LABEL: Record<SortField, string> = {
+const FIELD_LABEL: Record<SortBy, string> = {
   createdAt: 'Ngày tạo',
   publishedAt: 'Ngày xuất bản',
   title: 'Tên món',
@@ -50,7 +43,7 @@ export default function SortSelect({ pathname, state }: SortSelectProps) {
           value={sortBy}
           onChange={(event) =>
             router.push(
-              buildHref(pathname, state, { sortBy: event.target.value as SortField, page: 1 }),
+              buildHref(pathname, state, { sortBy: event.target.value as SortBy, page: 1 }),
             )
           }
           className={selectClass}

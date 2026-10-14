@@ -52,7 +52,7 @@ public class RecipeTests
     public void Publish_WithoutStepsOrIngredients_Throws()
     {
         var recipe = NewRecipe();
-        recipe.AddIngredient("Thịt bò", 500, "gram");
+        recipe.AddIngredient(new IngredientDetails("Thịt bò", 500, null, "gram", null));
 
         var ex = Assert.Throws<RecipePublishIncompleteException>(() => recipe.Publish(DateTime.UtcNow));
 
@@ -64,7 +64,7 @@ public class RecipeTests
     public void Publish_WithStepAndIngredient_SetsPublishedAt()
     {
         var recipe = NewRecipe();
-        recipe.AddIngredient("Thịt bò", 500, "gram");
+        recipe.AddIngredient(new IngredientDetails("Thịt bò", 500, null, "gram", null));
         recipe.AddStep("Nấu", "...");
         var now = new DateTime(2026, 9, 11, 0, 0, 0, DateTimeKind.Utc);
 

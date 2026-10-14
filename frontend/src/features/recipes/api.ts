@@ -1,29 +1,13 @@
 import { apiFetch } from '@/lib/api-client';
-import type { PagedResult, RecipeDetail, RecipeSearchResult, RecipeSummary } from '@/types/api';
-import type { RecipeQueryState, SortField, SortOrder } from './search-params';
-import { DEFAULT_PAGE_SIZE, DEFAULT_SORT_BY, DEFAULT_SORT_ORDER } from './search-params';
-
-/** FR-RCP-001 / FR-SRCH-002..004 – tham số `GET /recipes`. Sắp xếp là CẶP `sortBy` + `sortOrder` (MT-01, D-10). */
-export interface RecipeListParams {
-  page?: number;
-  pageSize?: number;
-  categoryId?: string;
-  difficulty?: string;
-  maxCookTime?: number;
-  maxPrepTime?: number;
-  minServings?: number;
-  sortBy?: SortField;
-  sortOrder?: SortOrder;
-}
-
-/** FR-SRCH-001 – tham số `GET /recipes/search` (SRS §8.3: chỉ q, page, pageSize, categoryId, difficulty). */
-export interface RecipeSearchParams {
-  q: string;
-  page?: number;
-  pageSize?: number;
-  categoryId?: string;
-  difficulty?: string;
-}
+import type { PagedResult } from '@/types/api';
+import type { RecipeDetail, RecipeSummary } from '@/types/recipe';
+import type {
+  RecipeListParams,
+  RecipeQueryState,
+  RecipeSearchParams,
+  RecipeSearchResult,
+} from '@/types/search';
+import { DEFAULT_PAGE_SIZE, DEFAULT_SORT_BY, DEFAULT_SORT_ORDER } from '@/types/search';
 
 function toQuery(params: object): string {
   const query = new URLSearchParams();
@@ -57,7 +41,7 @@ export function getRecipes(params: RecipeListParams = {}) {
 
 /** FR-SRCH-001 – GET /recipes/search (SSR dynamic; backend cache Redis 1 phút, xếp theo ts_rank). */
 export function searchRecipes(params: RecipeSearchParams) {
-  return apiFetch<PagedResult<RecipeSearchResult>>(`/recipes/search${toQuery(params)}`, {
+  return apiFetch<RecipeSearchResult>(`/recipes/search${toQuery(params)}`, {
     cache: 'no-store',
   });
 }

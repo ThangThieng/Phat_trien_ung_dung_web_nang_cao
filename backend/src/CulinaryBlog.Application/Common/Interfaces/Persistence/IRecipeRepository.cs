@@ -18,4 +18,10 @@ public interface IRecipeRepository : IRepository<Recipe>
 
     /// <summary>Slug đã có công thức CHƯA xóa nào giữ chưa (IDX_Recipe_Slug là partial unique — D-3).</summary>
     Task<bool> SlugExistsAsync(string slug, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// FR-RCP-004 (Buổi 4): đặt RowVersion GỐC mà client đang cầm (If-Match / body) làm giá trị so sánh của câu UPDATE —
+    /// lệch với DB thì SaveChanges ném DbUpdateConcurrencyException → RecipeConcurrencyException (409). Handler không chạm DbContext.
+    /// </summary>
+    void SetOriginalRowVersion(Recipe recipe, byte[] rowVersion);
 }

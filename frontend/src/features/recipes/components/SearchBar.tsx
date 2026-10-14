@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
-import { MIN_SEARCH_LENGTH } from '../search-params';
+import { MIN_SEARCH_LENGTH } from '@/types/search';
 
 const DEBOUNCE_MS = 300;
 

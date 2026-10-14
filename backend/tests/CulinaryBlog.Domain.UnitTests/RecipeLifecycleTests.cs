@@ -102,7 +102,7 @@ public class RecipeLifecycleTests
         var recipe = NewRecipe(withContent: false);
         if (withIngredient)
         {
-            recipe.AddIngredient("Thịt bò", 500, "gram");
+            recipe.AddIngredient(new IngredientDetails("Thịt bò", 500, null, "gram", null));
         }
 
         if (withStep)
@@ -179,7 +179,7 @@ public class RecipeLifecycleTests
         var recipe = Recipe.Create("Phở bò", "pho-bo", "Phở bò Hà Nội nước dùng trong.", Guid.NewGuid(), "author-1", 30, 180, 4, RecipeDifficulty.Hard);
         if (withContent)
         {
-            recipe.AddIngredient("Thịt bò", 500, "gram");
+            recipe.AddIngredient(new IngredientDetails("Thịt bò", 500, null, "gram", null));
             recipe.AddStep("Ninh xương", "Ninh xương bò trong 6 giờ.");
         }
 

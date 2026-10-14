@@ -16,6 +16,7 @@ using Hangfire.Dashboard;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -58,6 +59,22 @@ builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+// Buổi 4 (Dev 1, MT-38): IP thật của client. Nginx gắn X-Forwarded-For; API chỉ tin header này khi request đến từ dải
+// mạng Docker nội bộ (cấu hình được). Không bật thì CreatedByIp của refresh token ghi IP container Nginx — dữ liệu audit
+// sai vĩnh viễn, và danh sách phiên (FR-AUTH-009) hiển thị cùng một IP cho mọi thiết bị.
+// Dùng KnownIPNetworks + System.Net.IPNetwork: KnownNetworks + HttpOverrides.IPNetwork đã lỗi thời trên .NET 10
+// (TreatWarningsAsErrors → gãy build).
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    o.KnownIPNetworks.Clear();
+    o.KnownProxies.Clear();
+    foreach (var cidr in builder.Configuration.GetSection("ForwardedHeaders:TrustedNetworks").Get<string[]>() ?? ["172.16.0.0/12"])
+    {
+        o.KnownIPNetworks.Add(System.Net.IPNetwork.Parse(cidr));
+    }
+});
+
 // NFR-SEC-005: CORS chỉ cho phép origin cấu hình (không wildcard)
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
@@ -95,6 +112,8 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
     await scope.ServiceProvider.GetRequiredService<PerformanceSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false);
 }
 
+// ĐẦU pipeline: mọi middleware phía sau (Authentication, Rate Limiter ở Buổi 6) đều thấy IP thật.
+app.UseForwardedHeaders();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseStatusCodePages();
 app.UseCors();
@@ -140,6 +159,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
 
 var api = app.MapGroup("/api/v1");
 api.MapAuthEndpoints();
+api.MapUsersEndpoints();
 api.MapCategoriesEndpoints();
 api.MapRecipesGroup()
     .MapRecipesEndpoints()

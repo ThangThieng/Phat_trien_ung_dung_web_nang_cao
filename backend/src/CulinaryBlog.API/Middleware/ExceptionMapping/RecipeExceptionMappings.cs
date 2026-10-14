@@ -17,6 +17,9 @@ public sealed class RecipeExceptionMappings : IExceptionStatusMapping
             .Map<RecipeConcurrencyException>(StatusCodes.Status409Conflict)
             .Map<InvalidRecipeStatusException>(StatusCodes.Status409Conflict)
             .Map<RecipeSlugConflictException>(StatusCodes.Status409Conflict)
-            .Map<RecipePublishIncompleteException>(StatusCodes.Status400BadRequest);
+            .Map<RecipePublishIncompleteException>(StatusCodes.Status400BadRequest)
+            .Map<IngredientQuantityRequiredException>(StatusCodes.Status400BadRequest)
+            .Map<RecipeIngredientNotFoundException>(StatusCodes.Status404NotFound)
+            .Map<RecipeStepNotFoundException>(StatusCodes.Status404NotFound);
     }
 }

@@ -146,7 +146,7 @@ public static class TestDataSeeder
             servings: 4,
             difficulty);
 
-        recipe.AddIngredient("Nguyên liệu chính", 500, "g");
+        recipe.AddIngredient(new IngredientDetails("Nguyên liệu chính", 500, null, "g", null));
         recipe.AddStep("Sơ chế", "Rửa sạch và để ráo nguyên liệu.");
 
         if (publishedAt.HasValue)

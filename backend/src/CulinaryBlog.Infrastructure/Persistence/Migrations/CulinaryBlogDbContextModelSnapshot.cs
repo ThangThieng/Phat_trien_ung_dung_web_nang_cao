@@ -314,6 +314,10 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                         .HasPrecision(10, 3)
                         .HasColumnType("numeric(10,3)");
 
+                    b.Property<string>("QuantityText")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<Guid>("RecipeId")
                         .HasColumnType("uuid");
 
@@ -334,7 +338,10 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("IDX_RecipeIngredient_RecipeId");
 
-                    b.ToTable("RecipeIngredients", (string)null);
+                    b.ToTable("RecipeIngredients", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_RecipeIngredient_Quantity", "\"Quantity\" IS NULL OR \"Quantity\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("CulinaryBlog.Domain.Entities.RecipeStep", b =>
@@ -386,7 +393,6 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId", "StepNumber")
-                        .IsUnique()
                         .HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
 
                     b.ToTable("RecipeSteps", null, t =>

@@ -13,10 +13,10 @@ import {
   getCategoriesForAdmin,
   updateCategory,
 } from '@/features/categories/admin-api';
-import type { CategoryPayload } from '@/features/categories/admin-api';
+import type { CreateCategoryRequest } from '@/types/category';
 import { ApiError, getErrorMessage } from '@/lib/api-client';
 import { useAuth } from '@/features/auth/auth-context';
-import type { Category } from '@/types/api';
+import type { Category } from '@/types/category';
 
 type DialogState = { mode: 'create' } | { mode: 'edit'; category: Category } | null;
 
@@ -39,7 +39,7 @@ export default function CategoriesDashboardPage() {
   const refreshCategories = () => queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
 
   const saveMutation = useMutation({
-    mutationFn: (payload: CategoryPayload) =>
+    mutationFn: (payload: CreateCategoryRequest) =>
       dialog?.mode === 'edit'
         ? updateCategory(dialog.category.id, payload, accessToken)
         : createCategory(payload, accessToken),
@@ -151,13 +151,23 @@ export default function CategoriesDashboardPage() {
         <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 bg-white">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Danh sách danh mục công thức</caption>
-            <thead className="bg-gray-50 text-xs uppercase text-gray-500">
+            <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
               <tr>
-                <th scope="col" className="px-4 py-3">Tên</th>
-                <th scope="col" className="px-4 py-3">Đường dẫn</th>
-                <th scope="col" className="px-4 py-3 text-right">Thứ tự</th>
-                <th scope="col" className="px-4 py-3 text-right">Công thức</th>
-                <th scope="col" className="px-4 py-3 text-right">Thao tác</th>
+                <th scope="col" className="px-4 py-3">
+                  Tên
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  Đường dẫn
+                </th>
+                <th scope="col" className="px-4 py-3 text-right">
+                  Thứ tự
+                </th>
+                <th scope="col" className="px-4 py-3 text-right">
+                  Công thức
+                </th>
+                <th scope="col" className="px-4 py-3 text-right">
+                  Thao tác
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -216,8 +226,8 @@ export default function CategoriesDashboardPage() {
               Xóa danh mục?
             </h2>
             <p id="delete-dialog-description" className="mt-2 text-sm text-gray-600">
-              Danh mục <strong>{pendingDelete.name}</strong> sẽ bị ẩn khỏi hệ thống. Nếu vẫn còn công
-              thức thuộc danh mục này, thao tác sẽ bị từ chối.
+              Danh mục <strong>{pendingDelete.name}</strong> sẽ bị ẩn khỏi hệ thống. Nếu vẫn còn
+              công thức thuộc danh mục này, thao tác sẽ bị từ chối.
             </p>
             <div className="mt-6 flex justify-end gap-2">
               <button
@@ -233,7 +243,9 @@ export default function CategoriesDashboardPage() {
                 disabled={deleteMutation.isPending}
                 className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
               >
-                {deleteMutation.isPending && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
+                {deleteMutation.isPending && (
+                  <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
+                )}
                 Xóa danh mục
               </button>
             </div>

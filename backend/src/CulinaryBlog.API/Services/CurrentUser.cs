@@ -16,5 +16,8 @@ public sealed class CurrentUser(IHttpContextAccessor accessor) : ICurrentUser
     /// <summary>IP thật của client — đã qua UseForwardedHeaders khi request đi sau Nginx.</summary>
     public string? IpAddress => accessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
 
+    public Guid? SessionId =>
+        IsAuthenticated && Guid.TryParse(Principal.FindFirst(AppClaimTypes.SessionId)?.Value, out var sid) ? sid : null;
+
     public ClaimsPrincipal Principal => accessor.HttpContext?.User ?? new ClaimsPrincipal(new ClaimsIdentity());
 }

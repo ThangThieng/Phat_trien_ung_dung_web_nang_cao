@@ -110,6 +110,16 @@ public sealed partial class MinioFileStorageService(
         }
     }
 
+    public bool IsStoredFileUrl(string url)
+    {
+        ArgumentNullException.ThrowIfNull(url);
+
+        var prefix = _options.PublicBaseUrl.TrimEnd('/') + "/";
+        return url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+            && url.Length > prefix.Length
+            && !url.Contains("..", StringComparison.Ordinal);
+    }
+
     /// <summary>FR-FILE-002: "trích xuất object name từ URL".</summary>
     private string ToObjectKey(string fileUrlOrKey)
     {

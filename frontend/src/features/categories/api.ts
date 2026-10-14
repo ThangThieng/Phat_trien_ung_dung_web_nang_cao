@@ -1,17 +1,10 @@
 import { apiFetch } from '@/lib/api-client';
-import type { Category, CategoryDetail } from '@/types/api';
-import type { SortField, SortOrder } from '@/features/recipes/search-params';
+import type { Category, CategoryDetail, CategoryDetailParams } from '@/types/category';
+import { DEFAULT_PAGE_SIZE } from '@/types/search';
 
 /** FR-CAT-001 – dữ liệu revalidate mỗi 3600s (SRS §5.1). Backend cache Redis 60 phút. */
 export function getCategories() {
   return apiFetch<Category[]>('/categories', { next: { revalidate: 3600, tags: ['categories'] } });
-}
-
-export interface CategoryDetailParams {
-  page?: number;
-  pageSize?: number;
-  sortBy?: SortField;
-  sortOrder?: SortOrder;
 }
 
 /**
@@ -21,7 +14,7 @@ export interface CategoryDetailParams {
 export function getCategoryBySlug(slug: string, params: CategoryDetailParams = {}) {
   const query = new URLSearchParams({
     page: String(params.page ?? 1),
-    pageSize: String(params.pageSize ?? 12),
+    pageSize: String(params.pageSize ?? DEFAULT_PAGE_SIZE),
   });
   if (params.sortBy) query.set('sortBy', params.sortBy);
   if (params.sortOrder) query.set('sortOrder', params.sortOrder);

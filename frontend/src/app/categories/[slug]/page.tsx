@@ -6,11 +6,8 @@ import Pagination from '@/components/ui/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import SortSelect from '@/features/recipes/components/SortSelect';
 import { getCategoryBySlug } from '@/features/categories/api';
-import {
-  buildHref,
-  parseCategoryState,
-  type RecipeQueryState,
-} from '@/features/recipes/search-params';
+import { buildHref, parseCategoryState } from '@/features/recipes/search-params';
+import type { RecipeQueryState } from '@/types/search';
 import { ApiError } from '@/lib/api-client';
 
 type Params = Promise<{ slug: string }>;

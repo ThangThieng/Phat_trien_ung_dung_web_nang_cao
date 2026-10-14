@@ -11,7 +11,7 @@ import {
   countActiveFilters,
   parseRecipeListState,
 } from '@/features/recipes/search-params';
-import type { Category } from '@/types/api';
+import type { Category } from '@/types/category';
 
 export const metadata: Metadata = {
   title: 'Công thức nấu ăn',

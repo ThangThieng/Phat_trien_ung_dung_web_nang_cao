@@ -2,7 +2,11 @@ using CulinaryBlog.Domain.Common;
 
 namespace CulinaryBlog.Domain.Entities;
 
-/// <summary>SRS §7.4 – nguyên liệu của công thức.</summary>
+/// <summary>
+/// SRS §7.4 – nguyên liệu của công thức; chỉ tạo/sửa qua aggregate <see cref="Recipe"/>. Định lượng hai cột
+/// (<see cref="Quantity"/> số, <see cref="QuantityText"/> nguyên văn) — xem <see cref="IngredientDetails"/>.
+/// Hiển thị ưu tiên QuantityText, không có thì format Quantity + Unit; scale khẩu phần chỉ áp dụng khi có Quantity.
+/// </summary>
 public class RecipeIngredient : BaseEntity
 {
     private RecipeIngredient()
@@ -15,20 +19,31 @@ public class RecipeIngredient : BaseEntity
 
     public decimal? Quantity { get; private set; }
 
+    public string? QuantityText { get; private set; }
+
     public string? Unit { get; private set; }
 
     public string? Notes { get; private set; }
 
     public int OrderIndex { get; private set; }
 
-    public static RecipeIngredient Create(Guid recipeId, string name, decimal? quantity, string? unit, string? notes = null, int orderIndex = 0) =>
-        new()
-        {
-            RecipeId = recipeId,
-            Name = name,
-            Quantity = quantity,
-            Unit = unit,
-            Notes = notes,
-            OrderIndex = orderIndex,
-        };
+    internal static RecipeIngredient Create(Guid recipeId, IngredientDetails details, int orderIndex)
+    {
+        var ingredient = new RecipeIngredient { RecipeId = recipeId };
+        ingredient.Apply(details, orderIndex);
+        return ingredient;
+    }
+
+    internal void Update(IngredientDetails details, int? orderIndex) => Apply(details, orderIndex ?? OrderIndex);
+
+    private void Apply(IngredientDetails details, int orderIndex)
+    {
+        var valid = details.Validated();
+        Name = valid.Name;
+        Quantity = valid.Quantity;
+        QuantityText = valid.QuantityText;
+        Unit = valid.Unit;
+        Notes = valid.Notes;
+        OrderIndex = orderIndex;
+    }
 }
