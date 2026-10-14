@@ -26,11 +26,76 @@ public sealed record RecipeSummaryDto(
     public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
 }
 
+/// <summary>
+/// FR-SRCH-001 — một kết quả tìm kiếm: đúng các trường của <see cref="RecipeSummaryDto"/> cộng <c>relevanceScore</c>
+/// (<c>ts_rank</c>). Khai báo phẳng (không lồng <c>RecipeSummaryDto</c>) để JSON cùng hình dạng với danh sách công khai, và để
+/// Redis đọc lại được bằng constructor vị trí.
+/// </summary>
+public sealed record RecipeSearchResultDto(
+    Guid Id,
+    string Title,
+    string Slug,
+    string Description,
+    int PrepTimeMinutes,
+    int CookTimeMinutes,
+    int Servings,
+    RecipeDifficulty Difficulty,
+    RecipeStatus Status,
+    string? PrimaryImageUrl,
+    CategoryRefDto Category,
+    AuthorDto Author,
+    DateTime? PublishedAt,
+    DateTime CreatedAt,
+    double RelevanceScore)
+{
+    public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
+
+    public static RecipeSearchResultDto From(RecipeSummaryDto summary, double relevanceScore)
+    {
+        ArgumentNullException.ThrowIfNull(summary);
+
+        return new RecipeSearchResultDto(
+            summary.Id,
+            summary.Title,
+            summary.Slug,
+            summary.Description,
+            summary.PrepTimeMinutes,
+            summary.CookTimeMinutes,
+            summary.Servings,
+            summary.Difficulty,
+            summary.Status,
+            summary.PrimaryImageUrl,
+            summary.Category,
+            summary.Author,
+            summary.PublishedAt,
+            summary.CreatedAt,
+            relevanceScore);
+    }
+}
+
+/// <summary>MT-48 / NFR-SEO-003 — một dòng của <c>GET /recipes/sitemap</c>: <c>{ slug, updatedAt }</c> (nguồn <c>lastmod</c>).</summary>
+public sealed record RecipeSitemapEntryDto(string Slug, DateTime UpdatedAt);
+
 public sealed record RecipeNutritionDto(decimal? Calories, decimal? Protein, decimal? Carbohydrates, decimal? Fat, decimal? Fiber, decimal? Sodium);
 
-public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl);
+public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl)
+{
+    public static RecipeStepDto From(CulinaryBlog.Domain.Entities.RecipeStep s)
+    {
+        ArgumentNullException.ThrowIfNull(s);
+        return new(s.Id, s.StepNumber, s.Title, s.Description, s.TimerMinutes, s.ImageUrl);
+    }
+}
 
-public sealed record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? Unit, string? Notes, int OrderIndex);
+/// <summary>SRS §8.6 – <c>{ id, name, quantity, quantityText, unit, notes, orderIndex }</c> (MT-04: định lượng hai cột).</summary>
+public sealed record RecipeIngredientDto(Guid Id, string Name, decimal? Quantity, string? QuantityText, string? Unit, string? Notes, int OrderIndex)
+{
+    public static RecipeIngredientDto From(CulinaryBlog.Domain.Entities.RecipeIngredient i)
+    {
+        ArgumentNullException.ThrowIfNull(i);
+        return new(i.Id, i.Name, i.Quantity, i.QuantityText, i.Unit, i.Notes, i.OrderIndex);
+    }
+}
 
 public sealed record RecipeImageDto(Guid Id, string OriginalUrl, string? MediumUrl, string? ThumbnailUrl, string? AltText, bool IsPrimary, int OrderIndex);
 
@@ -40,7 +105,7 @@ public sealed record RecipeDetailDto(
     string Title,
     string Slug,
     string Description,
-    string Instructions,
+    string? Instructions,
     int PrepTimeMinutes,
     int CookTimeMinutes,
     int Servings,

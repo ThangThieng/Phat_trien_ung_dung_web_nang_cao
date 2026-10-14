@@ -1,14 +1,5 @@
+import type { ProblemDetails } from '@/types/api';
 import { getApiBaseUrl } from './config';
-
-/** RFC 7807 Problem Details do backend trả về (type = Application Error Code – SRS Phụ lục B). */
-export interface ProblemDetails {
-  type?: string;
-  title?: string;
-  status?: number;
-  detail?: string;
-  errors?: Record<string, string[]>;
-  [key: string]: unknown;
-}
 
 export class ApiError extends Error {
   readonly status: number;
@@ -37,6 +28,52 @@ export interface ApiRequestOptions {
   next?: NextFetchRequestConfig;
   cache?: RequestCache;
   signal?: AbortSignal;
+  skipAuthRefresh?: boolean;
+}
+
+interface AuthCallbacks {
+  getAccessToken: () => string | null;
+  refresh: () => Promise<string>;
+  onRefreshFailure: () => void;
+}
+
+let authCallbacks: AuthCallbacks | null = null;
+let refreshPromise: Promise<string> | null = null;
+
+export function configureAuthCallbacks(callbacks: AuthCallbacks | null) {
+  authCallbacks = callbacks;
+}
+
+/** Shared by JSON fetch and progress uploads; only refresh failures invalidate the session. */
+export async function withAuthRefresh<T>(
+  request: (token: string | null) => Promise<T>,
+  accessToken: string | null,
+  skipAuthRefresh = false,
+): Promise<T> {
+  try {
+    return await request(accessToken);
+  } catch (error) {
+    const callbacks = authCallbacks;
+    if (!(error instanceof ApiError) || error.status !== 401 || !callbacks) throw error;
+    if (error.code === 'AUTH_TOKEN_INVALID' && accessToken) callbacks.onRefreshFailure();
+    if (error.code !== 'AUTH_TOKEN_EXPIRED' || skipAuthRefresh) throw error;
+    // A late 401 may belong to the previous token after another request already refreshed it.
+    let renewedToken = callbacks.getAccessToken();
+    if (!renewedToken || renewedToken === accessToken) {
+      refreshPromise ??= Promise.resolve().then(() => callbacks.refresh())
+        .catch((refreshError: unknown) => {
+          callbacks.onRefreshFailure();
+          throw refreshError;
+        }).finally(() => { refreshPromise = null; });
+      try {
+        renewedToken = await refreshPromise;
+      } catch {
+        throw error;
+      }
+    }
+    // Outside the refresh catch: business/network failures must reach the caller unchanged.
+    return withAuthRefresh(request, renewedToken, true);
+  }
 }
 
 async function parseProblem(response: Response): Promise<ProblemDetails> {
@@ -49,25 +86,55 @@ async function parseProblem(response: Response): Promise<ProblemDetails> {
 
 /** Gọi Backend REST API (/api/v1). Lỗi HTTP → ném ApiError chứa Problem Details. */
 export async function apiFetch<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' };
-  if (options.body !== undefined) headers['Content-Type'] = 'application/json';
-  if (options.accessToken) headers.Authorization = `Bearer ${options.accessToken}`;
+  const accessToken = options.accessToken !== undefined ? options.accessToken : authCallbacks?.getAccessToken() ?? null;
+  return withAuthRefresh(async (token) => {
+    const headers: Record<string, string> = { Accept: 'application/json' };
+    if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+    if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    method: options.method ?? 'GET',
-    headers,
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    next: options.next,
-    cache: options.cache,
-    signal: options.signal,
+    const response = await fetch(`${getApiBaseUrl()}${path}`, {
+      method: options.method ?? 'GET',
+      headers,
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      next: options.next,
+      cache: options.cache,
+      signal: options.signal,
+    });
+
+    if (!response.ok) {
+      const problem = await parseProblem(response);
+      throw new ApiError(response.status, problem);
+    }
+
+    if (response.status === 204) return undefined as T;
+    return (await response.json()) as T;
+  }, accessToken, options.skipAuthRefresh);
+}
+
+/** Hàm setError của react-hook-form (thu hẹp để lib/ không phụ thuộc react-hook-form). */
+type SetFieldError<TField extends string> = (field: TField, error: { message: string }) => void;
+
+/**
+ * D-11 / MT-08: lỗi validation của Backend trả **400** kèm `errors{}` (RFC 7807).
+ * Ánh xạ `errors{}` → từng ô của form, chỉ nhận những field mà form khai báo.
+ * Trả về `true` nếu đã xử lý (form đã hiện lỗi từng ô), `false` nếu caller cần hiện lỗi chung.
+ */
+export function mapProblemDetailsToForm<TField extends string>(
+  error: unknown,
+  fields: readonly TField[],
+  setError: SetFieldError<TField>,
+): boolean {
+  if (!(error instanceof ApiError) || error.status !== 400) return false;
+
+  const entries = Object.entries(error.fieldErrors).filter(([field]) =>
+    (fields as readonly string[]).includes(field),
+  );
+  if (entries.length === 0) return false;
+
+  entries.forEach(([field, messages]) => {
+    if (messages[0]) setError(field as TField, { message: messages[0] });
   });
-
-  if (!response.ok) {
-    throw new ApiError(response.status, await parseProblem(response));
-  }
-
-  if (response.status === 204) return undefined as T;
-  return (await response.json()) as T;
+  return true;
 }
 
 /** Thông báo thân thiện cho lỗi mạng / lỗi 5xx (không lộ chi tiết kỹ thuật – NFR-USE-003). */

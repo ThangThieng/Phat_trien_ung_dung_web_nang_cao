@@ -25,7 +25,7 @@ public static class FilesEndpoints
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
-        group.MapDelete("/{**fileId}", DeleteAsync)
+        group.MapDelete("/{**key}", DeleteAsync)
             .WithName("DeleteFile")
             .WithSummary("FR-FILE-002 – Xóa ảnh theo object key (idempotent)")
             .Produces(StatusCodes.Status204NoContent)
@@ -41,9 +41,10 @@ public static class FilesEndpoints
         return Results.Created(result.Url, result);
     }
 
-    private static async Task<IResult> DeleteAsync(string fileId, ISender sender, CancellationToken ct)
+    /// <summary>SRS §8.8: <c>DELETE /files/{**key}</c> — catch-all vì object key chứa "/" (uploads/{userId}/{guid}.ext).</summary>
+    private static async Task<IResult> DeleteAsync(string key, ISender sender, CancellationToken ct)
     {
-        await sender.Send(new DeleteFileCommand(Uri.UnescapeDataString(fileId)), ct).ConfigureAwait(false);
+        await sender.Send(new DeleteFileCommand(Uri.UnescapeDataString(key)), ct).ConfigureAwait(false);
         return Results.NoContent();
     }
 }

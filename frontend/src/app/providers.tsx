@@ -4,13 +4,13 @@ import type { ReactNode } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'sonner';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from '@/features/auth/auth-context';
 import { getQueryClient } from '@/lib/query-client';
 
 export default function Providers({ children }: { children: ReactNode }) {
   const queryClient = getQueryClient();
-
-  return (
+  const content = (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         {children}
@@ -19,4 +19,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
+
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  return googleClientId ? <GoogleOAuthProvider clientId={googleClientId}>{content}</GoogleOAuthProvider> : content;
 }

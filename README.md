@@ -824,7 +824,7 @@ Lab 7/8 giao lại tính năng nào đã có thì buổi đó **nâng cấp lên
      - **gỡ `next-auth`** (0 chỗ dùng — SRS đã bỏ Auth.js ở MT-11).
   2. **Kiểm chứng `ky` ngay:** option `next.revalidate` tới được `fetch`; Jest biên dịch được `ky` (`transformIgnorePatterns`).
   3. **Commit nền:** tách `types/api.ts` thành 5 file.
-  4. **`types/api.ts`:** `PagedResult`, `ProblemDetails`, `ValidationProblemDetails`, **`ERROR_CODES`** (đủ mã Phụ lục B) → `ErrorCode`, `UploadedFile`.
+  4. **`types/api.ts`:** `PagedResult`, `ProblemDetails`, `ValidationProblemDetails`, **`ERROR_CODES`** (29 mã Backend đang có; mã thứ 30 của SRS v1.2.3 thêm ở Buổi 7 cùng API — Quân) → `ErrorCode`, `UploadedFile`.
   5. **`types/auth.ts`:** `ROLES`, `User`, `AuthResponse`, các request đăng nhập/đăng ký/Google/refresh/hồ sơ, `Session`, `UserAdmin`, `UserListParams`, `SetUserStatusRequest`, kiểu của CR-2026-05 (`ChangePasswordRequest`, `ForgotPasswordRequest`, `ResetPasswordRequest`).
   6. **`error-codes.test.ts`:** đọc `ErrorCodes.cs`, so tập hợp với `ERROR_CODES` → lệch là đỏ.
 - **Vì sao:**
@@ -1000,7 +1000,7 @@ Không đưa dữ liệu server vào Zustand.
      - **`POST /auth/change-password`:** sai mật khẩu hiện tại → 400 ở ô `currentPassword`; tài khoản Google chưa có mật khẩu → 400; thành công **thu hồi mọi phiên khác** (giữ phiên hiện tại nhờ claim `sid`).
      - **`POST /auth/forgot-password`:** **luôn 202**; job Hangfire chỉ nhận `userId`, worker tự sinh token (30 phút, dùng một lần) và gửi email qua MailKit.
      - **`POST /auth/reset-password`:** một mã lỗi `AUTH_PASSWORD_RESET_TOKEN_INVALID` cho mọi token hỏng; thành công thu hồi **mọi** phiên và xóa khóa đăng nhập sai.
-     - Thêm mã vào `ErrorCodes.cs` (Thiêng duyệt) + `ERROR_CODES`/`ERROR_MESSAGES`; `ApiSurfaceTests` → **48**.
+     - Thêm mã vào `ErrorCodes.cs` (Thiêng duyệt) + `ERROR_CODES`/`ERROR_MESSAGES`, gỡ mã khỏi `PendingSrsCodes` của kiểm thử kiến trúc; `ApiSurfaceTests` → **48**.
   2. **Nâng cấp form đăng nhập/đăng ký:** shadcn `Form` + Zod, `GuestOnly`, `callbackUrl` an toàn. Đăng xuất: `POST /auth/logout` → xóa store → `queryClient.clear()`.
   3. **Trang `/auth/forgot-password`:** cùng một thông báo cho mọi email.
   4. **Trang `/auth/reset-password`:** xóa token khỏi thanh địa chỉ ngay khi đọc; `noindex` + `no-referrer`.

@@ -52,6 +52,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | FluentValidation.DependencyInjectionExtensions | 12.1.1 | CONS-008 | ✅ |
 | Microsoft.Extensions.Logging.Abstractions | 10.0.12 | ILogger cho LoggingBehavior (SRS §6.3) | ✅ *(thêm ở Buổi 2)* |
 | Microsoft.Extensions.Identity.Stores | 10.0.12 | ASP.NET Core Identity (UserManager trong handler) | ✅ |
+| Microsoft.AspNetCore.Authorization | 10.0.12 | Resource-based authorization ở tầng Application — `RecipeAuthorizationHandler` (NFR-SEC-006) | ✅ *(thêm ở Buổi 4 — bù nền Buổi 3 của module Recipe)* |
 
 ### 2.3 Tầng Infrastructure
 | Gói thư viện | Phiên bản | Mục đích theo SRS | Trạng thái |
@@ -64,6 +65,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Microsoft.Extensions.Caching.StackExchangeRedis | 10.0.12 | Redis 7 distributed cache (StackExchange.Redis) | ✅ |
 | AWSSDK.S3 | 4.0.103.1 | MinIO S3-compatible (§5.3) | ✅ |
 | MailKit | 4.17.0 | Welcome email (FR-JOB-001) | ✅ |
+| System.Security.Cryptography.Pkcs | 10.0.13 | Không dùng trực tiếp — ghim phụ thuộc bắc cầu MailKit → MimeKit (bản 10.0.0 dính GHSA-846f-f764-76mx, GHSA-2fmv-rv2c-59x7, vá ở 10.0.13) | ➕📌 *(thêm ở Buổi 5 — NuGet audit 13/10/2026)* |
 | Hangfire.Core | 1.8.25 | Background jobs (§3.6) | ✅ |
 | Hangfire.PostgreSql | 1.21.1 | Hangfire storage trên PostgreSQL | ✅ |
 | Bogus | 35.6.5 | tạo mẫu (seed) 50 recipe / 5 tác giả (§2.6.1) | ✅ |
@@ -71,6 +73,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | AspNetCore.HealthChecks.NpgSql | 9.0.0 | FR-OBS-001 | ✅ |
 | AspNetCore.HealthChecks.Redis | 9.0.0 | FR-OBS-001 | ✅ |
 | SixLabors.ImageSharp | **3.1.12** | Resize ảnh 800×600 / 300×300 (FR-JOB-002) | ➕📌 xem 6.2 |
+| RedLock.net | 2.3.2 | Distributed lock (RedLock trên Redis) cho FR-JOB-003 Permanent Purge Job — NFR-SCALE-001 chỉ định RedLock | ✅ *(thêm ở Buổi 4)* |
 
 ### 2.4 Tầng API (Presentation)
 | Gói thư viện | Phiên bản | Mục đích theo SRS | Trạng thái |
@@ -78,7 +81,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.12 | JWT Bearer | ✅ |
 | Microsoft.AspNetCore.OpenApi | 10.0.12 | OpenAPI document | ✅ |
 | Scalar.AspNetCore | 2.17.3 | Scalar UI tại `/scalar` | ✅ |
-| Microsoft.AspNetCore.OutputCaching.StackExchangeRedis | 10.0.12 | Output Cache "RecipeList"/"RecipeDetail" (FR-RCP-001/002) lưu trên Redis – distributed (NFR-SCALE-001) | ✅ *(thêm ở Buổi 2)* |
+| ~~Microsoft.AspNetCore.OutputCaching.StackExchangeRedis~~ | ~~10.0.12~~ | **Đã gỡ ở Buổi 4 (Dev 3, retrofit D-6 — MT-16/MT-34):** Output Cache không được dùng (NFR-PERF-003); cache duy nhất là Redis cache-aside qua `CachingBehavior` | ❌ *(thêm ở Buổi 2, gỡ ở Buổi 4)* |
 | Hangfire.AspNetCore | 1.8.25 | Dashboard `/hangfire` | ✅ |
 | Serilog.AspNetCore | 10.0.0 | Structured logging (CONS-010), gồm Console + File sink | ✅ |
 | Serilog.Sinks.Seq | 9.1.0 | Seq (dev) | ✅ |
@@ -120,10 +123,13 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | react-hook-form | 7.87.0 | React Hook Form | ✅ |
 | zod | 4.6.2 | Zod | ✅ |
 | @hookform/resolvers | 5.9.1 | Kết nối RHF ↔ Zod | ✅ |
-| next-auth | 5.0.0-beta.32 | **Auth.js v5** (Google OAuth PKCE) — theo SRS v1.0.0 | ⚠️ SRS v1.1.0 (MT-11) đã thay luồng này bằng Google Identity Services (`@react-oauth/google`, Buổi 3); `git grep next-auth frontend/src` = 0 chỗ dùng → **dự kiến gỡ ở Buổi 5** (xem 6.12) |
+| zustand | 5.0.15 | — (Lab 5; store phiên đăng nhập phía client `stores/auth-store.ts`, dùng từ Buổi 6) | ➕ cài ở Buổi 5 — Dev 4 (xem 6.12) |
+| ky | 2.2.0 | — (Lab 5 cho chọn `axios`/`ky`; lớp gọi API bọc `fetch`, thay `apiFetch` ở Buổi 6) | ➕ cài ở Buổi 5 — Dev 4 (xem 6.12) |
 | sonner | 2.0.8 | Toast notification (NFR-USE-004) | ➕ |
 | clsx / tailwind-merge | 2.1.1 / 3.6.0 | Gộp className Tailwind | ➕ |
 | lucide-react | 1.44.0 | Icon | ➕ |
+
+> **Đã gỡ ở Buổi 5 (Dev 4):** `next-auth` 5.0.0-beta.32 (Auth.js v5, cài ở Buổi 2 theo SRS v1.0.0). SRS v1.1.0 (MT-11) đã thay luồng này bằng Google Identity Services (`@react-oauth/google`, Buổi 3); trước khi gỡ, `git grep next-auth frontend/src` = 0 chỗ dùng (xem 6.12).
 
 **Chất lượng mã & kiểm thử**
 | Gói thư viện | Phiên bản | SRS | Trạng thái |
@@ -144,21 +150,20 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | @axe-core/playwright | 4.13.0 | Kiểm tra WCAG 2.1 AA (NFR-USE-002) | ✅ |
 | @lhci/cli | 0.15.1 | Lighthouse CI (NFR-PERF-005) | ✅ |
 
-### 3.1 Gói thư viện dự kiến bổ sung ở Buổi 5 → 8 (chưa cài — theo yêu cầu Lab 5 → Lab 8, 12/10/2026)
+### 3.1 Gói thư viện dự kiến bổ sung ở Buổi 6 → 8 và gói Backend của Buổi 5 (theo yêu cầu Lab 5 → Lab 8, 12/10/2026)
 
+> `zustand`, `ky` (cài) và `next-auth` (gỡ) đã xong ở Buổi 5 — Dev 4, xem bảng chính §3.
+>
 > Bảng này ghi **phiên bản mới nhất trên npm/NuGet ngày 12/10/2026** để cả nhóm cài cùng một bản. Khi cài xong, chuyển dòng tương ứng lên bảng chính (§2.4 hoặc §3) với **phiên bản thực tế** lấy từ `package-lock.json` / `*.csproj`. Mọi gói dưới đây là **bổ sung (➕)** — SRS không chỉ định công cụ cho các việc này, nên không có công nghệ nào của SRS bị thay thế. Lý do chọn: mục 6.12.
 
 | Gói thư viện | Phiên bản (12/10/2026) | Dùng cho | Buổi — Dev | Trạng thái |
 |---|---|---|---|---|
-| `zustand` | 5.0.15 | Store phiên đăng nhập phía client (`stores/auth-store.ts`) | B5 cài (Dev 4) · B6 dùng (Dev 1) | ➕ |
-| `ky` | 2.2.0 | Lớp gọi API bọc `fetch` (`lib/api-client.ts`) | B5 cài (Dev 4) · B6 dùng (Dev 4) | ➕ (Lab cho chọn `axios`/`ky` — xem 6.12) |
 | `shadcn` (CLI, không phải phụ thuộc runtime) | 4.21.4 | Chép component vào `components/ui/` | B6 (Dev 2) | ➕ |
 | `radix-ui` | 1.8.0 | Hành vi & accessibility của component shadcn (Dialog, DropdownMenu, Select, Tabs…) | B6 (Dev 2, cài qua CLI) | ➕ |
 | `class-variance-authority` | 0.7.1 | Biến thể (variant) của component shadcn | B6 (Dev 2, cài qua CLI) | ➕ |
 | `tw-animate-css` | 1.4.0 | Hiệu ứng mở/đóng của component shadcn trên Tailwind v4 | B6 (Dev 2, cài qua CLI) | ➕ |
 | `Asp.Versioning.Http` | 10.2.3 | API versioning theo URL `/api/v{version}` cho Minimal APIs | B5 (Dev 1) | ➕ |
 | `Asp.Versioning.OpenApi` | 10.2.3 | Tài liệu OpenAPI theo phiên bản cho Scalar `/scalar/v1` | B5 (Dev 1, Dev 2) | ➕ |
-| `next-auth` | — | — | **gỡ** ở B5 (Dev 4) | ❌ (xem 6.12) |
 | k6 (công cụ, chạy bằng Docker image `grafana/k6`, không phải gói npm) | ghim tag khi chạy | Load test (NFR-PERF-001/002) | B8 (Dev 4) | ✅ (SRS NFR-PERF-001/002 chỉ định *"k6 smoke test → load test → stress test"*) |
 
 ---
@@ -173,7 +178,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | frontend | culinaryblog-web (build) | Node **22.23.2** | Node 22 LTS (khuyến nghị) | 3000:3000 |
 | postgres | postgres:16-alpine | PostgreSQL **16.15** | PostgreSQL 16 | `${POSTGRES_HOST_PORT:-5432}`:5432 – máy này dùng **5434** (xem 6.10) |
 | redis | redis:7-alpine | Redis **7.4.11** (AOF bật) | Redis 7 | 6379:6379 |
-| minio | minio/minio:latest | RELEASE.**2025-09-07** | MinIO RELEASE.2024+ | 9000, 9001 (console) |
+| minio | quay.io/minio/minio | RELEASE.**2025-09-07T16-13-09Z** (ghim) | MinIO RELEASE.2024+ | 9000, 9001 (console) |
 | seq | datalust/seq:latest | latest | Seq | 5341:80 |
 | mailhog | mailhog/mailhog | latest (profile `dev`) | Mailhog (dev only) | 8025, 1025 |
 
@@ -208,6 +213,16 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Bối cảnh:** SRS (FR-JOB-002) yêu cầu tạo ảnh medium 800×600 và ảnh thu nhỏ (thumbnail) 300×300 nhưng **không chỉ định thư viện**, nên đây là thư viện bổ sung.
 - **Thay đổi:** ban đầu cài bản 4.1.1, sau đó hạ về **3.1.12**.
 - **Lý do:** bản 4.x làm build báo lỗi *"No Six Labors license found"* nếu thiếu license key. Vì dự án bật `TreatWarningsAsErrors`, lỗi này làm hỏng build. Bản 3.1.x dùng **Six Labors Split License**: miễn phí cho dự án mã nguồn mở, học tập và doanh nghiệp doanh thu dưới 1 triệu USD, không cần key.
+- **Cảnh báo bảo mật 07/10/2026 (quyết định của trưởng nhóm 14/10/2026 — giữ 3.1.12):** NuGet audit báo 5 advisory cho mọi bản ≤ 4.1.1 (vá ở 4.1.2). Vì `TreatWarningsAsErrors`, mọi lần `dotnet restore` mới — kể cả `docker compose build` — đều gãy. Kiểm lại ngày 14/10/2026: bản 4.1.3 vẫn đòi license key khi build **Release** (Debug chỉ cảnh báo), nên không nâng. Thay vào đó `backend/Directory.Build.props` miễn trừ **từng** advisory bằng `NuGetAuditSuppress` (không hạ `NuGetAuditLevel` — advisory mới vẫn làm build đỏ), vì không đường nào của hệ thống chạm tới code lỗi:
+
+  | Advisory | Chỗ lỗi | Vì sao không chạm tới |
+  |---|---|---|
+  | GHSA-jjfr-hcj7-qf5w, GHSA-j9gm-c75j-xc9q (cao) | Encoder TIFF CCITT T6/T4 | Hệ thống chỉ mã hóa WebP |
+  | GHSA-j3p4-wp97-rph4 (cao) | `HistogramEqualization` | Không gọi ở đâu |
+  | GHSA-wmxv-xphr-5c9g (trung bình) | Decoder BigTIFF lặp vô hạn | `ImageResizeJob` chỉ nạp decoder JPEG/PNG/WebP; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` thay object gốc trên MinIO bằng TIFF hợp lệ → job không giải mã (bỏ giới hạn thì test đỏ — đã thử) |
+  | GHSA-gwg2-r3hj-4w44 (trung bình) | Đọc CLUT trong ICC profile | Quét IL của 3.1.12: chỉ `IccWriter.Write` → `IccProfile.Entries` mới đọc CLUT, và `IccProfile.ToByteArray()` chỉ gọi `IccWriter.Write` khi profile được dựng bằng code; profile đọc từ ảnh (`new IccProfile(byte[])`) được sao chép nguyên byte. Vì vậy không cần `SkipMetadata` — giữ EXIF orientation của ảnh chụp bằng điện thoại |
+
+  Gỡ khối miễn trừ khi chuyển sang một bản đã vá.
 
 ### 6.3 ESLint – dùng ESLint 8.57.1 (không dùng ESLint 9) để giữ bộ luật Airbnb 📌
 - **Yêu cầu SRS (NFR-MAINT-001):** "TypeScript/React: ESLint (**Airbnb ruleset**), Prettier". Đây là yêu cầu được **giữ nguyên**.
@@ -235,6 +250,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 ### 6.6 Jest config dùng `.mjs` thay vì `.ts`
 - **Lý do:** Jest cần thêm gói thư viện `ts-node` mới đọc được `jest.config.ts`. Dùng `jest.config.mjs` thì không phải cài thêm phụ thuộc. Công cụ vẫn là Jest.
+- **Buổi 5 — biên dịch gói ESM thuần (`ky`):** `next/jest` luôn chèn mẫu `/node_modules/(?!.pnpm)(?!(geist)/)` vào `transformIgnorePatterns`. Jest bỏ qua file khớp **bất kỳ** mẫu nào, nên chỉ thêm `'/node_modules/(?!ky/)'` như hướng dẫn thường gặp là **không đủ** (đã thử: vẫn lỗi *"Must use import to load ES Module"*). `jest.config.mjs` vì vậy xuất một hàm async: dựng cấu hình bằng `next/jest` rồi **thay** mẫu `node_modules` của nó bằng `/node_modules/(?!(ky)/)` (danh sách `ESM_PACKAGES`). Không đổi `next.config.ts` (`transpilePackages`) vì đó là cấu hình build production, không phải của kiểm thử.
 
 ### 6.7 Font Inter (subset `vietnamese`) thay font Geist mặc định
 - **Lý do:** font Geist do `create-next-app` sinh ra **không có subset tiếng Việt**, nên dấu hiển thị bằng font dự phòng, lệch và gây layout shift (ảnh hưởng CLS, NFR-PERF-005). Inter có subset `vietnamese`. SRS không chỉ định font.
@@ -254,7 +270,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 ### 6.12 Gói bổ sung theo yêu cầu Lab 5 → Lab 8 (12/10/2026) ➕
 - **Bối cảnh:** yêu cầu tối thiểu Lab 5 → Lab 8 của giảng viên nêu tên `zustand`, `axios`/`ky`, shadcn/ui và API Versioning. SRS chỉ định Next.js + TypeScript + Tailwind + TanStack Query + React Hook Form + Zod cho Frontend và không chỉ định công cụ cho state phía client, thư viện gọi HTTP, thư viện component hay versioning — nên đây đều là **bổ sung**, không thay thế công nghệ nào của SRS.
-- **`ky` thay vì `axios`:** Next.js App Router gắn Data Cache và ISR (`next: { revalidate }`) vào hàm `fetch`. `axios` dùng `XMLHttpRequest` (trình duyệt) và module `http` (Node), không đi qua `fetch`, nên mọi trang Server Component gọi qua `axios` mất `revalidate` — quy tắc "ISR ≤ TTL cache API" (SRS §5.1, NFR-PERF-003) không còn cơ chế thực thi. `ky` bọc `fetch`, giữ nguyên option của Next.js. Hai điểm phải kiểm chứng ngay khi cài (kế hoạch Buổi 5 — Dev 4): option `next` tới được `fetch`; Jest biên dịch được `ky` (gói ESM thuần → `transformIgnorePatterns`).
+- **`ky` thay vì `axios`:** Next.js App Router gắn Data Cache và ISR (`next: { revalidate }`) vào hàm `fetch`. `axios` dùng `XMLHttpRequest` (trình duyệt) và module `http` (Node), không đi qua `fetch`, nên mọi trang Server Component gọi qua `axios` mất `revalidate` — quy tắc "ISR ≤ TTL cache API" (SRS §5.1, NFR-PERF-003) không còn cơ chế thực thi. `ky` bọc `fetch`, giữ nguyên option của Next.js. Hai điểm phải kiểm chứng ngay khi cài (kế hoạch Buổi 5 — Dev 4) — **đã đạt** (`frontend/src/lib/ky-next-fetch.test.ts`): (1) `ky.get(url, { next: { revalidate: 300, tags } })` → `fetch` toàn cục nhận đúng `init.next` (ky chuyển option lạ sang tham số thứ hai của `fetch`, đúng chỗ Next.js đọc); kiểu của `ky` cũng nhận `next` không cần ép kiểu vì Next.js mở rộng `RequestInit` toàn cục. (2) Jest biên dịch được `ky` — xem 6.6.
 - **shadcn/ui không vi phạm NFR-USE-001** (*"Tailwind CSS utility-first, không sử dụng CSS framework override"*): component shadcn viết bằng chính class Tailwind và được chép vào repo, không mang CSS framework riêng.
 - **Gỡ `next-auth`:** gói này được cài ở Buổi 2 theo SRS v1.0.0 (Auth.js v5 xử lý callback PKCE). SRS v1.1.0 (MT-11, Change Request CR-2026 đã duyệt) đổi sang **ID Token flow** với Google Identity Services, đã hiện thực bằng `@react-oauth/google` ở Buổi 3; `next-auth` không còn chỗ nào dùng. Gỡ gói không dùng là việc dọn dẹp theo SRS hiện hành, **không phải thay công nghệ** — công nghệ của SRS v1.0.0 đã được chính quy trình CR thay trước đó.
 - **Cài bằng npm 10** (`npx npm@10 install …`) theo mục 6.5 để lockfile tương thích container.

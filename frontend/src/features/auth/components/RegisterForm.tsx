@@ -6,15 +6,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import FormField from '@/components/ui/FormField';
-import { ApiError, getErrorMessage } from '@/lib/api-client';
+import { ApiError, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import { useAuth } from '../auth-context';
 import { registerSchema, type RegisterFormValues } from '../schemas';
 
-const FIELDS = ['fullName', 'email', 'userName', 'password'] as const;
-type ServerField = (typeof FIELDS)[number];
-
-const isServerField = (field: string): field is ServerField =>
-  (FIELDS as readonly string[]).includes(field);
+const FIELDS = ['displayName', 'email', 'password'] as const;
 
 export default function RegisterForm() {
   const { register: registerAccount } = useAuth();
@@ -29,7 +25,7 @@ export default function RegisterForm() {
   const onSubmit = handleSubmit(async ({ confirmPassword: _confirm, ...values }) => {
     try {
       const user = await registerAccount(values);
-      toast.success(`Đăng ký thành công! Chào mừng ${user.fullName}. Email chào mừng đã được gửi.`);
+      toast.success(`Đăng ký thành công! Chào mừng ${user.displayName}. Email chào mừng đã được gửi.`);
       router.replace('/recipes');
     } catch (error) {
       if (error instanceof ApiError) {
@@ -37,17 +33,9 @@ export default function RegisterForm() {
           setError('email', { message: error.message });
           return;
         }
-        if (error.code === 'AUTH_USERNAME_EXISTS') {
-          setError('userName', { message: error.message });
-          return;
-        }
-        if (error.status === 422) {
-          Object.entries(error.fieldErrors).forEach(([field, messages]) => {
-            if (isServerField(field)) setError(field, { message: messages[0] });
-          });
-          return;
-        }
       }
+      // D-11: lỗi validation là 400 (không còn 422) – dùng helper chung
+      if (mapProblemDetailsToForm(error, FIELDS, setError)) return;
       setError('root', { message: getErrorMessage(error) });
     }
   });
@@ -63,10 +51,10 @@ export default function RegisterForm() {
         </div>
       )}
       <FormField
-        label="Họ và tên"
+        label="Tên hiển thị"
         autoComplete="name"
-        error={errors.fullName?.message}
-        {...register('fullName')}
+        error={errors.displayName?.message}
+        {...register('displayName')}
       />
       <FormField
         label="Email"
@@ -74,13 +62,6 @@ export default function RegisterForm() {
         autoComplete="email"
         error={errors.email?.message}
         {...register('email')}
-      />
-      <FormField
-        label="Tên đăng nhập"
-        autoComplete="username"
-        hint="3–50 ký tự: chữ, số, dấu chấm, gạch dưới."
-        error={errors.userName?.message}
-        {...register('userName')}
       />
       <FormField
         label="Mật khẩu"

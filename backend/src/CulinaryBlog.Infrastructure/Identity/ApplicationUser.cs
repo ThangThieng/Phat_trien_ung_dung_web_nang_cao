@@ -8,7 +8,7 @@ namespace CulinaryBlog.Infrastructure.Identity;
 /// </summary>
 public class ApplicationUser : IdentityUser
 {
-    /// <summary>Tên hiển thị công khai (FullName trong API).</summary>
+    /// <summary>Tên hiển thị công khai.</summary>
     public string DisplayName { get; set; } = string.Empty;
 
     public string? AvatarUrl { get; set; }
@@ -20,10 +20,10 @@ public class ApplicationUser : IdentityUser
 
     public DateTime CreatedAt { get; set; }
 
-    public static ApplicationUser Create(string fullName, string email, string userName, DateTime createdAt) =>
+    public static ApplicationUser Create(string displayName, string email, string userName, DateTime createdAt) =>
         new()
         {
-            DisplayName = fullName,
+            DisplayName = displayName,
             Email = email,
             UserName = userName,
             IsActive = true,

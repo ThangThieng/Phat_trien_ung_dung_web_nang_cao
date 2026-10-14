@@ -30,11 +30,20 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
+    environment:
+      # nginx.conf.template → envsubst → /etc/nginx/nginx.conf lúc khởi động (FR-JOB-001 / MT-39).
+      # FILTER giới hạn phạm vi thay thế ở các biến HANGFIRE_*, giữ nguyên biến của Nginx ($host, $remote_addr…).
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+      NGINX_ENVSUBST_FILTER: "^HANGFIRE_"
+      HANGFIRE_GATE_SECRET: ${HANGFIRE_GATE_SECRET}
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      # Sinh trước khi "docker compose up": ./nginx/generate-htpasswd.sh (hoặc .ps1). KHÔNG commit (NFR-SEC-007).
+      - ./nginx/.htpasswd:/etc/nginx/.htpasswd:ro
     depends_on:
-      - api
-      - frontend
+      # FR-OBS-001: chỉ nhận traffic khi API đã sẵn sàng (/health/ready trả 200), không chỉ "container đã chạy"
+      api: { condition: service_healthy }
+      frontend: { condition: service_started }
     restart: unless-stopped
 
   api:
@@ -49,6 +58,8 @@ services:
       Hangfire__WorkerOnly: "false"
       # Job do container "hangfire" xử lý; API chỉ enqueue
       Hangfire__ServerEnabled: "false"
+      # Lớp bảo vệ thứ hai của Dashboard: chỉ request mang header X-Hangfire-Gate khớp secret mới vào được
+      Hangfire__DashboardGateSecret: ${HANGFIRE_GATE_SECRET}
       Database__MigrateOnStartup: "true"
       Seed__Enabled: "true"
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
@@ -59,6 +70,15 @@ services:
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
       minio: { condition: service_healthy }
+    healthcheck:
+      # FR-OBS-001 / NFR-REL-001: readiness = PostgreSQL + Redis (tag "ready"). Lỗi → container "unhealthy": Nginx ngừng
+      # chuyển traffic tới nó nhưng Docker KHÔNG khởi động lại (lỗi nằm ở phụ thuộc, không ở process API).
+      # curl được cài ở stage runtime của backend/Dockerfile (aspnet:10.0 không có sẵn).
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   # Hangfire worker: cùng image API, chỉ chạy BackgroundJobServer (SRS §3.6, NFR-SCALE-001)
@@ -80,9 +100,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-http://localhost:5000/api/v1}
+        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-/api/v1}
         NEXT_PUBLIC_SITE_URL: ${SITE_URL:-http://localhost:3000}
         NEXT_PUBLIC_MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     image: culinaryblog-web
     ports:
       - "3000:3000"
@@ -95,6 +116,13 @@ services:
       REVALIDATE_SECRET: ${REVALIDATE_SECRET}
     depends_on:
       - api
+    healthcheck:
+      # node:22-alpine không có curl — dùng wget của busybox (SRS v1.2.0 §6.5 — MT-51)
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   postgres:
@@ -131,7 +159,9 @@ services:
     restart: unless-stopped
 
   minio:
-    image: minio/minio:latest
+    # quay.io + tag ghim: repository "minio/minio" trên Docker Hub đã bị gỡ (pull trả "pull access denied
+    # ... repository does not exist"), nên "minio/minio:latest" không còn kéo được trên máy mới.
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     command: server /data --console-address ":9001"
     ports:
       - "9000:9000"
