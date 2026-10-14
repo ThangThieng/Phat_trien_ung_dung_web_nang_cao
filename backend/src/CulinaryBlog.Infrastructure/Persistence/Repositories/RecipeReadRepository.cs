@@ -2,7 +2,9 @@ using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
+using CulinaryBlog.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Repositories;
 
@@ -57,6 +59,61 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
         return new PagedResult<RecipeSummaryDto>(items, total, criteria.Page, criteria.PageSize);
     }
 
+    public async Task<PagedResult<RecipeSummaryDto>> GetMinePagedAsync(string authorId, RecipeStatus? status, int page, int pageSize, RecipeSortField sortBy, bool descending, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
+        var query = db.Recipes.AsNoTracking().Where(recipe => recipe.AuthorId == authorId);
+        if (status.HasValue)
+        {
+            query = query.Where(recipe => recipe.Status == status.Value);
+        }
+
+        var total = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+        var items = await ProjectSummaries(ApplySorting(query, sortBy, descending).Skip((page - 1) * pageSize).Take(pageSize))
+            .ToListAsync(cancellationToken).ConfigureAwait(false);
+        return new PagedResult<RecipeSummaryDto>(items, total, page, pageSize);
+    }
+
+    public async Task<PagedResult<RecipeSearchResultDto>> SearchPublishedAsync(string tsQuery, int page, int pageSize, Guid? categoryId, RecipeDifficulty? difficulty, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tsQuery);
+        var query = db.Recipes.AsNoTracking().Where(recipe => recipe.Status == RecipeStatus.Published);
+        if (categoryId.HasValue)
+        {
+            query = query.Where(recipe => recipe.CategoryId == categoryId.Value);
+        }
+
+        if (difficulty.HasValue)
+        {
+            query = query.Where(recipe => recipe.Difficulty == difficulty.Value);
+        }
+
+        var matches = query.Where(recipe => EF.Property<NpgsqlTsVector>(recipe, RecipeConfiguration.SearchVectorColumn)
+            .Matches(EF.Functions.ToTsQuery(RecipeConfiguration.TextSearchConfig, tsQuery)));
+        var total = await matches.CountAsync(cancellationToken).ConfigureAwait(false);
+        var ranked = await matches.Select(recipe => new
+        {
+            recipe.Id,
+            recipe.PublishedAt,
+            Rank = EF.Property<NpgsqlTsVector>(recipe, RecipeConfiguration.SearchVectorColumn)
+                    .Rank(EF.Functions.ToTsQuery(RecipeConfiguration.TextSearchConfig, tsQuery)),
+        })
+            .OrderByDescending(item => item.Rank).ThenByDescending(item => item.PublishedAt).ThenBy(item => item.Id)
+            .Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken).ConfigureAwait(false);
+        var ids = ranked.Select(item => item.Id).ToList();
+        var summaries = await ProjectSummaries(db.Recipes.AsNoTracking().Where(recipe => ids.Contains(recipe.Id)))
+            .ToDictionaryAsync(item => item.Id, cancellationToken).ConfigureAwait(false);
+        var items = ranked.Where(item => summaries.ContainsKey(item.Id))
+            .Select(item => RecipeSearchResultDto.From(summaries[item.Id], item.Rank)).ToList();
+        return new PagedResult<RecipeSearchResultDto>(items, total, page, pageSize);
+    }
+
+    public async Task<IReadOnlyList<RecipeSitemapEntryDto>> GetPublishedSitemapAsync(CancellationToken cancellationToken) =>
+        await db.Recipes.AsNoTracking().Where(recipe => recipe.Status == RecipeStatus.Published)
+            .OrderBy(recipe => recipe.Slug)
+            .Select(recipe => new RecipeSitemapEntryDto(recipe.Slug, recipe.UpdatedAt ?? recipe.PublishedAt ?? recipe.CreatedAt))
+            .ToListAsync(cancellationToken).ConfigureAwait(false);
+
     public async Task<(RecipeDetailDto Recipe, string AuthorId)?> GetBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Slug == slug, cancellationToken).ConfigureAwait(false);
@@ -73,6 +130,23 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
         var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Id == id, cancellationToken).ConfigureAwait(false);
         return recipe is null ? null : await ToDetailAsync(recipe, cancellationToken).ConfigureAwait(false);
     }
+
+    private IQueryable<RecipeSummaryDto> ProjectSummaries(IQueryable<Recipe> query) =>
+        query.Join(db.Users, recipe => recipe.AuthorId, user => user.Id, (recipe, user) => new RecipeSummaryDto(
+            recipe.Id,
+            recipe.Title,
+            recipe.Slug,
+            recipe.Description,
+            recipe.PrepTimeMinutes,
+            recipe.CookTimeMinutes,
+            recipe.Servings,
+            recipe.Difficulty,
+            recipe.Status,
+            recipe.Images.Where(image => image.IsPrimary).Select(image => image.ThumbnailUrl ?? image.OriginalUrl).FirstOrDefault(),
+            new CategoryRefDto(recipe.CategoryId, recipe.Category!.Name, recipe.Category.Slug),
+            new AuthorDto(user.Id, user.DisplayName, user.AvatarUrl),
+            recipe.PublishedAt,
+            recipe.CreatedAt));
 
     private IQueryable<Recipe> DetailQuery() =>
         db.Recipes

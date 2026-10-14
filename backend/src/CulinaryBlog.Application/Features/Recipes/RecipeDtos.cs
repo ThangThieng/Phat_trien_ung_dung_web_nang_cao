@@ -26,6 +26,47 @@ public sealed record RecipeSummaryDto(
     public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
 }
 
+/// <summary>FR-SRCH-001: kết quả tìm kiếm giữ hình dạng của card công khai và thêm điểm liên quan.</summary>
+public sealed record RecipeSearchResultDto(
+    Guid Id,
+    string Title,
+    string Slug,
+    string Description,
+    int PrepTimeMinutes,
+    int CookTimeMinutes,
+    int Servings,
+    RecipeDifficulty Difficulty,
+    RecipeStatus Status,
+    string? PrimaryImageUrl,
+    CategoryRefDto Category,
+    AuthorDto Author,
+    DateTime? PublishedAt,
+    DateTime CreatedAt,
+    double RelevanceScore)
+{
+    public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
+
+    public static RecipeSearchResultDto From(RecipeSummaryDto item, double rank) => new(
+        item.Id,
+        item.Title,
+        item.Slug,
+        item.Description,
+        item.PrepTimeMinutes,
+        item.CookTimeMinutes,
+        item.Servings,
+        item.Difficulty,
+        item.Status,
+        item.PrimaryImageUrl,
+        item.Category,
+        item.Author,
+        item.PublishedAt,
+        item.CreatedAt,
+        rank);
+}
+
+/// <summary>NFR-SEO-003: nguồn slug đầy đủ cho sitemap của Next.js.</summary>
+public sealed record RecipeSitemapEntryDto(string Slug, DateTime UpdatedAt);
+
 public sealed record RecipeNutritionDto(decimal? Calories, decimal? Protein, decimal? Carbohydrates, decimal? Fat, decimal? Fiber, decimal? Sodium);
 
 public sealed record RecipeStepDto(Guid Id, int StepNumber, string Title, string Description, int? TimerMinutes, string? ImageUrl)

@@ -22,6 +22,7 @@ public sealed partial class OpenApiDocumentTests(OpenApiTestFactory factory) : I
         var operations = GetOperations(document.RootElement).ToArray();
         var endpoints = DocumentedEndpoints().ToArray();
 
+        Assert.Equal(45, operations.Length);
         Assert.Equal(endpoints.Length, operations.Length);
         Assert.Equal(operations.Length, operations.Select(item => item.Operation.GetProperty("operationId").GetString()).Distinct(StringComparer.Ordinal).Count());
 

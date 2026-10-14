@@ -2402,6 +2402,234 @@
         ]
       }
     },
+    "/api/v1/recipes/mine": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-RCP-011 \u2013 Danh s\u00E1ch c\u00F4ng th\u1EE9c ri\u00EAng t\u01B0 c\u1EE7a t\u00F4i",
+        "description": "FR-RCP-011 \u2014 SRS \u00A78.3. Tr\u1EA3 Draft, Published, Archived c\u1EE7a ch\u00EDnh Author; kh\u00F4ng cache.",
+        "operationId": "GetMyRecipes",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/RecipeStatus"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 12
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfRecipeSummaryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recipes/search": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "FR-SRCH-001 \u2013 T\u00ECm ki\u1EBFm to\u00E0n v\u0103n c\u00F4ng th\u1EE9c Published",
+        "description": "FR-SRCH-001 \u2014 SRS \u00A78.3. T\u00ECm ti\u1EBFng Vi\u1EC7t kh\u00F4ng d\u1EA5u, x\u1EBFp theo ts_rank v\u00E0 ph\u00E2n trang.",
+        "operationId": "SearchRecipes",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 12
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/RecipeDifficulty"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfRecipeSearchResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recipes/sitemap": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "NFR-SEO-003 \u2013 Danh s\u00E1ch slug Published cho sitemap",
+        "description": "NFR-SEO-003 \u2014 SRS \u00A78.3. Tr\u1EA3 to\u00E0n b\u1ED9 slug v\u00E0 updatedAt, cache Redis m\u1ED9t gi\u1EDD.",
+        "operationId": "GetRecipeSitemap",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeSitemapEntryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/recipes/mine/{id}": {
       "get": {
         "tags": [
@@ -3546,6 +3774,62 @@
           }
         }
       },
+      "PagedResultOfRecipeSearchResultDto": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeSearchResultDto"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          }
+        },
+        "description": "FR-RCP-001 / FR-SRCH-004 \u2013 k\u1EBFt qu\u1EA3 ph\u00E2n trang offset."
+      },
       "PagedResultOfRecipeSummaryDto": {
         "required": [
           "items",
@@ -4069,6 +4353,128 @@
             "format": "double"
           }
         }
+      },
+      "RecipeSearchResultDto": {
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "description",
+          "prepTimeMinutes",
+          "cookTimeMinutes",
+          "servings",
+          "difficulty",
+          "status",
+          "primaryImageUrl",
+          "category",
+          "author",
+          "publishedAt",
+          "createdAt",
+          "relevanceScore"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "prepTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "cookTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "servings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/RecipeDifficulty"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RecipeStatus"
+          },
+          "primaryImageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryRefDto"
+          },
+          "author": {
+            "$ref": "#/components/schemas/AuthorDto"
+          },
+          "publishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "relevanceScore": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?(?:[eE][\u002B-]?\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalTimeMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "FR-SRCH-001: k\u1EBFt qu\u1EA3 t\u00ECm ki\u1EBFm gi\u1EEF h\u00ECnh d\u1EA1ng c\u1EE7a card c\u00F4ng khai v\u00E0 th\u00EAm \u0111i\u1EC3m li\u00EAn quan."
+      },
+      "RecipeSitemapEntryDto": {
+        "required": [
+          "slug",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "NFR-SEO-003: ngu\u1ED3n slug \u0111\u1EA7y \u0111\u1EE7 cho sitemap c\u1EE7a Next.js."
       },
       "RecipeStatus": {
         "enum": [

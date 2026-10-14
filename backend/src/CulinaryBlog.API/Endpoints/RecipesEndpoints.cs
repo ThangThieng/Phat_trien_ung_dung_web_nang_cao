@@ -154,6 +154,29 @@ public static class RecipesEndpoints
             .Produces<PagedResult<RecipeSummaryDto>>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
+        group.MapGet("/mine", GetMyRecipesAsync)
+            .RequireAuthorization(AuthorizationPolicies.Author)
+            .WithName("GetMyRecipes")
+            .WithSummary("FR-RCP-011 – Danh sách công thức riêng tư của tôi")
+            .WithDescription("FR-RCP-011 — SRS §8.3. Trả Draft, Published, Archived của chính Author; không cache.")
+            .Produces<PagedResult<RecipeSummaryDto>>()
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status403Forbidden);
+
+        group.MapGet("/search", SearchRecipesAsync)
+            .WithName("SearchRecipes")
+            .WithSummary("FR-SRCH-001 – Tìm kiếm toàn văn công thức Published")
+            .WithDescription("FR-SRCH-001 — SRS §8.3. Tìm tiếng Việt không dấu, xếp theo ts_rank và phân trang.")
+            .Produces<PagedResult<RecipeSearchResultDto>>()
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+
+        group.MapGet("/sitemap", GetRecipeSitemapAsync)
+            .WithName("GetRecipeSitemap")
+            .WithSummary("NFR-SEO-003 – Danh sách slug Published cho sitemap")
+            .WithDescription("NFR-SEO-003 — SRS §8.3. Trả toàn bộ slug và updatedAt, cache Redis một giờ.")
+            .Produces<IReadOnlyList<RecipeSitemapEntryDto>>();
+
         // Endpoint riêng tư: Draft/Archived tuyệt đối không đi qua GET /{slug} công khai và cache chung.
         group.MapGet("/mine/{id:guid}", GetMyRecipeAsync)
             .RequireAuthorization(AuthorizationPolicies.Author)
@@ -295,6 +318,35 @@ public static class RecipesEndpoints
 
     private static async Task<IResult> GetRecipeBySlugAsync(string slug, ISender sender, CancellationToken ct) =>
         Results.Ok(await sender.Send(new GetRecipeBySlugQuery(slug), ct).ConfigureAwait(false));
+
+    private static async Task<IResult> GetMyRecipesAsync(
+        HttpContext http,
+        ISender sender,
+        CancellationToken ct,
+        RecipeStatus? status = null,
+        int page = 1,
+        int pageSize = 12,
+        string? sort = null,
+        string? sortBy = null,
+        string? sortOrder = null,
+        Guid? authorId = null)
+    {
+        http.Response.Headers.CacheControl = "no-store";
+        return Results.Ok(await sender.Send(new GetMyRecipesQuery(status, page, pageSize, sort, sortBy, sortOrder, authorId), ct).ConfigureAwait(false));
+    }
+
+    private static async Task<IResult> SearchRecipesAsync(
+        ISender sender,
+        CancellationToken ct,
+        string? q = null,
+        int page = 1,
+        int pageSize = 12,
+        Guid? categoryId = null,
+        RecipeDifficulty? difficulty = null) =>
+        Results.Ok(await sender.Send(new SearchRecipesQuery(q ?? string.Empty, page, pageSize, categoryId, difficulty), ct).ConfigureAwait(false));
+
+    private static async Task<IResult> GetRecipeSitemapAsync(ISender sender, CancellationToken ct) =>
+        Results.Ok(await sender.Send(new GetRecipeSitemapQuery(), ct).ConfigureAwait(false));
 
     private static async Task<IResult> GetMyRecipeAsync(Guid id, HttpContext http, ISender sender, CancellationToken ct)
     {

@@ -149,15 +149,18 @@ if (builder.Configuration.GetValue<bool>("OpenApi:Enabled"))
 
 // FR-JOB-001 / MT-39: Dashboard chỉ chạy ở container "api" (worker đã return ở trên).
 // Hai lớp bảo vệ: Basic Auth tại Nginx + header X-Hangfire-Gate do Nginx gắn (NginxGateDashboardFilter).
-app.MapHangfireDashboard(
-    builder.Configuration.GetValue("Hangfire:DashboardPath", "/hangfire") ?? "/hangfire",
-    new DashboardOptions
+if (builder.Configuration.GetValue("Hangfire:DashboardEnabled", true))
+{
+    app.MapHangfireDashboard(
+        builder.Configuration.GetValue("Hangfire:DashboardPath", "/hangfire") ?? "/hangfire",
+        new DashboardOptions
     {
         Authorization = [new NginxGateDashboardFilter(builder.Configuration["Hangfire:DashboardGateSecret"] ?? string.Empty)],
         DisplayStorageConnectionString = false,
         DashboardTitle = "Culinary Blog – Background Jobs",
         IsReadOnlyFunc = _ => false,
     });
+}
 
 app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.API", version = "v1", docs = "/scalar" }))
     .ExcludeFromDescription();
