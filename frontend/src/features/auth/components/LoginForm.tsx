@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import FormField from '@/components/ui/FormField';
+import FormField from '@/components/shared/FormField';
 import { getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import { useAuth } from '../auth-context';
 import { loginSchema, type LoginFormValues } from '../schemas';
@@ -73,7 +73,9 @@ export default function LoginForm() {
       >
         {isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
       </button>
-      <GoogleSignIn onSuccess={() => router.replace(safeCallbackUrl(searchParams.get('callbackUrl')))} />
+      <GoogleSignIn
+        onSuccess={() => router.replace(safeCallbackUrl(searchParams.get('callbackUrl')))}
+      />
       <p className="text-center text-sm text-gray-600">
         Chưa có tài khoản?{' '}
         <Link href="/auth/register" className="font-medium text-orange-700 hover:underline">

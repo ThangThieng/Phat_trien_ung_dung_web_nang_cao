@@ -5,12 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2, X } from 'lucide-react';
-import FormField from '@/components/ui/FormField';
-import ImageUploader from '@/components/ui/ImageUploader';
+import FormField from '@/components/shared/FormField';
+import ImageUploader from '@/components/shared/ImageUploader';
 import { ApiError, getErrorMessage } from '@/lib/api-client';
 import type { UploadedFile } from '@/types/api';
-import type { Category } from '@/types/category';
-import type { CreateCategoryRequest } from '@/types/category';
+import type { Category, CreateCategoryRequest } from '@/types/category';
 
 /**
  * Mirror đúng validator backend (SRS §7.9 – MT-37): name 2–100, description ≤ 2000, imageUrl ≤ 500 và là URL hợp lệ.

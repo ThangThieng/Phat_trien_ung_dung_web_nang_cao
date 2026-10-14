@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
-import Pagination from '@/components/ui/Pagination';
+import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import FilterPanel from '@/features/recipes/components/FilterPanel';
 import { getCategories } from '@/features/categories/api';

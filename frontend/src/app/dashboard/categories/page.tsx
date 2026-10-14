@@ -13,10 +13,9 @@ import {
   getCategoriesForAdmin,
   updateCategory,
 } from '@/features/categories/admin-api';
-import type { CreateCategoryRequest } from '@/types/category';
 import { ApiError, getErrorMessage } from '@/lib/api-client';
 import { useAuth } from '@/features/auth/auth-context';
-import type { Category } from '@/types/category';
+import type { Category, CreateCategoryRequest } from '@/types/category';
 
 type DialogState = { mode: 'create' } | { mode: 'edit'; category: Category } | null;
 

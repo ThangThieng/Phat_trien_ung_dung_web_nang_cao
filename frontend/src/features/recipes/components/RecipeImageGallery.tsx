@@ -4,7 +4,7 @@ import { useId, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { ImagePlus, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_BYTES } from '@/components/ui/ImageUploader';
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_BYTES } from '@/components/shared/ImageUploader';
 import { getErrorMessage } from '@/lib/api-client';
 import type { RecipeImageResult } from '@/types/recipe';
 import { deleteRecipeImage, updateRecipeImage, uploadRecipeImage } from '../write-api';

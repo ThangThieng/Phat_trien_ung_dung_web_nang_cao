@@ -7,6 +7,7 @@ import type { Category } from '@/types/category';
 import type { RecipeDifficulty } from '@/types/recipe';
 import type { RecipeQueryState } from '@/types/search';
 import { DIFFICULTIES } from '@/types/search';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { DIFFICULTY_LABEL } from '../format';
 import { buildHref, buildQueryString, countActiveFilters, toOptionalInt } from '../search-params';
 
@@ -206,6 +207,12 @@ export default function FilterPanel(props: FilterPanelProps) {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const active = countActiveFilters(state);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  // Phóng to cửa sổ tới `lg` khi drawer đang mở: bảng bộ lọc thành cột cố định, đóng drawer để không kẹt trạng thái mở.
+  useEffect(() => {
+    if (isDesktop) setOpen(false);
+  }, [isDesktop]);
 
   useEffect(() => {
     if (!open) return undefined;

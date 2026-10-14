@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
-import Pagination from '@/components/ui/Pagination';
+import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import SortSelect from '@/features/recipes/components/SortSelect';
 import { getCategoryBySlug } from '@/features/categories/api';

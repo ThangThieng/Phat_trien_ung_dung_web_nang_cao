@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { MIN_SEARCH_LENGTH } from '@/types/search';
 
 const DEBOUNCE_MS = 300;
@@ -28,20 +29,19 @@ export default function SearchBar({ className = '' }: { className?: string }) {
     setValue(urlQuery);
   }, [urlQuery]);
 
+  // Chỉ áp giá trị đã debounce nếu nó vẫn là chữ đang hiển thị (tránh ghi đè URL bằng chữ cũ sau khi back/forward).
+  const debounced = useDebouncedValue(value, DEBOUNCE_MS);
   useEffect(() => {
-    if (!onSearchPage) return undefined;
-    const term = value.trim();
-    if (term === urlQuery.trim() || term.length < MIN_SEARCH_LENGTH) return undefined;
+    if (!onSearchPage || debounced !== value) return;
+    const term = debounced.trim();
+    if (term === urlQuery.trim() || term.length < MIN_SEARCH_LENGTH) return;
 
-    const timer = setTimeout(() => {
-      const next = new URLSearchParams(params.toString());
-      next.set('q', term);
-      next.delete('page');
-      lastReplaced.current = term;
-      router.replace(`/search?${next.toString()}`);
-    }, DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [value, urlQuery, onSearchPage, params, router]);
+    const next = new URLSearchParams(params.toString());
+    next.set('q', term);
+    next.delete('page');
+    lastReplaced.current = term;
+    router.replace(`/search?${next.toString()}`);
+  }, [debounced, value, urlQuery, onSearchPage, params, router]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import FormField from '@/components/ui/FormField';
+import FormField from '@/components/shared/FormField';
 import { ApiError, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import { useAuth } from '../auth-context';
 import { registerSchema, type RegisterFormValues } from '../schemas';
@@ -25,7 +25,9 @@ export default function RegisterForm() {
   const onSubmit = handleSubmit(async ({ confirmPassword: _confirm, ...values }) => {
     try {
       const user = await registerAccount(values);
-      toast.success(`Đăng ký thành công! Chào mừng ${user.displayName}. Email chào mừng đã được gửi.`);
+      toast.success(
+        `Đăng ký thành công! Chào mừng ${user.displayName}. Email chào mừng đã được gửi.`,
+      );
       router.replace('/recipes');
     } catch (error) {
       if (error instanceof ApiError) {
