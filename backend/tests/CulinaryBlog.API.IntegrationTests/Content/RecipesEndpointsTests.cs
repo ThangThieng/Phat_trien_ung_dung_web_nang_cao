@@ -55,6 +55,22 @@ public class RecipesEndpointsTests(CulinaryBlogApiFactory factory)
         await response.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
     }
 
+    /// <summary>FR-RCP-011: dashboard chỉ nhận dữ liệu của Author hiện tại, kể cả bản nháp, và không được cache chung.</summary>
+    [Fact]
+    public async Task GetMyRecipes_AsAuthor_ReturnsOwnDraftsWithNoStore()
+    {
+        var client = factory.CreateClientAs("Author", TestDataSeeder.AuthorUserId);
+
+        var response = await client.GetAsync(new Uri("/api/v1/recipes/mine?status=Draft&page=1&pageSize=12", UriKind.Relative));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("no-store", response.Headers.CacheControl?.ToString());
+        var page = await response.ReadAsAsync<PagedResult<RecipeSummaryDto>>();
+        var draft = Assert.Single(page.Items);
+        Assert.Equal(TestDataSeeder.DraftRecipeSlug, draft.Slug);
+        Assert.Equal(RecipeStatus.Draft, draft.Status);
+    }
+
     [Fact]
     public async Task GetRecipeBySlug_Published_ReturnsDetailWithStepsAndIngredients()
     {

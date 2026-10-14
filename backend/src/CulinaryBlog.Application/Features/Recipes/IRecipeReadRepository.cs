@@ -35,6 +35,16 @@ public interface IRecipeReadRepository
 {
     Task<PagedResult<RecipeSummaryDto>> GetPagedAsync(RecipeListCriteria criteria, CancellationToken cancellationToken);
 
+    /// <summary>Danh sách riêng tư của chính Author, bao gồm Draft/Published/Archived (FR-RCP-011).</summary>
+    Task<PagedResult<RecipeSummaryDto>> GetMinePagedAsync(
+        string authorId,
+        RecipeStatus? status,
+        int page,
+        int pageSize,
+        RecipeSortField sortBy,
+        bool descending,
+        CancellationToken cancellationToken);
+
     /// <summary>Trả về detail kèm AuthorId để handler kiểm tra quyền xem Draft/Archived.</summary>
     Task<(RecipeDetailDto Recipe, string AuthorId)?> GetBySlugAsync(string slug, CancellationToken cancellationToken);
 

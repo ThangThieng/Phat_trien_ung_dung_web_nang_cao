@@ -57,6 +57,47 @@ public sealed class RecipeReadRepository(CulinaryBlogDbContext db) : IRecipeRead
         return new PagedResult<RecipeSummaryDto>(items, total, criteria.Page, criteria.PageSize);
     }
 
+    public async Task<PagedResult<RecipeSummaryDto>> GetMinePagedAsync(
+        string authorId,
+        RecipeStatus? status,
+        int page,
+        int pageSize,
+        RecipeSortField sortBy,
+        bool descending,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
+        var query = db.Recipes.AsNoTracking().Where(recipe => recipe.AuthorId == authorId);
+        if (status.HasValue)
+        {
+            query = query.Where(recipe => recipe.Status == status.Value);
+        }
+
+        var total = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+        var items = await ApplySorting(query, sortBy, descending)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Join(db.Users, recipe => recipe.AuthorId, user => user.Id, (recipe, user) => new RecipeSummaryDto(
+                recipe.Id,
+                recipe.Title,
+                recipe.Slug,
+                recipe.Description,
+                recipe.PrepTimeMinutes,
+                recipe.CookTimeMinutes,
+                recipe.Servings,
+                recipe.Difficulty,
+                recipe.Status,
+                recipe.Images.Where(image => image.IsPrimary).Select(image => image.ThumbnailUrl ?? image.OriginalUrl).FirstOrDefault(),
+                new CategoryRefDto(recipe.CategoryId, recipe.Category!.Name, recipe.Category.Slug),
+                new AuthorDto(user.Id, user.DisplayName, user.AvatarUrl),
+                recipe.PublishedAt,
+                recipe.CreatedAt))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return new PagedResult<RecipeSummaryDto>(items, total, page, pageSize);
+    }
+
     public async Task<(RecipeDetailDto Recipe, string AuthorId)?> GetBySlugAsync(string slug, CancellationToken cancellationToken)
     {
         var recipe = await DetailQuery().FirstOrDefaultAsync(r => r.Slug == slug, cancellationToken).ConfigureAwait(false);

@@ -169,7 +169,7 @@ export interface MyRecipesParams {
   status?: RecipeStatus;
   page?: number;
   pageSize?: number;
-  sortBy?: 'createdAt' | 'publishedAt' | 'title' | 'cookTime' | 'prepTime';
+  sortBy?: 'createdAt' | 'publishedAt' | 'title' | 'cookTime';
   sortOrder?: 'asc' | 'desc';
 }
 
