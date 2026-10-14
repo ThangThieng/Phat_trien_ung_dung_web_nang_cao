@@ -46,8 +46,8 @@
 
 ### Commit (phần A)
 
-1. [`4d63685`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/4d63685) — gộp commit nền `b9acca2` của Dev 4 (đã gộp `origin/develop` ở `787c5c8`)
-2. [`4de3141`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/4de3141) — `refactor(frontend): standardize app/components/lib/stores/types/hooks structure with lint-enforced import boundaries and category & search types`
+1. [`976ba56`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/976ba56) — gộp commit nền `b9acca2` của Dev 4 (đã gộp `origin/develop` ở `787c5c8`)
+2. [`95affc8`](https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao/commit/95affc8) — `refactor(frontend): standardize app/components/lib/stores/types/hooks structure with lint-enforced import boundaries and category & search types`
 
 **Vì sao không "khởi tạo dự án" và giữ `features/`:** `create-next-app` sẽ ghi đè `package.json`, `tsconfig.json`, `next.config.ts`, cấu hình ESLint Airbnb và xóa code Buổi 2–5 (xung đột X-9 §3); mục tiêu thật — một dự án Next.js 15 + TS + Tailwind có cấu trúc rõ — đạt bằng chuẩn hóa và **chứng minh bằng quy tắc lint**. `features/{module}` gom API, component, schema của một module, trùng ranh giới phân công 4 dev; sáu thư mục còn lại chứa phần dùng chung. `components/ui/` dành riêng cho shadcn vì Windows/macOS không phân biệt hoa thường: `Pagination.tsx` và `pagination.tsx` (shadcn, Buổi 6) là cùng một file.
 
