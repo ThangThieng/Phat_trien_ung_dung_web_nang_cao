@@ -19,6 +19,16 @@ public partial class DomainExceptionRulesTests
     /// <summary>Mã có trong code nhưng chưa có trong Phụ lục B — mỗi dòng phải ghi rõ khi nào được gỡ.</summary>
     private static readonly string[] TemporarilyAllowedExtraCodes = [];
 
+    /// <summary>
+    /// Mã đã có trong Phụ lục B nhưng API sinh ra nó thuộc buổi sau — kế hoạch giao chủ module thêm vào ErrorCodes cùng PR
+    /// với API (giống danh sách chờ của ApiSurfaceTests), để không có mã nào khai báo trước khi Backend thật sự trả.
+    /// Mỗi dòng ghi rõ ai gỡ và khi nào; mã đã vào ErrorCodes mà còn nằm đây thì test đỏ, nhắc gỡ dòng.
+    /// </summary>
+    private static readonly (string Code, string Owner)[] PendingSrsCodes =
+    [
+        ("AUTH_PASSWORD_RESET_TOKEN_INVALID", "Dev 1 — Buổi 7, FR-AUTH-011 (SRS v1.2.3, CR-2026-05 / MT-65)"),
+    ];
+
     private static readonly Assembly DomainAssembly = typeof(DomainException).Assembly;
 
     [Fact]
@@ -86,11 +96,17 @@ public partial class DomainExceptionRulesTests
             .Select(f => (string)f.GetRawConstantValue()!)
             .ToHashSet(StringComparer.Ordinal);
 
-        var missing = srsCodes.Except(codeConstants).Order(StringComparer.Ordinal).ToArray();
+        var pending = PendingSrsCodes.Select(p => p.Code).ToHashSet(StringComparer.Ordinal);
+
+        var missing = srsCodes.Except(codeConstants).Except(pending).Order(StringComparer.Ordinal).ToArray();
         var extra = codeConstants.Except(srsCodes).Except(TemporarilyAllowedExtraCodes).Order(StringComparer.Ordinal).ToArray();
+        var pendingNotInSrs = pending.Except(srsCodes).Order(StringComparer.Ordinal).ToArray();
+        var pendingAlreadyAdded = PendingSrsCodes.Where(p => codeConstants.Contains(p.Code)).Select(p => $"{p.Code} ({p.Owner})").ToArray();
 
         Assert.True(missing.Length == 0, $"Mã có trong SRS Phụ lục B nhưng thiếu trong ErrorCodes: {string.Join(", ", missing)}");
         Assert.True(extra.Length == 0, $"Mã có trong ErrorCodes nhưng không có trong SRS Phụ lục B (phải qua Change Request): {string.Join(", ", extra)}");
+        Assert.True(pendingNotInSrs.Length == 0, $"PendingSrsCodes có mã không nằm trong SRS Phụ lục B: {string.Join(", ", pendingNotInSrs)}");
+        Assert.True(pendingAlreadyAdded.Length == 0, $"Mã đã vào ErrorCodes — gỡ khỏi PendingSrsCodes: {string.Join(", ", pendingAlreadyAdded)}");
     }
 
     private static bool ExposesQueryable(Type type)

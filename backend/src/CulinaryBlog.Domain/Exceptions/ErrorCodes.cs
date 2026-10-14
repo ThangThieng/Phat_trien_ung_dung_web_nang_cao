@@ -4,7 +4,9 @@ namespace CulinaryBlog.Domain.Exceptions;
 /// Application Error Codes — SRS v1.2.2 Phụ lục B, đủ 29 mã (SCREAMING_SNAKE_CASE, dùng trong trường "type" của RFC 7807).
 /// Nằm ở Domain (chuỗi thuần, chỉ BCL) để domain exception và mọi tầng ngoài dùng CHUNG một nguồn — không có hai
 /// danh sách mã song song. Đưa đủ 29 mã vào một lần (commit nền Buổi 3) để dev module không phải sửa file dùng chung này.
-/// Test kiến trúc ErrorCodesTests giữ danh sách này khớp đúng Phụ lục B.
+/// SRS v1.2.3 (CR-2026-05) thêm mã thứ 30 <c>AUTH_PASSWORD_RESET_TOKEN_INVALID</c>: Dev 1 thêm ở Buổi 7 cùng API FR-AUTH-011
+/// (append-only, Dev 4 rà soát). Test kiến trúc DomainExceptionRulesTests.ErrorCodes_MatchSrsAppendixB giữ danh sách này
+/// khớp đúng Phụ lục B, mã đang chờ nằm trong PendingSrsCodes của test.
 /// </summary>
 public static class ErrorCodes
 {

@@ -2037,7 +2037,7 @@ Còn lại cho buổi sau:
 4. **`types/api.ts`** (Dev 4 sở hữu):
    - `PagedResult<T>` (MT-42);
    - `ProblemDetails` và `ValidationProblemDetails` — chuyển từ `lib/api-client.ts` sang đây; `api-client` import lại;
-   - **`ERROR_CODES`** — mảng `as const` đủ mã của Phụ lục B SRS v1.2.3 → `type ErrorCode`;
+   - **`ERROR_CODES`** — mảng `as const` đủ 29 mã đang có trong `ErrorCodes.cs` → `type ErrorCode`; mã thứ 30 của SRS v1.2.3 (`AUTH_PASSWORD_RESET_TOKEN_INVALID`) được thêm cùng lúc ở hai phía khi có API (Buổi 7 — Dev 1). Trong lúc chờ, test kiến trúc `ErrorCodes_MatchSrsAppendixB` ghi mã này trong `PendingSrsCodes` kèm tên người gỡ;
    - `UploadedFile { key, url, contentType, size }` (FR-FILE-001);
    - `ApiVersion = 'v1'`.
 5. **`types/auth.ts`** (khớp SRS §8.1):
@@ -2470,7 +2470,7 @@ API của FR-AUTH-006/007/009 đã có từ Buổi 4.
 *Backend — 3 endpoint của CR-2026-05:*
 
 1. **Mã lỗi + exception:**
-   - `ErrorCodes.PasswordResetTokenInvalid = "AUTH_PASSWORD_RESET_TOKEN_INVALID"` — thêm một dòng vào file của Dev 4, theo quy tắc append-only; Dev 4 rà soát PR.
+   - `ErrorCodes.PasswordResetTokenInvalid = "AUTH_PASSWORD_RESET_TOKEN_INVALID"` — thêm một dòng vào file của Dev 4, theo quy tắc append-only; Dev 4 rà soát PR. Cùng PR gỡ dòng của mã này khỏi `PendingSrsCodes` trong `ArchitectureTests/DomainExceptionRulesTests.cs` (đặt ở Buổi 5 — quên gỡ thì test kiến trúc đỏ).
    - `Domain/Exceptions/Auth/PasswordResetTokenInvalidException : AuthDomainException`, ánh xạ **400** trong `AuthExceptionMappings`.
    - Phía Frontend: thêm mã vào `ERROR_CODES` và `ERROR_MESSAGES` trong cùng PR. Kiểm thử chống lệch của Buổi 5 bắt buộc làm vậy.
 2. **`IIdentityService` mở rộng** (ghi người dùng luôn qua `UserManager` — quy tắc Buổi 3):
@@ -3289,7 +3289,7 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 | **B6** | `(public)/layout.tsx` (Dev 4) dùng `Header`/`Footer` của Dev 3 | Dev 4 dùng tạm `SiteHeader` cũ; Dev 3 thay một dòng import khi merge |
 | **B6** | `lib/error-messages.ts` (Dev 4) phải có thông báo cho **mọi** `ErrorCode` | `satisfies Record<ErrorCode, string>` → thiếu là lỗi biên dịch; Dev 1 thêm thông báo cho mã mới của CR-2026-05 ở Buổi 7 |
 | **B6** | Dev 3 mở rộng `GET /recipes/search` (MT-66) — cache `search:{queryHash}` thuộc cơ chế chung | Kiểm thử của Dev 3 khẳng định khóa cache khác nhau khi bộ lọc khác nhau; Dev 4 rà soát lại trong lượt audit cache Buổi 8 |
-| **B7** | Dev 1 thêm mã `AUTH_PASSWORD_RESET_TOKEN_INVALID` vào `ErrorCodes.cs` (file của Dev 4) và 3 dòng vào `ApiSurfaceTests` (45 → 48) | Append-only, Dev 4 rà soát; cùng PR cập nhật `ERROR_CODES`/`ERROR_MESSAGES` phía Frontend và ảnh chụp `openapi.v1.json` — kiểm thử chống lệch bắt buộc |
+| **B7** | Dev 1 thêm mã `AUTH_PASSWORD_RESET_TOKEN_INVALID` vào `ErrorCodes.cs` (file của Dev 4), gỡ nó khỏi `PendingSrsCodes` của `DomainExceptionRulesTests` và thêm 3 dòng vào `ApiSurfaceTests` (45 → 48) | Append-only, Dev 4 rà soát; cùng PR cập nhật `ERROR_CODES`/`ERROR_MESSAGES` phía Frontend và ảnh chụp `openapi.v1.json` — kiểm thử chống lệch bắt buộc |
 | **B7** | `PasswordResetEmailJob` (Dev 1) chạy ở container `hangfire` cần cùng khóa DataProtection với `api` | Đã có volume `dpkeys` dùng chung từ Buổi 2; D-17 (Dev 4, cùng buổi) bảo vệ khóa bằng chứng chỉ — Dev 1 kiểm lại luồng đặt lại mật khẩu sau khi Dev 4 merge |
 | **B7** | Giao diện `/search` (Dev 4) dựa trên API của Dev 3 (Buổi 4 + MT-66 ở Buổi 6) | Hợp đồng là SRS v1.2.3 §8.3 + integration test của Dev 3; Dev 4 không sửa handler |
 | **B7** | Trang chủ và trang danh mục (Dev 3) dùng `RecipeCard`, `SidebarCategory`; trang chi tiết (Dev 2) dùng `ImageUploader`/ảnh qua `/media/` | Ảnh vẫn chạy `unoptimized` tới khi Dev 4 dựng `/media/` (cùng buổi); gỡ `unoptimized` để sang Buổi 8 — Dev 3 |
