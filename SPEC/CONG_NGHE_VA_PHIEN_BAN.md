@@ -65,6 +65,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Microsoft.Extensions.Caching.StackExchangeRedis | 10.0.12 | Redis 7 distributed cache (StackExchange.Redis) | ✅ |
 | AWSSDK.S3 | 4.0.103.1 | MinIO S3-compatible (§5.3) | ✅ |
 | MailKit | 4.17.0 | Welcome email (FR-JOB-001) | ✅ |
+| System.Security.Cryptography.Pkcs | 10.0.13 | Không dùng trực tiếp — ghim phụ thuộc bắc cầu MailKit → MimeKit (bản 10.0.0 dính GHSA-846f-f764-76mx, GHSA-2fmv-rv2c-59x7, vá ở 10.0.13) | ➕📌 *(thêm ở Buổi 5 — NuGet audit 13/10/2026)* |
 | Hangfire.Core | 1.8.25 | Background jobs (§3.6) | ✅ |
 | Hangfire.PostgreSql | 1.21.1 | Hangfire storage trên PostgreSQL | ✅ |
 | Bogus | 35.6.5 | tạo mẫu (seed) 50 recipe / 5 tác giả (§2.6.1) | ✅ |
@@ -212,6 +213,16 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 - **Bối cảnh:** SRS (FR-JOB-002) yêu cầu tạo ảnh medium 800×600 và ảnh thu nhỏ (thumbnail) 300×300 nhưng **không chỉ định thư viện**, nên đây là thư viện bổ sung.
 - **Thay đổi:** ban đầu cài bản 4.1.1, sau đó hạ về **3.1.12**.
 - **Lý do:** bản 4.x làm build báo lỗi *"No Six Labors license found"* nếu thiếu license key. Vì dự án bật `TreatWarningsAsErrors`, lỗi này làm hỏng build. Bản 3.1.x dùng **Six Labors Split License**: miễn phí cho dự án mã nguồn mở, học tập và doanh nghiệp doanh thu dưới 1 triệu USD, không cần key.
+- **Cảnh báo bảo mật 07/10/2026 (quyết định của trưởng nhóm 14/10/2026 — giữ 3.1.12):** NuGet audit báo 5 advisory cho mọi bản ≤ 4.1.1 (vá ở 4.1.2). Vì `TreatWarningsAsErrors`, mọi lần `dotnet restore` mới — kể cả `docker compose build` — đều gãy. Kiểm lại ngày 14/10/2026: bản 4.1.3 vẫn đòi license key khi build **Release** (Debug chỉ cảnh báo), nên không nâng. Thay vào đó `backend/Directory.Build.props` miễn trừ **từng** advisory bằng `NuGetAuditSuppress` (không hạ `NuGetAuditLevel` — advisory mới vẫn làm build đỏ), vì không đường nào của hệ thống chạm tới code lỗi:
+
+  | Advisory | Chỗ lỗi | Vì sao không chạm tới |
+  |---|---|---|
+  | GHSA-jjfr-hcj7-qf5w, GHSA-j9gm-c75j-xc9q (cao) | Encoder TIFF CCITT T6/T4 | Hệ thống chỉ mã hóa WebP |
+  | GHSA-j3p4-wp97-rph4 (cao) | `HistogramEqualization` | Không gọi ở đâu |
+  | GHSA-wmxv-xphr-5c9g (trung bình) | Decoder BigTIFF lặp vô hạn | `ImageResizeJob` chỉ nạp decoder JPEG/PNG/WebP; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` thay object gốc trên MinIO bằng TIFF hợp lệ → job không giải mã (bỏ giới hạn thì test đỏ — đã thử) |
+  | GHSA-gwg2-r3hj-4w44 (trung bình) | Đọc CLUT trong ICC profile | Quét IL của 3.1.12: chỉ `IccWriter.Write` → `IccProfile.Entries` mới đọc CLUT, và `IccProfile.ToByteArray()` chỉ gọi `IccWriter.Write` khi profile được dựng bằng code; profile đọc từ ảnh (`new IccProfile(byte[])`) được sao chép nguyên byte. Vì vậy không cần `SkipMetadata` — giữ EXIF orientation của ảnh chụp bằng điện thoại |
+
+  Gỡ khối miễn trừ khi chuyển sang một bản đã vá.
 
 ### 6.3 ESLint – dùng ESLint 8.57.1 (không dùng ESLint 9) để giữ bộ luật Airbnb 📌
 - **Yêu cầu SRS (NFR-MAINT-001):** "TypeScript/React: ESLint (**Airbnb ruleset**), Prettier". Đây là yêu cầu được **giữ nguyên**.

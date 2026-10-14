@@ -1,5 +1,6 @@
 using System.Net;
 using Amazon.S3;
+using Amazon.S3.Model;
 using CulinaryBlog.API.IntegrationTests.Content;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Common.Models;
@@ -88,6 +89,42 @@ public class ImageResizeJobTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
         Assert.Null(exception);
     }
 
+    /// <summary>
+    /// Lớp chặn thứ hai cho các advisory TIFF/BigTIFF chưa vá của ImageSharp 3.x (Directory.Build.props): kể cả khi object
+    /// gốc trên MinIO bị thay bằng một TIFF hợp lệ (vượt qua kiểm tra magic bytes lúc tải lên), job không giải mã nó.
+    /// </summary>
+    [Fact]
+    public async Task Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal()
+    {
+        var author = factory.CreateClientAs("Author");
+        var recipe = await RecipeApi.CreateDraftAsync(author, "Chả giò rế");
+        var uploaded = await RecipeApi.UploadImageAsync(author, recipe.Id, JpegPhoto(640, 480), "image/jpeg", "cha-gio.jpg");
+
+        var tiff = TiffPhoto(640, 480);
+        using (var check = Image.Load(tiff))
+        {
+            Assert.Equal(640, check.Width); // cấu hình mặc định của ImageSharp đọc được file này — đúng là TIFF hợp lệ
+        }
+
+        using var scope = factory.Services.CreateScope();
+        var s3 = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
+        var (bucket, key) = MinioObject.Parse(uploaded.OriginalUrl);
+        using (var body = new MemoryStream(tiff))
+        {
+            await s3.PutObjectAsync(new PutObjectRequest { BucketName = bucket, Key = key, InputStream = body, ContentType = "image/jpeg" });
+        }
+
+        var exception = await Record.ExceptionAsync(() =>
+            scope.ServiceProvider.GetRequiredService<ImageResizeJob>().ExecuteAsync(uploaded.ImageId, CancellationToken.None));
+
+        Assert.Null(exception);
+        var image = await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>()
+            .RecipeImages.AsNoTracking().SingleAsync(i => i.Id == uploaded.ImageId);
+        Assert.Null(image.MediumUrl);
+        Assert.Null(image.ThumbnailUrl);
+        Assert.True(await MinioObject.ExistsAsync(s3, image.OriginalUrl), "Ảnh gốc phải được giữ nguyên.");
+    }
+
     private static async Task<string?> CardImageUrlAsync(HttpClient client, Guid recipeId)
     {
         var response = await client.GetAsync(new Uri("/api/v1/recipes/mine?pageSize=50", UriKind.Relative));
@@ -106,7 +143,23 @@ public class ImageResizeJobTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
 
     private static byte[] JpegPhoto(int width, int height)
     {
-        using var image = new Image<Rgb24>(width, height);
+        using var image = Photo(width, height);
+        using var output = new MemoryStream();
+        image.SaveAsJpeg(output);
+        return output.ToArray();
+    }
+
+    private static byte[] TiffPhoto(int width, int height)
+    {
+        using var image = Photo(width, height);
+        using var output = new MemoryStream();
+        image.SaveAsTiff(output);
+        return output.ToArray();
+    }
+
+    private static Image<Rgb24> Photo(int width, int height)
+    {
+        var image = new Image<Rgb24>(width, height);
         image.ProcessPixelRows(rows =>
         {
             for (var y = 0; y < rows.Height; y++)
@@ -119,8 +172,6 @@ public class ImageResizeJobTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
             }
         });
 
-        using var output = new MemoryStream();
-        image.SaveAsJpeg(output);
-        return output.ToArray();
+        return image;
     }
 }
