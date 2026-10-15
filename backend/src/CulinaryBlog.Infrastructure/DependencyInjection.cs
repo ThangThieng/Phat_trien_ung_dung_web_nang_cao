@@ -58,7 +58,7 @@ public static class DependencyInjection
                 .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CulinaryBlogDbContext>());
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
     }
@@ -100,6 +100,8 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IUserNameGenerator, UserNameGenerator>();
+        services.AddScoped<IGoogleIdTokenValidator, GoogleIdTokenValidator>();
         services.AddSingleton<ITokenService, JwtTokenService>();
     }
 

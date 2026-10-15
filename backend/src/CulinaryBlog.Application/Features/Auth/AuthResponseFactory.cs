@@ -6,7 +6,7 @@ namespace CulinaryBlog.Application.Features.Auth;
 /// <summary>Phát cặp token cho user và lưu refresh token (dùng chung cho Register/Login, sau này Google/Refresh).</summary>
 public sealed class AuthResponseFactory(
     ITokenService tokenService,
-    IRefreshTokenRepository refreshTokens,
+    IUserRepository users,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
 {
@@ -17,7 +17,7 @@ public sealed class AuthResponseFactory(
         var accessToken = tokenService.CreateAccessToken(user);
         var refreshToken = tokenService.CreateRefreshToken();
 
-        await refreshTokens.AddAsync(
+        await users.AddRefreshTokenAsync(
             RefreshToken.Create(user.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress),
             cancellationToken).ConfigureAwait(false);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

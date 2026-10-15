@@ -11,6 +11,7 @@ public static class ErrorCodes
     public const string AuthTokenInvalid = "AUTH_TOKEN_INVALID";
     public const string AuthGoogleTokenInvalid = "AUTH_GOOGLE_TOKEN_INVALID";
     public const string AuthGoogleUnavailable = "AUTH_GOOGLE_UNAVAILABLE";
+    public const string AuthUserNotFound = "AUTH_USER_NOT_FOUND";
 
     public const string RecipeNotFound = "RECIPE_NOT_FOUND";
     public const string RecipeForbidden = "RECIPE_FORBIDDEN";

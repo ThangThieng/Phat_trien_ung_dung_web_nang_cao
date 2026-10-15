@@ -9,17 +9,17 @@ public sealed record LogoutCommand(string RefreshToken) : IRequest;
 public sealed class LogoutCommandHandler(
     ICurrentUser currentUser,
     ITokenService tokenService,
-    IRefreshTokenRepository refreshTokens,
+    IUserRepository users,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider) : IRequestHandler<LogoutCommand>
 {
     public async Task Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId!;
-        var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken).ConfigureAwait(false);
+        var token = await users.FindRefreshTokenByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken).ConfigureAwait(false);
         if (token is not null && token.UserId == userId)
         {
-            await refreshTokens.RevokeAsync(token, timeProvider.GetUtcNow().UtcDateTime, cancellationToken).ConfigureAwait(false);
+            await users.RevokeRefreshTokenAsync(token, timeProvider.GetUtcNow().UtcDateTime, cancellationToken).ConfigureAwait(false);
             await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }

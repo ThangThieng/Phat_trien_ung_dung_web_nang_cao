@@ -1,5 +1,6 @@
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using MediatR;
 
@@ -40,7 +41,7 @@ public sealed class RegisterUserCommandHandler(
         // Bước 4: email chưa tồn tại
         if (await identityService.EmailExistsAsync(request.Email, cancellationToken).ConfigureAwait(false))
         {
-            throw new ConflictException(ErrorCodes.AuthEmailExists, "Email đã được đăng ký bởi tài khoản khác.");
+            throw new EmailAlreadyExistsException();
         }
 
         // Bước 5–7: tạo user (PBKDF2) + gán role Author
