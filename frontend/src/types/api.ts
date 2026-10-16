@@ -107,10 +107,11 @@ export interface CategoryDetail {
 
 export interface User {
   id: string;
-  fullName: string;
+  displayName: string;
   email: string;
-  userName: string;
   avatarUrl: string | null;
+  bio?: string | null;
+  createdAt?: string;
   roles: string[];
 }
 
