@@ -1,27 +1,22 @@
 using CulinaryBlog.Domain.Exceptions.Auth;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CulinaryBlog.API.Middleware.ExceptionMapping;
 
-public static class AuthExceptionMappings
+/// <summary>
+/// Ánh xạ lỗi nghiệp vụ module Auth sang mã HTTP (SRS §3.1, Phụ lục B). <c>AccountLockedException</c> giữ 423 (MT-08 chỉ
+/// loại 422); 403 thuộc về tài khoản bị vô hiệu hóa. Được <c>ExceptionStatusMap.FromAssembly</c> quét tự động.
+/// </summary>
+public sealed class AuthExceptionMappings : IExceptionStatusMapping
 {
-    public static ProblemDetails ToProblem(AuthDomainException exception, string? instance)
+    public void Configure(ExceptionStatusMap map)
     {
-        ArgumentNullException.ThrowIfNull(exception);
-        var status = exception switch
-        {
-            InvalidTokenException => StatusCodes.Status401Unauthorized,
-            AccountDisabledException => StatusCodes.Status403Forbidden,
-            UserNotFoundException => StatusCodes.Status404NotFound,
-            _ => throw new InvalidOperationException($"Missing Auth exception mapping: {exception.GetType().Name}"),
-        };
-        return new ProblemDetails
-        {
-            Type = exception.Code,
-            Title = "Lỗi xác thực hoặc tài khoản",
-            Status = status,
-            Detail = exception.Message,
-            Instance = instance,
-        };
+        ArgumentNullException.ThrowIfNull(map);
+
+        map.Map<InvalidCredentialsException>(StatusCodes.Status401Unauthorized)
+            .Map<InvalidTokenException>(StatusCodes.Status401Unauthorized)
+            .Map<AccountLockedException>(StatusCodes.Status423Locked)
+            .Map<AccountDisabledException>(StatusCodes.Status403Forbidden)
+            .Map<EmailAlreadyExistsException>(StatusCodes.Status409Conflict)
+            .Map<UserNotFoundException>(StatusCodes.Status404NotFound);
     }
 }

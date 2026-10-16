@@ -14,7 +14,7 @@ using Testcontainers.Redis;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public sealed class Dev1CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:16-alpine").Build();
     private readonly RedisContainer _redis = new RedisBuilder("redis:7-alpine").Build();

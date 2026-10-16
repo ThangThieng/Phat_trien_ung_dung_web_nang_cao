@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class ApiVersioningTests(CulinaryBlogApiFactory factory) : IClassFixture<CulinaryBlogApiFactory>
+public sealed class ApiVersioningTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
 {
     [Fact]
     public async Task V1RouteWorksAndReportsSupportedVersion()

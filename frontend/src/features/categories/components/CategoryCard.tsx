@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Category } from '@/types/api';
+import type { Category } from '@/types/category';
 
 const EMOJI: Record<string, string> = {
   'mon-khai-vi': '🥗',

@@ -64,7 +64,7 @@ public static class ApiVersioningExtensions
                 context.Response.Headers["api-supported-versions"] = "1.0";
                 await Results.Problem(
                     statusCode: StatusCodes.Status400BadRequest,
-                    type: ErrorCodes.ValidationError,
+                    type: CulinaryBlog.Domain.Exceptions.ErrorCodes.ValidationError,
                     title: "Unsupported API version",
                     detail: "Phiên bản API không được hỗ trợ.")
                     .ExecuteAsync(context).ConfigureAwait(false);

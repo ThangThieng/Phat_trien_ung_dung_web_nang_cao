@@ -8,6 +8,8 @@
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="12.5.0" />
+    <!-- Buổi 3: resource-based authorization (RecipeAuthorizationHandler) kiểm tra ở tầng Application — NFR-SEC-006 -->
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="10.0.12" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
   </ItemGroup>

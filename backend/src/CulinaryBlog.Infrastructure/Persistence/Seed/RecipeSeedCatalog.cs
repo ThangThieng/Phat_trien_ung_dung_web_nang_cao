@@ -7,7 +7,11 @@ namespace CulinaryBlog.Infrastructure.Persistence.Seed;
 
 public sealed record SeedCategory(string Name, string Description);
 
-public sealed record SeedIngredient(string Name, decimal? Quantity, string? Unit, string? Notes);
+/// <summary>
+/// FR-RCP-009 (Buổi 4): định lượng hai cột — <see cref="Quantity"/> là số tính toán được, <see cref="QuantityText"/> là
+/// nguyên văn không quy ra số ("vừa đủ", "vừa ăn"). Mỗi nguyên liệu có ít nhất một trong Quantity/QuantityText/Unit.
+/// </summary>
+public sealed record SeedIngredient(string Name, decimal? Quantity, string? QuantityText, string? Unit, string? Notes);
 
 public sealed record SeedStep(string Title, string Description, int? TimerMinutes);
 
@@ -86,11 +90,13 @@ public static class RecipeSeedCatalog
 
     private static SeedRecipe ParseRecipe(JsonElement item)
     {
-        // Nguyên liệu: [tên, định lượng | null, đơn vị | null, ghi chú?]; bước: [tiêu đề, mô tả, số phút | null]
+        // Mỗi nguyên liệu là mảng gồm tên, định lượng, đơn vị, ghi chú (tùy chọn). Định lượng dạng số đi vào Quantity,
+        // dạng chữ ("vừa đủ") đi vào QuantityText. Mỗi bước là mảng gồm tiêu đề, mô tả, số phút (có thể null).
         var ingredients = item.GetProperty("ingredients").EnumerateArray()
             .Select(i => new SeedIngredient(
                 i[0].GetString()!,
-                i[1].ValueKind == JsonValueKind.Null ? null : i[1].GetDecimal(),
+                i[1].ValueKind == JsonValueKind.Number ? i[1].GetDecimal() : null,
+                i[1].ValueKind == JsonValueKind.String ? i[1].GetString() : null,
                 i[2].GetString(),
                 i.GetArrayLength() > 3 ? i[3].GetString() : null))
             .ToList();

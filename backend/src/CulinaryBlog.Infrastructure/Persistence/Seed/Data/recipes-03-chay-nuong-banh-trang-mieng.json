@@ -229,7 +229,7 @@
       ["Đường", 1, "thìa cà phê"],
       ["Tiêu xay", 1, "thìa cà phê"],
       ["Đậu phộng rang", 40, "gram", "giã dập"],
-      ["Bánh tráng, bún, rau sống", null, null, "ăn kèm"]
+      ["Bánh tráng, bún, rau sống", "vừa đủ", null, "ăn kèm"]
     ],
     "steps": [
       ["Trộn nhân", "Trộn thịt bò xay, mỡ heo, sả, hành tỏi, nước mắm, dầu hào, đường và tiêu, ướp 20 phút.", 20],

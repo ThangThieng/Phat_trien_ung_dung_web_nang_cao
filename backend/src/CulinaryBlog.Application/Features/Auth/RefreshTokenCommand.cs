@@ -1,6 +1,7 @@
 using CulinaryBlog.Application.Common.Exceptions;
-using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Domain.Entities;
+using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using MediatR;
@@ -8,16 +9,27 @@ using Microsoft.Extensions.Logging;
 
 namespace CulinaryBlog.Application.Features.Auth;
 
-public sealed record RefreshTokenCommand(string RefreshToken, string? IpAddress) : IRequest<AuthResponseDto>;
+/// <summary>
+/// FR-AUTH-004 – làm mới access token bằng refresh token, có Token Rotation và Reuse Detection. Không cần Bearer:
+/// access token đã hết hạn thì không dùng để xác thực được — chính refresh token là bằng chứng.
+/// </summary>
+public sealed record RefreshTokenCommand(string RefreshToken) : IRequest<AuthResponseDto>
+{
+    public string? IpAddress { get; init; }
+}
 
 public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
 {
     public RefreshTokenCommandValidator()
     {
-        RuleFor(command => command.RefreshToken).NotEmpty().OverridePropertyName("refreshToken");
+        RuleFor(x => x.RefreshToken).NotEmpty().OverridePropertyName("refreshToken");
     }
 }
 
+/// <summary>
+/// Refresh, issuance and revocation share the same PostgreSQL user-row lock. Reuse revokes only
+/// descendants of the reused token; an independent login session remains valid.
+/// </summary>
 public sealed partial class RefreshTokenCommandHandler(
     ITokenService tokenService,
     IRefreshTokenRepository refreshTokens,
@@ -28,11 +40,10 @@ public sealed partial class RefreshTokenCommandHandler(
 {
     public async Task<AuthResponseDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken).ConfigureAwait(false);
-        if (token is null)
-        {
-            throw new InvalidTokenException("Refresh token không hợp lệ.");
-        }
+        ArgumentNullException.ThrowIfNull(request);
+
+        var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken)
+            .ConfigureAwait(false) ?? throw new InvalidTokenException();
 
         var now = timeProvider.GetUtcNow().UtcDateTime;
         if (token.ExpiresAt <= now)
@@ -50,12 +61,8 @@ public sealed partial class RefreshTokenCommandHandler(
                     throw InvalidTokenException.RefreshTokenExpired();
                 }
 
-                var user = await identityService.GetByIdAsync(token.UserId, ct).ConfigureAwait(false);
-                if (user is null)
-                {
-                    throw new InvalidTokenException("Tài khoản của refresh token không còn tồn tại.");
-                }
-
+                var user = await identityService.FindByIdAsync(token.UserId, ct).ConfigureAwait(false)
+                    ?? throw new InvalidTokenException();
                 if (!user.IsActive)
                 {
                     throw new AccountDisabledException();
@@ -74,26 +81,25 @@ public sealed partial class RefreshTokenCommandHandler(
 
                 if (!token.IsActive(now))
                 {
-                    throw new InvalidTokenException("Refresh token không hợp lệ.");
+                    throw new InvalidTokenException();
                 }
 
                 var replacement = tokenService.CreateRefreshToken();
-                var sessionId = Guid.NewGuid();
-                var accessToken = tokenService.CreateAccessToken(user, sessionId);
-                var replacementEntity = RefreshToken.Create(user.Id, replacement.TokenHash, replacement.ExpiresAt, now, request.IpAddress, sessionId);
-                if (!await refreshTokens.TryRotateAsync(token, replacementEntity, now, ct).ConfigureAwait(false))
+                var session = RefreshToken.Create(user.Id, replacement.TokenHash, replacement.ExpiresAt, now, request.IpAddress);
+                if (!await refreshTokens.TryRotateAsync(token, session, now, ct).ConfigureAwait(false))
                 {
                     await RevokeReusedFamilyAsync(token, now, ct).ConfigureAwait(false);
                     return null;
                 }
 
+                var accessToken = tokenService.CreateAccessToken(user, session.Id);
                 return new AuthResponseDto(accessToken.Token, replacement.RawToken, accessToken.ExpiresAt, accessToken.ExpiresInSeconds, user.ToDto());
             },
             cancellationToken).ConfigureAwait(false);
+
         if (response is null)
         {
-            // Commit family revocation before reporting reuse; throwing inside the transaction would undo it.
-            LogRefreshTokenReuse(logger, token.UserId, request.IpAddress);
+            LogReuseDetected(logger, token.UserId, request.IpAddress);
             throw InvalidTokenException.RefreshTokenRevoked();
         }
 
@@ -106,6 +112,8 @@ public sealed partial class RefreshTokenCommandHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "SECURITY ALERT: refresh token reuse detected for user {UserId} from IP {ipAddress}")]
-    private static partial void LogRefreshTokenReuse(ILogger logger, string userId, string? ipAddress);
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "SECURITY ALERT: refresh token reuse detected for user {UserId} from IP {Ip}; affected token family revoked")]
+    private static partial void LogReuseDetected(ILogger logger, string userId, string? ip);
 }

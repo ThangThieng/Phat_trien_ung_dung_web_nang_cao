@@ -1,14 +1,5 @@
+import type { ProblemDetails } from '@/types/api';
 import { getApiBaseUrl } from './config';
-
-/** RFC 7807 Problem Details do backend trả về (type = Application Error Code – SRS Phụ lục B). */
-export interface ProblemDetails {
-  type?: string;
-  title?: string;
-  status?: number;
-  detail?: string;
-  errors?: Record<string, string[]>;
-  [key: string]: unknown;
-}
 
 export class ApiError extends Error {
   readonly status: number;
@@ -118,6 +109,32 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
     if (response.status === 204) return undefined as T;
     return (await response.json()) as T;
   }, accessToken, options.skipAuthRefresh);
+}
+
+/** Hàm setError của react-hook-form (thu hẹp để lib/ không phụ thuộc react-hook-form). */
+type SetFieldError<TField extends string> = (field: TField, error: { message: string }) => void;
+
+/**
+ * D-11 / MT-08: lỗi validation của Backend trả **400** kèm `errors{}` (RFC 7807).
+ * Ánh xạ `errors{}` → từng ô của form, chỉ nhận những field mà form khai báo.
+ * Trả về `true` nếu đã xử lý (form đã hiện lỗi từng ô), `false` nếu caller cần hiện lỗi chung.
+ */
+export function mapProblemDetailsToForm<TField extends string>(
+  error: unknown,
+  fields: readonly TField[],
+  setError: SetFieldError<TField>,
+): boolean {
+  if (!(error instanceof ApiError) || error.status !== 400) return false;
+
+  const entries = Object.entries(error.fieldErrors).filter(([field]) =>
+    (fields as readonly string[]).includes(field),
+  );
+  if (entries.length === 0) return false;
+
+  entries.forEach(([field, messages]) => {
+    if (messages[0]) setError(field as TField, { message: messages[0] });
+  });
+  return true;
 }
 
 /** Thông báo thân thiện cho lỗi mạng / lỗi 5xx (không lộ chi tiết kỹ thuật – NFR-USE-003). */

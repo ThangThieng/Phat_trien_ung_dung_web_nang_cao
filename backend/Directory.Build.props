@@ -18,4 +18,21 @@
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.34.0.3385" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
+
+  <!--
+    NuGet audit 07/10/2026: 5 advisory của SixLabors.ImageSharp chỉ được vá ở 4.1.2+, mà bản 4.x đòi license key khi build
+    Release (SPEC/CONG_NGHE_VA_PHIEN_BAN.md 6.2). Giữ 3.1.12 và miễn trừ TỪNG advisory — không hạ NuGetAuditLevel — vì
+    không đường nào chạm tới code lỗi (kiểm chứng trên IL của 3.1.12, CONG_NGHE 6.2):
+    - TIFF CCITT T4/T6 encoder, HistogramEqualization: hệ thống chỉ mã hóa WebP, không gọi HistogramEqualization;
+    - BigTIFF decoder: ImageResizeJob chỉ nạp decoder JPEG/PNG/WebP (ImageResizeJobTests chặn TIFF);
+    - ICC CLUT parsing: chỉ chạy khi ghi một IccProfile dựng bằng code; profile đọc từ ảnh được sao chép nguyên byte.
+    Advisory MỚI vẫn làm build đỏ. Gỡ khối này khi chuyển sang bản đã vá.
+  -->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-jjfr-hcj7-qf5w" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-j9gm-c75j-xc9q" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-j3p4-wp97-rph4" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-wmxv-xphr-5c9g" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-gwg2-r3hj-4w44" />
+  </ItemGroup>
 </Project>

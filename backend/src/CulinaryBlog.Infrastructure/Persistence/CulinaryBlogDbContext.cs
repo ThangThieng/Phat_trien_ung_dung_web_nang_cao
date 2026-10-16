@@ -1,4 +1,3 @@
-using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -6,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CulinaryBlog.Infrastructure.Persistence;
 
-/// <summary>DbContext duy nhất (PostgreSQL 16, EF Core 10 Code-First) – đồng thời là Unit of Work.</summary>
+/// <summary>DbContext duy nhất (PostgreSQL 16, EF Core 10 Code-First). Tầng Application không thấy lớp này — chỉ thấy IUnitOfWork/IRepository (Buổi 3).</summary>
 public class CulinaryBlogDbContext(DbContextOptions<CulinaryBlogDbContext> options)
-    : IdentityDbContext<ApplicationUser>(options), IUnitOfWork
+    : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
