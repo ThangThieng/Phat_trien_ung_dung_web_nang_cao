@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class AccountApiTests(CulinaryBlogApiFactory factory) : IClassFixture<CulinaryBlogApiFactory>
+public sealed class AccountApiTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
 {
     private static readonly string[] ProfileFields = ["avatarUrl", "bio", "createdAt", "displayName", "email", "id", "roles"];
     private static readonly string[] AdminFields = ["avatarUrl", "createdAt", "displayName", "email", "id", "isActive", "recipeCount", "roles"];
@@ -55,19 +55,19 @@ public sealed class AccountApiTests(CulinaryBlogApiFactory factory) : IClassFixt
             roles = AdminRoles,
         }).ConfigureAwait(true);
         Assert.Equal(HttpStatusCode.OK, patch.StatusCode);
-        var updated = (await patch.Content.ReadFromJsonAsync<UserProfileDto>().ConfigureAwait(true))!;
+        var updated = Assert.IsType<UserDto>(await patch.Content.ReadFromJsonAsync<UserDto>().ConfigureAwait(true));
         Assert.Equal(user.User.Email, updated.Email);
         Assert.Equal("Updated Name", updated.DisplayName);
         Assert.Equal(AuthorRoles, updated.Roles);
 
         using var clear = await client.PatchAsJsonAsync("/api/v1/auth/me", new { bio = (string?)null, avatarUrl = (string?)null }).ConfigureAwait(true);
         Assert.Equal(HttpStatusCode.OK, clear.StatusCode);
-        var cleared = (await clear.Content.ReadFromJsonAsync<UserProfileDto>().ConfigureAwait(true))!;
+        var cleared = Assert.IsType<UserDto>(await clear.Content.ReadFromJsonAsync<UserDto>().ConfigureAwait(true));
         Assert.Null(cleared.Bio);
         Assert.Null(cleared.AvatarUrl);
         Assert.Equal(updated.DisplayName, cleared.DisplayName);
-        var persisted = await client.GetFromJsonAsync<UserProfileDto>("/api/v1/auth/me").ConfigureAwait(true);
-        Assert.Equal(cleared.DisplayName, persisted!.DisplayName);
+        var persisted = Assert.IsType<UserDto>(await client.GetFromJsonAsync<UserDto>("/api/v1/auth/me").ConfigureAwait(true));
+        Assert.Equal(cleared.DisplayName, persisted.DisplayName);
         Assert.Null(persisted.Bio);
     }
 

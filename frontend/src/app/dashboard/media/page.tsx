@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
-import ImageUploader from '@/components/ui/ImageUploader';
+import ImageUploader from '@/components/shared/ImageUploader';
 import { useAuth } from '@/features/auth/auth-context';
 import type { UploadedFile } from '@/types/api';
 

@@ -3,12 +3,26 @@ using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Configurations;
 
 /// <summary>SRS §7.2 – "Recipes" (Aggregate Root) + Owned Entity RecipeNutrition (§7.2.1).</summary>
 internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
 {
+    /// <summary>Cột <c>tsvector</c> của FR-SRCH-001 — shadow property: Domain chỉ dùng .NET BCL nên không mang kiểu Npgsql (CONS-001).</summary>
+    public const string SearchVectorColumn = "SearchVector";
+
+    /// <summary>Text search configuration duy nhất của hệ thống (MT-25): PostgreSQL 16 không có sẵn "vietnamese".</summary>
+    public const string TextSearchConfig = "simple";
+
+    /// <summary>
+    /// SRS §7.2 — biểu thức generated column, dùng hàm wrapper IMMUTABLE <c>unaccent_immutable</c> do migration
+    /// <c>B4_Search_FTS</c> tạo (unaccent() mặc định không IMMUTABLE nên không dùng trực tiếp được).
+    /// </summary>
+    public const string SearchVectorSql =
+        "to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))";
+
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
         builder.ToTable("Recipes", t =>
@@ -22,7 +36,7 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(r => r.Title).HasMaxLength(200).IsRequired();
         builder.Property(r => r.Slug).HasMaxLength(220).IsRequired();
         builder.Property(r => r.Description).HasColumnType("text").IsRequired();
-        builder.Property(r => r.Instructions).HasColumnType("text").IsRequired();
+        builder.Property(r => r.Instructions).HasColumnType("text");
         builder.Property(r => r.Difficulty).HasConversion<short>().HasDefaultValue(RecipeDifficulty.Easy).HasSentinel((RecipeDifficulty)0);
         builder.Property(r => r.Status).HasConversion<short>().HasDefaultValue(RecipeStatus.Draft).HasSentinel((RecipeStatus)(-1));
         builder.Property(r => r.AuthorId).HasMaxLength(450).IsRequired();
@@ -57,7 +71,9 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Navigation(r => r.Ingredients).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(r => r.Images).UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasIndex(r => r.Slug).IsUnique().HasDatabaseName("IDX_Recipe_Slug");
+        // D-3 (MT-05, Buổi 4): unique CHỈ trên công thức chưa xóa mềm, để slug của bản đã xóa được dùng lại
+        // thay vì chiếm chỗ vĩnh viễn như unique thường.
+        builder.HasIndex(r => r.Slug).IsUnique().HasFilter("\"IsDeleted\" = false").HasDatabaseName("IDX_Recipe_Slug");
         builder.HasIndex(r => r.Status).HasDatabaseName("IDX_Recipe_Status");
         builder.HasIndex(r => r.CategoryId).HasDatabaseName("IDX_Recipe_CategoryId");
         builder.HasIndex(r => r.AuthorId).HasDatabaseName("IDX_Recipe_AuthorId");
@@ -65,6 +81,24 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasIndex(r => r.PublishedAt).HasDatabaseName("IDX_Recipe_PublishedAt");
         builder.HasIndex(r => r.CreatedAt).HasDatabaseName("IDX_Recipe_CreatedAt");
         builder.HasIndex(r => r.IsDeleted).HasDatabaseName("IDX_Recipe_IsDeleted").HasFilter("\"IsDeleted\" = false");
+
+        // NFR-PERF-004 / MT-26 (Buổi 5 — Dev 3): ba composite index THEO HÌNH DẠNG TRUY VẤN THẬT (mọi truy vấn danh sách lọc
+        // Status = Published trước rồi mới sắp xếp), thay cho một loạt index đơn cột. Chứng minh bằng EXPLAIN ANALYZE — docs/explain-analyze-b5.md.
+        builder.HasIndex(r => new { r.IsDeleted, r.Status, r.PublishedAt })
+            .IsDescending(false, false, true)
+            .HasDatabaseName("IDX_Recipe_List");
+        builder.HasIndex(r => new { r.Status, r.CategoryId, r.PublishedAt })
+            .IsDescending(false, false, true)
+            .HasDatabaseName("IDX_Recipe_ByCategory");
+        builder.HasIndex(r => new { r.Status, r.CookTimeMinutes })
+            .HasDatabaseName("IDX_Recipe_CookTime");
+
+        // FR-SRCH-001 / MT-25 (Buổi 4 — Dev 3): generated column STORED, không trigger — PostgreSQL tự tính lại khi Title hoặc
+        // Description đổi, không có đường code nào quên đồng bộ. GIN index cho toán tử @@.
+        builder.Property<NpgsqlTsVector>(SearchVectorColumn)
+            .HasColumnType("tsvector")
+            .HasComputedColumnSql(SearchVectorSql, stored: true);
+        builder.HasIndex(SearchVectorColumn).HasMethod("GIN").HasDatabaseName("IDX_Recipe_Search");
     }
 }
 
@@ -84,7 +118,10 @@ internal sealed class RecipeStepConfiguration : IEntityTypeConfiguration<RecipeS
         builder.Property(s => s.Description).HasColumnType("text").IsRequired();
         builder.Property(s => s.ImageUrl).HasMaxLength(500);
 
-        builder.HasIndex(s => new { s.RecipeId, s.StepNumber }).IsUnique().HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
+        // D-16 (MT-56): tính duy nhất (RecipeId, StepNumber) là UNIQUE CONSTRAINT "UQ_RecipeStep_Recipe_StepNumber"
+        // DEFERRABLE INITIALLY DEFERRED, tạo bằng DDL trong migration B4_Recipe_IngredientStep — PostgreSQL không cho unique
+        // INDEX là deferrable, và EF Core không khai báo được constraint deferrable. Index ở đây chỉ phục vụ truy vấn.
+        builder.HasIndex(s => new { s.RecipeId, s.StepNumber }).HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
     }
 }
 
@@ -93,11 +130,13 @@ internal sealed class RecipeIngredientConfiguration : IEntityTypeConfiguration<R
 {
     public void Configure(EntityTypeBuilder<RecipeIngredient> builder)
     {
-        builder.ToTable("RecipeIngredients");
+        builder.ToTable("RecipeIngredients", t =>
+            t.HasCheckConstraint("CK_RecipeIngredient_Quantity", "\"Quantity\" IS NULL OR \"Quantity\" > 0"));
         builder.ConfigureBase();
 
         builder.Property(i => i.Name).HasMaxLength(200).IsRequired();
         builder.Property(i => i.Quantity).HasPrecision(10, 3);
+        builder.Property(i => i.QuantityText).HasMaxLength(50);
         builder.Property(i => i.Unit).HasMaxLength(50);
         builder.Property(i => i.Notes).HasMaxLength(500);
         builder.Property(i => i.OrderIndex).HasDefaultValue(0);

@@ -144,7 +144,7 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
                     )}
                   </span>
                   <span className="shrink-0 font-medium text-gray-700">
-                    {formatQuantity(ingredient.quantity, ingredient.unit)}
+                    {formatQuantity(ingredient.quantity, ingredient.unit, ingredient.quantityText)}
                   </span>
                 </li>
               ))}

@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class RefreshTokenTests(CulinaryBlogApiFactory factory) : IClassFixture<CulinaryBlogApiFactory>
+public sealed class RefreshTokenTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
 {
     [Theory]
     [InlineData(2)]

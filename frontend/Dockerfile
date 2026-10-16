@@ -11,6 +11,9 @@ FROM node:22-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# git không lưu thư mục rỗng: repo chưa có file tĩnh nào trong public/ nên bản clone mới không có thư mục này, và lệnh
+# COPY /app/public ở stage runtime bên dưới sẽ lỗi "not found". Tạo sẵn để build được trên mọi máy.
+RUN mkdir -p public
 # Biến NEXT_PUBLIC_* được nhúng lúc build
 ARG NEXT_PUBLIC_API_BASE_URL
 ARG NEXT_PUBLIC_SITE_URL

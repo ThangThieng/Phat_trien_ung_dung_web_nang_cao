@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class TokenRevocationConcurrencyTests(CulinaryBlogApiFactory factory) : IClassFixture<CulinaryBlogApiFactory>
+public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
 {
     [Theory]
     [InlineData(true)]
@@ -161,7 +161,7 @@ public sealed class TokenRevocationConcurrencyTests(CulinaryBlogApiFactory facto
         await using var issuingScope = factory.Services.CreateAsyncScope();
         var db = issuingScope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
         await db.Users.SingleAsync(user => user.Id == original.User.Id).ConfigureAwait(true);
-        var stale = (await issuingScope.ServiceProvider.GetRequiredService<IIdentityService>().GetByIdAsync(original.User.Id, CancellationToken.None).ConfigureAwait(true))!;
+        var stale = Assert.IsType<IdentityUserInfo>(await issuingScope.ServiceProvider.GetRequiredService<IIdentityService>().FindByIdAsync(original.User.Id, CancellationToken.None).ConfigureAwait(true));
         await using (var disablingScope = factory.Services.CreateAsyncScope())
         {
             await disablingScope.ServiceProvider.GetRequiredService<IIdentityService>().SetActiveAsync(original.User.Id, false, CancellationToken.None).ConfigureAwait(true);

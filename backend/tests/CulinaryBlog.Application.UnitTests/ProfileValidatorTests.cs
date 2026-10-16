@@ -1,10 +1,12 @@
+using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Features.Auth;
+using NSubstitute;
 
 namespace CulinaryBlog.Application.UnitTests;
 
 public sealed class ProfileValidatorTests
 {
-    private readonly UpdateProfileCommandValidator _validator = new();
+    private readonly IFileStorageService _storage = Substitute.For<IFileStorageService>();
 
     [Theory]
     [InlineData(2, 1000, true)]
@@ -13,8 +15,8 @@ public sealed class ProfileValidatorTests
     [InlineData(2, 1001, false)]
     public void ProfileEnforcesLengthBounds(int nameLength, int bioLength, bool valid)
     {
-        var update = new ProfileUpdate(new string('a', nameLength), true, null, false, new string('b', bioLength), true);
-        Assert.Equal(valid, _validator.Validate(new UpdateProfileCommand(update, "http://localhost:9000/culinary-blog")).IsValid);
+        var validator = new UpdateProfileCommandValidator(_storage);
+        Assert.Equal(valid, validator.Validate(new UpdateProfileCommand(new string('a', nameLength), null, new string('b', bioLength))).IsValid);
     }
 
     [Theory]
@@ -29,14 +31,19 @@ public sealed class ProfileValidatorTests
     [InlineData(null, true)]
     public void AvatarMustResolveToAnObjectInConfiguredBucket(string? url, bool valid)
     {
-        var update = new ProfileUpdate(null, false, url, true, null, false);
-        Assert.Equal(valid, _validator.Validate(new UpdateProfileCommand(update, "http://localhost:9000/culinary-blog")).IsValid);
+        if (url is not null)
+        {
+            _storage.IsStoredFileUrl(url).Returns(valid);
+        }
+
+        var validator = new UpdateProfileCommandValidator(_storage);
+        Assert.Equal(valid, validator.Validate(new UpdateProfileCommand(null, url, null)).IsValid);
     }
 
     [Fact]
     public void EmptyPatchIsValid()
     {
-        var update = new ProfileUpdate(null, false, null, false, null, false);
-        Assert.True(_validator.Validate(new UpdateProfileCommand(update, "http://localhost:9000/culinary-blog")).IsValid);
+        var validator = new UpdateProfileCommandValidator(_storage);
+        Assert.True(validator.Validate(new UpdateProfileCommand(null, null, null)).IsValid);
     }
 }

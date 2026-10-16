@@ -21,14 +21,68 @@
     "import/extensions": [
       "error",
       "ignorePackages",
-      { "ts": "never", "tsx": "never", "js": "never", "jsx": "never" }
+      {
+        "ts": "never",
+        "tsx": "never",
+        "js": "never",
+        "jsx": "never"
+      }
+    ],
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "zones": [
+          {
+            "target": "./src/types",
+            "from": [
+              "./src/app",
+              "./src/components",
+              "./src/features",
+              "./src/hooks",
+              "./src/lib",
+              "./src/stores"
+            ],
+            "message": "types/ là tầng thấp nhất: không import từ thư mục khác (chỉ được import types/ với nhau)."
+          },
+          {
+            "target": "./src/lib",
+            "from": [
+              "./src/app",
+              "./src/components",
+              "./src/features",
+              "./src/hooks",
+              "./src/stores"
+            ],
+            "message": "lib/ là tiện ích thuần: không import từ app, components, features, hooks, stores."
+          },
+          {
+            "target": "./src/components/ui",
+            "from": ["./src/app", "./src/features", "./src/stores"],
+            "message": "components/ui/ (shadcn) không được phụ thuộc app, features, stores."
+          },
+          {
+            "target": ["./src/features", "./src/components", "./src/hooks", "./src/stores"],
+            "from": "./src/app",
+            "message": "Chỉ app/ được ghép các tầng khác; features, components, hooks, stores không import ngược từ app/."
+          }
+        ]
+      }
     ]
   },
   "overrides": [
     {
       "files": ["**/*.test.ts", "**/*.test.tsx", "e2e/**/*.ts", "jest.setup.ts"],
-      "env": { "jest": true },
-      "rules": { "import/no-extraneous-dependencies": ["error", { "devDependencies": true }] }
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true
+          }
+        ]
+      }
     }
   ],
   "ignorePatterns": [".next/", "node_modules/", "coverage/", "*.config.*", "next-env.d.ts"]

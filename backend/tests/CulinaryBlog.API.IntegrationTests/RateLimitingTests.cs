@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class RateLimitingTests(CulinaryBlogApiFactory factory) : IClassFixture<CulinaryBlogApiFactory>
+public sealed class RateLimitingTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
 {
     [Theory]
     [InlineData("/api/v1/auth/register", 10)]

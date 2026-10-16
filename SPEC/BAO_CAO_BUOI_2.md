@@ -11,10 +11,10 @@
 
 | Dev | Mã FR | Chức năng | Trạng thái |
 |---|---|---|---|
-| Dev 1 | FR-AUTH-001, FR-AUTH-002 | Đăng ký + Đăng nhập Local | ✅ Hoàn thành |
+| Dev 1 | FR-AUTH-001, FR-AUTH-002 | Đăng ký + Đăng nhập bằng email | ✅ Hoàn thành |
 | Dev 2 | FR-RCP-001, FR-RCP-002 | Danh sách + Chi tiết công thức | ✅ Hoàn thành |
 | Dev 3 | FR-CAT-001, FR-CAT-002 | Danh sách + Chi tiết danh mục (Redis cache) | ✅ Hoàn thành |
-| Dev 4 | Hạ tầng, FR-FILE-001, FR-FILE-002 | Docker Compose 8 service + Upload/Delete MinIO + ImageUploader | ✅ Hoàn thành |
+| Dev 4 | Hạ tầng, FR-FILE-001, FR-FILE-002 | Docker Compose 8 service + Tải lên/Xóa MinIO + ImageUploader | ✅ Hoàn thành |
 | (thêm) | FR-JOB-001 (một phần) | Welcome Email Job qua Hangfire + MailKit | ✅ Làm sớm (xem mục 4.6) |
 | Dev 4 (bổ sung 21/09) | SRS v1.2.1 §2.6.1 (CR-2026-03) | **Yêu cầu mới, khác SRS v1.2.0:** dữ liệu mẫu ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước | ✅ Hoàn thành (xem §9) |
 
@@ -23,7 +23,7 @@
 | Hạng mục | Kết quả |
 |---|---|
 | Backend build | ✅ 0 Warning, 0 Error (TreatWarningsAsErrors + StyleCop + SonarAnalyzer) |
-| Backend test | ✅ 44/44 (Domain 14, Application 27, ArchUnit.NET 3); sau yêu cầu bổ sung 21/09: **49/49** (+5 `RecipeSeedCatalogTests`) |
+| Backend kiểm thử | ✅ 44/44 (Domain 14, Application 27, ArchUnit.NET 3); sau yêu cầu bổ sung 21/09: **49/49** (+5 `RecipeSeedCatalogTests`) |
 | Frontend | ✅ ESLint Airbnb 0 lỗi · `tsc` 0 lỗi · Jest 15/15 · `next build` OK |
 | First Load JS | ✅ 103–154 kB (NFR-PERF-005 ≤ 200 kB) |
 | Docker | ✅ 9 container Up (8 service SRS + mailhog dev) |
@@ -41,9 +41,9 @@
 | DB | `AspNetUsers` (+ DisplayName, AvatarUrl, Bio, IsActive, CreatedAt), `AspNetRoles`…, `RefreshTokens` (TokenHash varchar(64) UNIQUE, ExpiresAt, RevokedAt, ReplacedByTokenHash, CreatedByIp) |
 | Domain | `RefreshToken` |
 | Application | `RegisterUserCommand` + Validator + Handler, `LoginUserCommand` + Validator + Handler, `AuthResponseFactory`, `PasswordRules`, interface `IIdentityService`, `ITokenService`, `IRefreshTokenRepository`, `IWelcomeEmailScheduler` |
-| Infrastructure | `ApplicationUser`, `IdentityService` (UserManager), `JwtTokenService`, `JwtOptions`, cấu hình Identity (password policy, lockout, PBKDF2 100.000 vòng) |
+| Infrastructure | `ApplicationUser`, `IdentityService` (UserManager), `JwtTokenService`, `JwtOptions`, cấu hình Identity (password policy, khóa tài khoản tạm thời – lockout, PBKDF2 100.000 vòng) |
 | API | `POST /api/v1/auth/register` (201), `POST /api/v1/auth/login` (200) |
-| Frontend | `AuthProvider`/`useAuth` (auth-context.tsx), `LoginForm`, `RegisterForm` (React Hook Form + Zod), trang `/auth/login`, `/auth/register`, header hiển thị user |
+| Frontend | `AuthProvider`/`useAuth` (auth-context.tsx), `LoginForm`, `RegisterForm` (React Hook Form + Zod), trang `/auth/login`, `/auth/register`, header hiển thị người dùng |
 
 **Kết quả kiểm thử thực tế:**
 
@@ -51,9 +51,9 @@
 |---|---|
 | Đăng ký hợp lệ | 201, trả `accessToken` (15 phút, `expiresIn=900`), `refreshToken` 512-bit, role `Author` |
 | Email trùng (khác hoa/thường) | 409 `AUTH_EMAIL_EXISTS` |
-| Dữ liệu sai (tên ngắn, email sai, username có dấu cách, mật khẩu yếu) | 422 `VALIDATION_ERROR`, lỗi theo từng field |
+| Dữ liệu sai (tên ngắn, email sai, username có dấu cách, mật khẩu yếu) | 422 `VALIDATION_ERROR`, lỗi theo từng trường |
 | Đăng nhập đúng | 200 |
-| Sai mật khẩu lần 1–4 | 401 `AUTH_INVALID_CREDENTIALS` (thông báo chung, chống user enumeration) |
+| Sai mật khẩu lần 1–4 | 401 `AUTH_INVALID_CREDENTIALS` (thông báo chung, chống dò tài khoản – user enumeration) |
 | Sai lần 5 và sau đó (kể cả mật khẩu đúng) | 423 `AUTH_ACCOUNT_LOCKED`, `retryAfterMinutes=15` |
 | Email không tồn tại | 401 (cùng thông báo) |
 | Mật khẩu trong DB | Tiền tố `AQAAAAIA` = Identity V3 PBKDF2-HMAC-SHA512 |
@@ -69,10 +69,10 @@
 |---|---|
 | DB | `Recipes` (check constraint PrepTime > 0, CookTime ≥ 0, Servings > 0; cột `Nutrition_*` decimal(8,2)), `RecipeSteps` (unique RecipeId + StepNumber), `RecipeIngredients`, `RecipeImages` (partial unique index: 1 ảnh chính/recipe), 8 index `IDX_Recipe_*` |
 | Domain | `BaseEntity` (Id, CreatedAt, UpdatedAt, IsDeleted, RowVersion bytea), aggregate `Recipe`, `RecipeStep`, `RecipeIngredient`, `RecipeImage`, owned `RecipeNutrition`, enum `RecipeDifficulty`, `RecipeStatus` |
-| Application | `GetRecipesQuery` (+ Validator), `GetRecipeBySlugQuery`, `RecipeSortParser` (whitelist), `IRecipeReadRepository`, DTOs |
+| Application | `GetRecipesQuery` (+ Validator), `GetRecipeBySlugQuery`, `RecipeSortParser` (danh sách cho phép), `IRecipeReadRepository`, DTOs |
 | Infrastructure | `RecipeReadRepository` (projection AsNoTracking, split query), `AuditInterceptor`, `DatabaseSeeder` (50 công thức Bogus) |
 | API | `GET /api/v1/recipes`, `GET /api/v1/recipes/{slug}` + Output Cache Redis ("RecipeList" 15 phút, "RecipeDetail" 60 phút, tag `recipes` + `recipe:{slug}`) |
-| Frontend | `/recipes` (SSR, sắp xếp, phân trang, skeleton), `/recipes/[slug]` (ISR 300s: ảnh, badge độ khó, 4 ô thời gian/khẩu phần, nguyên liệu, checklist các bước, bảng dinh dưỡng), `RecipeCard`, `Pagination`, `NutritionTable`, `StepChecklist` |
+| Frontend | `/recipes` (SSR, sắp xếp, phân trang, skeleton), `/recipes/[slug]` (ISR 300s: ảnh, nhãn độ khó, 4 ô thời gian/khẩu phần, nguyên liệu, danh sách kiểm tra các bước, bảng dinh dưỡng), `RecipeCard`, `Pagination`, `NutritionTable`, `StepChecklist` |
 
 **Kết quả kiểm thử thực tế:**
 
@@ -80,7 +80,7 @@
 |---|---|
 | `?page=2&pageSize=5&sort=title` | 200, đủ `totalCount, totalPages, hasNextPage, hasPreviousPage` |
 | `?difficulty=Hard&maxCookTime=60` | Chỉ trả recipe Hard có thời gian nấu ≤ 60 |
-| `pageSize=100`, `sort=hack` | 422 với thông báo field |
+| `pageSize=100`, `sort=hack` | 422 với thông báo trường |
 | Tổng số thấy được: Guest / Author1 / Admin | 46 / 47 / 50 (đúng phân quyền Draft) |
 | Draft `bun-bo-hue`: Guest / Author khác / Chủ / Admin | 403 / 403 / 200 / 200 |
 | Web: slug không tồn tại, Draft | Trang 404 |
@@ -93,10 +93,10 @@
 
 | Tầng | Thành phần |
 |---|---|
-| DB | `Categories` (Name 100 UNIQUE, Slug 120 UNIQUE, Description, ImageUrl, OrderIndex) + seed 8 danh mục |
+| DB | `Categories` (Name 100 UNIQUE, Slug 120 UNIQUE, Description, ImageUrl, OrderIndex) + tạo mẫu (seed) 8 danh mục |
 | Domain | `Category`, `SlugHelper` (bỏ dấu tiếng Việt, đ→d, suffix -2, -3) |
 | Application | `GetCategoriesQuery : ICacheable` (key `categories:all`, TTL 60 phút), `GetCategoryBySlugQuery` (+ Validator), `ICategoryReadRepository`, `CachingBehavior`, `CacheInvalidationBehavior` |
-| Infrastructure | `CategoryReadRepository`, `RedisCacheService` (IDistributedCache + JSON, lỗi Redis → fallback DB) |
+| Infrastructure | `CategoryReadRepository`, `RedisCacheService` (IDistributedCache + JSON, lỗi Redis → phương án dự phòng – fallback DB) |
 | API | `GET /api/v1/categories`, `GET /api/v1/categories/{slug}?page&pageSize` |
 | Frontend | `/categories` (lưới `CategoryCard`), `/categories/[slug]` (header + lưới công thức + phân trang) |
 
@@ -125,7 +125,7 @@
 
 | Kịch bản | Kết quả |
 |---|---|
-| Upload PNG hợp lệ | 201, key `uploads/{userId}/{guid}.png`, URL public trả 200 `image/png` |
+| Tải lên PNG hợp lệ | 201, key `uploads/{userId}/{guid}.png`, URL công khai trả 200 `image/png` |
 | File giả mạo (header EXE, khai báo PNG) | 400 `FILE_MIME_INVALID` |
 | Khai báo `image/gif` | 400 `FILE_MIME_INVALID` |
 | File 6MB | 400 `FILE_SIZE_EXCEEDED` |
@@ -142,16 +142,16 @@
 | Yêu cầu SRS | Đã tuân thủ |
 |---|---|
 | CONS-001 Clean Architecture 4 tầng | ✅ Domain không có NuGet; ArchUnit.NET kiểm tra Dependency Rule |
-| CONS-002 CQRS + MediatR | ✅ Mỗi use case là 1 Command/Query + Handler; pipeline Logging → Validation → Caching → Handler → CacheInvalidation (§6.3) |
+| CONS-002 CQRS + MediatR | ✅ Mỗi use case là 1 Command/Query + Handler; pipeline Logging → Kiểm tra hợp lệ → Caching → Handler → CacheInvalidation (§6.3) |
 | CONS-003 Minimal API, App Router | ✅ Không Controller, không Pages Router |
 | CONS-004 JWT 15 phút / 7 ngày, PBKDF2 qua Identity | ✅ |
 | CONS-005 REST + RFC 7807 + `/api/v1` | ✅ `type` = Application Error Code (Phụ lục B) |
 | CONS-006 EF Core Code-First | ✅ Migration `B1_InitialSchema` |
-| CONS-007 Upload ≤ 5MB, 4 MIME, magic bytes | ✅ |
-| CONS-008 FluentValidation qua Pipeline | ✅ Không validate trong endpoint |
+| CONS-007 Tải lên ≤ 5MB, 4 MIME, magic bytes | ✅ |
+| CONS-008 FluentValidation qua Pipeline | ✅ Không kiểm tra hợp lệ (validate) trong endpoint |
 | CONS-009 Docker multi-stage | ✅ |
 | Data model §7.1–7.8 | ✅ Đúng tên bảng, kiểu cột, độ dài, FK (Restrict/Cascade), index, owned `Nutrition_*`, RowVersion bytea |
-| FR-AUTH-002 A1 chống user enumeration | ✅ Thông báo chung cho sai email/mật khẩu |
+| FR-AUTH-002 A1 chống dò tài khoản | ✅ Thông báo chung cho sai email/mật khẩu |
 | FR-RCP-001 bước 4 phân quyền xem | ✅ Guest / Author / Admin |
 | FR-RCP-002 A2 Draft 403 | ✅ |
 | FR-CAT-001 key cache `categories:all`, TTL 60 phút | ✅ |
@@ -159,9 +159,9 @@
 | FR-FILE-002 xóa idempotent, trích key từ URL | ✅ |
 | NFR-SEC-005 CORS không wildcard | ✅ |
 | NFR-SEC-007 không commit secret | ✅ `.env` bị ignore, User Secrets, gitleaks pre-commit |
-| NFR-REL-002 Redis lỗi → fallback DB | ✅ `abortConnect=false`, try/catch |
+| NFR-REL-002 Redis lỗi → phương án dự phòng DB | ✅ `abortConnect=false`, try/catch |
 | NFR-USE-002/003/004 | ✅ Label + `aria-*`, lỗi inline, skeleton, toast, progress % |
-| SRS §2.6.1 Seed | ✅ Bogus: 50 công thức, 5 tác giả |
+| SRS §2.6.1 Dữ liệu mẫu | ✅ Bogus: 50 công thức, 5 tác giả |
 
 ---
 
@@ -170,18 +170,18 @@
 | # | Yêu cầu gốc | Đã làm | Lý do | Mức độ |
 |---|---|---|---|---|
 | 4.1 | Bucket `culinary-blog-storage` (yêu cầu Buổi 2) | Bucket `culinary-blog` | SRS §3.5 ghi "culinary-blog", mà nguyên tắc là tuân thủ 100% SRS. Đổi bằng cấu hình `MinIO__BucketName` | Thấp |
-| 4.2 | Route `/login`, `/register` | `/auth/login`, `/auth/register` + redirect 308 từ `/login`, `/register` | SRS §5.1 quy định `/auth/*`. Hai đường dẫn đều dùng được | Không ảnh hưởng |
+| 4.2 | Route `/login`, `/register` | `/auth/login`, `/auth/register` + chuyển hướng 308 từ `/login`, `/register` | SRS §5.1 quy định `/auth/*`. Hai đường dẫn đều dùng được | Không ảnh hưởng |
 | 4.3 | "Viết dịch vụ `IPasswordHasher` PBKDF2 ≥ 100.000 vòng" | Dùng `IPasswordHasher<ApplicationUser>` có sẵn của Identity, cấu hình `IterationCount = 100_000`, V3 (PBKDF2-HMAC-SHA512) | CONS-004 và NFR-SEC-001 yêu cầu hash "qua ASP.NET Core Identity". Tự viết thuật toán mật mã tăng rủi ro bảo mật | Không ảnh hưởng |
 | 4.4 | Tên command `RegisterUserCommand` / `LoginUserCommand` | Đúng tên như yêu cầu | — | ✅ |
 | 4.5 | `/categories/[slug]` ISR `revalidate: 3600` (yêu cầu) / 600 (SRS §5.1); `/categories` ISR 3600 | Trang render theo request, dữ liệu fetch revalidate 3600s (`/categories`) và **600s** (`/categories/[slug]`, theo SRS) qua Data Cache | (1) Lúc `next build` trong Docker, API chưa chạy nên không prerender được. (2) Trang chi tiết đọc `?page=`, nên Next bắt buộc render động. Dữ liệu vẫn tái sinh theo chu kỳ, nhưng HTML **không phải ISR thuần**. `/recipes/[slug]` là ISR đầy đủ | Trung bình |
-| 4.6 | FR-JOB-001 thuộc Buổi 3 (Dev 4) | Đã làm Welcome Email Job thật (Hangfire + MailKit + retry 1'/5'/30') ngay Buổi 2 | FR-AUTH-001 bước 11 yêu cầu enqueue email, và quy tắc Buổi 2 cấm code giả/placeholder. Buổi 3 Dev 4 còn: Dashboard `/hangfire` bảo vệ Admin | Dời phạm vi |
+| 4.6 | FR-JOB-001 thuộc Buổi 3 (Dev 4) | Đã làm Welcome Email Job thật (Hangfire + MailKit + thử lại 1'/5'/30') ngay Buổi 2 | FR-AUTH-001 bước 11 yêu cầu đưa vào hàng đợi (enqueue) email, và quy tắc Buổi 2 cấm code giả/placeholder. Buổi 3 Dev 4 còn: Dashboard `/hangfire` bảo vệ Admin | Dời phạm vi |
 | 4.7 | Mỗi dev một migration `B2_{Module}` (kế hoạch §1.4) | Một migration `B1_InitialSchema` | Cả 4 phần do một người làm cùng lúc; schema phụ thuộc chéo (Recipe → Category, AspNetUsers) | Thấp |
-| 4.8 | FR-AUTH-001 A2/A3 ghi 422; Phụ lục A ghi 400 | 422 cho validation; 400 cho lỗi file | Theo quyết định §1.3 trong kế hoạch (ưu tiên FR chi tiết) | Đã thống nhất |
+| 4.8 | FR-AUTH-001 A2/A3 ghi 422; Phụ lục A ghi 400 | 422 cho kiểm tra hợp lệ (validation); 400 cho lỗi file | Theo quyết định §1.3 trong kế hoạch (ưu tiên FR chi tiết) | Đã thống nhất |
 | 4.9 | FR-RCP-001: response `PagedResult {items, totalCount, …}`; SRS §8: `{data, meta}` | Dùng `PagedResult` của FR | Hai chỗ trong SRS mâu thuẫn; FR chi tiết hơn | Đã thống nhất |
 | 4.10 | Đăng xuất | Nút đăng xuất chỉ xóa token phía client | Thu hồi refresh token trên server là FR-AUTH-005 (Buổi 3). Refresh token vẫn còn hiệu lực đến hết 7 ngày hoặc tới Buổi 3 | Chờ Buổi 3 |
 | 4.11 | Access token hết hạn | Session phía client tự xóa khi hết 15 phút, người dùng phải đăng nhập lại | Refresh Token Rotation là FR-AUTH-004 (Buổi 4) | Chờ Buổi 4 |
-| 4.12 | Lưu JWT | Lưu `localStorage` | Chưa có refresh flow nên cần giữ session qua reload. Rủi ro XSS được giảm bằng CSP ở Buổi 6; có thể chuyển sang in-memory khi có FR-AUTH-004 | Cần xem lại Buổi 4 |
-| 4.13 | Ảnh hiển thị qua `next/image` tối ưu | `next/image` với `unoptimized` | Image optimizer chạy trong container frontend không truy cập được `localhost:9000` (URL public của MinIO) | Thấp – xử lý khi có Nginx/CDN Buổi 7 |
+| 4.12 | Lưu JWT | Lưu `localStorage` | Chưa có refresh flow nên cần giữ session qua reload. Rủi ro XSS được giảm bằng CSP ở Buổi 6; có thể chuyển sang trong bộ nhớ (in-memory) khi có FR-AUTH-004 | Cần xem lại Buổi 4 |
+| 4.13 | Ảnh hiển thị qua `next/image` tối ưu | `next/image` với `unoptimized` | Image optimizer chạy trong container frontend không truy cập được `localhost:9000` (URL công khai của MinIO) | Thấp – xử lý khi có Nginx/CDN Buổi 7 |
 | 4.14 | Endpoint `/api/v1/files/*` | Bổ sung (SRS không định nghĩa) | Yêu cầu Buổi 2 chỉ định; SRS chỉ có `/recipes/{id}/images` (FR-RCP-008, Buổi 3) sẽ dùng lại `IFileStorageService` | ✅ Theo yêu cầu |
 | 4.15 | Trang chủ `/` ISR | Trang chủ tĩnh giới thiệu | Trang chủ đầy đủ thuộc Buổi 6 (Dev 3) | Theo kế hoạch |
 | 4.16 | Cổng Postgres 5432:5432 (§6.5) | `${POSTGRES_HOST_PORT:-5432}:5432`, máy này dùng 5434 | Máy có sẵn PostgreSQL 18 (Windows service) chiếm 5432, container khác chiếm 5433 | Chỉ ảnh hưởng máy này |
@@ -196,16 +196,16 @@
 | Kết nối nhầm Postgres của Windows | Service `postgresql-x64-18` chiếm 0.0.0.0:5432 | Thêm biến `POSTGRES_HOST_PORT` |
 | Slug không tồn tại trả 200 thay vì 404 | `loading.tsx` của `/recipes` bọc cả `[slug]` → response stream với status 200 trước khi `notFound()` | Chuyển trang danh sách và `loading.tsx` vào route group `(list)` |
 | Email chào mừng "không đến" | Hangfire.PostgreSql quét hàng đợi mỗi 15 giây | Không phải lỗi; email đến sau vài giây |
-| Lỗi StyleCop / Sonar | Rule xung đột với EF Core (private setter), tài liệu tiếng Việt, gom type CQRS | Tắt có chọn lọc trong `.editorconfig`, có ghi chú lý do |
+| Lỗi StyleCop / Sonar | Quy tắc xung đột với EF Core (private setter), tài liệu tiếng Việt, gom type CQRS | Tắt có chọn lọc trong `.editorconfig`, có ghi chú lý do |
 
 ### 5.1 Rà soát sau khi commit (14/09/2026, Docker bật) – nhánh `fix/b1-runtime-hardening`
 
-Kiểm tra lại từ bản clone sạch trên GitHub: gitleaks toàn lịch sử **không có secret**; backend build 0 warning, 44/44 test; frontend lint, `tsc`, Jest 15/15, `next build` đều đạt. Các lỗi dưới đây chỉ xuất hiện **khi chạy container**:
+Kiểm tra lại từ bản clone sạch trên GitHub: gitleaks toàn lịch sử **không có secret**; backend build 0 cảnh báo, 44/44 kiểm thử; frontend lint, `tsc`, Jest 15/15, `next build` đều đạt. Các lỗi dưới đây chỉ xuất hiện **khi chạy container**:
 
 | # | Lỗi | Nguyên nhân gốc | Cách sửa | Kiểm chứng |
 |---|---|---|---|---|
-| 1 | API crash `57P03 the database system is starting up` / `Name or service not known` | Docker Desktop khởi động lại thì mọi container `restart: unless-stopped` chạy song song, bỏ qua `depends_on`. API migrate khi Postgres chưa sẵn sàng; lỗi DNS không được retry của EF coi là tạm thời | `DatabaseReadiness.WaitForDatabaseAsync` (chờ tối đa 2 phút) chạy trước migrate và trước worker Hangfire; bật `EnableRetryOnFailure` cho lỗi tạm thời lúc runtime; healthcheck `pg_isready -h 127.0.0.1` (kiểm qua TCP) | Bật api + hangfire khi Postgres tắt, 20s sau mới bật Postgres → cả hai chờ rồi chạy, **RestartCount 0 → 0** |
-| 2 | Nginx trả **502** cho `/api/*` sau khi tạo lại container api | `upstream { server api:8080; }` chỉ phân giải DNS lúc Nginx khởi động → giữ IP cũ | `resolver 127.0.0.11 valid=10s` + `proxy_pass` qua biến | api đổi IP 172.30.2.3 → 172.30.2.2, Nginx **không restart** vẫn trả 200 |
+| 1 | API sập `57P03 the database system is starting up` / `Name or service not known` | Docker Desktop khởi động lại thì mọi container `restart: unless-stopped` chạy song song, bỏ qua `depends_on`. API migrate khi Postgres chưa sẵn sàng; lỗi DNS không được thử lại của EF coi là tạm thời | `DatabaseReadiness.WaitForDatabaseAsync` (chờ tối đa 2 phút) chạy trước migrate và trước worker Hangfire; bật `EnableRetryOnFailure` cho lỗi tạm thời lúc runtime; healthcheck `pg_isready -h 127.0.0.1` (kiểm qua TCP) | Bật api + hangfire khi Postgres tắt, 20s sau mới bật Postgres → cả hai chờ rồi chạy, **RestartCount 0 → 0** |
+| 2 | Nginx trả **502** cho `/api/*` sau khi tạo lại container api | `upstream { server api:8080; }` chỉ phân giải DNS lúc Nginx khởi động → giữ IP cũ | `resolver 127.0.0.11 valid=10s` + `proxy_pass` qua biến | api đổi IP 172.30.2.3 → 172.30.2.2, Nginx **không khởi động lại** vẫn trả 200 |
 | 3 | `libgssapi_krb5.so.2: cannot open shared object file` | Npgsql mặc định thử mã hóa GSS/Kerberos, image aspnet không có thư viện | Connection string thêm `GSS Encryption Mode=Disable` (dự án không dùng Kerberos) | Log sạch |
 | 4 | `Overriding HTTP_PORTS '8080'… URLS` | Dockerfile đặt `ASPNETCORE_URLS` đè `ASPNETCORE_HTTP_PORTS` của image | Dùng `ASPNETCORE_HTTP_PORTS=8080` | Log sạch |
 | 5 | Khóa DataProtection chỉ nằm trong container | Mất khóa khi tạo lại container; api và hangfire mỗi bên một khóa | `PersistKeysToFileSystem` + volume `dpkeys` dùng chung, `SetApplicationName("CulinaryBlog")` | api và hangfire cùng một file `key-*.xml` |
@@ -213,19 +213,19 @@ Kiểm tra lại từ bản clone sạch trên GitHub: gitleaks toàn lịch s�
 | 7 | Container `hangfire` chạy image cũ | Image `culinaryblog-api` build lại nhưng hangfire không được tạo lại | `docker compose up -d` tạo lại cả api và hangfire | Cùng image ID |
 | 8 | Pre-commit hook gitleaks **chặn mọi commit trên Windows** khi Docker bật, kèm thông báo sai "Phát hiện secret" | Git Bash đổi `-w /repo` thành `C:/Program Files/Git/repo` → `docker run` lỗi 125; hook coi mọi mã khác 0 là có secret. Buổi 2 không lộ lỗi vì Docker tắt nên hook bỏ qua | `MSYS_NO_PATHCONV=1`, đường dẫn host lấy bằng `pwd -W`; tách thông báo "có secret" (exit 1) với "không chạy được gitleaks" | Hook chạy thật trên commit sửa lỗi này: gitleaks quét phần stage, không có secret, commit thành công |
 
-Trong lúc Postgres **thực sự không truy cập được**, log api/hangfire vẫn có các dòng `A transient exception occurred… will be retried` kèm `Name or service not known` – đó là log của cơ chế retry, đúng hành vi mong muốn, tự hết khi DB lên.
+Trong lúc Postgres **thực sự không truy cập được**, log api/hangfire vẫn có các dòng `A transient exception occurred… will be retried` kèm `Name or service not known` – đó là log của cơ chế thử lại, đúng hành vi mong muốn, tự hết khi DB lên.
 
 Còn lại một cảnh báo **chấp nhận được ở môi trường dev**: `XmlKeyManager[35] No XML encryptor configured` – khóa DataProtection lưu dạng không mã hóa trên volume. Production cần `ProtectKeysWithCertificate` (Buổi 7, cùng HTTPS).
 
 ### 5.2 Rà soát lần 2 (20/09/2026, Docker bật) – commit `6137d3e` trên nhánh `feature/b1-dev4-infra-file`
 
-Kiểm tra toàn bộ: backend build 0 warning / 0 error, 44/44 test; frontend ESLint, `tsc`, Jest 15/15, `next build` đạt; chạy lại stack Docker và thử từng endpoint Buổi 2 (đăng ký/đăng nhập, danh sách/chi tiết công thức và danh mục, upload/xóa file, file giả mạo, path traversal, quyền xóa, CORS, 404). Phát hiện và sửa:
+Kiểm tra toàn bộ: backend build 0 cảnh báo / 0 error, 44/44 kiểm thử; frontend ESLint, `tsc`, Jest 15/15, `next build` đạt; chạy lại stack Docker và thử từng endpoint Buổi 2 (đăng ký/đăng nhập, danh sách/chi tiết công thức và danh mục, tải lên/xóa file, file giả mạo, path traversal, quyền xóa, CORS, 404). Phát hiện và sửa:
 
 | # | Lỗi | Nguyên nhân gốc | Cách sửa | Kiểm chứng |
 |---|---|---|---|---|
-| 1 | Ảnh **hợp lệ** gần 5MB upload qua Nginx (`:80/api/...`) bị từ chối **413 trang HTML**; ảnh 6MB cũng nhận HTML thay vì `FILE_SIZE_EXCEEDED` | `client_max_body_size 5m` tính trên **cả body multipart** (file + boundary + header), nên file ≤ 5MB vẫn vượt; trang lỗi mặc định của Nginx là HTML nên Frontend không đọc được | `client_max_body_size 10m` (khớp `RequestSizeLimit` của `/files/upload`); kiểm tra 5MB chính xác vẫn nằm ở API; body > 10MB trả JSON RFC 7807 qua `error_page 413 @payload_too_large` | Qua Nginx: 5MB−100B → **201**; 6MB → **400 `FILE_SIZE_EXCEEDED`**; 11MB → **413 JSON `FILE_SIZE_EXCEEDED`** |
+| 1 | Ảnh **hợp lệ** gần 5MB tải lên qua Nginx (`:80/api/...`) bị từ chối **413 trang HTML**; ảnh 6MB cũng nhận HTML thay vì `FILE_SIZE_EXCEEDED` | `client_max_body_size 5m` tính trên **cả body multipart** (file + boundary + header), nên file ≤ 5MB vẫn vượt; trang lỗi mặc định của Nginx là HTML nên Frontend không đọc được | `client_max_body_size 10m` (khớp `RequestSizeLimit` của `/files/upload`); kiểm tra 5MB chính xác vẫn nằm ở API; body > 10MB trả JSON RFC 7807 qua `error_page 413 @payload_too_large` | Qua Nginx: 5MB−100B → **201**; 6MB → **400 `FILE_SIZE_EXCEEDED`**; 11MB → **413 JSON `FILE_SIZE_EXCEEDED`** |
 | 2 | Gọi thẳng API với body > 10MB trả 413 có `type` chung chung (`rfc9110#section-15.5.14`) | Request bị chặn ở tầng binding trước handler; `UseStatusCodePages` sinh ProblemDetails mặc định | `AddProblemDetails(CustomizeProblemDetails)`: status 413 → `type = FILE_SIZE_EXCEEDED` (Phụ lục B) | 11MB → 413 `FILE_SIZE_EXCEEDED` |
-| 3 | Mỗi lần khởi động khi Postgres chưa sẵn sàng, log api/hangfire tràn **stack trace** `A transient exception occurred…` | `DatabaseReadiness` gọi `DbContext.Database.CanConnectAsync` – chạy **bên trong** execution strategy `EnableRetryOnFailure`, nên mỗi lần thử tự retry thêm 6 lần và ghi đầy đủ exception | Thăm dò bằng `NpgsqlConnection.OpenAsync` trực tiếp (không qua retry của EF); retry lúc runtime giữ nguyên | Tắt Postgres, restart api: log chỉ còn `not reachable yet (attempt 1..3)` → `ready after 4 attempt(s) in 19s`, **RestartCount 0** |
+| 3 | Mỗi lần khởi động khi Postgres chưa sẵn sàng, log api/hangfire tràn **stack trace** `A transient exception occurred…` | `DatabaseReadiness` gọi `DbContext.Database.CanConnectAsync` – chạy **bên trong** execution strategy `EnableRetryOnFailure`, nên mỗi lần thử tự thử lại thêm 6 lần và ghi đầy đủ exception | Thăm dò bằng `NpgsqlConnection.OpenAsync` trực tiếp (không qua thử lại của EF); thử lại lúc runtime giữ nguyên | Tắt Postgres, khởi động lại api: log chỉ còn `not reachable yet (attempt 1..3)` → `ready after 4 attempt(s) in 19s`, **RestartCount 0** |
 
 Các điểm lệch SRS v1.2.0 khác (422, lọc Draft theo danh tính, Output Cache, TTL…) **không sửa ở đây** – chúng là nợ kỹ thuật D-1 → D-18 đã được gán chủ và buổi retrofit trong `KE_HOACH_PHAT_TRIEN_8_BUOI.md` §4.1.
 
@@ -267,7 +267,7 @@ Các buổi sau chỉ đổi số cuối: `2312755_NguyenThangThieng_buoiso4`, `
 
 > **Cập nhật 21/09/2026:** hai nhánh của Dev 4 là `feature/b1-dev4-infra-file` và `fix/b1-runtime-hardening` được **gộp và đổi tên** thành `2312755_NguyenThangThieng_buoiso2` theo quy ước mới, rồi xóa hai tên cũ trên GitHub. Không mất commit nào: `fix/b1-runtime-hardening` (`064f582`) nằm sẵn trong lịch sử của `feature/b1-dev4-infra-file`, nên nhánh mới chứa đủ `b058654`, `9dc3d81`, `064f582`, `6137d3e`, `e841e45` và các commit của yêu cầu bổ sung (§9). Mã commit không đổi nên mọi link commit cũ vẫn dùng được. Các nhánh của thành viên khác không đổi tên.
 
-> **Cập nhật 20/09/2026:** đã **xóa** 3 nhánh `feature/b1-dev1-auth-001-002`, `feature/b1-dev3-cat-001-002`, `feature/b1-dev2-rcp-001-002` (cả local lẫn GitHub) để Dev 1, 2, 3 tự tạo nhánh của mình theo quy ước trên và tự commit phần việc từ Buổi 3. Commit của các nhánh này **không mất** – đã merge vào `develop`/`main`, xem qua link commit ở §7.4–7.6. Nhánh `feature/b1-dev4-infra-file` được giữ lại và đưa lên ngang `main` để nhận commit sửa lỗi `6137d3e` (§5.2). Bảng vai trò nhánh ở trên và số Behind dưới đây phản ánh thời điểm 14/09.
+> **Cập nhật 20/09/2026:** đã **xóa** 3 nhánh `feature/b1-dev1-auth-001-002`, `feature/b1-dev3-cat-001-002`, `feature/b1-dev2-rcp-001-002` (cả máy cá nhân lẫn GitHub) để Dev 1, 2, 3 tự tạo nhánh của mình theo quy ước trên và tự commit phần việc từ Buổi 3. Commit của các nhánh này **không mất** – đã merge vào `develop`/`main`, xem qua link commit ở §7.4–7.6. Nhánh `feature/b1-dev4-infra-file` được giữ lại và đưa lên ngang `main` để nhận commit sửa lỗi `6137d3e` (§5.2). Bảng vai trò nhánh ở trên và số Behind dưới đây phản ánh thời điểm 14/09.
 
 Cột **Behind/Ahead** trên GitHub so với `main`: mọi nhánh đều **Ahead 0** (không còn commit nào chưa merge). **Behind** là số commit `main` có mà nhánh đó chưa có – nhánh merge càng sớm thì Behind càng lớn. Số liệu sau lần merge `fix/b1-runtime-hardening` (commit `f313e95`): Dev 4: 11, Dev 1: 9, Dev 3: 7, Dev 2: 5, `fix/b1-runtime-hardening`: 3, `develop`: 2 – chính là 2 commit merge `develop → main` (`d2d8243`, `f313e95`). Đây là trạng thái bình thường.
 
@@ -304,7 +304,7 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 |---|---|
 | Cấu hình repo | `.gitignore` (chặn `.env`), `.gitattributes`, `.gitleaks.toml` + `.githooks/pre-commit` quét secret, `.env.example`, `README.md` |
 | Tài liệu | `SPEC/`: SRS v1.0.0, kế hoạch 6 buổi, bảng công nghệ – phiên bản, báo cáo buổi 2 |
-| Solution .NET | `CulinaryBlog.sln`, `global.json` (SDK 10), `Directory.Build.props` (TreatWarningsAsErrors, StyleCop, Sonar), `.editorconfig`, csproj 4 tầng + 4 project test |
+| Solution .NET | `CulinaryBlog.sln`, `global.json` (SDK 10), `Directory.Build.props` (TreatWarningsAsErrors, StyleCop, Sonar), `.editorconfig`, csproj 4 tầng + 4 project kiểm thử |
 | Domain | `BaseEntity` (Id, CreatedAt, UpdatedAt, IsDeleted, RowVersion), `DomainException` |
 | Application | 4 Pipeline Behavior: `LoggingBehavior`, `ValidationBehavior`, `CachingBehavior`, `CacheInvalidationBehavior`; `AppException`, `ErrorCodes` (Phụ lục B); `ICacheService`, `ICacheable`, `ICurrentUser`, `IUnitOfWork`; `PagedResult<T>`; `DependencyInjection` |
 | Infrastructure | `CulinaryBlogDbContext`, `AuditInterceptor` (tự điền CreatedAt/UpdatedAt), `BaseEntityConfiguration`, `DependencyInjection` |
@@ -319,7 +319,7 @@ b058654 chore: bootstrap – Nguyễn Thăng Thiêng (gốc của mọi nhánh)
 | Docker Compose 8 service SRS + mailhog | `docker-compose.yml`, `backend/Dockerfile`, `frontend/Dockerfile` (multi-stage, non-root) |
 | PostgreSQL | `docker/postgres/init.sql` (unaccent, pg_trgm, `vietnamese_unaccent`); migration `B1_InitialSchema` + model snapshot |
 | Reverse proxy | `nginx/nginx.conf` (rate limit 100 req/phút, security header, giới hạn 5MB) |
-| FR-FILE-001 Upload ảnh | `UploadFileCommand`, `ImageFileInspector` (kiểm magic bytes JPEG/PNG/WebP/AVIF), `PrefixedReadStream`, `IFileStorageService`, `MinioFileStorageService`, `MinioOptions`, `MinioBucketInitializer` |
+| FR-FILE-001 Tải lên ảnh | `UploadFileCommand`, `ImageFileInspector` (kiểm magic bytes JPEG/PNG/WebP/AVIF), `PrefixedReadStream`, `IFileStorageService`, `MinioFileStorageService`, `MinioOptions`, `MinioBucketInitializer` |
 | FR-FILE-002 Xóa ảnh | `DeleteFileCommand` (idempotent, chống path traversal, chỉ chủ file được xóa) |
 | API | `FilesEndpoints`: `POST /api/v1/files/upload`, `DELETE /api/v1/files/{**fileId}` |
 | FR-JOB-001 (làm sớm) | `MailKitEmailService`, `WelcomeEmailJob` (Hangfire) |
@@ -338,13 +338,13 @@ Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_na
 
 | Chức năng | File |
 |---|---|
-| FR-AUTH-001 Đăng ký | `RegisterUserCommand` + Validator + Handler (gán role Author, enqueue email chào mừng), `PasswordRules` |
-| FR-AUTH-002 Đăng nhập | `LoginUserCommand` + Validator + Handler (khóa 15 phút sau 5 lần sai, thông báo lỗi chung chống user enumeration) |
+| FR-AUTH-001 Đăng ký | `RegisterUserCommand` + Validator + Handler (gán role Author, đưa vào hàng đợi email chào mừng), `PasswordRules` |
+| FR-AUTH-002 Đăng nhập | `LoginUserCommand` + Validator + Handler (khóa 15 phút sau 5 lần sai, thông báo lỗi chung chống dò tài khoản) |
 | Phát hành token | `AuthResponseFactory`, `AuthContracts` (`IIdentityService`, `ITokenService`, `IRefreshTokenRepository`, `IWelcomeEmailScheduler`), `JwtTokenService`, `JwtOptions` (access 15 phút / refresh 7 ngày) |
 | Identity | `ApplicationUser` (DisplayName, AvatarUrl, Bio, IsActive), `IdentityService` (UserManager, PBKDF2 100.000 vòng), `IdentityConfigurations` |
 | Refresh token | Entity `RefreshToken` (chỉ lưu SHA-256), `RefreshTokenRepository` |
 | API | `AuthEndpoints`: `POST /api/v1/auth/register`, `POST /api/v1/auth/login`; `AuthenticationExtensions` (JWT Bearer, `AuthorPolicy`) |
-| Frontend | `auth-context.tsx` (`AuthProvider`/`useAuth`), `LoginForm`, `RegisterForm`, `AuthCard`, `schemas.ts` (Zod), trang `/auth/login`, `/auth/register`, `SiteHeader` (hiện user đăng nhập), `FormField` |
+| Frontend | `auth-context.tsx` (`AuthProvider`/`useAuth`), `LoginForm`, `RegisterForm`, `AuthCard`, `schemas.ts` (Zod), trang `/auth/login`, `/auth/register`, `SiteHeader` (hiện người dùng đăng nhập), `FormField` |
 | Test | `schemas.test.ts` (Jest) |
 
 ### 7.5 Đoàn Hồng Tiến – Dev 3 (danh mục)
@@ -357,7 +357,7 @@ Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_na
 | FR-CAT-002 Chi tiết danh mục | `GetCategoryBySlugQuery` + Validator (kèm công thức phân trang, 404 `CATEGORY_NOT_FOUND`) |
 | Domain | Entity `Category`, `SlugHelper` (bỏ dấu tiếng Việt, đ → d, hậu tố -2, -3 khi trùng) |
 | Dữ liệu | `CategoryConfiguration` (Name/Slug UNIQUE), `CategoryReadRepository` |
-| Cache | `RedisCacheService` (IDistributedCache + JSON, Redis lỗi → fallback DB) |
+| Cache | `RedisCacheService` (IDistributedCache + JSON, Redis lỗi → phương án dự phòng DB) |
 | API | `CategoriesEndpoints`: `GET /api/v1/categories`, `GET /api/v1/categories/{slug}` |
 | Frontend | `/categories` (lưới `CategoryCard` + `loading.tsx`), `/categories/[slug]`, `features/categories/api.ts` |
 | Test | `SlugHelperTests` |
@@ -368,7 +368,7 @@ Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_na
 
 | Chức năng | File |
 |---|---|
-| FR-RCP-001 Danh sách công thức | `GetRecipesQuery` + Validator (lọc độ khó/thời gian, phân trang), `RecipeSortParser` (whitelist sắp xếp), phân quyền xem Draft theo Guest/Author/Admin |
+| FR-RCP-001 Danh sách công thức | `GetRecipesQuery` + Validator (lọc độ khó/thời gian, phân trang), `RecipeSortParser` (danh sách cho phép sắp xếp), phân quyền xem Draft theo Guest/Author/Admin |
 | FR-RCP-002 Chi tiết công thức | `GetRecipeBySlugQuery` (Draft → 403 nếu không phải chủ hoặc Admin) |
 | Domain | Aggregate `Recipe`, `RecipeStep`, `RecipeIngredient`, `RecipeImage`, owned `RecipeNutrition`, enum `RecipeDifficulty`, `RecipeStatus` |
 | Dữ liệu | `RecipeConfiguration` (check constraint, 8 index, partial unique ảnh chính), `IRecipeReadRepository`, `RecipeReadRepository` (projection AsNoTracking), `RecipeDtos` |
@@ -386,15 +386,15 @@ Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_na
 | Dev 4 | Bootstrap 30 phút đầu (solution 4 tầng, `BaseEntity`, DbContext, `AuditInterceptor`, 4 behavior, middleware, `PagedResult`, Next.js + `api-client`) | Commit `b058654` đủ các thành phần | ✅ |
 | Dev 4 | Docker Compose 8 service + mailhog, volume, `init.sql`, `.env.example`, User Secrets, README < 5 phút | Đủ; thêm volume `dpkeys` (§5.1) | ✅ |
 | Dev 4 | `IFileStorageService`, `MinioFileStorageService` (AWSSDK.S3, path-style), bucket tự tạo + public-read, tên `{folder}/{Guid}{ext}`, xóa idempotent | Đủ | ✅ |
-| Dev 4 | Validation ≤ 5MB, MIME whitelist, magic bytes; unit test magic bytes | `ImageFileInspector` + `ImageFileInspectorTests` | ✅ |
+| Dev 4 | Kiểm tra hợp lệ ≤ 5MB, danh sách MIME cho phép (whitelist), magic bytes; unit test magic bytes | `ImageFileInspector` + `ImageFileInspectorTests` | ✅ |
 | Dev 4 | API tạm `POST /api/v1/files`, `DELETE /api/v1/files` | `POST /files/upload`, `DELETE /files/{**fileId}` – SRS v1.2.0 đã chính thức hóa đúng 2 đường dẫn này (MT-43) | ✅ (khác tên, đã chuẩn hóa) |
 | Dev 4 | `ImageUploader` kéo-thả, preview, progress %, callback | Đủ + trang `/dashboard/media` | ✅ |
-| Dev 1 | Identity, `RefreshToken`, lockout 5 lần/15 phút, PBKDF2; JWT 15′/7 ngày; register/login 201/200/409/401/423 | Đủ | ✅ (512-bit → nợ D-2) |
+| Dev 1 | Identity, `RefreshToken`, khóa tài khoản tạm thời 5 lần/15 phút, PBKDF2; JWT 15′/7 ngày; register/login 201/200/409/401/423 | Đủ | ✅ (512-bit → nợ D-2) |
 | Dev 1 | `IWelcomeEmailScheduler` stub no-op | Đã cắm Hangfire thật (FR-JOB-001 làm sớm) | ✅ vượt kế hoạch |
-| Dev 1 | UI login/register RHF + Zod; access token in-memory | Lưu `localStorage` | Nợ **D-12** (B4) |
-| Dev 1 | xUnit validator **+ integration test register/login** | Có test validator; project `API.IntegrationTests` còn **rỗng** | ⚠️ Viết khi có harness Buổi 3 (Dev 4) |
-| Dev 2 | Schema Recipe đầy đủ, seed 50 recipe/5 tác giả, `GetRecipesQuery`, `GetRecipeBySlugQuery`, Output Cache, UI SSR/ISR 300 | Đủ | ✅ (nợ D-3, D-4, D-6, D-8) |
-| Dev 3 | `Category` + seed 8, `RedisCacheService` fallback DB, 2 query, 2 endpoint, UI | Đủ | ✅ (nợ D-5, D-7, D-13) |
+| Dev 1 | UI đăng nhập/đăng ký RHF + Zod; access token trong bộ nhớ | Lưu `localStorage` | Nợ **D-12** (B4) |
+| Dev 1 | xUnit validator **+ integration test register/login** | Có kiểm thử validator; project `API.IntegrationTests` còn **rỗng** | ⚠️ Viết khi có bộ integration test (integration test harness) Buổi 3 (Dev 4) |
+| Dev 2 | Schema Recipe đầy đủ, tạo mẫu 50 recipe/5 tác giả, `GetRecipesQuery`, `GetRecipeBySlugQuery`, Output Cache, UI SSR/ISR 300 | Đủ | ✅ (nợ D-3, D-4, D-6, D-8) |
+| Dev 3 | `Category` + tạo mẫu 8, `RedisCacheService` phương án dự phòng DB, 2 query, 2 endpoint, UI | Đủ | ✅ (nợ D-5, D-7, D-13) |
 | Dev 3 | **Value Object `Slug`** + `SlugHelper` + unit test | Có `SlugHelper` + `SlugHelperTests`; **chưa có VO `Slug`** | ⚠️ Bổ sung khi sinh slug Recipe (Buổi 3) |
 | Dev 3 | Component **`CategoryNav`** cho header | Header chỉ có link "Danh mục" | ⚠️ Bổ sung Buổi 3 (Dev 3, cùng CRUD danh mục) |
 | Chung | Mỗi dev một migration `B2_{Module}` | Một migration `B1_InitialSchema` | Đã ghi §4.7 |
@@ -418,7 +418,7 @@ Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_na
 | 4 | Tạo migration, cài đặt các lớp để tạo dữ liệu ngẫu nhiên | Hoàn thành (11/09) | Migration `B1_InitialSchema`, `DatabaseSeeder` |
 | 5 | CSDL có ≥ 20 categories, ≥ 100 recipes; mỗi recipe ≥ 10 nguyên liệu, ≥ 5 bước | **Hoàn thành (21/09) – yêu cầu mới** | Commit `3efa7ae`; §9.2 – §9.4 |
 
-### 9.2 Hiện trạng trước khi làm (đo trên database thật)
+### 9.2 Hiện trạng trước khi làm (đo trên cơ sở dữ liệu thật)
 
 | Chỉ số | Yêu cầu | Trước (21/09) |
 |---|---|---|
@@ -435,20 +435,20 @@ Link commit: [b058654](https://github.com/ThangThieng/Phat_trien_ung_dung_web_na
 | `RecipeSeedCatalog` | Đọc catalog; ngưỡng `MinCategories = 20`, `MinRecipes = 100`, `MinIngredientsPerRecipe = 10`, `MinStepsPerRecipe = 5` |
 | `DatabaseSeeder` | Idempotent, tự bù, chạy trong một transaction qua execution strategy. Thêm danh mục thiếu (so theo tên và slug, kể cả bản ghi đã xóa mềm); thêm công thức thiếu theo slug; công thức mẫu cũ (tác giả mẫu, `UpdatedAt` null, dưới ngưỡng) → xóa nguyên liệu/bước sinh ngẫu nhiên và nạp lại nội dung đúng, `StepNumber` đánh lại từ 1. Bogus với seed cố định chỉ sinh tác giả, trạng thái (~85% Published), ngày xuất bản, dinh dưỡng theo khoảng hợp lý từng nhóm món |
 | Cache | Có danh mục mới → xóa khóa Redis `categories:all`; dữ liệu thay đổi → `Program.cs` xóa Output Cache tag `recipes` (Redis lỗi không chặn API khởi động) |
-| Test | `RecipeSeedCatalogTests` (5 test): đủ ngưỡng, tên/slug duy nhất, món thuộc danh mục có thật, không danh mục rỗng, độ dài khớp cột DB |
+| Test | `RecipeSeedCatalogTests` (5 kiểm thử): đủ ngưỡng, tên/slug duy nhất, món thuộc danh mục có thật, không danh mục rỗng, độ dài khớp cột DB |
 
 **Vì sao không chỉ tăng tham số Bogus:** chọn ngẫu nhiên từ một danh sách nguyên liệu chung sẽ ra "Sinh tố bơ" có nước mắm, "Phở bò" nấu 0 phút, bước nấu bằng chữ Latin. Dữ liệu này được dùng để kiểm thử tìm kiếm tiếng Việt (Buổi 4), đo hiệu năng (Buổi 5) và trình diễn khi bảo vệ, nên phải là công thức có nghĩa.
 
-**Vì sao tự bù thay vì xóa volume:** database của mọi thành viên đang có 50 công thức cũ và seeder cũ bỏ qua bước tạo công thức khi bảng đã có dữ liệu. Seeder mới tự bù khi API khởi động; dữ liệu người dùng tạo hoặc đã chỉnh sửa không bị động tới.
+**Vì sao tự bù thay vì xóa volume:** cơ sở dữ liệu của mọi thành viên đang có 50 công thức cũ và bộ sinh dữ liệu mẫu (seeder) cũ bỏ qua bước tạo công thức khi bảng đã có dữ liệu. Bộ sinh dữ liệu mẫu mới tự bù khi API khởi động; dữ liệu người dùng tạo hoặc đã chỉnh sửa không bị động tới.
 
 ### 9.4 Kiểm chứng
 
 | Kiểm tra | Kết quả |
 |---|---|
-| `dotnet build` | 0 warning, 0 error |
+| `dotnet build` | 0 cảnh báo, 0 error |
 | `dotnet test` | **49/49** (Domain 14, Application 27, IntegrationTests 5, ArchUnit.NET 3) |
-| Database cũ (8 danh mục / 50 công thức, khôi phục từ bản sao lưu) | Log: *"Database seeded: 20 categories, 5 authors, 50 recipes created, 50 recipes repaired"* |
-| Database trống (cài mới) | Log: *"20 categories, 5 authors, 100 recipes created, 0 recipes repaired"* |
+| Cơ sở dữ liệu cũ (8 danh mục / 50 công thức, khôi phục từ bản sao lưu) | Log: *"Database seeded: 20 categories, 5 authors, 50 recipes created, 50 recipes repaired"* |
+| Cơ sở dữ liệu trống (cài mới) | Log: *"20 categories, 5 authors, 100 recipes created, 0 recipes repaired"* |
 | Khởi động lại API | Log: *"0 recipes created, 0 recipes repaired"* – không sinh trùng |
 | Truy vấn SQL | 20 danh mục · 100 công thức (89 Published) · ít nhất 10 nguyên liệu và 5 bước mỗi công thức · `StepNumber` liên tục 1..N · 0 mô tả Lorem ipsum · 0 danh mục rỗng |
 | API qua Nginx | `GET /api/v1/categories` → 20 danh mục; `GET /api/v1/recipes` → `totalCount` 89; trang `/recipes/pho-bo-ha-noi` hiển thị đúng 12 nguyên liệu và 6 bước |

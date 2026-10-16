@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Timer } from 'lucide-react';
-import type { RecipeStep } from '@/types/api';
+import type { RecipeStep } from '@/types/recipe';
 
 /** Các bước thực hiện dạng checklist – người đọc tick bước đã làm khi nấu. */
 export default function StepChecklist({ steps }: { steps: RecipeStep[] }) {

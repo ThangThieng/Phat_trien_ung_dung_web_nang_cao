@@ -5,12 +5,14 @@ using System.Text.Json;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Entities;
+using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class AuthRequestContractTests(CulinaryBlogApiFactory factory) : IClassFixture<CulinaryBlogApiFactory>
+public sealed class AuthRequestContractTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
 {
     private const string ValidJwtShape = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.AQ";
 
@@ -53,13 +55,13 @@ public sealed class AuthRequestContractTests(CulinaryBlogApiFactory factory) : I
     [InlineData("{\"idToken\":\"e30.W10.AQ\"}")]
     public async Task InvalidGoogleRequestUsesAuthCodeWithoutCallingVerification(string? body)
     {
-        var identity = new GoogleIdentityProbe("must-not-call");
+        var validator = new GoogleValidationProbe("must-not-call");
         using var isolated = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddSingleton<IIdentityService>(identity)));
+            services.AddSingleton<IGoogleIdTokenValidator>(validator)));
         using var client = isolated.CreateClient();
         using var response = await PostBodyAsync(client, "/api/v1/auth/google", body).ConfigureAwait(true);
         await AssertProblemAsync(response, HttpStatusCode.BadRequest, "AUTH_GOOGLE_TOKEN_INVALID").ConfigureAwait(true);
-        Assert.Equal(0, identity.Verifications);
+        Assert.Equal(0, validator.Verifications);
     }
 
     [Theory]
@@ -70,13 +72,17 @@ public sealed class AuthRequestContractTests(CulinaryBlogApiFactory factory) : I
     [InlineData("disabled", HttpStatusCode.Forbidden, "AUTH_ACCOUNT_DISABLED")]
     public async Task GoogleVerificationOutcomesPreserveTheirStatusAndCode(string scenario, HttpStatusCode status, string code)
     {
-        var identity = new GoogleIdentityProbe(scenario);
+        var validator = new GoogleValidationProbe(scenario);
+        var identity = new GoogleIdentityProbe();
         using var isolated = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddSingleton<IIdentityService>(identity)));
+        {
+            services.AddSingleton<IGoogleIdTokenValidator>(validator);
+            services.AddSingleton<IIdentityService>(identity);
+        }));
         using var client = isolated.CreateClient();
         using var response = await client.PostAsJsonAsync("/api/v1/auth/google", new { idToken = ValidJwtShape }).ConfigureAwait(true);
         await AssertProblemAsync(response, status, code).ConfigureAwait(true);
-        Assert.Equal(1, identity.Verifications);
+        Assert.Equal(1, validator.Verifications);
     }
 
     private static async Task<HttpResponseMessage> PostBodyAsync(HttpClient client, string path, string? body)
@@ -123,32 +129,38 @@ public sealed class AuthRequestContractTests(CulinaryBlogApiFactory factory) : I
         public Task<RefreshToken?> GetByIdForUserAsync(Guid id, string userId, CancellationToken cancellationToken) => throw new NotSupportedException();
     }
 
-    private sealed class GoogleIdentityProbe(string scenario) : IIdentityService
+    private sealed class GoogleValidationProbe(string scenario) : IGoogleIdTokenValidator
     {
         private int _verifications;
 
         public int Verifications => _verifications;
 
-        public Task<IdentityUserInfo> AuthenticateGoogleAsync(string idToken, CancellationToken cancellationToken)
+        public Task<GoogleIdTokenPayload> ValidateAsync(string idToken, CancellationToken cancellationToken)
         {
             Interlocked.Increment(ref _verifications);
             return scenario switch
             {
-                "signature" or "expired" => throw new UnauthorizedException("AUTH_GOOGLE_TOKEN_INVALID", "Verification rejected the token."),
-                "claims" => throw new BadRequestException("AUTH_GOOGLE_TOKEN_INVALID", "Required verified claims are missing."),
-                "unavailable" => throw new BadGatewayException("AUTH_GOOGLE_UNAVAILABLE", "Verification unavailable."),
-                "disabled" => Task.FromResult(new IdentityUserInfo("disabled-user", "Disabled", "disabled@example.com", "disabled", null, null, DateTime.UtcNow, false, [])),
+                "signature" or "expired" => throw InvalidTokenException.GoogleTokenRejected(),
+                "claims" => throw new BusinessRuleViolationException(ErrorCodes.AuthGoogleTokenInvalid, "Required verified claims are missing."),
+                "unavailable" => throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Verification unavailable."),
+                "disabled" => Task.FromResult(new GoogleIdTokenPayload("disabled-sub", "disabled@example.com", true, "Disabled", null)),
                 _ => throw new InvalidOperationException("Invalid request reached Google verification."),
             };
         }
+    }
+
+    private sealed class GoogleIdentityProbe : IIdentityService
+    {
+        public Task<IdentityUserInfo> FindOrCreateGoogleUserAsync(GoogleIdTokenPayload payload, CancellationToken cancellationToken) =>
+            Task.FromResult(new IdentityUserInfo("disabled-user", "Disabled", "disabled@example.com", "disabled", null, false, []));
 
         public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken) => throw new NotSupportedException();
 
-        public Task<IdentityUserInfo?> GetByIdAsync(string userId, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<IdentityUserInfo?> FindByIdAsync(string userId, CancellationToken cancellationToken) => throw new NotSupportedException();
 
         public Task<bool> IsLockedOutAsync(string userId, CancellationToken cancellationToken) => throw new NotSupportedException();
 
-        public Task<IdentityUserInfo> UpdateProfileAsync(string userId, ProfileUpdate update, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken) => throw new NotSupportedException();
 
         public Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken) => throw new NotSupportedException();
 

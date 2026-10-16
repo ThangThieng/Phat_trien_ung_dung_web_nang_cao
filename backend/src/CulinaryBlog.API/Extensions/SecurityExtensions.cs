@@ -162,7 +162,7 @@ public static class SecurityExtensions
                         DateTimeOffset.UtcNow.AddSeconds(seconds).ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture);
                     await Results.Problem(
                         statusCode: StatusCodes.Status429TooManyRequests,
-                        type: ErrorCodes.RateLimitExceeded,
+                        type: CulinaryBlog.Domain.Exceptions.ErrorCodes.RateLimitExceeded,
                         title: "Too Many Requests",
                         detail: "Quá nhiều yêu cầu. Vui lòng thử lại sau.")
                         .ExecuteAsync(rejected.HttpContext).ConfigureAwait(false);

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -115,7 +116,6 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                         .HasDefaultValue((short)1);
 
                     b.Property<string>("Instructions")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
@@ -133,6 +133,11 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("bytea");
+
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasComputedColumnSql("to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))", true);
 
                     b.Property<int>("Servings")
                         .HasColumnType("integer");
@@ -169,6 +174,17 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasIndex("Difficulty")
                         .HasDatabaseName("IDX_Recipe_Difficulty");
 
+                    b.HasIndex("IsDeleted", "Status", "PublishedAt")
+                        .IsDescending(false, false, true)
+                        .HasDatabaseName("IDX_Recipe_List");
+
+                    b.HasIndex("Status", "CategoryId", "PublishedAt")
+                        .IsDescending(false, false, true)
+                        .HasDatabaseName("IDX_Recipe_ByCategory");
+
+                    b.HasIndex("Status", "CookTimeMinutes")
+                        .HasDatabaseName("IDX_Recipe_CookTime");
+
                     b.HasIndex("IsDeleted")
                         .HasDatabaseName("IDX_Recipe_IsDeleted")
                         .HasFilter("\"IsDeleted\" = false");
@@ -176,9 +192,15 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasIndex("PublishedAt")
                         .HasDatabaseName("IDX_Recipe_PublishedAt");
 
+                    b.HasIndex("SearchVector")
+                        .HasDatabaseName("IDX_Recipe_Search");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
+
                     b.HasIndex("Slug")
                         .IsUnique()
-                        .HasDatabaseName("IDX_Recipe_Slug");
+                        .HasDatabaseName("IDX_Recipe_Slug")
+                        .HasFilter("\"IsDeleted\" = false");
 
                     b.HasIndex("Status")
                         .HasDatabaseName("IDX_Recipe_Status");
@@ -292,6 +314,10 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                         .HasPrecision(10, 3)
                         .HasColumnType("numeric(10,3)");
 
+                    b.Property<string>("QuantityText")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<Guid>("RecipeId")
                         .HasColumnType("uuid");
 
@@ -312,7 +338,10 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("IDX_RecipeIngredient_RecipeId");
 
-                    b.ToTable("RecipeIngredients", (string)null);
+                    b.ToTable("RecipeIngredients", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_RecipeIngredient_Quantity", "\"Quantity\" IS NULL OR \"Quantity\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("CulinaryBlog.Domain.Entities.RecipeStep", b =>
@@ -364,7 +393,6 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId", "StepNumber")
-                        .IsUnique()
                         .HasDatabaseName("IDX_RecipeStep_Recipe_StepNumber");
 
                     b.ToTable("RecipeSteps", null, t =>
