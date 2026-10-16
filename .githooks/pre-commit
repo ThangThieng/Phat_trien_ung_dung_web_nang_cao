@@ -10,7 +10,17 @@ fi
 export MSYS_NO_PATHCONV=1
 repo_dir=$(pwd -W 2>/dev/null || pwd)
 
-docker run --rm -v "$repo_dir:/repo" -w /repo zricethezav/gitleaks:latest \
+# git worktree (D:/b6, D:/b34…): file .git của worktree chỉ ghi "gitdir: <repo chính>/.git/worktrees/<tên>" — đường dẫn
+# host đó không tồn tại trong container, gitleaks lỗi git rồi vẫn báo "no leaks found" sau khi quét 0 byte.
+# Gắn thêm thư mục .git chung và trỏ GIT_DIR/GIT_WORK_TREE để quét đúng phần đã stage của worktree.
+git_dir=$(git rev-parse --absolute-git-dir)
+common_dir=$(git rev-parse --path-format=absolute --git-common-dir)
+set -- -v "$repo_dir:/repo"
+if [ "$git_dir" != "$common_dir" ]; then
+  set -- "$@" -v "$common_dir:/gitcommon" -e "GIT_DIR=/gitcommon/${git_dir#"$common_dir"/}" -e GIT_WORK_TREE=/repo
+fi
+
+docker run --rm "$@" -w /repo zricethezav/gitleaks:latest \
   git --staged --redact --no-banner --config /repo/.gitleaks.toml
 status=$?
 

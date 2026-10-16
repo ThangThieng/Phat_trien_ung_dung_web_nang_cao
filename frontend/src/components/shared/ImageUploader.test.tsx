@@ -24,7 +24,7 @@ describe('upload token refresh', () => {
     jest.spyOn(window, 'XMLHttpRequest').mockImplementation(() => {
       const xhr = {
         status: 0, response: null as unknown, responseType: '', onload: null, onabort: null,
-        upload: { onprogress: null }, open: jest.fn(), send: jest.fn(), setRequestHeader: jest.fn(),
+        upload: { onprogress: null }, open: jest.fn(), send: jest.fn(), setRequestHeader: jest.fn(), getResponseHeader: jest.fn(() => null),
         abort: () => { xhr.onabort?.(new ProgressEvent('abort')); },
       } as unknown as XMLHttpRequest;
       attempts.push(xhr as unknown as typeof attempts[number]);
@@ -55,9 +55,10 @@ describe('upload token refresh', () => {
     const refresh = jest.fn(() => new Promise<string>((resolve) => { finishRefresh = resolve; }));
     const onRefreshFailure = jest.fn();
     configureAuthCallbacks({ getAccessToken: () => token, refresh, onRefreshFailure });
-    global.fetch = jest.fn(async (_url: unknown, options: RequestInit) => {
-      const renewed = (options.headers as Record<string, string>).Authorization === 'Bearer renewed';
-      return { ok: renewed, status: renewed ? 200 : 401, json: async () => (renewed ? {} : { type: 'AUTH_TOKEN_EXPIRED' }) } as Response;
+    // `apiFetch` chạy trên `ky`: nhận `Request` thật, trả `Response` thật.
+    global.fetch = jest.fn(async (input: unknown) => {
+      const renewed = (input as Request).headers.get('Authorization') === 'Bearer renewed';
+      return Response.json(renewed ? {} : { type: 'AUTH_TOKEN_EXPIRED' }, { status: renewed ? 200 : 401 });
     }) as typeof fetch;
     const onChange = jest.fn();
     const { container } = render(<ImageUploader accessToken="expired" onChange={onChange} />);
@@ -68,6 +69,7 @@ describe('upload token refresh', () => {
     await act(async () => { token = 'renewed'; finishRefresh(token); await Promise.all(fetches); });
     await waitFor(() => expect(attempts).toHaveLength(2));
     expect(attempts[1].setRequestHeader).toHaveBeenCalledWith('Authorization', 'Bearer renewed');
+    expect(attempts[1].setRequestHeader).toHaveBeenCalledWith('X-Correlation-ID', expect.stringMatching(/^[0-9a-f-]{36}$/));
     act(() => { attempts[1].upload.onprogress?.({ lengthComputable: true, loaded: 5, total: 10 } as ProgressEvent); });
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
     const uploaded = { key: 'food.png', url: 'http://localhost/food.png' };

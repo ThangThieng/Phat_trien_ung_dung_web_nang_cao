@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
-import SiteHeader from '@/components/layout/SiteHeader';
 import Providers from './providers';
 import './globals.css';
 
@@ -27,13 +26,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           >
             Bỏ qua điều hướng
           </a>
-          <SiteHeader />
-          <main id="main-content" className="flex-1">
-            {children}
-          </main>
-          <footer className="border-t border-orange-100 bg-white py-6 text-center text-sm text-gray-500">
-            © {new Date().getFullYear()} Culinary Blog – Nhóm 20
-          </footer>
+          {/* Không có header/footer ở đây: mỗi route group — (public), (auth), (dashboard) — có khung riêng và tự
+              đặt <main id="main-content"> làm đích cho link "Bỏ qua điều hướng". */}
+          {children}
         </Providers>
       </body>
     </html>
