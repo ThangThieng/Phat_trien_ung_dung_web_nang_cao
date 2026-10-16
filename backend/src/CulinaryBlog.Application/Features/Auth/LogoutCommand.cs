@@ -13,6 +13,7 @@ public sealed record LogoutCommand(string RefreshToken) : IRequest;
 public sealed class LogoutCommandHandler(
     ICurrentUser currentUser,
     ITokenService tokenService,
+    IRefreshTokenRepository refreshTokens,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider) : IRequestHandler<LogoutCommand>
 {
@@ -23,15 +24,19 @@ public sealed class LogoutCommandHandler(
             return;
         }
 
-        var token = await unitOfWork.Users
-            .GetRefreshTokenAsync(userId, tokenService.HashToken(request.RefreshToken), cancellationToken)
-            .ConfigureAwait(false);
-        if (token is null)
-        {
-            return;
-        }
+        await refreshTokens.ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), ct).ConfigureAwait(false);
+                if (token is not null && token.UserId == userId)
+                {
+                    await refreshTokens.RevokeAsync(token, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
+                    await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                }
 
-        token.Revoke(timeProvider.GetUtcNow().UtcDateTime);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                return true;
+            },
+            cancellationToken).ConfigureAwait(false);
     }
 }

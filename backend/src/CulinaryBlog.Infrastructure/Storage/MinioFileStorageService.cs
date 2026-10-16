@@ -113,11 +113,19 @@ public sealed partial class MinioFileStorageService(
     public bool IsStoredFileUrl(string url)
     {
         ArgumentNullException.ThrowIfNull(url);
-
         var prefix = _options.PublicBaseUrl.TrimEnd('/') + "/";
-        return url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-            && url.Length > prefix.Length
-            && !url.Contains("..", StringComparison.Ordinal);
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var file) ||
+            !Uri.TryCreate(prefix, UriKind.Absolute, out var bucket))
+        {
+            return false;
+        }
+
+        return file.Scheme is "http" or "https" && file.Scheme == bucket.Scheme &&
+            string.Equals(file.IdnHost, bucket.IdnHost, StringComparison.OrdinalIgnoreCase) &&
+            file.Port == bucket.Port && string.IsNullOrEmpty(file.UserInfo) &&
+            file.AbsolutePath.StartsWith(bucket.AbsolutePath, StringComparison.Ordinal) &&
+            file.AbsolutePath.Length > bucket.AbsolutePath.Length &&
+            !Uri.UnescapeDataString(file.AbsolutePath).Split('/').Any(segment => segment is "." or "..");
     }
 
     /// <summary>FR-FILE-002: "trích xuất object name từ URL".</summary>

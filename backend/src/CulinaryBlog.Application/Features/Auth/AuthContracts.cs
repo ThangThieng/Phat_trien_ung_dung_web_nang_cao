@@ -1,3 +1,5 @@
+using CulinaryBlog.Domain.Entities;
+
 namespace CulinaryBlog.Application.Features.Auth;
 
 /// <summary>FR-AUTH-001 bước 12 – AuthResponseDto.</summary>
@@ -5,6 +7,8 @@ public sealed record AuthResponseDto(string AccessToken, string RefreshToken, Da
 
 /// <summary>SRS §8.1 – <c>{ id, email, displayName, avatarUrl, bio, roles }</c> (D-1, MT-12). Không có UserName/PasswordHash/SecurityStamp.</summary>
 public sealed record UserDto(string Id, string Email, string DisplayName, string? AvatarUrl, string? Bio, IReadOnlyList<string> Roles);
+
+public sealed record UserProfileDto(string Id, string Email, string DisplayName, string? AvatarUrl, string? Bio, IReadOnlyList<string> Roles, DateTime CreatedAt);
 
 /// <summary>Thông tin user trả về từ tầng Identity (Infrastructure) – không bao giờ chứa PasswordHash/SecurityStamp.</summary>
 public sealed record IdentityUserInfo(
@@ -15,9 +19,12 @@ public sealed record IdentityUserInfo(
     string? AvatarUrl,
     bool IsActive,
     IReadOnlyList<string> Roles,
-    string? Bio = null)
+    string? Bio = null,
+    DateTime CreatedAt = default)
 {
     public UserDto ToDto() => new(Id, Email, DisplayName, AvatarUrl, Bio, Roles);
+
+    public UserProfileDto ToProfileDto() => new(Id, Email, DisplayName, AvatarUrl, Bio, Roles, CreatedAt);
 }
 
 public enum PasswordCheckStatus
@@ -53,6 +60,8 @@ public interface IIdentityService
     /// <summary>FR-AUTH-004/006: người dùng theo Id (null nếu không còn tồn tại).</summary>
     Task<IdentityUserInfo?> FindByIdAsync(string userId, CancellationToken cancellationToken);
 
+    Task<bool> IsLockedOutAsync(string userId, CancellationToken cancellationToken);
+
     /// <summary>FR-AUTH-007: cập nhật hồ sơ qua UserManager.UpdateAsync (null nếu người dùng không còn tồn tại).</summary>
     Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken);
 
@@ -64,7 +73,7 @@ public interface IIdentityService
 /// PATCH hồ sơ (FR-AUTH-007): <c>null</c> = giữ nguyên trường đó; chuỗi rỗng ở <see cref="AvatarUrl"/>/<see cref="Bio"/>
 /// = xóa giá trị. Email và UserName CỐ Ý không có ở đây — không đổi được qua endpoint này.
 /// </summary>
-public sealed record ProfileChanges(string? DisplayName, string? AvatarUrl, string? Bio);
+public sealed record ProfileChanges(string? DisplayName, string? AvatarUrl, string? Bio, bool HasDisplayName = false, bool HasAvatarUrl = false, bool HasBio = false);
 
 /// <summary>Dữ liệu đã được Google ký mà hệ thống cần từ ID Token (FR-AUTH-003).</summary>
 public sealed record GoogleIdTokenPayload(string Subject, string? Email, bool EmailVerified, string? Name, string? Picture);
@@ -103,6 +112,28 @@ public interface ITokenService
     GeneratedRefreshToken CreateRefreshToken();
 
     string HashToken(string rawToken);
+}
+
+/// <summary>Database coordination for the existing Dev1 token concurrency tests and operations.</summary>
+public interface IRefreshTokenRepository
+{
+    Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken);
+
+    Task AddAsync(RefreshToken token, CancellationToken cancellationToken);
+
+    Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken);
+
+    Task<bool> TryRotateAsync(RefreshToken token, RefreshToken replacement, DateTime now, CancellationToken cancellationToken);
+
+    Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken);
+
+    Task RevokeAllForUserAsync(string userId, DateTime revokedAt, CancellationToken cancellationToken);
+
+    Task RevokeFamilyAsync(string userId, string startingTokenHash, DateTime revokedAt, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<RefreshToken>> GetActiveForUserAsync(string userId, DateTime now, CancellationToken cancellationToken);
+
+    Task<RefreshToken?> GetByIdForUserAsync(Guid id, string userId, CancellationToken cancellationToken);
 }
 
 /// <summary>FR-JOB-001 – đẩy job gửi email chào mừng vào Hangfire (fire-and-forget).</summary>

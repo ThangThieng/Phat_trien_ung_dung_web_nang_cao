@@ -1,6 +1,6 @@
 # BÁO CÁO LAB - MÔN PHÁT TRIỂN ỨNG DỤNG WEB NÂNG CAO
 
-Lab: **03**  
+Lab: **03**
 Từ ngày: **23/09/2026** đến ngày: **29/09/2026**
 
 MSSV: **2314236**  

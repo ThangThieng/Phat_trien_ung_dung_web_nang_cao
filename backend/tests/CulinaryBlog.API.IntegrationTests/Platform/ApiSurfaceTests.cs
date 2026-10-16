@@ -150,7 +150,7 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
 
     /// <summary>"GET /api/v1/recipes/{id:guid}/" → "GET /api/v1/recipes/{}" — bỏ ràng buộc/tên tham số và dấu "/" cuối.</summary>
     private static string Key(string method, string route) =>
-        $"{method.ToUpperInvariant()} {RouteParameter().Replace(route, "{}").TrimEnd('/')}";
+        $"{method.ToUpperInvariant()} {RouteParameter().Replace(route.Replace("v{version:apiVersion}", "v1", StringComparison.Ordinal), "{}").TrimEnd('/')}";
 
     [GeneratedRegex(@"\{[^}]*\}")]
     private static partial Regex RouteParameter();

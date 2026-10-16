@@ -16,6 +16,7 @@ public static class FilesEndpoints
         var group = api.MapGroup("/files").WithTags("Files").RequireAuthorization(AuthorizationPolicies.Author);
 
         group.MapPost("/upload", UploadAsync)
+            .WithMetadata(new SecurityRateLimitMetadata(SecurityRateLimits.Upload))
             .WithName("UploadFile")
             .WithSummary("FR-FILE-001 – Upload ảnh (JPEG/PNG/WebP/AVIF, ≤ 5MB, kiểm tra magic bytes)")
             .DisableAntiforgery()

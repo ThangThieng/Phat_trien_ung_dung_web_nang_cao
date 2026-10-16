@@ -1,4 +1,7 @@
+using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces.Persistence;
+using CulinaryBlog.Domain.Entities;
+using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using MediatR;
@@ -19,25 +22,19 @@ public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshToke
 {
     public RefreshTokenCommandValidator()
     {
-        RuleFor(x => x.RefreshToken).NotEmpty().WithMessage("refreshToken không được để trống.");
+        RuleFor(x => x.RefreshToken).NotEmpty().OverridePropertyName("refreshToken");
     }
 }
 
 /// <summary>
-/// Cây quyết định (kế hoạch Buổi 4 — Dev 1, SRS FR-AUTH-004):
-/// 1. Hash không có trong DB → 401 AUTH_TOKEN_INVALID (A1).
-/// 2. Hết hạn → 401 AUTH_REFRESH_TOKEN_EXPIRED (A2).
-/// 3. Đã thu hồi: tài khoản đang bị khóa → 403 AUTH_ACCOUNT_DISABLED (thu hồi do Admin, không phải reuse); ngược lại → REUSE DETECTED: thu hồi CẢ token family của người dùng, ghi cảnh báo bảo mật, rồi mới ném
-///    401 AUTH_REFRESH_TOKEN_REVOKED (A3). Thu hồi phải được ghi xuống DB TRƯỚC khi ném — ném trước thì request kết thúc
-///    mà lệnh thu hồi chưa bao giờ tới DB.
-/// 4. Người dùng không còn tồn tại → 401 (A5); bị vô hiệu hóa → 403 AUTH_ACCOUNT_DISABLED (A4).
-/// 5. Hợp lệ → xoay vòng trong một transaction (AuthResponseFactory.RotateAsync).
+/// Refresh, issuance and revocation share the same PostgreSQL user-row lock. Reuse revokes only
+/// descendants of the reused token; an independent login session remains valid.
 /// </summary>
 public sealed partial class RefreshTokenCommandHandler(
     ITokenService tokenService,
-    IUnitOfWork unitOfWork,
+    IRefreshTokenRepository refreshTokens,
     IIdentityService identityService,
-    AuthResponseFactory authResponseFactory,
+    IUnitOfWork unitOfWork,
     TimeProvider timeProvider,
     ILogger<RefreshTokenCommandHandler> logger) : IRequestHandler<RefreshTokenCommand, AuthResponseDto>
 {
@@ -45,47 +42,78 @@ public sealed partial class RefreshTokenCommandHandler(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        // Raw token không bao giờ là khóa tra cứu và không bao giờ vào log — chỉ hash SHA-256 của nó.
-        var token = await unitOfWork.Users
-            .GetRefreshTokenByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken)
-            .ConfigureAwait(false)
-            ?? throw new InvalidTokenException();
+        var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken)
+            .ConfigureAwait(false) ?? throw new InvalidTokenException();
 
         var now = timeProvider.GetUtcNow().UtcDateTime;
-
-        if (token.RevokedAt is not null)
-        {
-            // Tài khoản đã bị Admin khóa (FR-AUTH-008 thu hồi mọi phiên lúc khóa): token bị thu hồi do QUẢN TRỊ, không phải
-            // bị đánh cắp — trả 403 AUTH_ACCOUNT_DISABLED (FR-AUTH-004 A4) để client báo đúng lý do, không phát cảnh báo
-            // reuse giả và không thu hồi lại cả họ token vốn đã bị thu hồi.
-            if (await identityService.FindByIdAsync(token.UserId, cancellationToken).ConfigureAwait(false) is { IsActive: false })
-            {
-                throw new AccountDisabledException();
-            }
-
-            var revokedCount = await unitOfWork.Users.RevokeAllRefreshTokensAsync(token.UserId, now, cancellationToken).ConfigureAwait(false);
-            LogReuseDetected(logger, token.UserId, request.IpAddress, revokedCount);
-            throw InvalidTokenException.RefreshTokenRevoked();
-        }
-
         if (token.ExpiresAt <= now)
         {
             throw InvalidTokenException.RefreshTokenExpired();
         }
 
-        var user = await identityService.FindByIdAsync(token.UserId, cancellationToken).ConfigureAwait(false)
-            ?? throw new InvalidTokenException();
+        var response = await refreshTokens.ExecuteForUserAsync<AuthResponseDto?>(
+            token.UserId,
+            async ct =>
+            {
+                now = timeProvider.GetUtcNow().UtcDateTime;
+                if (token.ExpiresAt <= now)
+                {
+                    throw InvalidTokenException.RefreshTokenExpired();
+                }
 
-        if (!user.IsActive)
+                var user = await identityService.FindByIdAsync(token.UserId, ct).ConfigureAwait(false)
+                    ?? throw new InvalidTokenException();
+                if (!user.IsActive)
+                {
+                    throw new AccountDisabledException();
+                }
+
+                if (await identityService.IsLockedOutAsync(user.Id, ct).ConfigureAwait(false))
+                {
+                    throw new UnauthorizedException(ErrorCodes.AuthTokenInvalid, "Tài khoản hiện đang bị khóa.");
+                }
+
+                if (token.RevokedAt is not null)
+                {
+                    await RevokeReusedFamilyAsync(token, now, ct).ConfigureAwait(false);
+                    return null;
+                }
+
+                if (!token.IsActive(now))
+                {
+                    throw new InvalidTokenException();
+                }
+
+                var replacement = tokenService.CreateRefreshToken();
+                var session = RefreshToken.Create(user.Id, replacement.TokenHash, replacement.ExpiresAt, now, request.IpAddress);
+                if (!await refreshTokens.TryRotateAsync(token, session, now, ct).ConfigureAwait(false))
+                {
+                    await RevokeReusedFamilyAsync(token, now, ct).ConfigureAwait(false);
+                    return null;
+                }
+
+                var accessToken = tokenService.CreateAccessToken(user, session.Id);
+                return new AuthResponseDto(accessToken.Token, replacement.RawToken, accessToken.ExpiresAt, accessToken.ExpiresInSeconds, user.ToDto());
+            },
+            cancellationToken).ConfigureAwait(false);
+
+        if (response is null)
         {
-            throw new AccountDisabledException();
+            LogReuseDetected(logger, token.UserId, request.IpAddress);
+            throw InvalidTokenException.RefreshTokenRevoked();
         }
 
-        return await authResponseFactory.RotateAsync(user, token.Id, request.IpAddress, cancellationToken).ConfigureAwait(false);
+        return response;
+    }
+
+    private async Task RevokeReusedFamilyAsync(RefreshToken token, DateTime now, CancellationToken cancellationToken)
+    {
+        await refreshTokens.RevokeFamilyAsync(token.UserId, token.TokenHash, now, cancellationToken).ConfigureAwait(false);
+        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 
     [LoggerMessage(
         Level = LogLevel.Warning,
-        Message = "SECURITY ALERT: refresh token reuse detected for user {UserId} from IP {Ip} – revoked {RevokedCount} active token(s) of the family")]
-    private static partial void LogReuseDetected(ILogger logger, string userId, string? ip, int revokedCount);
+        Message = "SECURITY ALERT: refresh token reuse detected for user {UserId} from IP {Ip}; affected token family revoked")]
+    private static partial void LogReuseDetected(ILogger logger, string userId, string? ip);
 }

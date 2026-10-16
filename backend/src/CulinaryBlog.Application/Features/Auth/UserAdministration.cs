@@ -38,6 +38,9 @@ public sealed class GetUsersQueryValidator : AbstractValidator<GetUsersQuery>
     {
         RuleFor(x => x.Page).GreaterThanOrEqualTo(1).WithMessage("page phải >= 1.");
         RuleFor(x => x.PageSize).InclusiveBetween(1, 50).WithMessage("pageSize phải trong khoảng 1–50.");
+        RuleFor(x => x.Page)
+            .Must((query, page) => query.PageSize <= 0 || ((long)page - 1) * query.PageSize <= int.MaxValue)
+            .WithMessage("page vượt quá phạm vi phân trang.");
         RuleFor(x => x.Search).MaximumLength(100).WithMessage("search tối đa 100 ký tự.");
     }
 }
@@ -76,9 +79,7 @@ public sealed class SetUserStatusCommandValidator : AbstractValidator<SetUserSta
 /// </summary>
 public sealed partial class SetUserStatusCommandHandler(
     IIdentityService identityService,
-    IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
-    TimeProvider timeProvider,
     ILogger<SetUserStatusCommandHandler> logger) : IRequestHandler<SetUserStatusCommand, UserStatusDto>
 {
     public async Task<UserStatusDto> Handle(SetUserStatusCommand request, CancellationToken cancellationToken)
@@ -94,22 +95,9 @@ public sealed partial class SetUserStatusCommandHandler(
             throw new ForbiddenException(HttpProblemTypes.Forbidden, "Quản trị viên không thể tự khóa hoặc mở khóa tài khoản của chính mình.");
         }
 
-        IdentityUserInfo? user = null;
-        var revoked = 0;
-        await unitOfWork.ExecuteInTransactionAsync(
-            async ct =>
-            {
-                user = await identityService.SetActiveAsync(request.UserId, request.IsActive!.Value, ct).ConfigureAwait(false)
-                    ?? throw new UserNotFoundException(request.UserId);
-
-                if (request.IsActive == false)
-                {
-                    revoked = await unitOfWork.Users
-                        .RevokeAllRefreshTokensAsync(request.UserId, timeProvider.GetUtcNow().UtcDateTime, ct)
-                        .ConfigureAwait(false);
-                }
-            },
-            cancellationToken).ConfigureAwait(false);
+        // IdentityService holds the user-row lock through both the status write and token revocation.
+        var user = await identityService.SetActiveAsync(request.UserId, request.IsActive!.Value, cancellationToken).ConfigureAwait(false)
+            ?? throw new UserNotFoundException(request.UserId);
 
         // NFR-SEC-006: audit log ai thao tác, lên ai, lý do gì (timestamp do Serilog gắn).
         if (request.IsActive == true)
@@ -118,14 +106,14 @@ public sealed partial class SetUserStatusCommandHandler(
         }
         else
         {
-            LogDeactivated(logger, request.UserId, adminId, request.Reason, revoked);
+            LogDeactivated(logger, request.UserId, adminId, request.Reason);
         }
 
-        return new UserStatusDto(user!.Id, user.Email, user.DisplayName, user.IsActive);
+        return new UserStatusDto(user.Id, user.Email, user.DisplayName, user.IsActive);
     }
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "ADMIN ACTION: user {TargetUserId} deactivated by {AdminId}, reason: {Reason}; revoked {RevokedCount} refresh token(s)")]
-    private static partial void LogDeactivated(ILogger logger, string targetUserId, string adminId, string? reason, int revokedCount);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "ADMIN ACTION: user {TargetUserId} deactivated by {AdminId}, reason: {Reason}; refresh tokens revoked")]
+    private static partial void LogDeactivated(ILogger logger, string targetUserId, string adminId, string? reason);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "ADMIN ACTION: user {TargetUserId} reactivated by {AdminId}, reason: {Reason}")]
     private static partial void LogReactivated(ILogger logger, string targetUserId, string adminId, string? reason);

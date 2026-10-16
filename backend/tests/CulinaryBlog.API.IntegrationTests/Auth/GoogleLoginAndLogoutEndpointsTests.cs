@@ -60,7 +60,7 @@ public class GoogleLoginAndLogoutEndpointsTests(CulinaryBlogApiFactory factory) 
         await unavailable.ShouldBeProblemAsync(HttpStatusCode.BadGateway, ErrorCodes.AuthGoogleUnavailable);
 
         var malformed = await client.PostAsJsonAsync("/api/v1/auth/google", new { idToken = "khong-phai-jwt" });
-        await malformed.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
+        await malformed.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.AuthGoogleTokenInvalid);
 
         var noEmail = factory.GoogleTokens.Issue(new GoogleIdTokenPayload("google-no-email", null, false, "Không email", null));
         var missingEmail = await client.PostAsJsonAsync("/api/v1/auth/google", new { idToken = noEmail });

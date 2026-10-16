@@ -19,6 +19,8 @@ public sealed class IdentityService(
     UserManager<ApplicationUser> userManager,
     IUserNameGenerator userNameGenerator,
     IUnitOfWork unitOfWork,
+    CulinaryBlog.Infrastructure.Persistence.CulinaryBlogDbContext db,
+    IRefreshTokenRepository refreshTokens,
     TimeProvider timeProvider) : IIdentityService
 {
     private const string GoogleProvider = "Google";
@@ -146,8 +148,16 @@ public sealed class IdentityService(
 
     public async Task<IdentityUserInfo?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+        var user = await userManager.Users.AsNoTracking()
+            .SingleOrDefaultAsync(candidate => candidate.Id == userId, cancellationToken).ConfigureAwait(false);
         return user is null ? null : ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
+    }
+
+    public async Task<bool> IsLockedOutAsync(string userId, CancellationToken cancellationToken)
+    {
+        var user = await userManager.Users.AsNoTracking()
+            .SingleOrDefaultAsync(candidate => candidate.Id == userId, cancellationToken).ConfigureAwait(false);
+        return user is not null && await userManager.IsLockedOutAsync(user).ConfigureAwait(false);
     }
 
     public async Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken)
@@ -160,19 +170,19 @@ public sealed class IdentityService(
             return null;
         }
 
-        if (changes.DisplayName is not null)
+        if (changes.HasDisplayName)
         {
-            user.DisplayName = changes.DisplayName;
+            user.DisplayName = changes.DisplayName!;
         }
 
-        if (changes.AvatarUrl is not null)
+        if (changes.HasAvatarUrl)
         {
-            user.AvatarUrl = changes.AvatarUrl.Length == 0 ? null : changes.AvatarUrl;
+            user.AvatarUrl = string.IsNullOrEmpty(changes.AvatarUrl) ? null : changes.AvatarUrl;
         }
 
-        if (changes.Bio is not null)
+        if (changes.HasBio)
         {
-            user.Bio = changes.Bio.Length == 0 ? null : changes.Bio;
+            user.Bio = string.IsNullOrEmpty(changes.Bio) ? null : changes.Bio;
         }
 
         // UpdateAsync (không ghi thẳng bảng): đổi ConcurrencyStamp để hai lần sửa đồng thời không âm thầm đè nhau.
@@ -182,23 +192,41 @@ public sealed class IdentityService(
 
     public async Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+        var user = await refreshTokens.ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                var target = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+                if (target is null)
+                {
+                    return null;
+                }
+
+                if (target.IsActive != isActive)
+                {
+                    target.IsActive = isActive;
+                    ThrowIfFailed(await userManager.UpdateAsync(target).ConfigureAwait(false));
+                }
+
+                if (!isActive)
+                {
+                    await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
+                    await db.SaveChangesAsync(ct).ConfigureAwait(false);
+                }
+
+                return target;
+            },
+            cancellationToken).ConfigureAwait(false);
         if (user is null)
         {
             return null;
-        }
-
-        if (user.IsActive != isActive)
-        {
-            user.IsActive = isActive;
-            ThrowIfFailed(await userManager.UpdateAsync(user).ConfigureAwait(false));
         }
 
         return ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
     }
 
     internal static IdentityUserInfo ToInfo(ApplicationUser user, IReadOnlyList<string> roles) =>
-        new(user.Id, user.DisplayName, user.Email ?? string.Empty, user.UserName ?? string.Empty, user.AvatarUrl, user.IsActive, roles, user.Bio);
+        new(user.Id, user.DisplayName, user.Email ?? string.Empty, user.UserName ?? string.Empty, user.AvatarUrl, user.IsActive, roles, user.Bio, user.CreatedAt);
 
     /// <summary>Chuyển IdentityError thành FluentValidation failures → HTTP 400 VALIDATION_ERROR (FR-AUTH-001 A2, MT-08).</summary>
     internal static void ThrowIfFailed(IdentityResult result)

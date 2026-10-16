@@ -9,19 +9,19 @@ namespace CulinaryBlog.Application.Features.Auth;
 /// FR-AUTH-006 – hồ sơ của người đang đăng nhập (<c>GET /auth/me</c>). Là nguồn sự thật về <c>roles</c> cho Frontend
 /// điều hướng các route <c>/dashboard*</c>. Không bao giờ chứa PasswordHash, SecurityStamp, UserName, EmailConfirmed.
 /// </summary>
-public sealed record GetCurrentUserQuery : IRequest<UserDto>;
+public sealed record GetCurrentUserQuery : IRequest<UserProfileDto>;
 
 public sealed class GetCurrentUserQueryHandler(ICurrentUser currentUser, IIdentityService identityService)
-    : IRequestHandler<GetCurrentUserQuery, UserDto>
+    : IRequestHandler<GetCurrentUserQuery, UserProfileDto>
 {
-    public async Task<UserDto> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+    public async Task<UserProfileDto> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
     {
         // A1 (MT-33.9): token hợp lệ nhưng người dùng không còn tồn tại → 401, không phải 404 — token trỏ tới một danh
         // tính không còn hợp lệ.
         var userId = currentUser.UserId ?? throw new InvalidTokenException();
         var user = await identityService.FindByIdAsync(userId, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidTokenException();
-        return user.ToDto();
+        return user.ToProfileDto();
     }
 }
 
@@ -29,7 +29,8 @@ public sealed class GetCurrentUserQueryHandler(ICurrentUser currentUser, IIdenti
 /// FR-AUTH-007 – PATCH hồ sơ <c>{ displayName?, avatarUrl?, bio? }</c>: trường không gửi thì giữ nguyên; gửi chuỗi rỗng
 /// ở avatarUrl/bio để xóa. Email và UserName không đổi được ở đây.
 /// </summary>
-public sealed record UpdateProfileCommand(string? DisplayName, string? AvatarUrl, string? Bio) : IRequest<UserDto>;
+public sealed record UpdateProfileCommand(string? DisplayName, string? AvatarUrl, string? Bio,
+    bool? HasDisplayName = null, bool? HasAvatarUrl = null, bool? HasBio = null) : IRequest<UserProfileDto>;
 
 /// <summary>Giới hạn theo SRS §7.9 (ApplicationUser.DisplayName 2–100, Bio ≤ 1000) và FR-AUTH-007 (avatarUrl ≤ 500).</summary>
 public static class ProfileLimits
@@ -48,11 +49,11 @@ public sealed class UpdateProfileCommandValidator : AbstractValidator<UpdateProf
             .Must(name => !string.IsNullOrWhiteSpace(name)).WithMessage("Tên hiển thị không được để trống.")
             .Length(ProfileLimits.DisplayNameMin, ProfileLimits.DisplayNameMax)
                 .WithMessage($"Tên hiển thị phải từ {ProfileLimits.DisplayNameMin} đến {ProfileLimits.DisplayNameMax} ký tự.")
-            .When(x => x.DisplayName is not null);
+            .When(x => x.HasDisplayName ?? x.DisplayName is not null);
 
         RuleFor(x => x.Bio!)
             .MaximumLength(ProfileLimits.BioMax).WithMessage($"Giới thiệu tối đa {ProfileLimits.BioMax} ký tự.")
-            .When(x => x.Bio is not null);
+            .When(x => (x.HasBio ?? x.Bio is not null) && x.Bio is not null);
 
         RuleFor(x => x.AvatarUrl!)
             .MaximumLength(ProfileLimits.AvatarUrlMax).WithMessage($"Đường dẫn ảnh đại diện tối đa {ProfileLimits.AvatarUrlMax} ký tự.")
@@ -60,21 +61,27 @@ public sealed class UpdateProfileCommandValidator : AbstractValidator<UpdateProf
                 .WithMessage("Đường dẫn ảnh đại diện không hợp lệ.")
             .Must(storage.IsStoredFileUrl)
                 .WithMessage("Ảnh đại diện phải là tệp đã tải lên hệ thống (POST /api/v1/files/upload).")
-            .When(x => !string.IsNullOrEmpty(x.AvatarUrl));
+            .When(x => (x.HasAvatarUrl ?? x.AvatarUrl is not null) && !string.IsNullOrEmpty(x.AvatarUrl));
     }
 }
 
 public sealed class UpdateProfileCommandHandler(ICurrentUser currentUser, IIdentityService identityService)
-    : IRequestHandler<UpdateProfileCommand, UserDto>
+    : IRequestHandler<UpdateProfileCommand, UserProfileDto>
 {
-    public async Task<UserDto> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
+    public async Task<UserProfileDto> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
         var userId = currentUser.UserId ?? throw new InvalidTokenException();
-        var changes = new ProfileChanges(request.DisplayName?.Trim(), request.AvatarUrl?.Trim(), request.Bio?.Trim());
+        var changes = new ProfileChanges(
+            request.DisplayName?.Trim(),
+            request.AvatarUrl?.Trim(),
+            request.Bio?.Trim(),
+            request.HasDisplayName ?? request.DisplayName is not null,
+            request.HasAvatarUrl ?? request.AvatarUrl is not null,
+            request.HasBio ?? request.Bio is not null);
         var user = await identityService.UpdateProfileAsync(userId, changes, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidTokenException();
-        return user.ToDto();
+        return user.ToProfileDto();
     }
 }

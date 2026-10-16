@@ -1,5 +1,9 @@
+using System.Text.Json;
+using CulinaryBlog.API.Extensions;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Auth;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 
 namespace CulinaryBlog.API.Endpoints;
@@ -9,7 +13,8 @@ public static class AuthEndpoints
 {
     public static RouteGroupBuilder MapAuthEndpoints(this RouteGroupBuilder api)
     {
-        var group = api.MapGroup("/auth").WithTags("Auth");
+        var group = api.MapGroup("/auth").WithTags("Auth")
+            .WithMetadata(new SecurityRateLimitMetadata(SecurityRateLimits.Auth));
 
         group.MapPost("/register", RegisterAsync)
             .WithName("Register")
@@ -57,14 +62,14 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("GetCurrentUser")
             .WithSummary("FR-AUTH-006 – Hồ sơ của người đang đăng nhập")
-            .Produces<UserDto>()
+            .Produces<UserProfileDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         group.MapPatch("/me", UpdateMeAsync)
             .RequireAuthorization()
             .WithName("UpdateCurrentUser")
             .WithSummary("FR-AUTH-007 – Cập nhật hồ sơ (displayName, avatarUrl, bio)")
-            .Produces<UserDto>()
+            .Produces<UserProfileDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
@@ -114,9 +119,9 @@ public static class AuthEndpoints
         return Results.Ok(await sender.Send(command, ct).ConfigureAwait(false));
     }
 
-    private static async Task<IResult> GoogleLoginAsync(GoogleLoginRequest body, HttpContext http, ISender sender, CancellationToken ct)
+    private static async Task<IResult> GoogleLoginAsync(GoogleLoginRequest? body, HttpContext http, ISender sender, CancellationToken ct)
     {
-        var command = new GoogleLoginCommand(body.IdToken ?? string.Empty)
+        var command = new GoogleLoginCommand(body?.IdToken ?? string.Empty)
         {
             IpAddress = ClientIp(http),
         };
@@ -146,11 +151,42 @@ public static class AuthEndpoints
         return Results.Ok(user);
     }
 
-    private static async Task<IResult> UpdateMeAsync(UpdateProfileRequest body, HttpContext http, ISender sender, CancellationToken ct)
+    private static async Task<IResult> UpdateMeAsync(JsonElement body, HttpContext http, ISender sender, CancellationToken ct)
     {
-        var user = await sender.Send(new UpdateProfileCommand(body.DisplayName, body.AvatarUrl, body.Bio), ct).ConfigureAwait(false);
+        if (body.ValueKind != JsonValueKind.Object)
+        {
+            throw new ValidationException([new ValidationFailure("body", "Hồ sơ phải là một object JSON.")]);
+        }
+
+        var hasDisplayName = body.TryGetProperty("displayName", out var displayName);
+        var hasAvatarUrl = body.TryGetProperty("avatarUrl", out var avatarUrl);
+        var hasBio = body.TryGetProperty("bio", out var bio);
+        var user = await sender.Send(
+            new UpdateProfileCommand(
+                ReadOptionalString(displayName, hasDisplayName, "displayName"),
+                ReadOptionalString(avatarUrl, hasAvatarUrl, "avatarUrl"),
+                ReadOptionalString(bio, hasBio, "bio"),
+                hasDisplayName,
+                hasAvatarUrl,
+                hasBio),
+            ct).ConfigureAwait(false);
         http.Response.Headers.CacheControl = "no-store";
         return Results.Ok(user);
+    }
+
+    private static string? ReadOptionalString(JsonElement value, bool present, string field)
+    {
+        if (!present || value.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        if (value.ValueKind == JsonValueKind.String)
+        {
+            return value.GetString();
+        }
+
+        throw new ValidationException([new ValidationFailure(field, "Giá trị phải là chuỗi hoặc null.")]);
     }
 
     /// <summary>SRS §8 quy ước Cache: danh sách phiên phụ thuộc danh tính → <c>Cache-Control: no-store</c>.</summary>
