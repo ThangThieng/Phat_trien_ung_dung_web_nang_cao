@@ -32,4 +32,12 @@ public class RecipeImage : BaseEntity
             IsPrimary = isPrimary,
             OrderIndex = orderIndex,
         };
+
+    public void Update(string? altText, int? orderIndex)
+    {
+        AltText = altText?.Trim();
+        if (orderIndex.HasValue) OrderIndex = orderIndex.Value;
+    }
+
+    public void SetPrimary(bool isPrimary) => IsPrimary = isPrimary;
 }

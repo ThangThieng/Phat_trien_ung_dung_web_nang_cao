@@ -22,7 +22,7 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(r => r.Title).HasMaxLength(200).IsRequired();
         builder.Property(r => r.Slug).HasMaxLength(220).IsRequired();
         builder.Property(r => r.Description).HasColumnType("text").IsRequired();
-        builder.Property(r => r.Instructions).HasColumnType("text").IsRequired();
+        builder.Property(r => r.Instructions).HasColumnType("text");
         builder.Property(r => r.Difficulty).HasConversion<short>().HasDefaultValue(RecipeDifficulty.Easy).HasSentinel((RecipeDifficulty)0);
         builder.Property(r => r.Status).HasConversion<short>().HasDefaultValue(RecipeStatus.Draft).HasSentinel((RecipeStatus)(-1));
         builder.Property(r => r.AuthorId).HasMaxLength(450).IsRequired();
