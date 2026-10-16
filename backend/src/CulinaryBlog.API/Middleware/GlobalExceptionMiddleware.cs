@@ -2,6 +2,8 @@ using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Domain.Common;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace CulinaryBlog.API.Middleware;
 
@@ -95,6 +97,21 @@ public sealed partial class GlobalExceptionMiddleware(
                     Instance = context.Request.Path,
                 };
 
+            // FR-CAT-003/004 (MT-36) – lớp phòng vệ THỨ HAI: hai Admin tạo/đổi trùng tên gần như đồng thời
+            // có thể cùng vượt qua bước kiểm tra chủ động ở Application, chỉ ràng buộc UNIQUE của PostgreSQL
+            // chặn lại. Thiếu nhánh này thì người dùng nhận 500 thay vì 409 – đúng lỗi mà MT-36 mô tả.
+            // Chỉ nhận diện index của bảng Categories để không đổi hành vi của entity thuộc dev khác.
+            case DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation } unique }
+                when IsCategoryUniqueIndex(unique.ConstraintName):
+                return new ProblemDetails
+                {
+                    Type = ErrorCodes.CategoryNameExists,
+                    Title = "Conflict",
+                    Status = StatusCodes.Status409Conflict,
+                    Detail = "Tên danh mục đã tồn tại. Vui lòng chọn tên khác.",
+                    Instance = context.Request.Path,
+                };
+
             default:
                 return new ProblemDetails
                 {
@@ -106,6 +123,10 @@ public sealed partial class GlobalExceptionMiddleware(
                 };
         }
     }
+
+    /// <summary>Hai index UNIQUE của bảng Categories (§7.6). Slug sinh từ Name nên cả hai đều quy về CATEGORY_NAME_EXISTS – Phụ lục B không có mã riêng cho slug.</summary>
+    private static bool IsCategoryUniqueIndex(string? constraintName) =>
+        constraintName is "IDX_Category_Name" or "IDX_Category_Slug";
 
     private static string ToCamelCase(string name) =>
         string.IsNullOrEmpty(name) ? name : char.ToLowerInvariant(name[0]) + name[1..];

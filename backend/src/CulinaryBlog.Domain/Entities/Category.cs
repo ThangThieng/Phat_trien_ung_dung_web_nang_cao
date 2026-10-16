@@ -33,4 +33,18 @@ public class Category : BaseEntity
             OrderIndex = orderIndex,
         };
     }
+
+    /// <summary>
+    /// FR-CAT-004 – cập nhật danh mục. Slug CỐ TÌNH không nằm trong tham số: slug bất biến sau khi tạo
+    /// để link đã chia sẻ / đã được Google lập chỉ mục không chết (NFR-SEO-004 – hệ thống không có bảng lịch sử slug).
+    /// </summary>
+    public void Update(string name, string? description, string? imageUrl, int orderIndex)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        Name = name.Trim();
+        Description = description;
+        ImageUrl = imageUrl;
+        OrderIndex = orderIndex;
+    }
 }

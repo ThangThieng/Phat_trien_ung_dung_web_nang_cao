@@ -15,6 +15,8 @@ public static class ErrorCodes
     public const string RecipeForbidden = "RECIPE_FORBIDDEN";
 
     public const string CategoryNotFound = "CATEGORY_NOT_FOUND";
+    public const string CategoryNameExists = "CATEGORY_NAME_EXISTS";
+    public const string CategoryDeleteHasRecipes = "CATEGORY_DELETE_HAS_RECIPES";
 
     public const string FileSizeExceeded = "FILE_SIZE_EXCEEDED";
     public const string FileMimeInvalid = "FILE_MIME_INVALID";
