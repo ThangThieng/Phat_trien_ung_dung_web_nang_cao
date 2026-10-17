@@ -126,6 +126,10 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | sonner | 2.0.8 | Toast notification (NFR-USE-004) | ➕ |
 | clsx / tailwind-merge | 2.1.1 / 3.6.0 | Gộp className Tailwind | ➕ |
 | lucide-react | 1.44.0 | Icon | ➕ |
+| shadcn/ui (CLI) | 4.21.4 | Chép component Tailwind vào `components/ui/` | ➕ *(cài ở Buổi 6 – Dev 2; không phải phụ thuộc runtime)* |
+| radix-ui | 1.8.1 | Hành vi và accessibility của component shadcn (Dialog, DropdownMenu, Sheet…) | ➕ *(cài ở Buổi 6 – Dev 2)* |
+| class-variance-authority | 0.7.1 | Biến thể (variant) của component shadcn | ➕ *(cài ở Buổi 6 – Dev 2)* |
+| tw-animate-css | 1.4.0 | Hiệu ứng mở/đóng component shadcn trên Tailwind v4 | ➕ *(cài ở Buổi 6 – Dev 2)* |
 
 **Chất lượng mã & kiểm thử**
 | Package | Phiên bản | SRS | Trạng thái |
