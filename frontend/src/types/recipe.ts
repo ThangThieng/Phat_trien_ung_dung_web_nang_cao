@@ -1,10 +1,13 @@
-/** Kiểu miền Recipe – khớp DTO của Backend (.NET), JSON camelCase, enum dạng chuỗi. Chủ file: Dev 2. */
-
+/** Nguồn enum duy nhất cho miền Recipe, dùng lại bởi kiểu dữ liệu, Zod và các ô chọn. */
 import type { CategoryRef } from './category';
+import type { SortBy, SortOrder } from './search';
 
-export type RecipeDifficulty = 'Easy' | 'Medium' | 'Hard' | 'Expert';
+export const RECIPE_DIFFICULTIES = ['Easy', 'Medium', 'Hard', 'Expert'] as const;
+export const RECIPE_STATUSES = ['Draft', 'Published', 'Archived'] as const;
 
-export type RecipeStatus = 'Draft' | 'Published' | 'Archived';
+export type RecipeDifficulty = (typeof RECIPE_DIFFICULTIES)[number];
+export type RecipeStatus = (typeof RECIPE_STATUSES)[number];
+
 
 export interface Author {
   id: string;
@@ -12,6 +15,7 @@ export interface Author {
   avatarUrl: string | null;
 }
 
+/** SRS §8.3 - dữ liệu card trong danh sách, tìm kiếm và danh mục. */
 export interface RecipeSummary {
   id: string;
   title: string;
@@ -31,7 +35,8 @@ export interface RecipeSummary {
   createdAt: string;
 }
 
-export interface RecipeNutrition {
+/** SRS §7.2.1 - dinh dưỡng trên mỗi khẩu phần. */
+export interface Nutrition {
   calories: number | null;
   protein: number | null;
   carbohydrates: number | null;
@@ -40,6 +45,10 @@ export interface RecipeNutrition {
   sodium: number | null;
 }
 
+/** @deprecated Dùng `Nutrition`; alias được giữ đến Buổi 8 để không làm gãy màn hình cũ. */
+export type RecipeNutrition = Nutrition;
+
+/** SRS §8.5 - stepNumber do server cấp, không có trong StepInput. */
 export interface RecipeStep {
   id: string;
   stepNumber: number;
@@ -81,12 +90,86 @@ export interface RecipeImageResult {
   orderIndex: number;
 }
 
-export interface RecipeDetail extends Omit<RecipeSummary, 'primaryImageUrl'> {
-  instructions: string;
-  nutrition: RecipeNutrition | null;
+/** SRS §8.3 - toàn bộ dữ liệu công thức trả bởi RecipeDetailDto. */
+export interface Recipe extends Omit<RecipeSummary, 'primaryImageUrl'> {
+  instructions: string | null;
+  nutrition: Nutrition | null;
   steps: RecipeStep[];
   ingredients: RecipeIngredient[];
   images: RecipeImage[];
   updatedAt: string | null;
   rowVersion: string;
 }
+
+/** @deprecated Dùng `Recipe`; alias được giữ đến Buổi 8 để không làm gãy màn hình cũ. */
+export type RecipeDetail = Recipe;
+
+export interface NutritionInput {
+  calories: number | null;
+  protein: number | null;
+  carbohydrates: number | null;
+  fat: number | null;
+  fiber: number | null;
+  sodium: number | null;
+}
+
+/** SRS §8.6 - body thêm/cập nhật nguyên liệu. */
+export interface IngredientInput {
+  name: string;
+  quantity: number | null;
+  quantityText: string | null;
+  unit: string | null;
+  notes: string | null;
+  orderIndex: number;
+}
+
+/** SRS §8.5 - body bước nấu; client không được gửi stepNumber. */
+export interface StepInput {
+  title: string;
+  description: string;
+  timerMinutes: number | null;
+  imageUrl: string | null;
+}
+
+/** FR-RCP-003 - body tạo bản nháp, cho phép tạo nội dung con cùng request. */
+export interface CreateRecipeRequest {
+  title: string;
+  description: string;
+  categoryId: string;
+  prepTime: number;
+  cookTime: number;
+  servings: number;
+  difficulty: RecipeDifficulty;
+  instructions: string | null;
+  nutrition: NutritionInput | null;
+  ingredients?: IngredientInput[];
+  steps?: StepInput[];
+}
+
+/** FR-RCP-004 - cập nhật một phần và bắt buộc rowVersion để chống ghi đè. */
+export type UpdateRecipeRequest = Partial<Omit<CreateRecipeRequest, 'ingredients' | 'steps'>> & {
+  rowVersion: string;
+};
+
+/** FR-RCP-010 - thứ tự id đầy đủ sau khi người dùng sắp xếp. */
+export interface ReorderStepsRequest {
+  stepIds: string[];
+}
+
+/** FR-RCP-008 - metadata ảnh có thể cập nhật độc lập. */
+export interface UpdateRecipeImageRequest {
+  altText?: string | null;
+  isPrimary?: boolean;
+  orderIndex?: number;
+}
+
+/** FR-RCP-011 - tham số danh sách công thức của tác giả. */
+export interface MyRecipesParams {
+  status?: RecipeStatus;
+  page?: number;
+  pageSize?: number;
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
+}
+
+export type RecipeStatusAction = 'publish' | 'unpublish' | 'archive' | 'unarchive';
