@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import type { RecipeDetail } from '@/types/api';
+import type { RecipeDetail } from '@/types/recipe';
 import { getErrorMessage } from '@/lib/api-client';
 import { publishRecipe, unpublishRecipe } from '../write-api';
 

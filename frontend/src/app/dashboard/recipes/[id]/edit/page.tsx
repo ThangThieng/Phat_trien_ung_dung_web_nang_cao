@@ -10,7 +10,7 @@ import RecipeContentEditor from '@/features/recipes/components/RecipeContentEdit
 import RecipePublishActions from '@/features/recipes/components/RecipePublishActions';
 import { getErrorMessage } from '@/lib/api-client';
 import { getMyRecipe } from '@/features/recipes/write-api';
-import type { RecipeDetail } from '@/types/api';
+import type { RecipeDetail } from '@/types/recipe';
 
 /** FR-RCP-004/005/009/010 - màn hình riêng tư để soạn, quản lý nội dung và xuất bản công thức. */
 export default function EditRecipePage() {

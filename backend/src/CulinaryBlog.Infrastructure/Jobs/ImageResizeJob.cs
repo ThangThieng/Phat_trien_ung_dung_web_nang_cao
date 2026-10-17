@@ -5,6 +5,9 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
 
@@ -30,6 +33,16 @@ public sealed partial class ImageResizeJob(
     private const string VariantContentType = "image/webp";
 
     private static readonly WebpEncoder Encoder = new() { Quality = 80 };
+
+    /// <summary>
+    /// Chỉ nạp decoder của định dạng FR-FILE-001 cho phép mà ImageSharp 3.1 đọc được (JPEG/PNG/WebP; AVIF chưa hỗ trợ).
+    /// Ảnh trong kho đã qua kiểm tra magic bytes lúc tải lên; đây là lớp chặn thứ hai: dù object bị thay bằng TIFF,
+    /// decoder TIFF/BigTIFF (GHSA-wmxv-xphr-5c9g, chưa vá ở 3.x) không bao giờ chạy — xem Directory.Build.props.
+    /// </summary>
+    private static readonly DecoderOptions UploadFormatsOnly = new()
+    {
+        Configuration = new Configuration(new JpegConfigurationModule(), new PngConfigurationModule(), new WebpConfigurationModule()),
+    };
 
     [AutomaticRetry(Attempts = 3)]
     public async Task ExecuteAsync(Guid imageId, CancellationToken cancellationToken)
@@ -85,11 +98,11 @@ public sealed partial class ImageResizeJob(
         {
             try
             {
-                source = await Image.LoadAsync(original, cancellationToken).ConfigureAwait(false);
+                source = await Image.LoadAsync(UploadFormatsOnly, original, cancellationToken).ConfigureAwait(false);
             }
             catch (UnknownImageFormatException ex)
             {
-                // ImageSharp 3.1 chưa giải mã AVIF: thử lại cũng không khác → dừng ngay, giữ ảnh gốc (không ném để khỏi retry vô ích).
+                // AVIF (ImageSharp 3.1 chưa giải mã) hoặc định dạng ngoài danh sách: thử lại cũng không khác → dừng ngay, giữ ảnh gốc (không ném để khỏi retry vô ích).
                 LogUnsupportedFormat(logger, image.Id, ex);
                 return (null, null);
             }

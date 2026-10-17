@@ -26,7 +26,11 @@ public sealed record RecipeSummaryDto(
     public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
 }
 
-/// <summary>FR-SRCH-001: kết quả tìm kiếm giữ hình dạng của card công khai và thêm điểm liên quan.</summary>
+/// <summary>
+/// FR-SRCH-001 — một kết quả tìm kiếm: đúng các trường của <see cref="RecipeSummaryDto"/> cộng <c>relevanceScore</c>
+/// (<c>ts_rank</c>). Khai báo phẳng (không lồng <c>RecipeSummaryDto</c>) để JSON cùng hình dạng với danh sách công khai, và để
+/// Redis đọc lại được bằng constructor vị trí.
+/// </summary>
 public sealed record RecipeSearchResultDto(
     Guid Id,
     string Title,
@@ -46,25 +50,30 @@ public sealed record RecipeSearchResultDto(
 {
     public int TotalTimeMinutes => PrepTimeMinutes + CookTimeMinutes;
 
-    public static RecipeSearchResultDto From(RecipeSummaryDto item, double rank) => new(
-        item.Id,
-        item.Title,
-        item.Slug,
-        item.Description,
-        item.PrepTimeMinutes,
-        item.CookTimeMinutes,
-        item.Servings,
-        item.Difficulty,
-        item.Status,
-        item.PrimaryImageUrl,
-        item.Category,
-        item.Author,
-        item.PublishedAt,
-        item.CreatedAt,
-        rank);
+    public static RecipeSearchResultDto From(RecipeSummaryDto summary, double relevanceScore)
+    {
+        ArgumentNullException.ThrowIfNull(summary);
+
+        return new RecipeSearchResultDto(
+            summary.Id,
+            summary.Title,
+            summary.Slug,
+            summary.Description,
+            summary.PrepTimeMinutes,
+            summary.CookTimeMinutes,
+            summary.Servings,
+            summary.Difficulty,
+            summary.Status,
+            summary.PrimaryImageUrl,
+            summary.Category,
+            summary.Author,
+            summary.PublishedAt,
+            summary.CreatedAt,
+            relevanceScore);
+    }
 }
 
-/// <summary>NFR-SEO-003: nguồn slug đầy đủ cho sitemap của Next.js.</summary>
+/// <summary>MT-48 / NFR-SEO-003 — một dòng của <c>GET /recipes/sitemap</c>: <c>{ slug, updatedAt }</c> (nguồn <c>lastmod</c>).</summary>
 public sealed record RecipeSitemapEntryDto(string Slug, DateTime UpdatedAt);
 
 public sealed record RecipeNutritionDto(decimal? Calories, decimal? Protein, decimal? Carbohydrates, decimal? Fat, decimal? Fiber, decimal? Sodium);

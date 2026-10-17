@@ -7,8 +7,12 @@ namespace CulinaryBlog.API.IntegrationTests.Content;
 
 /// <summary>FR-CAT-001 / FR-CAT-002 – endpoint công khai, mỗi endpoint 1 happy path + 1 error case.</summary>
 [Collection(IntegrationTestSuite.Name)]
-public class CategoriesEndpointsTests(CulinaryBlogApiFactory factory)
+public class CategoriesEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 {
+    public Task InitializeAsync() => factory.ResetDatabaseAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
+
     [Fact]
     public async Task GetCategories_AsGuest_ReturnsListWithPublishedRecipeCount()
     {
@@ -48,5 +52,29 @@ public class CategoriesEndpointsTests(CulinaryBlogApiFactory factory)
         var response = await client.GetAsync(new Uri("/api/v1/categories/khong-ton-tai", UriKind.Relative));
 
         await response.ShouldBeProblemAsync(HttpStatusCode.NotFound, ErrorCodes.CategoryNotFound);
+    }
+
+    /// <summary>FR-CAT-002 (Buổi 4 — D-10 phía API): sortBy/sortOrder theo whitelist FR-SRCH-003.</summary>
+    [Fact]
+    public async Task GetCategoryBySlug_SortByTitleAsc_ReturnsAscendingOrder()
+    {
+        var response = await factory.CreateClient()
+            .GetAsync(new Uri("/api/v1/categories/mon-chinh?sortBy=title&sortOrder=asc", UriKind.Relative));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var titles = (await response.ReadAsAsync<CategoryDetailDto>()).Recipes.Items.Select(r => r.Title).ToList();
+        Assert.Equal(titles.Order(StringComparer.Ordinal).ToList(), titles);
+    }
+
+    /// <summary>FR-CAT-002 A2: tham số phân trang/sắp xếp không hợp lệ → 400.</summary>
+    [Theory]
+    [InlineData("?sortBy=name")]
+    [InlineData("?sortOrder=sideways")]
+    [InlineData("?pageSize=51")]
+    public async Task GetCategoryBySlug_InvalidQuery_Returns400(string query)
+    {
+        var response = await factory.CreateClient().GetAsync(new Uri($"/api/v1/categories/mon-chinh{query}", UriKind.Relative));
+
+        await response.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
     }
 }

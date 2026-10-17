@@ -1,14 +1,5 @@
--- Chạy một lần khi volume pgdata được tạo lần đầu (SRS §2.4.1: unaccent, pg_trgm bắt buộc)
+-- Chạy một lần khi volume pgdata được tạo lần đầu (SRS §2.4.1: unaccent, pg_trgm bắt buộc).
+-- Chỉ tạo extension. Mọi đối tượng schema mà code phụ thuộc (hàm unaccent_immutable, cột SearchVector, GIN index) nằm trong
+-- migration EF Core B4_Search_FTS — file này KHÔNG chạy trong Testcontainers hay môi trường mới (retrofit D-18, MT-25).
 CREATE EXTENSION IF NOT EXISTS unaccent;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
-
--- Text search config tiếng Việt không dấu cho FR-SRCH-001 ("pho" tìm được "phở")
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_ts_config WHERE cfgname = 'vietnamese_unaccent') THEN
-        CREATE TEXT SEARCH CONFIGURATION vietnamese_unaccent (COPY = simple);
-        ALTER TEXT SEARCH CONFIGURATION vietnamese_unaccent
-            ALTER MAPPING FOR hword, hword_part, word WITH unaccent, simple;
-    END IF;
-END
-$$;

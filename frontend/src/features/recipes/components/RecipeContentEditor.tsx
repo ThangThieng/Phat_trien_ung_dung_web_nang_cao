@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/api-client';
-import type { RecipeIngredient, RecipeStep } from '@/types/api';
+import type { RecipeIngredient, RecipeStep } from '@/types/recipe';
 import { formatQuantity } from '../format';
 import {
   addIngredient,

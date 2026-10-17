@@ -1,5 +1,4 @@
 using CulinaryBlog.API.Extensions;
-using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Enums;
 using MediatR;
@@ -8,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace CulinaryBlog.API.Endpoints;
 
 /// <summary>
-/// SRS §8.3 / §8.4 – /api/v1/recipes: ghi NỘI DUNG (tạo công thức, ảnh; Buổi 4 thêm bước, nguyên liệu, cập nhật) +
-/// hai GET công khai (Buổi 4 Dev 3 chuyển sang RecipeQueryEndpoints). Vòng đời nằm ở <see cref="RecipeLifecycleEndpoints"/>.
+/// SRS §8.3 / §8.4 – /api/v1/recipes: ghi NỘI DUNG (tạo công thức, ảnh; Buổi 4 thêm bước, nguyên liệu, cập nhật).
+/// Mọi GET nằm ở <see cref="RecipeQueryEndpoints"/> (Buổi 4 — Dev 3); vòng đời nằm ở <see cref="RecipeLifecycleEndpoints"/>.
 /// </summary>
 public static class RecipesEndpoints
 {
@@ -26,7 +25,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("CreateRecipe")
             .WithSummary("FR-RCP-003 – Tạo công thức ở trạng thái Draft (kèm steps?/ingredients? tùy chọn)")
-            .WithDescription("FR-RCP-003 — SRS §8.3. Tạo bản nháp, có thể kèm nguyên liệu và bước nấu.")
+            .WithDescription("FR-RCP-003 — SRS §8.3. Author tạo bản nháp và có thể gửi kèm nguyên liệu, bước nấu.")
             .Produces<RecipeDetailDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
@@ -36,7 +35,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("UpdateRecipe")
             .WithSummary("FR-RCP-004 – Cập nhật công thức (Optimistic Concurrency: If-Match hoặc rowVersion trong body)")
-            .WithDescription("FR-RCP-004 — SRS §8.3. Cập nhật bằng optimistic concurrency và rowVersion.")
+            .WithDescription("FR-RCP-004 — SRS §8.3. Owner hoặc Admin cập nhật công thức với rowVersion chống ghi đè.")
             .Produces<RecipeDetailDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
@@ -49,7 +48,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("AddRecipeIngredient")
             .WithSummary("FR-RCP-009 – Thêm nguyên liệu (quantity số và/hoặc quantityText nguyên văn)")
-            .WithDescription("FR-RCP-009 — SRS §8.6. Thêm nguyên liệu vào aggregate Recipe.")
+            .WithDescription("FR-RCP-009 — SRS §8.6. Thêm nguyên liệu vào công thức thuộc quyền quản lý của người dùng.")
             .Produces<RecipeIngredientDto>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -59,7 +58,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("UpdateRecipeIngredient")
             .WithSummary("FR-RCP-009 – Cập nhật nguyên liệu")
-            .WithDescription("FR-RCP-009 — SRS §8.6. Cập nhật định lượng và metadata nguyên liệu.")
+            .WithDescription("FR-RCP-009 — SRS §8.6. Cập nhật định lượng, đơn vị, ghi chú và thứ tự nguyên liệu.")
             .Produces<RecipeIngredientDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -69,7 +68,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("DeleteRecipeIngredient")
             .WithSummary("FR-RCP-009 – Xóa nguyên liệu")
-            .WithDescription("FR-RCP-009 — SRS §8.6. Xóa nguyên liệu khỏi công thức.")
+            .WithDescription("FR-RCP-009 — SRS §8.6. Xóa nguyên liệu khỏi công thức thuộc quyền quản lý.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
@@ -79,7 +78,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("AddRecipeStep")
             .WithSummary("FR-RCP-010 – Thêm bước (server gán StepNumber = Max + 1)")
-            .WithDescription("FR-RCP-010 — SRS §8.5. Server tự cấp stepNumber liên tục.")
+            .WithDescription("FR-RCP-010 — SRS §8.5. Thêm bước nấu; server tự cấp số thứ tự kế tiếp.")
             .Produces<RecipeStepDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -89,7 +88,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("ReorderRecipeSteps")
             .WithSummary("FR-RCP-010 – Sắp xếp lại bước ({ stepIds: [...] } đầy đủ theo thứ tự mới → 1..N)")
-            .WithDescription("FR-RCP-010 — SRS §8.5. Đánh số lại thứ tự trong một transaction.")
+            .WithDescription("FR-RCP-010 — SRS §8.5. Sắp xếp lại toàn bộ bước bằng danh sách id theo thứ tự mới.")
             .Produces<IReadOnlyList<RecipeStepDto>>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -99,7 +98,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("UpdateRecipeStep")
             .WithSummary("FR-RCP-010 – Cập nhật nội dung một bước")
-            .WithDescription("FR-RCP-010 — SRS §8.5. Cập nhật nội dung, timer và ảnh của bước.")
+            .WithDescription("FR-RCP-010 — SRS §8.5. Cập nhật tiêu đề, mô tả, hẹn giờ hoặc ảnh của một bước nấu.")
             .Produces<RecipeStepDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -109,7 +108,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("DeleteRecipeStep")
             .WithSummary("FR-RCP-010 – Xóa bước (server đánh số lại các bước còn lại)")
-            .WithDescription("FR-RCP-010 — SRS §8.5. Xóa bước và đánh số lại các bước còn lại.")
+            .WithDescription("FR-RCP-010 — SRS §8.5. Xóa bước và đánh số liên tục lại các bước còn lại.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
@@ -118,7 +117,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("UploadRecipeImage")
             .WithSummary("FR-RCP-008 – Tải ảnh lên cho công thức (multipart: file, altText?, isPrimary?, orderIndex?)")
-            .WithDescription("FR-RCP-008 — SRS §8.4. Lưu ảnh gốc và xếp hàng tạo các kích thước nhỏ.")
+            .WithDescription("FR-RCP-008 — SRS §8.4. Tải ảnh công thức lên MinIO và lên lịch tạo kích thước dẫn xuất.")
             .DisableAntiforgery()
             .Accepts<IFormFile>("multipart/form-data")
             .Produces<RecipeImageResultDto>(StatusCodes.Status201Created)
@@ -131,7 +130,7 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("UpdateRecipeImage")
             .WithSummary("FR-RCP-008 – Cập nhật metadata ảnh (altText, isPrimary, orderIndex)")
-            .WithDescription("FR-RCP-008 — SRS §8.4. Cập nhật metadata và bảo đảm chỉ một ảnh chính.")
+            .WithDescription("FR-RCP-008 — SRS §8.4. Cập nhật văn bản thay thế, ảnh chính và thứ tự ảnh.")
             .Produces<RecipeImageResultDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -141,58 +140,8 @@ public static class RecipesEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("DeleteRecipeImage")
             .WithSummary("FR-RCP-008 – Xóa ảnh (tệp MinIO xóa bất đồng bộ qua Hangfire)")
-            .WithDescription("FR-RCP-008 — SRS §8.4. Xóa metadata và dọn object bằng background job.")
+            .WithDescription("FR-RCP-008 — SRS §8.4. Xóa metadata ảnh và dọn object bất đồng bộ bằng Hangfire.")
             .Produces(StatusCodes.Status204NoContent)
-            .ProducesProblem(StatusCodes.Status403Forbidden)
-            .ProducesProblem(StatusCodes.Status404NotFound);
-
-        group.MapGet("/", GetRecipesAsync)
-            .WithName("GetRecipes")
-            .WithSummary("FR-RCP-001 – Danh sách công thức (phân trang, lọc, sắp xếp)")
-            .WithDescription("FR-RCP-001 — SRS §8.3. Trả công thức Published theo bộ lọc và phân trang.")
-            .CacheOutput(OutputCachePolicies.RecipeList)
-            .Produces<PagedResult<RecipeSummaryDto>>()
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
-
-        group.MapGet("/mine", GetMyRecipesAsync)
-            .RequireAuthorization(AuthorizationPolicies.Author)
-            .WithName("GetMyRecipes")
-            .WithSummary("FR-RCP-011 – Danh sách công thức riêng tư của tôi")
-            .WithDescription("FR-RCP-011 — SRS §8.3. Trả Draft, Published, Archived của chính Author; không cache.")
-            .Produces<PagedResult<RecipeSummaryDto>>()
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status403Forbidden);
-
-        group.MapGet("/search", SearchRecipesAsync)
-            .WithName("SearchRecipes")
-            .WithSummary("FR-SRCH-001 – Tìm kiếm toàn văn công thức Published")
-            .WithDescription("FR-SRCH-001 — SRS §8.3. Tìm tiếng Việt không dấu, xếp theo ts_rank và phân trang.")
-            .Produces<PagedResult<RecipeSearchResultDto>>()
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
-
-        group.MapGet("/sitemap", GetRecipeSitemapAsync)
-            .WithName("GetRecipeSitemap")
-            .WithSummary("NFR-SEO-003 – Danh sách slug Published cho sitemap")
-            .WithDescription("NFR-SEO-003 — SRS §8.3. Trả toàn bộ slug và updatedAt, cache Redis một giờ.")
-            .Produces<IReadOnlyList<RecipeSitemapEntryDto>>();
-
-        // Endpoint riêng tư: Draft/Archived tuyệt đối không đi qua GET /{slug} công khai và cache chung.
-        group.MapGet("/mine/{id:guid}", GetMyRecipeAsync)
-            .RequireAuthorization(AuthorizationPolicies.Author)
-            .WithName("GetMyRecipe")
-            .WithSummary("FR-RCP-004 – Đọc riêng tư một công thức để chỉnh sửa (no-store)")
-            .WithDescription("CR-2026-04 d — SRS §8.3. Owner/Admin đọc mọi trạng thái cùng rowVersion.")
-            .Produces<RecipeDetailDto>()
-            .ProducesProblem(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status404NotFound);
-
-        group.MapGet("/{slug}", GetRecipeBySlugAsync)
-            .WithName("GetRecipeBySlug")
-            .WithSummary("FR-RCP-002 – Chi tiết công thức theo slug")
-            .WithDescription("FR-RCP-002 — SRS §8.3. Chi tiết công thức công khai theo slug.")
-            .CacheOutput(OutputCachePolicies.RecipeDetail)
-            .Produces<RecipeDetailDto>()
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
@@ -303,55 +252,6 @@ public static class RecipesEndpoints
     {
         await sender.Send(new DeleteRecipeImageCommand(id, imageId), ct).ConfigureAwait(false);
         return Results.NoContent();
-    }
-
-    private static async Task<IResult> GetRecipesAsync(
-        ISender sender,
-        CancellationToken ct,
-        int page = 1,
-        int pageSize = 12,
-        Guid? categoryId = null,
-        RecipeDifficulty? difficulty = null,
-        int? maxCookTime = null,
-        string? sort = null) =>
-        Results.Ok(await sender.Send(new GetRecipesQuery(page, pageSize, categoryId, difficulty, maxCookTime, sort), ct).ConfigureAwait(false));
-
-    private static async Task<IResult> GetRecipeBySlugAsync(string slug, ISender sender, CancellationToken ct) =>
-        Results.Ok(await sender.Send(new GetRecipeBySlugQuery(slug), ct).ConfigureAwait(false));
-
-    private static async Task<IResult> GetMyRecipesAsync(
-        HttpContext http,
-        ISender sender,
-        CancellationToken ct,
-        RecipeStatus? status = null,
-        int page = 1,
-        int pageSize = 12,
-        string? sort = null,
-        string? sortBy = null,
-        string? sortOrder = null,
-        Guid? authorId = null)
-    {
-        http.Response.Headers.CacheControl = "no-store";
-        return Results.Ok(await sender.Send(new GetMyRecipesQuery(status, page, pageSize, sort, sortBy, sortOrder, authorId), ct).ConfigureAwait(false));
-    }
-
-    private static async Task<IResult> SearchRecipesAsync(
-        ISender sender,
-        CancellationToken ct,
-        string? q = null,
-        int page = 1,
-        int pageSize = 12,
-        Guid? categoryId = null,
-        RecipeDifficulty? difficulty = null) =>
-        Results.Ok(await sender.Send(new SearchRecipesQuery(q ?? string.Empty, page, pageSize, categoryId, difficulty), ct).ConfigureAwait(false));
-
-    private static async Task<IResult> GetRecipeSitemapAsync(ISender sender, CancellationToken ct) =>
-        Results.Ok(await sender.Send(new GetRecipeSitemapQuery(), ct).ConfigureAwait(false));
-
-    private static async Task<IResult> GetMyRecipeAsync(Guid id, HttpContext http, ISender sender, CancellationToken ct)
-    {
-        http.Response.Headers.CacheControl = "no-store";
-        return Results.Ok(await sender.Send(new GetMyRecipeByIdQuery(id), ct).ConfigureAwait(false));
     }
 
     public sealed record CreateRecipeRequest(

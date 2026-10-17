@@ -1,5 +1,6 @@
 using CulinaryBlog.API.Extensions;
 using CulinaryBlog.Application.Features.Categories;
+using CulinaryBlog.Application.Features.Recipes;
 using MediatR;
 
 namespace CulinaryBlog.API.Endpoints;
@@ -14,20 +15,21 @@ public static class CategoriesEndpoints
         group.MapGet("/", GetCategoriesAsync)
             .WithName("GetCategories")
             .WithSummary("FR-CAT-001 – Danh sách danh mục (Redis cache 30 phút)")
-            .WithDescription("FR-CAT-001 — SRS §8.2. Danh sách danh mục công khai kèm số công thức.")
+            .WithDescription("FR-CAT-001 — SRS §8.2. Trả danh mục công khai theo thứ tự hiển thị, kèm số công thức Published.")
             .Produces<IReadOnlyList<CategoryDto>>();
 
         group.MapGet("/{slug}", GetCategoryBySlugAsync)
             .WithName("GetCategoryBySlug")
-            .WithSummary("FR-CAT-002 – Chi tiết danh mục + công thức phân trang")
-            .WithDescription("FR-CAT-002 — SRS §8.2. Chi tiết danh mục và công thức Published phân trang.")
+            .WithSummary("FR-CAT-002 – Chi tiết danh mục + công thức Published phân trang (sortBy/sortOrder)")
+            .WithDescription("FR-CAT-002 — SRS §8.2. Trả chi tiết danh mục và danh sách công thức Published có phân trang.")
             .Produces<CategoryDetailDto>()
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
         group.MapPost("/", CreateCategoryAsync)
             .WithName("CreateCategory")
             .WithSummary("FR-CAT-003 – Tạo danh mục, slug tự sinh (Admin)")
-            .WithDescription("FR-CAT-003 — SRS §8.2. Admin tạo danh mục với slug duy nhất.")
+            .WithDescription("FR-CAT-003 — SRS §8.2. Admin tạo danh mục mới; slug được sinh từ tên và phải duy nhất.")
             .RequireAuthorization(AuthorizationPolicies.Admin)
             .Produces<CategoryDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem()
@@ -38,7 +40,7 @@ public static class CategoriesEndpoints
         group.MapPut("/{id:guid}", UpdateCategoryAsync)
             .WithName("UpdateCategory")
             .WithSummary("FR-CAT-004 – Cập nhật danh mục, slug không đổi (Admin)")
-            .WithDescription("FR-CAT-004 — SRS §8.2. Admin cập nhật metadata nhưng giữ nguyên slug.")
+            .WithDescription("FR-CAT-004 — SRS §8.2. Admin cập nhật metadata danh mục nhưng giữ nguyên slug.")
             .RequireAuthorization(AuthorizationPolicies.Admin)
             .Produces<CategoryDto>()
             .ProducesValidationProblem()
@@ -50,7 +52,7 @@ public static class CategoriesEndpoints
         group.MapDelete("/{id:guid}", DeleteCategoryAsync)
             .WithName("DeleteCategory")
             .WithSummary("FR-CAT-005 – Xóa mềm danh mục, chặn khi còn công thức (Admin)")
-            .WithDescription("FR-CAT-005 — SRS §8.2. Xóa mềm khi danh mục không còn công thức.")
+            .WithDescription("FR-CAT-005 — SRS §8.2. Admin xóa mềm danh mục khi không còn công thức tham chiếu.")
             .RequireAuthorization(AuthorizationPolicies.Admin)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
@@ -64,8 +66,16 @@ public static class CategoriesEndpoints
     private static async Task<IResult> GetCategoriesAsync(ISender sender, CancellationToken ct) =>
         Results.Ok(await sender.Send(new GetCategoriesQuery(), ct).ConfigureAwait(false));
 
-    private static async Task<IResult> GetCategoryBySlugAsync(string slug, ISender sender, CancellationToken ct, int page = 1, int pageSize = 12) =>
-        Results.Ok(await sender.Send(new GetCategoryBySlugQuery(slug, page, pageSize), ct).ConfigureAwait(false));
+    /// <summary>FR-CAT-002 — chỉ công thức Published, không đọc danh tính (MT-34, retrofit D-5); sortBy/sortOrder theo whitelist FR-SRCH-003.</summary>
+    private static async Task<IResult> GetCategoryBySlugAsync(
+        string slug,
+        ISender sender,
+        CancellationToken ct,
+        int page = 1,
+        int pageSize = RecipeQueryRules.DefaultPageSize,
+        string? sortBy = null,
+        string? sortOrder = null) =>
+        Results.Ok(await sender.Send(new GetCategoryBySlugQuery(slug, page, pageSize, sortBy, sortOrder), ct).ConfigureAwait(false));
 
     private static async Task<IResult> CreateCategoryAsync(CategoryRequest body, ISender sender, CancellationToken ct)
     {

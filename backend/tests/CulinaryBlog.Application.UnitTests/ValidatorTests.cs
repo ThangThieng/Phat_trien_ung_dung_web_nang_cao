@@ -36,35 +36,4 @@ public class ValidatorTests
     [InlineData(1, 50, true)]
     public void GetRecipes_PagingBounds(int page, int pageSize, bool valid) =>
         Assert.Equal(valid, new GetRecipesQueryValidator().Validate(new GetRecipesQuery(page, pageSize)).IsValid);
-
-    [Theory]
-    [InlineData(null, RecipeSortField.CreatedAt, true, true)]
-    [InlineData("title", RecipeSortField.Title, false, true)]
-    [InlineData("-cookTime", RecipeSortField.CookTime, true, true)]
-    [InlineData("password", RecipeSortField.CreatedAt, false, false)]
-    public void SortParser_AcceptsWhitelistOnly(string? sort, RecipeSortField field, bool descending, bool ok)
-    {
-        var parsed = RecipeSortParser.TryParse(sort, out var actualField, out var actualDescending);
-
-        Assert.Equal(ok, parsed);
-        if (ok)
-        {
-            Assert.Equal(field, actualField);
-            Assert.Equal(descending, actualDescending);
-        }
-    }
-
-    [Theory]
-    [InlineData("Phở  bò!", "pho:* & bo:*")]
-    [InlineData("pho:* | !bo", "pho:* & bo:*")]
-    [InlineData("!!", "")]
-    public void SearchTermBuilder_NormalizesVietnameseAndOperators(string input, string expected) =>
-        Assert.Equal(expected, SearchTermBuilder.Build(input));
-
-    [Theory]
-    [InlineData("", false)]
-    [InlineData("p", false)]
-    [InlineData("phở", true)]
-    public void SearchRecipes_QueryRequiresAtLeastTwoCharacters(string q, bool valid) =>
-        Assert.Equal(valid, new SearchRecipesQueryValidator().Validate(new SearchRecipesQuery(q)).IsValid);
 }

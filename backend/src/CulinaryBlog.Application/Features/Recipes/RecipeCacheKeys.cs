@@ -1,3 +1,4 @@
+using CulinaryBlog.Application.Common.Caching;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Features.Categories;
 
@@ -6,7 +7,7 @@ namespace CulinaryBlog.Application.Features.Recipes;
 /// <summary>
 /// Khóa cache Redis của module Recipe (SRS NFR-PERF-003) — một nguồn cho cả query (ICacheable) lẫn command (ICacheInvalidator).
 /// Tiền tố (kết thúc bằng ":") được khai báo sẵn; xóa theo tiền tố bằng SCAN là việc của Buổi 7, hiện
-/// <c>CacheInvalidationBehavior</c> xóa theo khóa chính xác.
+/// <c>CacheInvalidationBehavior</c> xóa theo khóa chính xác — tới lúc đó khóa <c>recipes:list:*</c> hết hạn tự nhiên sau 2 phút.
 /// </summary>
 public static class RecipeCacheKeys
 {
@@ -18,6 +19,12 @@ public static class RecipeCacheKeys
     public const string Sitemap = "recipes:sitemap";
 
     public static string Detail(string slug) => $"recipe:{slug}";
+
+    /// <summary>FR-RCP-001 — <c>recipes:list:{queryHash}</c>, TTL 2 phút (NFR-PERF-003).</summary>
+    public static string List(string normalizedQuery) => ListPrefix + QueryHash.Compute(normalizedQuery);
+
+    /// <summary>FR-SRCH-001 — <c>search:{queryHash}</c>, TTL 1 phút, không invalidate chủ động (NFR-PERF-003).</summary>
+    public static string Search(string normalizedQuery) => SearchPrefix + QueryHash.Compute(normalizedQuery);
 
     /// <summary>Mọi khóa công khai bị ảnh hưởng khi NỘI DUNG của một công thức đổi (bước, nguyên liệu, ảnh, thông tin cơ bản).</summary>
     public static IReadOnlyCollection<string> ForContentChange(string slug) => [Detail(slug), ListPrefix, SearchPrefix];

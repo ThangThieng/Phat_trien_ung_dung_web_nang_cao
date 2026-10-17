@@ -131,7 +131,7 @@ public sealed partial class OpenApiDocumentTests(OpenApiTestFactory factory) : I
     {
         for (var directory = new DirectoryInfo(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
         {
-            if (Directory.Exists(Path.Combine(directory.FullName, ".git")))
+            if (File.Exists(Path.Combine(directory.FullName, "backend", "CulinaryBlog.sln")))
             {
                 return new FileInfo(Path.Combine(directory.FullName, "repository.root"));
             }

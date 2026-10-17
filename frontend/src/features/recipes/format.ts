@@ -1,4 +1,4 @@
-import type { RecipeDifficulty } from '@/types/api';
+import type { RecipeDifficulty } from '@/types/recipe';
 
 export const DIFFICULTY_LABEL: Record<RecipeDifficulty, string> = {
   Easy: 'Dễ',

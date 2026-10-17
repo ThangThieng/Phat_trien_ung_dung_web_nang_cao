@@ -22,6 +22,8 @@ export default function CategoryNav() {
   const { data: categories } = useQuery({
     queryKey: CATEGORIES_QUERY_KEY,
     queryFn: () => getCategories(),
+    // Lỗi chỉ làm menu thu gọn (xem chú thích trên) — không toast từ bộ xử lý lỗi toàn cục (Buổi 6).
+    meta: { suppressGlobalError: true },
   });
 
   // Nhấn Escape hoặc bấm ra ngoài thì đóng menu.
@@ -65,7 +67,7 @@ export default function CategoryNav() {
         <ul
           id="category-nav-menu"
           aria-label="Danh mục công thức"
-          className="absolute left-0 top-full z-50 mt-1 max-h-80 w-64 overflow-y-auto rounded-lg border border-orange-100 bg-white py-1 shadow-lg"
+          className="absolute top-full left-0 z-50 mt-1 max-h-80 w-64 overflow-y-auto rounded-lg border border-orange-100 bg-white py-1 shadow-lg"
         >
           <li>
             <Link

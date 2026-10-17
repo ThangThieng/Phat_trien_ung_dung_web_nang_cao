@@ -23,6 +23,11 @@ ENV ASPNETCORE_HTTP_PORTS=8080 \
     DOTNET_RUNNING_IN_CONTAINER=true \
     DataProtection__KeysPath=/home/app/dpkeys
 COPY --from=build /app/publish .
+# FR-OBS-001 (Buổi 5): healthcheck của Docker Compose gọi /health/ready bằng curl, nhưng image aspnet:10.0
+# không có sẵn curl (SRS v1.2.0 §6.5 — MT-51). Cài ở stage runtime, khi còn chạy bằng root.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 # Thư mục khóa DataProtection thuộc user "app" để volume mount vào kế thừa quyền ghi
 RUN mkdir -p /home/app/dpkeys && chown app:app /home/app/dpkeys
 # Image aspnet có sẵn user non-root "app"

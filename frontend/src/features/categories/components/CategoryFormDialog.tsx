@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2, X } from 'lucide-react';
-import FormField from '@/components/ui/FormField';
-import ImageUploader from '@/components/ui/ImageUploader';
+import FormField from '@/components/shared/FormField';
+import ImageUploader from '@/components/shared/ImageUploader';
 import { ApiError, getErrorMessage } from '@/lib/api-client';
-import type { Category, UploadedFile } from '@/types/api';
-import type { CategoryPayload } from '../admin-api';
+import type { UploadedFile } from '@/types/api';
+import type { Category, CreateCategoryRequest } from '@/types/category';
 
 /**
  * Mirror đúng validator backend (SRS §7.9 – MT-37): name 2–100, description ≤ 2000, imageUrl ≤ 500 và là URL hợp lệ.
@@ -21,9 +21,15 @@ const categorySchema = z.object({
     .trim()
     .min(2, 'Tên danh mục phải từ 2 đến 100 ký tự.')
     .max(100, 'Tên danh mục phải từ 2 đến 100 ký tự.')
-    .refine((v) => !v.includes('<') && !v.includes('>'), 'Tên danh mục không được chứa ký tự < hoặc >.'),
+    .refine(
+      (v) => !v.includes('<') && !v.includes('>'),
+      'Tên danh mục không được chứa ký tự < hoặc >.',
+    ),
   description: z.string().trim().max(2000, 'Mô tả tối đa 2000 ký tự.'),
-  orderIndex: z.string().trim().regex(/^\d+$/, 'Thứ tự hiển thị phải là số nguyên lớn hơn hoặc bằng 0.'),
+  orderIndex: z
+    .string()
+    .trim()
+    .regex(/^\d+$/, 'Thứ tự hiển thị phải là số nguyên lớn hơn hoặc bằng 0.'),
 });
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
@@ -32,7 +38,7 @@ interface CategoryFormDialogProps {
   /** null = tạo mới; có giá trị = sửa danh mục đó. */
   category: Category | null;
   accessToken: string | null;
-  onSubmit: (payload: CategoryPayload) => Promise<void>;
+  onSubmit: (payload: CreateCategoryRequest) => Promise<void>;
   onClose: () => void;
 }
 
@@ -46,9 +52,7 @@ export default function CategoryFormDialog({
   const isEditing = category !== null;
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
   const [image, setImage] = useState<UploadedFile | null>(
-    category?.imageUrl
-      ? { key: '', url: category.imageUrl, contentType: '', size: 0 }
-      : null,
+    category?.imageUrl ? { key: '', url: category.imageUrl, contentType: '', size: 0 } : null,
   );
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -131,8 +135,8 @@ export default function CategoryFormDialog({
 
         {isEditing && (
           <p className="mt-1 text-xs text-gray-500">
-            Đường dẫn <code className="rounded bg-gray-100 px-1">/{category.slug}</code> không đổi khi
-            sửa tên, để link đã chia sẻ không bị hỏng.
+            Đường dẫn <code className="rounded bg-gray-100 px-1">/{category.slug}</code> không đổi
+            khi sửa tên, để link đã chia sẻ không bị hỏng.
           </p>
         )}
 

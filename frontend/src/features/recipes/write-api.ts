@@ -1,6 +1,6 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { ApiError, apiFetch } from '@/lib/api-client';
-import type { ProblemDetails } from '@/lib/api-client';
+import type { ProblemDetails } from '@/types/api';
 import type {
   CreateRecipeRequest,
   IngredientInput,
@@ -11,7 +11,7 @@ import type {
   StepInput,
   UpdateRecipeImageRequest,
   UpdateRecipeRequest,
-} from '@/types/api';
+} from '@/types/recipe';
 
 /** FR-RCP-003 – POST /recipes → 201 RecipeDetail ở trạng thái Draft. */
 export function createRecipe(body: CreateRecipeRequest, accessToken: string) {

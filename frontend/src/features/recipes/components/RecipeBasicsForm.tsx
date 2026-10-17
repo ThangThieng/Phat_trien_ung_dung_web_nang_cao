@@ -3,9 +3,10 @@
 import { useEffect, useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import FormField from '@/components/ui/FormField';
+import FormField from '@/components/shared/FormField';
 import { apiFetch, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
-import type { Category, RecipeDetail } from '@/types/api';
+import type { Category } from '@/types/category';
+import type { RecipeDetail } from '@/types/recipe';
 import { DIFFICULTY_LABEL } from '../format';
 import {
   DIFFICULTIES,

@@ -1,15 +1,13 @@
 /** Nguồn enum duy nhất cho miền Recipe, dùng lại bởi kiểu dữ liệu, Zod và các ô chọn. */
+import type { CategoryRef } from './category';
+import type { SortBy, SortOrder } from './search';
+
 export const RECIPE_DIFFICULTIES = ['Easy', 'Medium', 'Hard', 'Expert'] as const;
 export const RECIPE_STATUSES = ['Draft', 'Published', 'Archived'] as const;
 
 export type RecipeDifficulty = (typeof RECIPE_DIFFICULTIES)[number];
 export type RecipeStatus = (typeof RECIPE_STATUSES)[number];
 
-export interface CategoryRef {
-  id: string;
-  name: string;
-  slug: string;
-}
 
 export interface Author {
   id: string;
@@ -29,6 +27,7 @@ export interface RecipeSummary {
   servings: number;
   difficulty: RecipeDifficulty;
   status: RecipeStatus;
+  /** Ảnh chính cho card: ThumbnailUrl 300×300 (FR-JOB-002), dự phòng OriginalUrl khi job đổi kích thước chưa chạy xong. */
   primaryImageUrl: string | null;
   category: CategoryRef;
   author: Author;
@@ -59,7 +58,7 @@ export interface RecipeStep {
   imageUrl: string | null;
 }
 
-/** SRS §8.6 / MT-04 - định lượng số và nguyên văn cùng tồn tại. */
+/** SRS §8.6 – định lượng hai cột (MT-04): `quantity` số tính toán được, `quantityText` nguyên văn ("vừa đủ", "1/2 muỗng"). */
 export interface RecipeIngredient {
   id: string;
   name: string;
@@ -80,7 +79,7 @@ export interface RecipeImage {
   orderIndex: number;
 }
 
-/** SRS §8.4 - kết quả ngay sau khi upload/cập nhật ảnh. */
+/** SRS §8.4 – response của POST/PATCH ảnh công thức (mediumUrl/thumbnailUrl null cho tới khi FR-JOB-002 chạy). */
 export interface RecipeImageResult {
   imageId: string;
   originalUrl: string;
@@ -169,8 +168,8 @@ export interface MyRecipesParams {
   status?: RecipeStatus;
   page?: number;
   pageSize?: number;
-  sortBy?: 'createdAt' | 'publishedAt' | 'title' | 'cookTime' | 'prepTime';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
 }
 
 export type RecipeStatusAction = 'publish' | 'unpublish' | 'archive' | 'unarchive';

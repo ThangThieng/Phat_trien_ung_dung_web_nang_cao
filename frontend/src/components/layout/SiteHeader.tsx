@@ -1,11 +1,14 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChefHat, LogOut, ImageUp, PenSquare } from 'lucide-react';
+import { ChefHat, LogOut, ImageUp, PenSquare, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
 import CategoryNav from '@/features/categories/components/CategoryNav';
+import SearchBar from '@/features/recipes/components/SearchBar';
+import HealthIndicator from '@/features/system/components/HealthIndicator';
 
 const NAV = [{ href: '/recipes', label: 'Công thức' }];
 
@@ -46,6 +49,17 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex min-w-[9rem] items-center justify-end gap-2">
+          {/* FR-SRCH-001: useSearchParams cần Suspense để các trang tĩnh vẫn build được. */}
+          <Suspense fallback={null}>
+            <SearchBar className="hidden md:block" />
+          </Suspense>
+          <Link
+            href="/search"
+            aria-label="Tìm kiếm"
+            className="rounded-md p-2 text-gray-600 hover:bg-orange-50 hover:text-orange-700 md:hidden"
+          >
+            <Search aria-hidden className="h-4 w-4" />
+          </Link>
           {isReady && user && (
             <>
               <Link
@@ -55,13 +69,18 @@ export default function SiteHeader() {
                 <PenSquare aria-hidden className="h-4 w-4" />
                 Viết công thức
               </Link>
-              <Link
-                href="/dashboard/media"
-                className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 sm:flex"
-              >
-                <ImageUp aria-hidden className="h-4 w-4" />
-                Thư viện ảnh
-              </Link>
+              {/* Buổi 6: /dashboard/media chỉ dành cho Admin (RequireRole) — Author không thấy link dẫn tới trang 403. */}
+              {user.roles.includes('Admin') && (
+                <Link
+                  href="/dashboard/media"
+                  className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 sm:flex"
+                >
+                  <ImageUp aria-hidden className="h-4 w-4" />
+                  Thư viện ảnh
+                </Link>
+              )}
+              {/* FR-OBS-001: chỉ Admin thấy (và chỉ khi đó mới poll /api/health) */}
+              {user.roles.includes('Admin') && <HealthIndicator />}
               <span
                 className="hidden text-sm font-medium text-gray-900 md:inline"
                 title={user.email}
