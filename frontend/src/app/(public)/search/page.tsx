@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, SearchX } from 'lucide-react';
+import EmptyState from '@/components/shared/EmptyState';
 import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import FilterPanel from '@/features/recipes/components/FilterPanel';
@@ -103,44 +104,48 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
 
             {result.items.length === 0 ? (
               // FR-SRCH-001 A2: 200 với items rỗng + gợi ý.
-              <div className="mt-6 rounded-2xl border border-orange-100 bg-white p-6 text-gray-700">
-                <p className="font-medium text-gray-900">Bạn thử cách sau nhé:</p>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-                  <li>
-                    Kiểm tra lại chính tả hoặc thử từ khóa ngắn, phổ biến hơn (ví dụ “gà”, “phở”).
-                  </li>
-                  <li>Tìm không dấu cũng được — “pho bo” và “phở bò” cho cùng kết quả.</li>
-                  {filtered && (
+              <EmptyState
+                className="mt-6"
+                icon={SearchX}
+                title="Không có kết quả phù hợp"
+                description={
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-left text-sm">
                     <li>
+                      Kiểm tra lại chính tả hoặc thử từ khóa ngắn, phổ biến hơn (ví dụ “gà”, “phở”).
+                    </li>
+                    <li>Tìm không dấu cũng được — “pho bo” và “phở bò” cho cùng kết quả.</li>
+                    {filtered && (
+                      <li>
+                        <Link
+                          href={buildHref(PATHNAME, state, {
+                            categoryId: undefined,
+                            difficulty: undefined,
+                            page: 1,
+                          })}
+                          className="font-medium text-orange-700 hover:underline"
+                        >
+                          Bỏ bộ lọc
+                        </Link>{' '}
+                        để mở rộng kết quả.
+                      </li>
+                    )}
+                    <li>
+                      Xem{' '}
+                      <Link href="/recipes" className="font-medium text-orange-700 hover:underline">
+                        tất cả công thức
+                      </Link>{' '}
+                      hoặc duyệt theo{' '}
                       <Link
-                        href={buildHref(PATHNAME, state, {
-                          categoryId: undefined,
-                          difficulty: undefined,
-                          page: 1,
-                        })}
+                        href="/categories"
                         className="font-medium text-orange-700 hover:underline"
                       >
-                        Bỏ bộ lọc
-                      </Link>{' '}
-                      để mở rộng kết quả.
+                        danh mục
+                      </Link>
+                      .
                     </li>
-                  )}
-                  <li>
-                    Xem{' '}
-                    <Link href="/recipes" className="font-medium text-orange-700 hover:underline">
-                      tất cả công thức
-                    </Link>{' '}
-                    hoặc duyệt theo{' '}
-                    <Link
-                      href="/categories"
-                      className="font-medium text-orange-700 hover:underline"
-                    >
-                      danh mục
-                    </Link>
-                    .
-                  </li>
-                </ul>
-              </div>
+                  </ul>
+                }
+              />
             ) : (
               <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {result.items.map((recipe) => (
@@ -152,6 +157,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
             <Pagination
               page={result.page}
               totalPages={result.totalPages}
+              hasPreviousPage={result.hasPreviousPage}
+              hasNextPage={result.hasNextPage}
               buildHref={(p) => buildHref(PATHNAME, state, { page: p })}
             />
           </div>

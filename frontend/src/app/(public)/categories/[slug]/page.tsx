@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { BookOpen } from 'lucide-react';
+import EmptyState from '@/components/shared/EmptyState';
 import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import SortSelect from '@/features/recipes/components/SortSelect';
@@ -86,7 +88,20 @@ export default async function CategoryDetailPage({
       </div>
 
       {recipes.items.length === 0 ? (
-        <p className="mt-16 text-center text-gray-600">Danh mục này chưa có công thức nào.</p>
+        <EmptyState
+          className="mt-8"
+          icon={BookOpen}
+          title="Danh mục này chưa có công thức nào"
+          description="Hãy quay lại sau hoặc khám phá các danh mục khác."
+          action={
+            <Link
+              href="/categories"
+              className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+            >
+              Xem danh mục khác
+            </Link>
+          }
+        />
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {recipes.items.map((recipe) => (
@@ -98,6 +113,8 @@ export default async function CategoryDetailPage({
       <Pagination
         page={recipes.page}
         totalPages={recipes.totalPages}
+        hasPreviousPage={recipes.hasPreviousPage}
+        hasNextPage={recipes.hasNextPage}
         buildHref={(p) => buildHref(pathname, state, { page: p })}
       />
     </div>

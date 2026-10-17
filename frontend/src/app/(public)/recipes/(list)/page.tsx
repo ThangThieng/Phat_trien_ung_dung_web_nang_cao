@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BookOpen, SearchX } from 'lucide-react';
+import EmptyState from '@/components/shared/EmptyState';
 import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import FilterPanel from '@/features/recipes/components/FilterPanel';
@@ -62,26 +64,32 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
 
         <div>
           {result.items.length === 0 ? (
-            <div className="mt-8 text-center text-gray-600">
-              <p>
-                {filtered ? 'Không có công thức nào phù hợp bộ lọc.' : 'Chưa có công thức nào.'}
-              </p>
-              {filtered && (
-                <Link
-                  href={buildHref(PATHNAME, state, {
-                    categoryId: undefined,
-                    difficulty: undefined,
-                    maxCookTime: undefined,
-                    maxPrepTime: undefined,
-                    minServings: undefined,
-                    page: 1,
-                  })}
-                  className="mt-3 inline-block font-medium text-orange-700 hover:underline"
-                >
-                  Xóa bộ lọc
-                </Link>
-              )}
-            </div>
+            <EmptyState
+              icon={filtered ? SearchX : BookOpen}
+              title={filtered ? 'Không có công thức nào phù hợp bộ lọc' : 'Chưa có công thức nào'}
+              description={
+                filtered
+                  ? 'Thử nới bộ lọc thời gian, khẩu phần hoặc chọn danh mục khác.'
+                  : undefined
+              }
+              action={
+                filtered && (
+                  <Link
+                    href={buildHref(PATHNAME, state, {
+                      categoryId: undefined,
+                      difficulty: undefined,
+                      maxCookTime: undefined,
+                      maxPrepTime: undefined,
+                      minServings: undefined,
+                      page: 1,
+                    })}
+                    className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+                  >
+                    Xóa bộ lọc
+                  </Link>
+                )
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {result.items.map((recipe) => (
@@ -93,6 +101,8 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
           <Pagination
             page={result.page}
             totalPages={result.totalPages}
+            hasPreviousPage={result.hasPreviousPage}
+            hasNextPage={result.hasNextPage}
             buildHref={(p) => buildHref(PATHNAME, state, { page: p })}
           />
         </div>

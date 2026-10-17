@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { FolderOpen } from 'lucide-react';
+import EmptyState from '@/components/shared/EmptyState';
 import CategoryCard from '@/features/categories/components/CategoryCard';
 import { getCategories } from '@/features/categories/api';
 
@@ -9,9 +11,9 @@ export const metadata: Metadata = {
 };
 
 /*
- * SRS §5.1: /categories – revalidate 3600s.
- * Trang render theo request, dữ liệu lấy từ Data Cache của Next.js (fetch revalidate 3600s) nên API chỉ bị gọi
- * tối đa 1 lần/giờ. Không prerender lúc `next build` vì khi build image Docker, backend API chưa chạy.
+ * SRS §5.1: /categories – SSR + Data Cache `revalidate: 1800` (MT-67).
+ * Trang render theo request, dữ liệu lấy từ Data Cache của Next.js (`getCategories()` — revalidate 1800s) nên API chỉ bị
+ * gọi tối đa 1 lần / 30 phút. Không prerender lúc `next build` vì khi build image Docker, backend API chưa chạy.
  */
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +26,7 @@ export default async function CategoriesPage() {
       <p className="mt-1 text-gray-600">Chọn một danh mục để khám phá các món ngon.</p>
 
       {categories.length === 0 ? (
-        <p className="mt-16 text-center text-gray-600">Chưa có danh mục nào.</p>
+        <EmptyState className="mt-8" icon={FolderOpen} title="Chưa có danh mục nào" />
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((category) => (

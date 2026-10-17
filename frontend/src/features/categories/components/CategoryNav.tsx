@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import { getCategories } from '@/features/categories/api';
 import { CATEGORIES_QUERY_KEY } from '@/features/categories/admin-api';
+import type { Category } from '@/types/category';
 
 /**
  * Điều hướng danh mục trên header (SRS §5.1 `/categories`, `/categories/[slug]`): menu thả xuống liệt kê danh mục theo
@@ -14,7 +15,12 @@ import { CATEGORIES_QUERY_KEY } from '@/features/categories/admin-api';
  * Dùng chung query key `['categories']` với trang quản trị nên Admin tạo/sửa/xóa danh mục xong thì menu tự làm mới.
  * Lỗi tải danh sách chỉ làm menu chỉ còn link "Tất cả danh mục", không làm hỏng header.
  */
-export default function CategoryNav() {
+export default function CategoryNav({
+  initialCategories,
+}: {
+  /** Danh sách đã lấy ở server (`PublicShell`) — menu có dữ liệu ngay, không chờ gọi API ở trình duyệt. Rỗng → tự tải. */
+  initialCategories?: Category[];
+} = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -22,6 +28,7 @@ export default function CategoryNav() {
   const { data: categories } = useQuery({
     queryKey: CATEGORIES_QUERY_KEY,
     queryFn: () => getCategories(),
+    initialData: initialCategories?.length ? initialCategories : undefined,
     // Lỗi chỉ làm menu thu gọn (xem chú thích trên) — không toast từ bộ xử lý lỗi toàn cục (Buổi 6).
     meta: { suppressGlobalError: true },
   });
@@ -55,7 +62,7 @@ export default function CategoryNav() {
         aria-expanded={open}
         aria-controls="category-nav-menu"
         onClick={() => setOpen((value) => !value)}
-        className={`flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium ${
+        className={`flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap ${
           active ? 'text-orange-700' : 'text-gray-700 hover:text-orange-700'
         }`}
       >

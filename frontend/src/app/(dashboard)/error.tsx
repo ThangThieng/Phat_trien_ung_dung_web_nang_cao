@@ -1,11 +1,14 @@
 'use client';
 
-import { InterimErrorFallback } from '@/components/layout/interim-shell';
+import ErrorFallback from '@/components/shared/ErrorFallback';
 
-/** Lỗi trong một trang dashboard — sidebar và thanh trên cùng vẫn dùng được. Dev 3 thay bằng `ErrorFallback`. */
-export default function DashboardError(props: {
+/** Lỗi trong một trang dashboard — sidebar và thanh trên cùng vẫn dùng được. Câu thân thiện + mã tra cứu + "Thử lại" (NFR-USE-003). */
+export default function DashboardError({
+  error,
+  reset,
+}: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  return <InterimErrorFallback {...props} />;
+  return <ErrorFallback error={error} reset={reset} />;
 }

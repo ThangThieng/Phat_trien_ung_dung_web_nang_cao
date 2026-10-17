@@ -45,7 +45,7 @@ public static class RecipeQueryEndpoints
 
         recipes.MapGet("/search", SearchRecipesAsync)
             .WithName("SearchRecipes")
-            .WithSummary("FR-SRCH-001 – Tìm kiếm toàn văn tiếng Việt không dấu (chỉ Published, xếp theo ts_rank)")
+            .WithSummary("FR-SRCH-001 – Tìm kiếm toàn văn tiếng Việt không dấu (chỉ Published, xếp theo ts_rank; lọc categoryId, difficulty, maxCookTime, maxPrepTime, minServings)")
             .Produces<PagedResult<RecipeSearchResultDto>>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
@@ -120,8 +120,13 @@ public static class RecipeQueryEndpoints
         int page = 1,
         int pageSize = RecipeQueryRules.DefaultPageSize,
         Guid? categoryId = null,
-        RecipeDifficulty? difficulty = null) =>
-        Results.Ok(await sender.Send(new SearchRecipesQuery(q ?? string.Empty, page, pageSize, categoryId, difficulty), ct).ConfigureAwait(false));
+        RecipeDifficulty? difficulty = null,
+        int? maxCookTime = null,
+        int? maxPrepTime = null,
+        int? minServings = null) =>
+        Results.Ok(await sender.Send(
+            new SearchRecipesQuery(q ?? string.Empty, page, pageSize, categoryId, difficulty, maxCookTime, maxPrepTime, minServings),
+            ct).ConfigureAwait(false));
 
     private static async Task<IResult> GetSitemapAsync(ISender sender, CancellationToken ct) =>
         Results.Ok(await sender.Send(new GetRecipeSitemapQuery(), ct).ConfigureAwait(false));

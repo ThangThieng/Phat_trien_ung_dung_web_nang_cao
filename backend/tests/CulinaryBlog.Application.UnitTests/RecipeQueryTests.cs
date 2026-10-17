@@ -112,6 +112,47 @@ public class RecipeQueryTests
     public void Search_CacheKey_SameForAccentedAndPlain() =>
         Assert.Equal(new SearchRecipesQuery("Phở bò").CacheKey, new SearchRecipesQuery("pho  bo").CacheKey);
 
+    // ---------- Search – bộ lọc thời gian/khẩu phần (CR-2026-05 / MT-66) ----------
+    [Fact]
+    public void Search_CacheKey_DiffersWhenOnlyMaxCookTimeDiffers() =>
+        Assert.NotEqual(
+            new SearchRecipesQuery("pho", MaxCookTime: 30).CacheKey,
+            new SearchRecipesQuery("pho", MaxCookTime: 60).CacheKey);
+
+    [Fact]
+    public void Search_CacheKey_DiffersFromUnfilteredSearch()
+    {
+        var plain = new SearchRecipesQuery("pho").CacheKey;
+
+        Assert.NotEqual(plain, new SearchRecipesQuery("pho", MaxCookTime: 30).CacheKey);
+        Assert.NotEqual(plain, new SearchRecipesQuery("pho", MaxPrepTime: 30).CacheKey);
+        Assert.NotEqual(plain, new SearchRecipesQuery("pho", MinServings: 4).CacheKey);
+    }
+
+    [Fact]
+    public void Search_Filter_IsTheSharedSpecWithEveryCriterion() =>
+        Assert.Equal(
+            new RecipeFilterSpec(null, RecipeDifficulty.Easy, 30, 15, 2),
+            new SearchRecipesQuery("pho", Difficulty: RecipeDifficulty.Easy, MaxCookTime: 30, MaxPrepTime: 15, MinServings: 2).Filter);
+
+    /// <summary>Cùng khoảng giá trị với <c>GET /recipes</c> (RecipeQueryRules): phút ≥ 0, khẩu phần ≥ 1.</summary>
+    [Theory]
+    [InlineData(-1, null, null, false)]
+    [InlineData(null, -1, null, false)]
+    [InlineData(null, null, 0, false)]
+    [InlineData(0, 0, 1, true)]
+    [InlineData(30, 20, 4, true)]
+    public void Search_TimeAndServingsFilters_UseSameRulesAsRecipeList(int? maxCook, int? maxPrep, int? minServings, bool valid)
+    {
+        var search = new SearchRecipesQueryValidator()
+            .Validate(new SearchRecipesQuery("pho", MaxCookTime: maxCook, MaxPrepTime: maxPrep, MinServings: minServings));
+        var list = new GetRecipesQueryValidator()
+            .Validate(new GetRecipesQuery(MaxCookTime: maxCook, MaxPrepTime: maxPrep, MinServings: minServings));
+
+        Assert.Equal(valid, search.IsValid);
+        Assert.Equal(list.IsValid, search.IsValid);
+    }
+
     [Fact]
     public async Task Search_OnlySpecialCharacters_ReturnsEmptyPageWithoutQueryingDatabase()
     {
