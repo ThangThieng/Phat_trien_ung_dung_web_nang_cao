@@ -69,13 +69,16 @@ export default function SiteHeader() {
                 <PenSquare aria-hidden className="h-4 w-4" />
                 Viết công thức
               </Link>
-              <Link
-                href="/dashboard/media"
-                className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 sm:flex"
-              >
-                <ImageUp aria-hidden className="h-4 w-4" />
-                Thư viện ảnh
-              </Link>
+              {/* Buổi 6: /dashboard/media chỉ dành cho Admin (RequireRole) — Author không thấy link dẫn tới trang 403. */}
+              {user.roles.includes('Admin') && (
+                <Link
+                  href="/dashboard/media"
+                  className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 sm:flex"
+                >
+                  <ImageUp aria-hidden className="h-4 w-4" />
+                  Thư viện ảnh
+                </Link>
+              )}
               {/* FR-OBS-001: chỉ Admin thấy (và chỉ khi đó mới poll /api/health) */}
               {user.roles.includes('Admin') && <HealthIndicator />}
               <span

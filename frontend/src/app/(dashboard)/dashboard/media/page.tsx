@@ -4,12 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
+import { InterimRequireRole } from '@/components/layout/interim-shell';
 import ImageUploader from '@/components/shared/ImageUploader';
 import { useAuth } from '@/features/auth/auth-context';
 import type { UploadedFile } from '@/types/api';
 
-/** Thư viện ảnh: upload ảnh lên MinIO và lấy URL công khai (FR-FILE-001/002). */
-export default function MediaPage() {
+/** Nội dung trang — chỉ render khi đã qua kiểm tra vai trò bên dưới. */
+function MediaLibrary() {
   const { accessToken, isAuthenticated, isReady } = useAuth();
   const [current, setCurrent] = useState<UploadedFile | null>(null);
   const [history, setHistory] = useState<UploadedFile[]>([]);
@@ -90,5 +91,18 @@ export default function MediaPage() {
         </section>
       )}
     </div>
+  );
+}
+
+/**
+ * Thư viện ảnh: upload ảnh lên MinIO và lấy URL công khai (FR-FILE-001/002). Trang thử `ImageUploader` từ Buổi 2 —
+ * từ Buổi 6 chỉ Admin mở được; xóa ở Buổi 8 khi uploader đã nằm trong biểu mẫu thật. Dev 1 đổi `InterimRequireRole`
+ * thành `RequireRole`.
+ */
+export default function MediaPage() {
+  return (
+    <InterimRequireRole roles={['Admin']}>
+      <MediaLibrary />
+    </InterimRequireRole>
   );
 }

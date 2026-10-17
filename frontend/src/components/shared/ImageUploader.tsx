@@ -4,7 +4,14 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent, KeyboardEvent } from 'react';
 import { ImagePlus, Loader2, Trash2 } from 'lucide-react';
 import { getApiBaseUrl } from '@/lib/config';
-import { ApiError, apiFetch, getErrorMessage, withAuthRefresh } from '@/lib/api-client';
+import {
+  ApiError,
+  CORRELATION_ID_HEADER,
+  apiFetch,
+  createCorrelationId,
+  getErrorMessage,
+  withAuthRefresh,
+} from '@/lib/api-client';
 import type { ProblemDetails, UploadedFile } from '@/types/api';
 
 /** Ràng buộc CONS-007 (kiểm tra sớm phía client; backend vẫn kiểm tra lại MIME + magic bytes). */
@@ -50,6 +57,8 @@ function uploadWithProgress(
       xhr = attempt;
       onProgress(0);
       attempt.open('POST', `${getApiBaseUrl()}/files/upload`);
+      // FR-OBS-002: đường XHR cũng mang mã tra cứu như mọi request đi qua `apiFetch`.
+      attempt.setRequestHeader(CORRELATION_ID_HEADER, createCorrelationId());
       if (token) attempt.setRequestHeader('Authorization', `Bearer ${token}`);
       attempt.responseType = 'json';
       attempt.upload.onprogress = (event) => {
@@ -57,9 +66,16 @@ function uploadWithProgress(
       };
       attempt.onload = () => {
         if (attempt.status >= 200 && attempt.status < 300) resolveAttempt(attempt.response as UploadedFile);
-        else rejectAttempt(new ApiError(attempt.status, (attempt.response ?? { status: attempt.status }) as ProblemDetails));
+        else {
+          rejectAttempt(new ApiError(
+            attempt.status,
+            (attempt.response ?? { status: attempt.status }) as ProblemDetails,
+            { correlationId: attempt.getResponseHeader(CORRELATION_ID_HEADER) ?? undefined },
+          ));
+        }
       };
-      attempt.onerror = () => rejectAttempt(new Error('network'));
+      // Cùng loại lỗi `fetch` ném khi mất mạng → `normalizeError` xếp vào nhóm `network`.
+      attempt.onerror = () => rejectAttempt(new TypeError('Network request failed'));
       attempt.onabort = () => rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
       const form = new FormData();
       form.append('file', file);
