@@ -106,6 +106,7 @@ public static class RecipesEndpoints
 
         group.MapPost("/{id:guid}/images", UploadImageAsync)
             .RequireAuthorization(AuthorizationPolicies.Author)
+            .WithMetadata(new SecurityRateLimitMetadata(SecurityRateLimits.Upload))
             .WithName("UploadRecipeImage")
             .WithSummary("FR-RCP-008 – Tải ảnh lên cho công thức (multipart: file, altText?, isPrimary?, orderIndex?)")
             .DisableAntiforgery()

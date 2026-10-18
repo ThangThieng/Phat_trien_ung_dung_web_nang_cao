@@ -31,7 +31,7 @@ public sealed class GetMySessionsQueryHandler(ICurrentUser currentUser, IUnitOfW
 /// </summary>
 public sealed record RevokeSessionCommand(Guid SessionId) : IRequest<bool>;
 
-public sealed class RevokeSessionCommandHandler(ICurrentUser currentUser, IRefreshTokenRepository refreshTokens, IUnitOfWork unitOfWork, TimeProvider timeProvider)
+public sealed class RevokeSessionCommandHandler(ICurrentUser currentUser, IUnitOfWork unitOfWork, TimeProvider timeProvider)
     : IRequestHandler<RevokeSessionCommand, bool>
 {
     public async Task<bool> Handle(RevokeSessionCommand request, CancellationToken cancellationToken)
@@ -39,18 +39,21 @@ public sealed class RevokeSessionCommandHandler(ICurrentUser currentUser, IRefre
         ArgumentNullException.ThrowIfNull(request);
 
         var userId = currentUser.UserId ?? throw new InvalidTokenException();
-        return await refreshTokens.ExecuteForUserAsync(
+        return await unitOfWork.Users.ExecuteForUserAsync(
             userId,
             async ct =>
             {
-                var token = await refreshTokens.GetByIdForUserAsync(request.SessionId, userId, ct).ConfigureAwait(false);
+                var token = await unitOfWork.Users.GetRefreshTokenByIdAsync(userId, request.SessionId, ct).ConfigureAwait(false);
                 if (token is null)
                 {
                     return false;
                 }
 
-                await refreshTokens.RevokeAsync(token, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
-                await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                await unitOfWork.Users.RevokeRefreshTokenIfActiveAsync(
+                    token.Id,
+                    timeProvider.GetUtcNow().UtcDateTime,
+                    replacedByTokenHash: null,
+                    ct).ConfigureAwait(false);
                 return true;
             },
             cancellationToken).ConfigureAwait(false);
@@ -60,18 +63,20 @@ public sealed class RevokeSessionCommandHandler(ICurrentUser currentUser, IRefre
 /// <summary>FR-AUTH-009 – "đăng xuất trên mọi thiết bị": thu hồi mọi phiên của người gọi, KỂ CẢ phiên hiện tại.</summary>
 public sealed record RevokeAllSessionsCommand : IRequest;
 
-public sealed class RevokeAllSessionsCommandHandler(ICurrentUser currentUser, IRefreshTokenRepository refreshTokens, IUnitOfWork unitOfWork, TimeProvider timeProvider)
+public sealed class RevokeAllSessionsCommandHandler(ICurrentUser currentUser, IUnitOfWork unitOfWork, TimeProvider timeProvider)
     : IRequestHandler<RevokeAllSessionsCommand>
 {
     public async Task Handle(RevokeAllSessionsCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId ?? throw new InvalidTokenException();
-        await refreshTokens.ExecuteForUserAsync(
+        await unitOfWork.Users.ExecuteForUserAsync(
             userId,
             async ct =>
             {
-                await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
-                await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                await unitOfWork.Users.RevokeAllRefreshTokensAsync(
+                    userId,
+                    timeProvider.GetUtcNow().UtcDateTime,
+                    ct).ConfigureAwait(false);
                 return true;
             },
             cancellationToken).ConfigureAwait(false);

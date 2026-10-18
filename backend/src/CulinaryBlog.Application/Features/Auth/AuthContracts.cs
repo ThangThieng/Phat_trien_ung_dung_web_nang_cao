@@ -114,28 +114,6 @@ public interface ITokenService
     string HashToken(string rawToken);
 }
 
-/// <summary>Database coordination for the existing Dev1 token concurrency tests and operations.</summary>
-public interface IRefreshTokenRepository
-{
-    Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken);
-
-    Task AddAsync(RefreshToken token, CancellationToken cancellationToken);
-
-    Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken);
-
-    Task<bool> TryRotateAsync(RefreshToken token, RefreshToken replacement, DateTime now, CancellationToken cancellationToken);
-
-    Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken);
-
-    Task RevokeAllForUserAsync(string userId, DateTime revokedAt, CancellationToken cancellationToken);
-
-    Task RevokeFamilyAsync(string userId, string startingTokenHash, DateTime revokedAt, CancellationToken cancellationToken);
-
-    Task<IReadOnlyList<RefreshToken>> GetActiveForUserAsync(string userId, DateTime now, CancellationToken cancellationToken);
-
-    Task<RefreshToken?> GetByIdForUserAsync(Guid id, string userId, CancellationToken cancellationToken);
-}
-
 /// <summary>FR-JOB-001 – đẩy job gửi email chào mừng vào Hangfire (fire-and-forget).</summary>
 public interface IWelcomeEmailScheduler
 {
