@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using CulinaryBlog.API.Extensions;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -12,8 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class SecurityTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class SecurityTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 {
+    public Task InitializeAsync() => factory.ResetDatabaseAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
+
     [Theory]
     [InlineData("http://localhost:3000", true)]
     [InlineData("https://untrusted.example", false)]
@@ -38,6 +44,7 @@ public sealed class SecurityTests(Dev1CulinaryBlogApiFactory factory) : IClassFi
             }
 
             Assert.Contains("If-Match", string.Join(',', response.Headers.GetValues("Access-Control-Allow-Headers")), StringComparison.OrdinalIgnoreCase);
+            Assert.Equal("600", Assert.Single(response.Headers.GetValues("Access-Control-Max-Age")));
         }
     }
 
@@ -55,7 +62,7 @@ public sealed class SecurityTests(Dev1CulinaryBlogApiFactory factory) : IClassFi
         if (allowed)
         {
             var exposed = string.Join(',', response.Headers.GetValues("Access-Control-Expose-Headers"));
-            foreach (var header in new[] { "ETag", "Retry-After", "X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset" })
+            foreach (var header in new[] { "ETag", "Retry-After", "X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset", "api-supported-versions" })
             {
                 Assert.Contains(header, exposed, StringComparison.OrdinalIgnoreCase);
             }

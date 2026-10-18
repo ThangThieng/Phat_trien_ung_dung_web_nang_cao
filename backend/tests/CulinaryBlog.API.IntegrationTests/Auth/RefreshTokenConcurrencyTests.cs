@@ -2,6 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
+using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Infrastructure.Persistence;
@@ -14,8 +17,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class RefreshTokenTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class RefreshTokenTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 {
+    public Task InitializeAsync() => factory.ResetDatabaseAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
+
     [Theory]
     [InlineData(2)]
     [InlineData(4)]
@@ -30,8 +38,8 @@ public sealed class RefreshTokenTests(Dev1CulinaryBlogApiFactory factory) : ICla
         var barrier = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var arrivals = 0;
         using var concurrentFactory = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddScoped<IRefreshTokenRepository>(provider => new SynchronizedRefreshTokenRepository(
-                new RefreshTokenRepository(provider.GetRequiredService<CulinaryBlogDbContext>()),
+            services.AddScoped<IUserRepository>(provider => new SynchronizedUserRepository(
+                new UserRepository(provider.GetRequiredService<CulinaryBlogDbContext>()),
                 async () =>
                 {
                     if (Interlocked.Increment(ref arrivals) == requestCount)
@@ -86,18 +94,41 @@ public sealed class RefreshTokenTests(Dev1CulinaryBlogApiFactory factory) : ICla
         await using var scope = factory.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
         var tokens = scope.ServiceProvider.GetRequiredService<ITokenService>();
-        var repository = scope.ServiceProvider.GetRequiredService<IRefreshTokenRepository>();
-        var old = (await repository.GetByHashAsync(tokens.HashToken(original.RefreshToken), CancellationToken.None).ConfigureAwait(true))!;
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var repository = unitOfWork.Users;
+        var old = (await repository.GetRefreshTokenByHashAsync(tokens.HashToken(original.RefreshToken), CancellationToken.None).ConfigureAwait(true))!;
         var now = DateTime.UtcNow;
         var duplicate = RefreshToken.Create(original.User.Id, tokens.HashToken(other.RefreshToken), now.AddDays(7), now, null);
-        await Assert.ThrowsAsync<DbUpdateException>(() => repository.TryRotateAsync(old, duplicate, now, CancellationToken.None)).ConfigureAwait(true);
+        await Assert.ThrowsAsync<DbUpdateException>(() => repository.ExecuteForUserAsync(
+            old.UserId,
+            async ct =>
+            {
+                Assert.True(await repository.RevokeRefreshTokenIfActiveAsync(old.Id, now, duplicate.TokenHash, ct).ConfigureAwait(false));
+                await repository.AddRefreshTokenAsync(duplicate, ct).ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                return true;
+            },
+            CancellationToken.None)).ConfigureAwait(true);
         var persisted = await db.RefreshTokens.AsNoTracking().SingleAsync(token => token.Id == old.Id).ConfigureAwait(true);
         Assert.Null(persisted.RevokedAt);
         Assert.Null(persisted.ReplacedByTokenHash);
         Assert.False(await db.RefreshTokens.AnyAsync(token => token.Id == duplicate.Id).ConfigureAwait(true));
         var generated = tokens.CreateRefreshToken();
         var replacement = RefreshToken.Create(original.User.Id, generated.TokenHash, generated.ExpiresAt, now, null);
-        Assert.True(await repository.TryRotateAsync(old, replacement, now, CancellationToken.None).ConfigureAwait(true));
+        Assert.True(await repository.ExecuteForUserAsync(
+            old.UserId,
+            async ct =>
+            {
+                var consumed = await repository.RevokeRefreshTokenIfActiveAsync(old.Id, now, replacement.TokenHash, ct).ConfigureAwait(false);
+                if (consumed)
+                {
+                    await repository.AddRefreshTokenAsync(replacement, ct).ConfigureAwait(false);
+                    await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                }
+
+                return consumed;
+            },
+            CancellationToken.None).ConfigureAwait(true));
         Assert.Equal(2, await db.RefreshTokens.CountAsync(token => token.UserId == original.User.Id).ConfigureAwait(true));
         await RefreshAsync(client, other.RefreshToken).ConfigureAwait(true);
     }
@@ -182,8 +213,8 @@ public sealed class RefreshTokenTests(Dev1CulinaryBlogApiFactory factory) : ICla
             _ => tokens.CreateRefreshToken().TokenHash,
         };
         await db.SaveChangesAsync().ConfigureAwait(true);
-        await scope.ServiceProvider.GetRequiredService<IRefreshTokenRepository>()
-            .RevokeFamilyAsync(independent.User.Id, rootHash, now, CancellationToken.None)
+        await scope.ServiceProvider.GetRequiredService<IUnitOfWork>().Users
+            .RevokeRefreshTokenFamilyAsync(independent.User.Id, rootHash, now, CancellationToken.None)
             .WaitAsync(TimeSpan.FromSeconds(10)).ConfigureAwait(true);
         Assert.NotNull((await db.RefreshTokens.AsNoTracking().SingleAsync(token => token.Id == child.Id).ConfigureAwait(true)).RevokedAt);
         await RefreshAsync(client, independent.RefreshToken).ConfigureAwait(true);
@@ -300,30 +331,34 @@ public sealed class RefreshTokenTests(Dev1CulinaryBlogApiFactory factory) : ICla
         Assert.Equal(code, body.RootElement.GetProperty("type").GetString());
     }
 
-    private sealed class SynchronizedRefreshTokenRepository(IRefreshTokenRepository inner, Func<Task> synchronize) : IRefreshTokenRepository
+    private sealed class SynchronizedUserRepository(IUserRepository inner, Func<Task> synchronize) : IUserRepository
     {
-        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken) => inner.ExecuteForUserAsync(userId, operation, cancellationToken);
+        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken = default) => inner.ExecuteForUserAsync(userId, operation, cancellationToken);
 
-        public Task AddAsync(RefreshToken token, CancellationToken cancellationToken) => inner.AddAsync(token, cancellationToken);
+        public Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default) => inner.AddRefreshTokenAsync(token, cancellationToken);
 
-        public async Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken)
+        public async Task<RefreshToken?> GetRefreshTokenByHashAsync(string tokenHash, CancellationToken cancellationToken = default)
         {
-            var token = await inner.GetByHashAsync(tokenHash, cancellationToken).ConfigureAwait(false);
+            var token = await inner.GetRefreshTokenByHashAsync(tokenHash, cancellationToken).ConfigureAwait(false);
             await synchronize().ConfigureAwait(false);
             return token;
         }
 
-        public Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken) => inner.RevokeAsync(token, revokedAt, cancellationToken);
+        public Task<RefreshToken?> GetRefreshTokenAsync(string userId, string tokenHash, CancellationToken cancellationToken = default) => inner.GetRefreshTokenAsync(userId, tokenHash, cancellationToken);
 
-        public Task<bool> TryRotateAsync(RefreshToken token, RefreshToken replacement, DateTime now, CancellationToken cancellationToken) => inner.TryRotateAsync(token, replacement, now, cancellationToken);
+        public Task<bool> RevokeRefreshTokenIfActiveAsync(Guid tokenId, DateTime utcNow, string? replacedByTokenHash, CancellationToken cancellationToken = default) => inner.RevokeRefreshTokenIfActiveAsync(tokenId, utcNow, replacedByTokenHash, cancellationToken);
 
-        public Task RevokeAllForUserAsync(string userId, DateTime revokedAt, CancellationToken cancellationToken) => inner.RevokeAllForUserAsync(userId, revokedAt, cancellationToken);
+        public Task<int> RevokeAllRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default) => inner.RevokeAllRefreshTokensAsync(userId, utcNow, cancellationToken);
 
-        public Task RevokeFamilyAsync(string userId, string startingTokenHash, DateTime revokedAt, CancellationToken cancellationToken) => inner.RevokeFamilyAsync(userId, startingTokenHash, revokedAt, cancellationToken);
+        public Task RevokeRefreshTokenFamilyAsync(string userId, string startingTokenHash, DateTime utcNow, CancellationToken cancellationToken = default) => inner.RevokeRefreshTokenFamilyAsync(userId, startingTokenHash, utcNow, cancellationToken);
 
-        public Task<IReadOnlyList<RefreshToken>> GetActiveForUserAsync(string userId, DateTime now, CancellationToken cancellationToken) => inner.GetActiveForUserAsync(userId, now, cancellationToken);
+        public Task<IReadOnlyList<RefreshToken>> GetActiveRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default) => inner.GetActiveRefreshTokensAsync(userId, utcNow, cancellationToken);
 
-        public Task<RefreshToken?> GetByIdForUserAsync(Guid id, string userId, CancellationToken cancellationToken) => inner.GetByIdForUserAsync(id, userId, cancellationToken);
+        public Task<RefreshToken?> GetRefreshTokenByIdAsync(string userId, Guid tokenId, CancellationToken cancellationToken = default) => inner.GetRefreshTokenByIdAsync(userId, tokenId, cancellationToken);
+
+        public Task<IReadOnlyList<string>> GetUserNamesStartingWithAsync(string prefix, CancellationToken cancellationToken = default) => inner.GetUserNamesStartingWithAsync(prefix, cancellationToken);
+
+        public Task<PagedResult<UserAdminDto>> GetUsersPageAsync(UserListCriteria criteria, CancellationToken cancellationToken = default) => inner.GetUsersPageAsync(criteria, cancellationToken);
     }
 
     private sealed class RequestBodyDetectionFeature : IHttpRequestBodyDetectionFeature

@@ -2,17 +2,25 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Infrastructure.Identity;
 using CulinaryBlog.Infrastructure.Persistence;
+using CulinaryBlog.Infrastructure.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class AccountApiTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class AccountApiTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 {
+    public Task InitializeAsync() => factory.ResetDatabaseAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
+
     private static readonly string[] ProfileFields = ["avatarUrl", "bio", "createdAt", "displayName", "email", "id", "roles"];
     private static readonly string[] AdminFields = ["avatarUrl", "createdAt", "displayName", "email", "id", "isActive", "recipeCount", "roles"];
     private static readonly string[] SessionFields = ["createdAt", "createdByIp", "expiresAt", "id", "isCurrent"];
@@ -44,12 +52,14 @@ public sealed class AccountApiTests(Dev1CulinaryBlogApiFactory factory) : IClass
         Assert.True(initial.Headers.CacheControl?.NoStore);
         using var json = JsonDocument.Parse(await initial.Content.ReadAsStringAsync().ConfigureAwait(true));
         Assert.Equal(ProfileFields, json.RootElement.EnumerateObject().Select(property => property.Name).Order().ToArray());
+        using var scope = factory.Services.CreateScope();
+        var avatarUrl = scope.ServiceProvider.GetRequiredService<IOptions<MinioOptions>>().Value.PublicBaseUrl.TrimEnd('/') + "/uploads/avatar.png";
 
         using var patch = await client.PatchAsJsonAsync("/api/v1/auth/me", new
         {
             displayName = "Updated Name",
             bio = "My kitchen",
-            avatarUrl = "http://localhost:9000/culinary-blog/uploads/avatar.png",
+            avatarUrl,
             email = "attacker@example.com",
             userName = "attacker",
             roles = AdminRoles,

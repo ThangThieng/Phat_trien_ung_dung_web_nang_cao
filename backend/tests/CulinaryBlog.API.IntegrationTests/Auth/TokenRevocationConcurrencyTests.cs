@@ -2,6 +2,9 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
+using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Exceptions.Auth;
@@ -15,8 +18,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class TokenRevocationConcurrencyTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
 {
+    public Task InitializeAsync() => factory.ResetDatabaseAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -28,10 +36,10 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
         var actor = disableAccount ? await RegisterAsync(setup, admin: true).ConfigureAwait(true) : original;
         var gate = new RevocationGate(original.User.Id);
         using var gatedFactory = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddScoped<IRefreshTokenRepository>(provider =>
+            services.AddScoped<IUserRepository>(provider =>
             {
                 var db = provider.GetRequiredService<CulinaryBlogDbContext>();
-                return new GatedRepository(new RefreshTokenRepository(db), db, gate);
+                return new GatedRepository(new UserRepository(db), db, gate);
             })));
         using var actorClient = gatedFactory.CreateClient();
         using var refreshClient = gatedFactory.CreateClient();
@@ -80,10 +88,10 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
         var actor = disableAccount ? await RegisterAsync(setup, admin: true).ConfigureAwait(true) : original;
         var gate = new RevocationGate(original.User.Id) { PauseRotation = true };
         using var gatedFactory = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddScoped<IRefreshTokenRepository>(provider =>
+            services.AddScoped<IUserRepository>(provider =>
             {
                 var db = provider.GetRequiredService<CulinaryBlogDbContext>();
-                return new GatedRepository(new RefreshTokenRepository(db), db, gate);
+                return new GatedRepository(new UserRepository(db), db, gate);
             })));
         using var client = gatedFactory.CreateClient();
         using var actorClient = gatedFactory.CreateClient();
@@ -134,10 +142,10 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
         var actor = disableAccount ? await RegisterAsync(setup, admin: true).ConfigureAwait(true) : original;
         var gate = new RevocationGate(original.User.Id) { FailAfterSnapshot = true };
         using var failingFactory = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddScoped<IRefreshTokenRepository>(provider =>
+            services.AddScoped<IUserRepository>(provider =>
             {
                 var db = provider.GetRequiredService<CulinaryBlogDbContext>();
-                return new GatedRepository(new RefreshTokenRepository(db), db, gate);
+                return new GatedRepository(new UserRepository(db), db, gate);
             })));
         using var client = failingFactory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", actor.AccessToken);
@@ -241,16 +249,16 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
         public TaskCompletionSource<int> RefreshPid { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
     }
 
-    private sealed class GatedRepository(IRefreshTokenRepository inner, CulinaryBlogDbContext db, RevocationGate gate) : IRefreshTokenRepository
+    private sealed class GatedRepository(IUserRepository inner, CulinaryBlogDbContext db, RevocationGate gate) : IUserRepository
     {
-        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken) => inner.ExecuteForUserAsync(userId, operation, cancellationToken);
+        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken = default) => inner.ExecuteForUserAsync(userId, operation, cancellationToken);
 
-        public Task AddAsync(RefreshToken token, CancellationToken cancellationToken) => inner.AddAsync(token, cancellationToken);
+        public Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default) => inner.AddRefreshTokenAsync(token, cancellationToken);
 
-        public async Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken)
+        public async Task<RefreshToken?> GetRefreshTokenByHashAsync(string tokenHash, CancellationToken cancellationToken = default)
         {
             await db.Database.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-            var token = await inner.GetByHashAsync(tokenHash, cancellationToken).ConfigureAwait(false);
+            var token = await inner.GetRefreshTokenByHashAsync(tokenHash, cancellationToken).ConfigureAwait(false);
             if (token?.UserId == gate.UserId)
             {
                 var pid = await db.Database.SqlQueryRaw<int>("SELECT pg_backend_pid() AS \"Value\"").SingleAsync(cancellationToken).ConfigureAwait(false);
@@ -260,10 +268,10 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
             return token;
         }
 
-        public async Task<bool> TryRotateAsync(RefreshToken token, RefreshToken replacement, DateTime now, CancellationToken cancellationToken)
+        public async Task<bool> RevokeRefreshTokenIfActiveAsync(Guid tokenId, DateTime utcNow, string? replacedByTokenHash, CancellationToken cancellationToken = default)
         {
-            var rotated = await inner.TryRotateAsync(token, replacement, now, cancellationToken).ConfigureAwait(false);
-            if (rotated && gate.PauseRotation && token.UserId == gate.UserId)
+            var rotated = await inner.RevokeRefreshTokenIfActiveAsync(tokenId, utcNow, replacedByTokenHash, cancellationToken).ConfigureAwait(false);
+            if (rotated && gate.PauseRotation && replacedByTokenHash is not null)
             {
                 gate.RotationPersisted.TrySetResult();
                 await gate.Release.Task.WaitAsync(TimeSpan.FromSeconds(20), cancellationToken).ConfigureAwait(false);
@@ -272,11 +280,9 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
             return rotated;
         }
 
-        public Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken) => inner.RevokeAsync(token, revokedAt, cancellationToken);
-
-        public async Task RevokeAllForUserAsync(string userId, DateTime revokedAt, CancellationToken cancellationToken)
+        public async Task<int> RevokeAllRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default)
         {
-            await inner.RevokeAllForUserAsync(userId, revokedAt, cancellationToken).ConfigureAwait(false);
+            var count = await inner.RevokeAllRefreshTokensAsync(userId, utcNow, cancellationToken).ConfigureAwait(false);
             if (userId == gate.UserId)
             {
                 if (gate.FailAfterSnapshot)
@@ -287,18 +293,26 @@ public sealed class TokenRevocationConcurrencyTests(Dev1CulinaryBlogApiFactory f
 
                 if (gate.PauseRotation)
                 {
-                    return;
+                    return count;
                 }
 
                 gate.SnapshotRead.TrySetResult();
                 await gate.Release.Task.WaitAsync(TimeSpan.FromSeconds(20), cancellationToken).ConfigureAwait(false);
             }
+
+            return count;
         }
 
-        public Task RevokeFamilyAsync(string userId, string startingTokenHash, DateTime revokedAt, CancellationToken cancellationToken) => inner.RevokeFamilyAsync(userId, startingTokenHash, revokedAt, cancellationToken);
+        public Task RevokeRefreshTokenFamilyAsync(string userId, string startingTokenHash, DateTime utcNow, CancellationToken cancellationToken = default) => inner.RevokeRefreshTokenFamilyAsync(userId, startingTokenHash, utcNow, cancellationToken);
 
-        public Task<IReadOnlyList<RefreshToken>> GetActiveForUserAsync(string userId, DateTime now, CancellationToken cancellationToken) => inner.GetActiveForUserAsync(userId, now, cancellationToken);
+        public Task<IReadOnlyList<RefreshToken>> GetActiveRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default) => inner.GetActiveRefreshTokensAsync(userId, utcNow, cancellationToken);
 
-        public Task<RefreshToken?> GetByIdForUserAsync(Guid id, string userId, CancellationToken cancellationToken) => inner.GetByIdForUserAsync(id, userId, cancellationToken);
+        public Task<RefreshToken?> GetRefreshTokenAsync(string userId, string tokenHash, CancellationToken cancellationToken = default) => inner.GetRefreshTokenAsync(userId, tokenHash, cancellationToken);
+
+        public Task<RefreshToken?> GetRefreshTokenByIdAsync(string userId, Guid tokenId, CancellationToken cancellationToken = default) => inner.GetRefreshTokenByIdAsync(userId, tokenId, cancellationToken);
+
+        public Task<IReadOnlyList<string>> GetUserNamesStartingWithAsync(string prefix, CancellationToken cancellationToken = default) => inner.GetUserNamesStartingWithAsync(prefix, cancellationToken);
+
+        public Task<PagedResult<UserAdminDto>> GetUsersPageAsync(UserListCriteria criteria, CancellationToken cancellationToken = default) => inner.GetUsersPageAsync(criteria, cancellationToken);
     }
 }

@@ -1,8 +1,11 @@
 # BÁO CÁO LAB 05 — BẢO MẬT VÀ PHIÊN BẢN API
 
-**Sinh viên:** Hoàng Bình Quân  
-**MSSV:** 2314236  
-**Nhánh:** `2314236_HoangBinhQuan_buoiso5`  
+**Sinh viên:** Hoàng Bình Quân
+
+**MSSV:** 2314236
+
+**Nhánh:** `2314236_HoangBinhQuan_buoiso5`
+
 **Phạm vi:** PR #54 — CORS, rate limiting, API versioning và kiểm chứng bề mặt API
 
 ## 1. Kết quả

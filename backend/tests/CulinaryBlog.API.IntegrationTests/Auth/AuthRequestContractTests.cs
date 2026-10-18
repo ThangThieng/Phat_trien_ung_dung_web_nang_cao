@@ -2,7 +2,10 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Common.Exceptions;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
+using CulinaryBlog.Application.Common.Models;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Exceptions;
@@ -12,7 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class AuthRequestContractTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class AuthRequestContractTests(CulinaryBlogApiFactory factory)
 {
     private const string ValidJwtShape = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.AQ";
 
@@ -27,7 +31,7 @@ public sealed class AuthRequestContractTests(Dev1CulinaryBlogApiFactory factory)
     {
         var tokens = new LookupProbe();
         using var isolated = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.AddSingleton<IRefreshTokenRepository>(tokens)));
+            services.AddSingleton<IUserRepository>(tokens)));
         using var client = isolated.CreateClient();
         using var response = await PostBodyAsync(client, "/api/v1/auth/refresh", body).ConfigureAwait(true);
         await AssertProblemAsync(response, HttpStatusCode.BadRequest, "VALIDATION_ERROR").ConfigureAwait(true);
@@ -100,33 +104,37 @@ public sealed class AuthRequestContractTests(Dev1CulinaryBlogApiFactory factory)
         Assert.Equal((int)expectedStatus, json.RootElement.GetProperty("status").GetInt32());
     }
 
-    private sealed class LookupProbe : IRefreshTokenRepository
+    private sealed class LookupProbe : IUserRepository
     {
         private int _lookups;
 
         public int Lookups => _lookups;
 
-        public Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken)
+        public Task<RefreshToken?> GetRefreshTokenByHashAsync(string tokenHash, CancellationToken cancellationToken = default)
         {
             Interlocked.Increment(ref _lookups);
             throw new InvalidOperationException("Invalid request reached token lookup.");
         }
 
-        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<T> ExecuteForUserAsync<T>(string userId, Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task AddAsync(RefreshToken token, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task<bool> TryRotateAsync(RefreshToken token, RefreshToken replacement, DateTime now, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<RefreshToken?> GetRefreshTokenAsync(string userId, string tokenHash, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task RevokeAsync(RefreshToken token, DateTime revokedAt, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<bool> RevokeRefreshTokenIfActiveAsync(Guid tokenId, DateTime utcNow, string? replacedByTokenHash, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task RevokeAllForUserAsync(string userId, DateTime revokedAt, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<int> RevokeAllRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task RevokeFamilyAsync(string userId, string startingTokenHash, DateTime revokedAt, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task RevokeRefreshTokenFamilyAsync(string userId, string startingTokenHash, DateTime utcNow, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task<IReadOnlyList<RefreshToken>> GetActiveForUserAsync(string userId, DateTime now, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<IReadOnlyList<RefreshToken>> GetActiveRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
-        public Task<RefreshToken?> GetByIdForUserAsync(Guid id, string userId, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<RefreshToken?> GetRefreshTokenByIdAsync(string userId, Guid tokenId, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
+        public Task<IReadOnlyList<string>> GetUserNamesStartingWithAsync(string prefix, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
+        public Task<PagedResult<UserAdminDto>> GetUsersPageAsync(UserListCriteria criteria, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 
     private sealed class GoogleValidationProbe(string scenario) : IGoogleIdTokenValidator

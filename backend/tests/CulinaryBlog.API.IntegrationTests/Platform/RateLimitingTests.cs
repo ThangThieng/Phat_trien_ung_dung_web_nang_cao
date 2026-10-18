@@ -2,9 +2,11 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using CulinaryBlog.API.Extensions;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
@@ -12,7 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class RateLimitingTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class RateLimitingTests(CulinaryBlogApiFactory factory)
 {
     [Theory]
     [InlineData("/api/v1/auth/register", 10)]
@@ -20,6 +23,7 @@ public sealed class RateLimitingTests(Dev1CulinaryBlogApiFactory factory) : ICla
     [InlineData("/api/v1/auth/google", 10)]
     [InlineData("/api/v1/auth/refresh", 10)]
     [InlineData("/api/v1/files/upload", 5)]
+    [InlineData("/api/v1/recipes/00000000-0000-0000-0000-000000000001/images", 5)]
     [InlineData("/api/v1/users", 100)]
     public async Task QuotaRejectsOnlyRequestAfterLimit(string path, int limit)
     {
@@ -142,13 +146,19 @@ public sealed class RateLimitingTests(Dev1CulinaryBlogApiFactory factory) : ICla
         }
     }
 
-    private Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<Program> CreateRateLimitedHost(Action<SecurityRateLimitingOptions>? configure = null) =>
-        factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
-            services.PostConfigure<SecurityRateLimitingOptions>(options =>
-            {
-                options.Enabled = true;
-                configure?.Invoke(options);
-            })));
+    private Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<Program> CreateRateLimitedHost(Action<SecurityRateLimitingOptions>? configure = null)
+    {
+        var options = new SecurityRateLimitingOptions { Enabled = true };
+        configure?.Invoke(options);
+        return factory.WithWebHostBuilder(builder => builder
+            .UseSetting("RateLimiting:Enabled", "true")
+            .UseSetting("RateLimiting:Auth:PermitLimit", options.Auth.PermitLimit.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:Auth:WindowSeconds", options.Auth.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:Upload:PermitLimit", options.Upload.PermitLimit.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:Upload:WindowSeconds", options.Upload.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:General:PermitLimit", options.General.PermitLimit.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:General:WindowSeconds", options.General.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+    }
 
     private static Task<HttpContext> SendFromAsync(TestServer server, string path, string ip, string? forwarded = null) =>
         server.SendAsync(context =>

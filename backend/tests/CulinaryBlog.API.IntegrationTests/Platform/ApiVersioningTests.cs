@@ -1,9 +1,11 @@
 using System.Net;
 using System.Text.Json;
+using CulinaryBlog.API.IntegrationTests.Infrastructure;
 
 namespace CulinaryBlog.API.IntegrationTests;
 
-public sealed class ApiVersioningTests(Dev1CulinaryBlogApiFactory factory) : IClassFixture<Dev1CulinaryBlogApiFactory>
+[Collection(IntegrationTestSuite.Name)]
+public sealed class ApiVersioningTests(CulinaryBlogApiFactory factory)
 {
     [Fact]
     public async Task V1RouteWorksAndReportsSupportedVersion()

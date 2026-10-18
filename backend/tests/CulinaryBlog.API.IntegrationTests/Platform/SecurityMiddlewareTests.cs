@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -151,7 +153,20 @@ public sealed class SecurityMiddlewareTests
         {
             ["Cors:AllowedOrigins:0"] = origin,
         }).Build();
-        Assert.Throws<InvalidOperationException>(() => new ServiceCollection().AddSecurityCors(configuration));
+        var services = new ServiceCollection();
+        services.AddSecurityCors(configuration);
+        using var provider = services.BuildServiceProvider();
+        Assert.Throws<OptionsValidationException>(() => provider.GetRequiredService<IOptions<CorsSettings>>().Value);
+    }
+
+    [Fact]
+    public void EmptyProductionCorsConfigurationFailsOnOptionsResolution()
+    {
+        var services = new ServiceCollection();
+        services.AddSingleton<IHostEnvironment>(new TestHostEnvironment { EnvironmentName = Environments.Production });
+        services.AddSecurityCors(new ConfigurationBuilder().Build());
+        using var provider = services.BuildServiceProvider();
+        Assert.Throws<OptionsValidationException>(() => provider.GetRequiredService<IOptions<CorsSettings>>().Value);
     }
 
     [Fact]
@@ -248,4 +263,15 @@ public sealed class SecurityMiddlewareTests
             context.Request.Headers["X-Forwarded-For"] = forwarded;
         }
     });
+
+    private sealed class TestHostEnvironment : IHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = string.Empty;
+
+        public string ApplicationName { get; set; } = string.Empty;
+
+        public string ContentRootPath { get; set; } = string.Empty;
+
+        public IFileProvider ContentRootFileProvider { get; set; } = null!;
+    }
 }
