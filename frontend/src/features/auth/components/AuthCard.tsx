@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../auth-context';
+import { safeCallbackUrl } from './LoginForm';
 
 interface AuthCardProps {
   title: string;
@@ -17,7 +18,11 @@ export default function AuthCard({ title, subtitle, children }: AuthCardProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (isReady && isAuthenticated) router.replace('/recipes');
+    // Cùng đích với LoginForm: trước đây effect này luôn về /recipes và đè lên callbackUrl ngay sau khi đăng nhập,
+    // nên người bị AuthGuard chuyển tới /auth/login?callbackUrl=… không bao giờ quay lại trang đang mở (Buổi 6).
+    if (isReady && isAuthenticated) {
+      router.replace(safeCallbackUrl(new URLSearchParams(window.location.search).get('callbackUrl')));
+    }
   }, [isReady, isAuthenticated, router]);
 
   return (

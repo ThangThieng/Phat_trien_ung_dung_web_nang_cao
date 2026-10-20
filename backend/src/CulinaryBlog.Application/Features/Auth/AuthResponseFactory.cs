@@ -1,12 +1,17 @@
-using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Domain.Entities;
+using CulinaryBlog.Domain.Exceptions.Auth;
 
 namespace CulinaryBlog.Application.Features.Auth;
 
-/// <summary>Phát cặp token cho user và lưu refresh token (dùng chung cho Register/Login, sau này Google/Refresh).</summary>
+/// <summary>
+/// Phát cặp token cho user — dùng chung cho đăng ký, đăng nhập, Google và refresh, nên MỌI access token đều mang claim
+/// <c>sid</c> = Id của bản ghi RefreshToken phát cùng cặp (FR-AUTH-009; Buổi 4). Token phát trước Buổi 4 không có
+/// <c>sid</c> và tự hết hạn sau tối đa 15 phút — không cần di trú.
+/// </summary>
 public sealed class AuthResponseFactory(
     ITokenService tokenService,
-    IRefreshTokenRepository refreshTokens,
+    IIdentityService identityService,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
 {
@@ -14,14 +19,30 @@ public sealed class AuthResponseFactory(
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        var accessToken = tokenService.CreateAccessToken(user);
-        var refreshToken = tokenService.CreateRefreshToken();
+        return await unitOfWork.Users.ExecuteForUserAsync(
+            user.Id,
+            async ct =>
+            {
+                // Login/Google may have read the user before a concurrent disable committed.
+                var current = await identityService.FindByIdAsync(user.Id, ct).ConfigureAwait(false)
+                    ?? throw new InvalidTokenException();
+                if (!current.IsActive)
+                {
+                    throw new AccountDisabledException();
+                }
 
-        await refreshTokens.AddAsync(
-            RefreshToken.Create(user.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress),
+                var refreshToken = tokenService.CreateRefreshToken();
+                var session = RefreshToken.Create(current.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress);
+                await unitOfWork.Users.AddRefreshTokenAsync(session, ct).ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                return Build(current, session, refreshToken.RawToken);
+            },
             cancellationToken).ConfigureAwait(false);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
 
-        return new AuthResponseDto(accessToken.Token, refreshToken.RawToken, accessToken.ExpiresAt, accessToken.ExpiresInSeconds, user.ToDto());
+    private AuthResponseDto Build(IdentityUserInfo user, RefreshToken session, string rawRefreshToken)
+    {
+        var accessToken = tokenService.CreateAccessToken(user, session.Id);
+        return new AuthResponseDto(accessToken.Token, rawRefreshToken, accessToken.ExpiresAt, accessToken.ExpiresInSeconds, user.ToDto());
     }
 }

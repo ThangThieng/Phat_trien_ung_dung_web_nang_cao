@@ -72,7 +72,7 @@
       ["Nước mắm", 2, "thìa canh"],
       ["Đường", 1, "thìa canh"],
       ["Tỏi", 3, "tép", "băm nhỏ"],
-      ["Muối, tiêu", null, null, "vừa đủ"]
+      ["Muối, tiêu", "vừa đủ", null]
     ],
     "steps": [
       ["Luộc gà", "Luộc gà với gừng, hành tím và muối, sôi 20 phút thì tắt bếp ủ thêm 15 phút, giữ lại nước luộc.", 35],
@@ -125,7 +125,7 @@
       ["Nước mắm", 3, "thìa canh"],
       ["Đường phèn", 1, "thìa canh"],
       ["Bún tươi", 800, "gram"],
-      ["Muối tiêu chanh lá é", null, null, "chấm kèm"]
+      ["Muối tiêu chanh lá é", "vừa đủ", null, "chấm kèm"]
     ],
     "steps": [
       ["Sơ chế gà", "Rửa gà với muối và gừng, chặt miếng vừa ăn, ướp với chút nước mắm và hành tím băm 15 phút.", 15],
@@ -340,7 +340,7 @@
       ["Đường", 1, "thìa cà phê"],
       ["Muối", 0.5, "thìa cà phê"],
       ["Tiêu xay", 0.5, "thìa cà phê"],
-      ["Muối tiêu chanh", null, null, "chấm kèm"],
+      ["Muối tiêu chanh", "vừa đủ", null, "chấm kèm"],
       ["Rau răm", 20, "gram"]
     ],
     "steps": [
@@ -423,7 +423,7 @@
       ["Giấm gạo", 1, "thìa canh"],
       ["Mật ong", 1, "thìa canh"],
       ["Dầu ô liu", 1, "thìa canh"],
-      ["Muối, tiêu đen", null, null, "vừa đủ"]
+      ["Muối, tiêu đen", "vừa đủ", null]
     ],
     "steps": [
       ["Ướp gà", "Dần mỏng ức gà, ướp với muối, tiêu và dầu ô liu 10 phút.", 10],
@@ -610,7 +610,7 @@
       ["Dầu ăn", 4, "thìa canh"],
       ["Rượu trắng", 2, "thìa canh"],
       ["Lá chanh", 10, "lá", "thái chỉ"],
-      ["Chanh, tiêu", null, null, "pha muối tiêu chanh"]
+      ["Chanh, tiêu", "vừa đủ", null, "pha muối tiêu chanh"]
     ],
     "steps": [
       ["Sơ chế gà", "Xát gà với muối và rượu trắng, rửa sạch, để ráo, xoa muối và hạt nêm cả trong lẫn ngoài.", 10],
@@ -661,7 +661,7 @@
       ["Rượu trắng", 1, "thìa canh"],
       ["Muối", 1, "thìa cà phê"],
       ["Rau răm", 20, "gram"],
-      ["Muối tiêu chanh", null, null, "chấm kèm"]
+      ["Muối tiêu chanh", "vừa đủ", null, "chấm kèm"]
     ],
     "steps": [
       ["Ngâm nghêu", "Ngâm nghêu trong nước vo gạo pha muối và ớt ít nhất 2 giờ cho nhả sạch cát, chà rửa vỏ.", 120],
