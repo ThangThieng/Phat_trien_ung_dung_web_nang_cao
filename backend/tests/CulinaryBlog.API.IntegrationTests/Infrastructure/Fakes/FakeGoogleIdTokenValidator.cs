@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text;
 using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Exceptions;
@@ -14,9 +15,9 @@ namespace CulinaryBlog.API.IntegrationTests.Infrastructure.Fakes;
 public sealed class FakeGoogleIdTokenValidator : IGoogleIdTokenValidator
 {
     /// <summary>Token giả có dạng JWT (3 đoạn) để vượt qua validator định dạng của GoogleLoginCommand.</summary>
-    public const string RejectedToken = "google.rejected.token";
+    public static readonly string RejectedToken = CreateTestToken("rejected");
 
-    public const string UnavailableToken = "google.unavailable.token";
+    public static readonly string UnavailableToken = CreateTestToken("unavailable");
 
     private readonly ConcurrentDictionary<string, GoogleIdTokenPayload> _payloads = new(StringComparer.Ordinal);
 
@@ -25,16 +26,31 @@ public sealed class FakeGoogleIdTokenValidator : IGoogleIdTokenValidator
     {
         ArgumentNullException.ThrowIfNull(payload);
 
-        var token = $"google.{Guid.NewGuid():N}.token";
+        var token = CreateTestToken(Guid.NewGuid().ToString("N"));
         _payloads[token] = payload;
         return token;
     }
 
-    public Task<GoogleIdTokenPayload> ValidateAsync(string idToken, CancellationToken cancellationToken) => idToken switch
+    public Task<GoogleIdTokenPayload> ValidateAsync(string idToken, CancellationToken cancellationToken)
     {
-        RejectedToken => throw InvalidTokenException.GoogleTokenRejected(),
-        UnavailableToken => throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh Google ID token lúc này."),
-        _ when _payloads.TryGetValue(idToken, out var payload) => Task.FromResult(payload),
-        _ => throw InvalidTokenException.GoogleTokenRejected(),
-    };
+        if (idToken == RejectedToken)
+        {
+            throw InvalidTokenException.GoogleTokenRejected();
+        }
+
+        if (idToken == UnavailableToken)
+        {
+            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh Google ID token lúc này.");
+        }
+
+        return _payloads.TryGetValue(idToken, out var payload)
+            ? Task.FromResult(payload)
+            : throw InvalidTokenException.GoogleTokenRejected();
+    }
+
+    private static string CreateTestToken(string signature) =>
+        $"{Encode("{\"alg\":\"HS256\"}")}.{Encode("{}")}.{Encode(signature)}";
+
+    private static string Encode(string value) =>
+        Convert.ToBase64String(Encoding.UTF8.GetBytes(value)).TrimEnd('=').Replace('+', '-').Replace('/', '_');
 }

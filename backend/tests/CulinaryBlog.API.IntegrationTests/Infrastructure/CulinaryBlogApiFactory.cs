@@ -203,6 +203,7 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
         builder.UseSetting("Hangfire:ServerEnabled", "false");
         builder.UseSetting("Hangfire:WorkerOnly", "false");
         builder.UseSetting("Hangfire:DashboardGateSecret", TestDataSeeder.HangfireGateSecret);
+        builder.UseSetting("RateLimiting:Enabled", "false");
 
         builder.ConfigureServices(services =>
         {

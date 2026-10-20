@@ -11,6 +11,7 @@ namespace CulinaryBlog.Application.Features.Auth;
 /// </summary>
 public sealed class AuthResponseFactory(
     ITokenService tokenService,
+    IIdentityService identityService,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
 {
@@ -18,51 +19,25 @@ public sealed class AuthResponseFactory(
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        var refreshToken = tokenService.CreateRefreshToken();
-        var session = RefreshToken.Create(user.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress);
-
-        await unitOfWork.Users.AddRefreshTokenAsync(session, cancellationToken).ConfigureAwait(false);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        return Build(user, session, refreshToken.RawToken);
-    }
-
-    /// <summary>
-    /// FR-AUTH-004 bước 5–8 — Token Rotation trong MỘT transaction: thu hồi token cũ với
-    /// <c>ReplacedByTokenHash = SHA256(token mới)</c> (MT-15, không bao giờ lưu token gốc) và lưu bản ghi token mới.
-    /// Thu hồi là UPDATE có điều kiện <c>RevokedAt IS NULL</c>: hai request refresh cùng một token chạy song song thì chỉ
-    /// một request xoay vòng được, request kia nhận 401 thay vì rẽ đôi token family.
-    /// </summary>
-    public async Task<AuthResponseDto> RotateAsync(
-        IdentityUserInfo user,
-        Guid currentTokenId,
-        string? ipAddress,
-        CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-
-        var refreshToken = tokenService.CreateRefreshToken();
-        var now = timeProvider.GetUtcNow().UtcDateTime;
-        RefreshToken? session = null;
-
-        await unitOfWork.ExecuteInTransactionAsync(
+        return await unitOfWork.Users.ExecuteForUserAsync(
+            user.Id,
             async ct =>
             {
-                var revoked = await unitOfWork.Users
-                    .RevokeRefreshTokenIfActiveAsync(currentTokenId, now, refreshToken.TokenHash, ct)
-                    .ConfigureAwait(false);
-                if (!revoked)
+                // Login/Google may have read the user before a concurrent disable committed.
+                var current = await identityService.FindByIdAsync(user.Id, ct).ConfigureAwait(false)
+                    ?? throw new InvalidTokenException();
+                if (!current.IsActive)
                 {
-                    throw InvalidTokenException.RefreshTokenRevoked();
+                    throw new AccountDisabledException();
                 }
 
-                session = RefreshToken.Create(user.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, now, ipAddress);
+                var refreshToken = tokenService.CreateRefreshToken();
+                var session = RefreshToken.Create(current.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress);
                 await unitOfWork.Users.AddRefreshTokenAsync(session, ct).ConfigureAwait(false);
                 await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
+                return Build(current, session, refreshToken.RawToken);
             },
             cancellationToken).ConfigureAwait(false);
-
-        return Build(user, session!, refreshToken.RawToken);
     }
 
     private AuthResponseDto Build(IdentityUserInfo user, RefreshToken session, string rawRefreshToken)

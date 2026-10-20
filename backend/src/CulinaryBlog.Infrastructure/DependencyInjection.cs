@@ -76,7 +76,7 @@ public static class DependencyInjection
             services.AddScoped(typeof(IPersistenceExceptionTranslator), translator);
         }
 
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<CulinaryBlog.Application.Common.Interfaces.Persistence.IUserRepository, UserRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
         services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();

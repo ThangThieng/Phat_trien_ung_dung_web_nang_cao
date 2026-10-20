@@ -9,11 +9,20 @@ namespace CulinaryBlog.Application.Common.Interfaces.Persistence;
 /// Ghi người dùng (tạo, liên kết Google, khóa) luôn qua <c>IIdentityService</c> → <c>UserManager</c> vì UserManager còn
 /// chuẩn hóa NormalizedEmail/UserName, đổi SecurityStamp, đếm lockout — ghi thẳng AspNetUsers sẽ bỏ sót.
 /// Không kế thừa <see cref="IRepository{TEntity}"/>: ApplicationUser (Identity, Infrastructure) và RefreshToken (SRS §7.8)
-/// đều không phải BaseEntity. Thay IRefreshTokenRepository của Buổi 2 (Buổi 3 — Dev 1); Buổi 4 bổ sung các thao tác
-/// của refresh rotation, khóa tài khoản và danh sách phiên — một repository cho cả bốn nhu cầu.
+/// đều không phải BaseEntity. Repository chuẩn của Buổi 3–4 bao gồm refresh rotation, khóa tài khoản và danh sách
+/// phiên để mọi thao tác Auth đi qua cùng một <c>IUnitOfWork.Users</c>.
 /// </summary>
 public interface IUserRepository
 {
+    /// <summary>
+    /// Chạy thao tác token trong transaction có khóa hàng người dùng PostgreSQL. Mọi phát hành, xoay vòng và thu hồi
+    /// token của cùng một người dùng đi qua điểm phối hợp này.
+    /// </summary>
+    Task<T> ExecuteForUserAsync<T>(
+        string userId,
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken cancellationToken = default);
+
     Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default);
 
     /// <summary>Refresh token (được EF theo dõi) của đúng <paramref name="userId"/> — dùng cho đăng xuất (FR-AUTH-005).</summary>
@@ -35,6 +44,13 @@ public interface IUserRepository
     /// <summary>Thu hồi MỌI refresh token còn hiệu lực của người dùng (reuse detection, khóa tài khoản, đăng xuất mọi thiết bị).</summary>
     /// <returns>Số token vừa bị thu hồi.</returns>
     Task<int> RevokeAllRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default);
+
+    /// <summary>Thu hồi token được dùng lại và mọi hậu duệ của nó, không ảnh hưởng token family độc lập.</summary>
+    Task RevokeRefreshTokenFamilyAsync(
+        string userId,
+        string startingTokenHash,
+        DateTime utcNow,
+        CancellationToken cancellationToken = default);
 
     /// <summary>FR-AUTH-009: phiên còn hiệu lực (<c>RevokedAt IS NULL AND ExpiresAt &gt; now</c>), mới nhất trước.</summary>
     Task<IReadOnlyList<RefreshToken>> GetActiveRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default);

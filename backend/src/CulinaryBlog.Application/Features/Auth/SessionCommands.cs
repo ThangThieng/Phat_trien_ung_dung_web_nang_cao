@@ -39,15 +39,24 @@ public sealed class RevokeSessionCommandHandler(ICurrentUser currentUser, IUnitO
         ArgumentNullException.ThrowIfNull(request);
 
         var userId = currentUser.UserId ?? throw new InvalidTokenException();
-        var token = await unitOfWork.Users.GetRefreshTokenByIdAsync(userId, request.SessionId, cancellationToken).ConfigureAwait(false);
-        if (token is null)
-        {
-            return false;
-        }
+        return await unitOfWork.Users.ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                var token = await unitOfWork.Users.GetRefreshTokenByIdAsync(userId, request.SessionId, ct).ConfigureAwait(false);
+                if (token is null)
+                {
+                    return false;
+                }
 
-        token.Revoke(timeProvider.GetUtcNow().UtcDateTime);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return true;
+                await unitOfWork.Users.RevokeRefreshTokenIfActiveAsync(
+                    token.Id,
+                    timeProvider.GetUtcNow().UtcDateTime,
+                    replacedByTokenHash: null,
+                    ct).ConfigureAwait(false);
+                return true;
+            },
+            cancellationToken).ConfigureAwait(false);
     }
 }
 
@@ -60,8 +69,16 @@ public sealed class RevokeAllSessionsCommandHandler(ICurrentUser currentUser, IU
     public async Task Handle(RevokeAllSessionsCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId ?? throw new InvalidTokenException();
-        await unitOfWork.Users
-            .RevokeAllRefreshTokensAsync(userId, timeProvider.GetUtcNow().UtcDateTime, cancellationToken)
-            .ConfigureAwait(false);
+        await unitOfWork.Users.ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                await unitOfWork.Users.RevokeAllRefreshTokensAsync(
+                    userId,
+                    timeProvider.GetUtcNow().UtcDateTime,
+                    ct).ConfigureAwait(false);
+                return true;
+            },
+            cancellationToken).ConfigureAwait(false);
     }
 }

@@ -64,15 +64,15 @@ public class RefreshTokenEndpointsTests(CulinaryBlogApiFactory factory) : IAsync
         var reuse = await AuthApi.RefreshAsync(client, registered.RefreshToken);
         await reuse.ShouldBeProblemAsync(HttpStatusCode.Unauthorized, ErrorCodes.AuthRefreshTokenRevoked);
 
-        // Token mới nhất của kẻ trộm/nạn nhân và phiên ở thiết bị khác đều đã chết.
+        // Chỉ họ token bị tái sử dụng bị thu hồi; thiết bị khác thuộc họ độc lập vẫn sống.
         var afterReuse = await AuthApi.RefreshAsync(client, rotated.RefreshToken);
         await afterReuse.ShouldBeProblemAsync(HttpStatusCode.Unauthorized, ErrorCodes.AuthRefreshTokenRevoked);
         var otherDevice = await AuthApi.RefreshAsync(client, secondDevice.RefreshToken);
-        await otherDevice.ShouldBeProblemAsync(HttpStatusCode.Unauthorized, ErrorCodes.AuthRefreshTokenRevoked);
+        Assert.Equal(HttpStatusCode.OK, otherDevice.StatusCode);
 
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
-        Assert.False(await db.RefreshTokens.AnyAsync(t => t.UserId == registered.User.Id && t.RevokedAt == null));
+        Assert.True(await db.RefreshTokens.AnyAsync(t => t.UserId == registered.User.Id && t.RevokedAt == null));
     }
 
     [Fact]
