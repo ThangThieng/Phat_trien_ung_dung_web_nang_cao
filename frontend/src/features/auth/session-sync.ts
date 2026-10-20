@@ -20,6 +20,17 @@ export async function refreshSession(
 ): Promise<string> {
   const run = async () => {
     await store.persist.rehydrate();
+    let persistedSession: string | null = null;
+    let storageAvailable = true;
+    try {
+      persistedSession = window.localStorage.getItem('culinaryblog.auth');
+    } catch {
+      storageAvailable = false;
+    }
+    if (storageAvailable && persistedSession === null) {
+      store.getState().clear();
+      throw new Error('No refresh token');
+    }
     const { refreshToken } = store.getState();
     if (!refreshToken) throw new Error('No refresh token');
 
@@ -39,7 +50,7 @@ export function subscribeToSessionStorage(store: AuthStore, onRemoteLogout?: () 
   if (typeof window === 'undefined') return () => undefined;
 
   const onStorage = (event: StorageEvent) => {
-    if (event.storageArea !== window.localStorage || event.key !== 'culinaryblog.auth') return;
+    if ((event.storageArea && event.storageArea !== window.localStorage) || event.key !== 'culinaryblog.auth') return;
     if (event.newValue === null) {
       store.getState().clear();
       onRemoteLogout?.();

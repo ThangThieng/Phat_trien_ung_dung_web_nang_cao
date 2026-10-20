@@ -40,21 +40,38 @@ function isLegacySession(value: unknown): value is PersistedSession {
 /** Converts the Buổi 4 raw session shape into Zustand's `{ state, version }` envelope and drops any old access token. */
 export const legacyAwareLocalStorage: StateStorage = {
   getItem: (name) => {
-    const raw = window.localStorage.getItem(name);
+    let raw: string | null;
+    try {
+      raw = window.localStorage.getItem(name);
+    } catch {
+      return null;
+    }
     if (!raw || name !== AUTH_STORAGE_KEY) return raw;
     try {
       const parsed: unknown = JSON.parse(raw);
       if (!isLegacySession(parsed) || ('state' in parsed)) return raw;
       const migrated = JSON.stringify({ state: { refreshToken: parsed.refreshToken, user: parsed.user }, version: 1 });
-      window.localStorage.setItem(name, migrated);
+      try {
+        window.localStorage.setItem(name, migrated);
+      } catch {
+        return null;
+      }
       return migrated;
     } catch {
-      window.localStorage.removeItem(name);
+      try {
+        window.localStorage.removeItem(name);
+      } catch {
+        // Storage can be disabled in private browsing; retain the in-memory session.
+      }
       return null;
     }
   },
-  setItem: (name, value) => window.localStorage.setItem(name, value),
-  removeItem: (name) => window.localStorage.removeItem(name),
+  setItem: (name, value) => {
+    try { window.localStorage.setItem(name, value); } catch { /* memory-only session */ }
+  },
+  removeItem: (name) => {
+    try { window.localStorage.removeItem(name); } catch { /* memory-only session */ }
+  },
 };
 
 export type AuthStore = StoreApi<AuthStoreState> & {

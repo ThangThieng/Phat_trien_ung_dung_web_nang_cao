@@ -10,7 +10,8 @@ export function buildContentSecurityPolicy(nonce: string, development = process.
   return [
     "default-src 'self'",
     `script-src ${scriptSources.join(' ')}`,
-    "style-src 'self' https://fonts.googleapis.com",
+    // Next and Google Identity inject runtime style attributes; this does not relax script execution.
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https://lh3.googleusercontent.com",
     "connect-src 'self' https://accounts.google.com",

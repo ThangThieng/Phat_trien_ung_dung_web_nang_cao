@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import FormField from '@/components/shared/FormField';
 import { getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
+import { toSafeInternalPath } from '@/lib/safe-redirect';
 import { useAuth } from '../auth-context';
 import { loginSchema, type LoginFormValues } from '../schemas';
 import GoogleSignIn from './GoogleSignIn';
@@ -14,9 +15,7 @@ import GoogleSignIn from './GoogleSignIn';
 const LOGIN_FIELDS = ['email', 'password'] as const;
 
 /** Chỉ cho phép redirect nội bộ (chống open redirect). Dùng chung với `AuthCard`. */
-export function safeCallbackUrl(value: string | null): string {
-  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/recipes';
-}
+export const safeCallbackUrl = toSafeInternalPath;
 
 export default function LoginForm() {
   const { login } = useAuth();
