@@ -4,6 +4,7 @@ using System.Text.Json;
 using CulinaryBlog.API.Extensions;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Middleware.ExceptionMapping;
+using CulinaryBlog.API.OpenApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
@@ -233,7 +234,7 @@ public sealed class SecurityMiddlewareTests
         builder.Services.AddUrlSegmentVersioning();
         builder.Services.AddProblemDetails();
         builder.Services.AddSingleton(ExceptionStatusMap.FromAssembly(typeof(GlobalExceptionMiddleware).Assembly));
-        builder.Services.AddVersionedOpenApi();
+        builder.Services.AddCulinaryOpenApi();
         builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddTrustedForwardedHeaders(builder.Configuration);
         builder.Services.AddSecurityCors(builder.Configuration);

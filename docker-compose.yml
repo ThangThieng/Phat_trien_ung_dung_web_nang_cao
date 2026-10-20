@@ -64,6 +64,9 @@ services:
       Seed__Enabled: "true"
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
       Seed__AuthorPassword: ${SEED_AUTHOR_PASSWORD}
+      # NFR-MAINT-003 (Buổi 5 — Dev 2): Scalar /scalar/v1 + /openapi/v1.json bật ở compose dev; appsettings.Development.json
+      # không vào image (.dockerignore) nên phải bật bằng biến môi trường. docker-compose.prod.yml (Buổi 7) tắt.
+      OpenApi__Enabled: "true"
     volumes:
       - dpkeys:/home/app/dpkeys
     depends_on:

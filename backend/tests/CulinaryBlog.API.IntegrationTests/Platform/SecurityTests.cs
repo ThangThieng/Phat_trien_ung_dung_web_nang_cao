@@ -138,7 +138,11 @@ public sealed class SecurityTests(CulinaryBlogApiFactory factory) : IAsyncLifeti
         using var json = JsonDocument.Parse(await document.Content.ReadAsStringAsync().ConfigureAwait(true));
         foreach (var path in json.RootElement.GetProperty("paths").EnumerateObject())
         {
-            Assert.StartsWith("/api/v1/", path.Name, StringComparison.Ordinal);
+            // Tài liệu v1 có cả ba endpoint health (SRS mục 8.7, ngoài nhóm API) và mọi route có phiên bản đều đã chuẩn hóa sang v1
+            Assert.True(
+                path.Name.StartsWith("/api/v1/", StringComparison.Ordinal) || path.Name.StartsWith("/health", StringComparison.Ordinal),
+                $"Đường dẫn ngoài /api/v1 và /health: {path.Name}");
+            Assert.DoesNotContain("{version", path.Name, StringComparison.Ordinal);
         }
 
         var refresh = json.RootElement.GetProperty("paths").GetProperty("/api/v1/auth/refresh").GetProperty("post");

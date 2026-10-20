@@ -19,6 +19,7 @@ public static class AuthEndpoints
         group.MapPost("/register", RegisterAsync)
             .WithName("Register")
             .WithSummary("FR-AUTH-001 – Đăng ký tài khoản (role Author, tự động đăng nhập)")
+            .WithDescription("FR-AUTH-001 — SRS §8.1. Tạo tài khoản Author và trả access/refresh token.")
             .Produces<AuthResponseDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status409Conflict);
@@ -26,6 +27,7 @@ public static class AuthEndpoints
         group.MapPost("/login", LoginAsync)
             .WithName("Login")
             .WithSummary("FR-AUTH-002 – Đăng nhập Email/Mật khẩu")
+            .WithDescription("FR-AUTH-002 — SRS §8.1. Xác thực email/mật khẩu và tạo phiên đăng nhập.")
             .Produces<AuthResponseDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -35,6 +37,7 @@ public static class AuthEndpoints
         group.MapPost("/google", GoogleLoginAsync)
             .WithName("GoogleLogin")
             .WithSummary("FR-AUTH-003 – Đăng nhập hoặc đăng ký bằng Google ID Token")
+            .WithDescription("FR-AUTH-003 — SRS §8.1. Xác minh Google ID token rồi đăng nhập hoặc tạo tài khoản.")
             .Produces<AuthResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
@@ -46,6 +49,7 @@ public static class AuthEndpoints
             .AllowAnonymous()
             .WithName("RefreshToken")
             .WithSummary("FR-AUTH-004 – Làm mới access token (Token Rotation + Reuse Detection)")
+            .WithDescription("FR-AUTH-004 — SRS §8.1. Xoay refresh token và phát hiện token bị tái sử dụng.")
             .Produces<AuthResponseDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
@@ -55,6 +59,7 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("Logout")
             .WithSummary("FR-AUTH-005 – Thu hồi refresh token của phiên hiện tại")
+            .WithDescription("FR-AUTH-005 — SRS §8.1. Thu hồi refresh token được gửi trong body.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
@@ -62,6 +67,7 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("GetCurrentUser")
             .WithSummary("FR-AUTH-006 – Hồ sơ của người đang đăng nhập")
+            .WithDescription("FR-AUTH-006 — SRS §8.1. Trả hồ sơ và vai trò từ nguồn dữ liệu phía server.")
             .Produces<UserProfileDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
@@ -69,6 +75,7 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("UpdateCurrentUser")
             .WithSummary("FR-AUTH-007 – Cập nhật hồ sơ (displayName, avatarUrl, bio)")
+            .WithDescription("FR-AUTH-007 — SRS §8.1. Cập nhật từng phần thông tin hồ sơ công khai.")
             .Produces<UserProfileDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
@@ -77,6 +84,7 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("GetMySessions")
             .WithSummary("FR-AUTH-009 – Danh sách phiên đăng nhập của chính mình")
+            .WithDescription("FR-AUTH-009 — SRS §8.1. Dữ liệu riêng tư, response không được cache.")
             .Produces<IReadOnlyList<SessionDto>>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
@@ -84,6 +92,7 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("RevokeSession")
             .WithSummary("FR-AUTH-009 – Thu hồi một phiên (404 nếu không tồn tại hoặc thuộc người khác)")
+            .WithDescription("FR-AUTH-009 — SRS §8.1. Chỉ thu hồi phiên thuộc người dùng hiện tại.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound);
@@ -92,6 +101,7 @@ public static class AuthEndpoints
             .RequireAuthorization()
             .WithName("RevokeAllSessions")
             .WithSummary("FR-AUTH-009 – Đăng xuất trên mọi thiết bị (kể cả phiên hiện tại)")
+            .WithDescription("FR-AUTH-009 — SRS §8.1. Thu hồi toàn bộ phiên của người dùng hiện tại.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 

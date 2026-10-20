@@ -15,11 +15,13 @@ public static class CategoriesEndpoints
         group.MapGet("/", GetCategoriesAsync)
             .WithName("GetCategories")
             .WithSummary("FR-CAT-001 – Danh sách danh mục (Redis cache 30 phút)")
+            .WithDescription("FR-CAT-001 — SRS §8.2. Trả danh mục công khai theo thứ tự hiển thị, kèm số công thức Published.")
             .Produces<IReadOnlyList<CategoryDto>>();
 
         group.MapGet("/{slug}", GetCategoryBySlugAsync)
             .WithName("GetCategoryBySlug")
             .WithSummary("FR-CAT-002 – Chi tiết danh mục + công thức Published phân trang (sortBy/sortOrder)")
+            .WithDescription("FR-CAT-002 — SRS §8.2. Trả chi tiết danh mục và danh sách công thức Published có phân trang.")
             .Produces<CategoryDetailDto>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound);
@@ -27,6 +29,7 @@ public static class CategoriesEndpoints
         group.MapPost("/", CreateCategoryAsync)
             .WithName("CreateCategory")
             .WithSummary("FR-CAT-003 – Tạo danh mục, slug tự sinh (Admin)")
+            .WithDescription("FR-CAT-003 — SRS §8.2. Admin tạo danh mục mới; slug được sinh từ tên và phải duy nhất.")
             .RequireAuthorization(AuthorizationPolicies.Admin)
             .Produces<CategoryDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem()
@@ -37,6 +40,7 @@ public static class CategoriesEndpoints
         group.MapPut("/{id:guid}", UpdateCategoryAsync)
             .WithName("UpdateCategory")
             .WithSummary("FR-CAT-004 – Cập nhật danh mục, slug không đổi (Admin)")
+            .WithDescription("FR-CAT-004 — SRS §8.2. Admin cập nhật metadata danh mục nhưng giữ nguyên slug.")
             .RequireAuthorization(AuthorizationPolicies.Admin)
             .Produces<CategoryDto>()
             .ProducesValidationProblem()
@@ -48,6 +52,7 @@ public static class CategoriesEndpoints
         group.MapDelete("/{id:guid}", DeleteCategoryAsync)
             .WithName("DeleteCategory")
             .WithSummary("FR-CAT-005 – Xóa mềm danh mục, chặn khi còn công thức (Admin)")
+            .WithDescription("FR-CAT-005 — SRS §8.2. Admin xóa mềm danh mục khi không còn công thức tham chiếu.")
             .RequireAuthorization(AuthorizationPolicies.Admin)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized)

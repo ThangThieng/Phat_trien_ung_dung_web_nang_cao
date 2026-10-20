@@ -23,6 +23,7 @@ public static class RecipeQueryEndpoints
         recipes.MapGet("/", GetRecipesAsync)
             .WithName("GetRecipes")
             .WithSummary("FR-RCP-001 – Danh sách công thức Published (phân trang, lọc, sắp xếp sortBy/sortOrder)")
+            .WithDescription("FR-RCP-001 — SRS §8.3. Trả công thức Published theo bộ lọc, phân trang và cặp sortBy/sortOrder.")
             .Produces<PagedResult<RecipeSummaryDto>>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
@@ -30,6 +31,7 @@ public static class RecipeQueryEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("GetMyRecipes")
             .WithSummary("FR-RCP-011 – Công thức của chính mình ở mọi trạng thái (không cache; authorId chỉ dành cho Admin)")
+            .WithDescription("FR-RCP-011 — SRS §8.3. Author xem công thức của mình; Admin có thể lọc theo authorId; luôn no-store.")
             .Produces<PagedResult<RecipeSummaryDto>>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
@@ -39,6 +41,7 @@ public static class RecipeQueryEndpoints
             .RequireAuthorization(AuthorizationPolicies.Author)
             .WithName("GetMyRecipeById")
             .WithSummary("CR-2026-04 (d) – Chi tiết một công thức của mình ở mọi trạng thái, kèm rowVersion + ETag (trang sửa)")
+            .WithDescription("FR-RCP-004 — SRS §8.3. Owner hoặc Admin đọc bản riêng tư theo id để chỉnh sửa với optimistic concurrency.")
             .Produces<RecipeDetailDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound);
@@ -46,17 +49,20 @@ public static class RecipeQueryEndpoints
         recipes.MapGet("/search", SearchRecipesAsync)
             .WithName("SearchRecipes")
             .WithSummary("FR-SRCH-001 – Tìm kiếm toàn văn tiếng Việt không dấu (chỉ Published, xếp theo ts_rank)")
+            .WithDescription("FR-SRCH-001 — SRS §8.3. Tìm kiếm toàn văn công thức Published, chuẩn hóa tiếng Việt và xếp theo độ liên quan.")
             .Produces<PagedResult<RecipeSearchResultDto>>()
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         recipes.MapGet("/sitemap", GetSitemapAsync)
             .WithName("GetRecipeSitemap")
             .WithSummary("MT-48 – { slug, updatedAt } của mọi công thức Published cho sitemap.xml (cache 1 giờ)")
+            .WithDescription("NFR-SEO-003 — SRS §8.3. Trả slug và thời điểm cập nhật của mọi công thức Published cho sitemap.")
             .Produces<IReadOnlyList<RecipeSitemapEntryDto>>();
 
         recipes.MapGet("/{slug}", GetRecipeBySlugAsync)
             .WithName("GetRecipeBySlug")
             .WithSummary("FR-RCP-002 – Chi tiết công thức Published theo slug (Draft/Archived → 404)")
+            .WithDescription("FR-RCP-002 — SRS §8.3. Trả chi tiết công thức Published theo slug; trạng thái riêng tư được che bằng 404.")
             .Produces<RecipeDetailDto>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
