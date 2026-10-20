@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { RECIPE_DIFFICULTIES, type CreateRecipeRequest } from '@/types/recipe';
 
-export const DIFFICULTIES = ['Easy', 'Medium', 'Hard', 'Expert'] as const;
+export const DIFFICULTIES = RECIPE_DIFFICULTIES;
 
 /** Cột Nutrition_* là numeric(8,2) – mirror NutritionInputValidator (backend). */
 export const NUTRITION_MAX = 999_999.99;
@@ -80,7 +81,7 @@ export const RECIPE_BASICS_FIELDS = [
 const toOptional = (value: number) => (Number.isNaN(value) ? null : value);
 
 /** Chuyển giá trị form sang body POST /recipes (nutrition chỉ gửi khi có ít nhất một chỉ số). */
-export function toCreateRecipeRequest(values: RecipeBasicsValues) {
+export function toCreateRecipeRequest(values: RecipeBasicsValues): CreateRecipeRequest {
   const nutrition = {
     calories: toOptional(values.calories),
     protein: toOptional(values.protein),
@@ -104,4 +105,4 @@ export function toCreateRecipeRequest(values: RecipeBasicsValues) {
   };
 }
 
-export type CreateRecipeRequest = ReturnType<typeof toCreateRecipeRequest>;
+export type { CreateRecipeRequest } from '@/types/recipe';

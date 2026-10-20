@@ -19,8 +19,6 @@ public sealed class IdentityService(
     UserManager<ApplicationUser> userManager,
     IUserNameGenerator userNameGenerator,
     IUnitOfWork unitOfWork,
-    CulinaryBlog.Infrastructure.Persistence.CulinaryBlogDbContext db,
-    IRefreshTokenRepository refreshTokens,
     TimeProvider timeProvider) : IIdentityService
 {
     private const string GoogleProvider = "Google";
@@ -192,7 +190,7 @@ public sealed class IdentityService(
 
     public async Task<IdentityUserInfo?> SetActiveAsync(string userId, bool isActive, CancellationToken cancellationToken)
     {
-        var user = await refreshTokens.ExecuteForUserAsync(
+        var user = await unitOfWork.Users.ExecuteForUserAsync(
             userId,
             async ct =>
             {
@@ -210,8 +208,10 @@ public sealed class IdentityService(
 
                 if (!isActive)
                 {
-                    await refreshTokens.RevokeAllForUserAsync(userId, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
-                    await db.SaveChangesAsync(ct).ConfigureAwait(false);
+                    await unitOfWork.Users.RevokeAllRefreshTokensAsync(
+                        userId,
+                        timeProvider.GetUtcNow().UtcDateTime,
+                        ct).ConfigureAwait(false);
                 }
 
                 return target;

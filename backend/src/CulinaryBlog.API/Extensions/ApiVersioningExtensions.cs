@@ -25,33 +25,6 @@ public static class ApiVersioningExtensions
         return app.MapGroup(RouteTemplate).WithApiVersionSet(versions).MapToApiVersion(new ApiVersion(1, 0));
     }
 
-    public static IServiceCollection AddVersionedOpenApi(this IServiceCollection services)
-    {
-        services.AddOpenApi("v1", options => options.AddDocumentTransformer((document, context, ct) =>
-        {
-            foreach (var path in document.Paths.ToArray())
-            {
-                var canonical = path.Key.Replace("{version:apiVersion}", "1", StringComparison.Ordinal)
-                    .Replace("{version}", "1", StringComparison.Ordinal);
-                if (canonical != path.Key)
-                {
-                    document.Paths.Remove(path.Key);
-                    document.Paths.Add(canonical, path.Value);
-                    if (path.Value.Operations is not null)
-                    {
-                        foreach (var operation in path.Value.Operations.Values.Where(operation => operation.Parameters is not null))
-                        {
-                            operation.Parameters = operation.Parameters!.Where(parameter => parameter.Name != "version").ToList();
-                        }
-                    }
-                }
-            }
-
-            return Task.CompletedTask;
-        }));
-        return services;
-    }
-
     public static IApplicationBuilder UseUnsupportedVersionContract(this IApplicationBuilder app) => app.Use(async (context, next) =>
     {
         var segments = context.Request.Path.Value?.Split('/', StringSplitOptions.RemoveEmptyEntries) ?? [];

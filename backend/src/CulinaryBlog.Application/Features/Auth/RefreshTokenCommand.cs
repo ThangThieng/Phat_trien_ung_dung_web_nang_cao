@@ -32,7 +32,6 @@ public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshToke
 /// </summary>
 public sealed partial class RefreshTokenCommandHandler(
     ITokenService tokenService,
-    IRefreshTokenRepository refreshTokens,
     IIdentityService identityService,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider,
@@ -42,7 +41,7 @@ public sealed partial class RefreshTokenCommandHandler(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var token = await refreshTokens.GetByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken)
+        var token = await unitOfWork.Users.GetRefreshTokenByHashAsync(tokenService.HashToken(request.RefreshToken), cancellationToken)
             .ConfigureAwait(false) ?? throw new InvalidTokenException();
 
         var now = timeProvider.GetUtcNow().UtcDateTime;
@@ -51,7 +50,7 @@ public sealed partial class RefreshTokenCommandHandler(
             throw InvalidTokenException.RefreshTokenExpired();
         }
 
-        var response = await refreshTokens.ExecuteForUserAsync<AuthResponseDto?>(
+        var response = await unitOfWork.Users.ExecuteForUserAsync<AuthResponseDto?>(
             token.UserId,
             async ct =>
             {
@@ -86,11 +85,18 @@ public sealed partial class RefreshTokenCommandHandler(
 
                 var replacement = tokenService.CreateRefreshToken();
                 var session = RefreshToken.Create(user.Id, replacement.TokenHash, replacement.ExpiresAt, now, request.IpAddress);
-                if (!await refreshTokens.TryRotateAsync(token, session, now, ct).ConfigureAwait(false))
+                if (!await unitOfWork.Users.RevokeRefreshTokenIfActiveAsync(
+                        token.Id,
+                        now,
+                        replacement.TokenHash,
+                        ct).ConfigureAwait(false))
                 {
                     await RevokeReusedFamilyAsync(token, now, ct).ConfigureAwait(false);
                     return null;
                 }
+
+                await unitOfWork.Users.AddRefreshTokenAsync(session, ct).ConfigureAwait(false);
+                await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
 
                 var accessToken = tokenService.CreateAccessToken(user, session.Id);
                 return new AuthResponseDto(accessToken.Token, replacement.RawToken, accessToken.ExpiresAt, accessToken.ExpiresInSeconds, user.ToDto());
@@ -108,8 +114,7 @@ public sealed partial class RefreshTokenCommandHandler(
 
     private async Task RevokeReusedFamilyAsync(RefreshToken token, DateTime now, CancellationToken cancellationToken)
     {
-        await refreshTokens.RevokeFamilyAsync(token.UserId, token.TokenHash, now, cancellationToken).ConfigureAwait(false);
-        await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        await unitOfWork.Users.RevokeRefreshTokenFamilyAsync(token.UserId, token.TokenHash, now, cancellationToken).ConfigureAwait(false);
     }
 
     [LoggerMessage(

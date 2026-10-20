@@ -77,7 +77,6 @@ public static class DependencyInjection
         }
 
         services.AddScoped<CulinaryBlog.Application.Common.Interfaces.Persistence.IUserRepository, UserRepository>();
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IRecipeReadRepository, RecipeReadRepository>();
         services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();

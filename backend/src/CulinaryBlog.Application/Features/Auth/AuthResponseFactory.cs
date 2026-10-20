@@ -11,7 +11,6 @@ namespace CulinaryBlog.Application.Features.Auth;
 /// </summary>
 public sealed class AuthResponseFactory(
     ITokenService tokenService,
-    IRefreshTokenRepository refreshTokens,
     IIdentityService identityService,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
@@ -20,7 +19,7 @@ public sealed class AuthResponseFactory(
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        return await refreshTokens.ExecuteForUserAsync(
+        return await unitOfWork.Users.ExecuteForUserAsync(
             user.Id,
             async ct =>
             {
@@ -34,7 +33,7 @@ public sealed class AuthResponseFactory(
 
                 var refreshToken = tokenService.CreateRefreshToken();
                 var session = RefreshToken.Create(current.Id, refreshToken.TokenHash, refreshToken.ExpiresAt, timeProvider.GetUtcNow().UtcDateTime, ipAddress);
-                await refreshTokens.AddAsync(session, ct).ConfigureAwait(false);
+                await unitOfWork.Users.AddRefreshTokenAsync(session, ct).ConfigureAwait(false);
                 await unitOfWork.SaveChangesAsync(ct).ConfigureAwait(false);
                 return Build(current, session, refreshToken.RawToken);
             },

@@ -2,7 +2,9 @@ using System.Globalization;
 using System.Threading.RateLimiting;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.Application.Common.Exceptions;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
 
 namespace CulinaryBlog.API.Extensions;
 
@@ -85,25 +87,60 @@ public sealed class SecurityRateLimits : IDisposable
 
 public sealed record SecurityRateLimitMetadata(string Name);
 
+public sealed class CorsSettings
+{
+    public const string SectionName = "Cors";
+
+    public string[] AllowedOrigins { get; set; } = [];
+}
+
+public sealed class CorsSettingsValidator(IHostEnvironment? environment) : IValidateOptions<CorsSettings>
+{
+    public ValidateOptionsResult Validate(string? name, CorsSettings options)
+    {
+        if (environment?.IsProduction() == true && options.AllowedOrigins.Length == 0)
+        {
+            return ValidateOptionsResult.Fail("Cors:AllowedOrigins must not be empty in Production.");
+        }
+
+        if (options.AllowedOrigins.Any(origin => origin.Contains('*') ||
+            !Uri.TryCreate(origin, UriKind.Absolute, out var uri) ||
+            (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) ||
+            uri.UserInfo.Length > 0 || origin != uri.GetLeftPart(UriPartial.Authority)))
+        {
+            return ValidateOptionsResult.Fail("Cors:AllowedOrigins must contain explicit HTTP(S) origins without paths or wildcards.");
+        }
+
+        return ValidateOptionsResult.Success;
+    }
+}
+
 public static class SecurityExtensions
 {
     public const string CorsPolicy = "ConfiguredOrigins";
 
     public static IServiceCollection AddSecurityCors(this IServiceCollection services, IConfiguration configuration)
     {
-        var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
-        if (origins.Any(origin => origin.Contains('*') || !Uri.TryCreate(origin, UriKind.Absolute, out var uri) ||
-            (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) ||
-            uri.UserInfo.Length > 0 || origin != uri.GetLeftPart(UriPartial.Authority)))
-        {
-            throw new InvalidOperationException("Cors:AllowedOrigins must contain explicit HTTP(S) origins without paths or wildcards.");
-        }
-
-        services.AddCors(options => options.AddPolicy(CorsPolicy, policy => policy
-            .WithOrigins(origins)
-            .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-            .WithHeaders("Content-Type", "Authorization", "X-Correlation-ID", "If-Match")
-            .WithExposedHeaders("X-Correlation-ID", "ETag", "Retry-After", "X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")));
+        services.AddOptions<CorsSettings>()
+            .Bind(configuration.GetSection(CorsSettings.SectionName))
+            .ValidateOnStart();
+        services.AddSingleton<IValidateOptions<CorsSettings>>(provider =>
+            new CorsSettingsValidator(provider.GetService<IHostEnvironment>()));
+        services.AddCors();
+        services.AddOptions<CorsOptions>().Configure<IOptions<CorsSettings>>((options, settings) =>
+            options.AddPolicy(CorsPolicy, policy => policy
+                .WithOrigins(settings.Value.AllowedOrigins)
+                .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                .WithHeaders("Content-Type", "Authorization", "X-Correlation-ID", "If-Match")
+                .WithExposedHeaders(
+                    "X-Correlation-ID",
+                    "ETag",
+                    "Retry-After",
+                    "X-RateLimit-Limit",
+                    "X-RateLimit-Remaining",
+                    "X-RateLimit-Reset",
+                    "api-supported-versions")
+                .SetPreflightMaxAge(TimeSpan.FromMinutes(10))));
         return services;
     }
 

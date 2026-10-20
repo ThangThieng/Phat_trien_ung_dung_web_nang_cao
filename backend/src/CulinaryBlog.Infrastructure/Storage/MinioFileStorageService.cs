@@ -120,12 +120,18 @@ public sealed partial class MinioFileStorageService(
             return false;
         }
 
+        // Uri normalizes dot segments (including percent-encoded variants) before exposing AbsolutePath.
+        // Inspect the caller-supplied representation too, otherwise /bucket/a/%2e%2e/b can look harmless after parsing.
+        var hasDotSegment = Uri.UnescapeDataString(url)
+            .Split('/', StringSplitOptions.None)
+            .Any(segment => segment is "." or "..");
+
         return file.Scheme is "http" or "https" && file.Scheme == bucket.Scheme &&
             string.Equals(file.IdnHost, bucket.IdnHost, StringComparison.OrdinalIgnoreCase) &&
             file.Port == bucket.Port && string.IsNullOrEmpty(file.UserInfo) &&
             file.AbsolutePath.StartsWith(bucket.AbsolutePath, StringComparison.Ordinal) &&
             file.AbsolutePath.Length > bucket.AbsolutePath.Length &&
-            !Uri.UnescapeDataString(file.AbsolutePath).Split('/').Any(segment => segment is "." or "..");
+            !hasDotSegment;
     }
 
     /// <summary>FR-FILE-002: "trích xuất object name từ URL".</summary>

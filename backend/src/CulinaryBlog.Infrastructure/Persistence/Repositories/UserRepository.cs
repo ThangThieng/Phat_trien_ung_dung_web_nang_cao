@@ -16,6 +16,12 @@ public sealed class UserRepository(CulinaryBlogDbContext db) : IUserRepository
     /// <summary>Ký tự đặc biệt của ILIKE được escape bằng "\" (tham số thứ ba của EF.Functions.ILike).</summary>
     private const string LikeEscape = "\\";
 
+    public Task<T> ExecuteForUserAsync<T>(
+        string userId,
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken cancellationToken = default) =>
+        UserTokenTransaction.ExecuteAsync(db, userId, operation, cancellationToken);
+
     public async Task AddRefreshTokenAsync(RefreshToken token, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(token);
@@ -50,6 +56,43 @@ public sealed class UserRepository(CulinaryBlogDbContext db) : IUserRepository
         db.RefreshTokens
             .Where(t => t.UserId == userId && t.RevokedAt == null)
             .ExecuteUpdateAsync(set => set.SetProperty(t => t.RevokedAt, utcNow), cancellationToken);
+
+    public async Task RevokeRefreshTokenFamilyAsync(
+        string userId,
+        string startingTokenHash,
+        DateTime utcNow,
+        CancellationToken cancellationToken = default)
+    {
+        await ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                var visited = new HashSet<string>(StringComparer.Ordinal);
+                string? hash = startingTokenHash;
+                while (hash is not null && visited.Add(hash))
+                {
+                    var rows = await db.RefreshTokens.FromSqlInterpolated(
+                        $"SELECT * FROM \"RefreshTokens\" WHERE \"UserId\" = {userId} AND \"TokenHash\" = {hash} FOR UPDATE")
+                        .AsNoTracking()
+                        .ToListAsync(ct)
+                        .ConfigureAwait(false);
+                    var current = rows.SingleOrDefault();
+                    if (current is null)
+                    {
+                        break;
+                    }
+
+                    await db.RefreshTokens
+                        .Where(token => token.Id == current.Id && token.UserId == userId && token.RevokedAt == null)
+                        .ExecuteUpdateAsync(setters => setters.SetProperty(token => token.RevokedAt, utcNow), ct)
+                        .ConfigureAwait(false);
+                    hash = current.ReplacedByTokenHash;
+                }
+
+                return true;
+            },
+            cancellationToken).ConfigureAwait(false);
+    }
 
     public async Task<IReadOnlyList<RefreshToken>> GetActiveRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default) =>
         await db.RefreshTokens

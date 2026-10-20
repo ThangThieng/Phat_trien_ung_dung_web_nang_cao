@@ -13,8 +13,8 @@ import GoogleSignIn from './GoogleSignIn';
 
 const LOGIN_FIELDS = ['email', 'password'] as const;
 
-/** Chỉ cho phép redirect nội bộ (chống open redirect). */
-function safeCallbackUrl(value: string | null): string {
+/** Chỉ cho phép redirect nội bộ (chống open redirect). Dùng chung với `AuthCard`. */
+export function safeCallbackUrl(value: string | null): string {
   return value && value.startsWith('/') && !value.startsWith('//') ? value : '/recipes';
 }
 

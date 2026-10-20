@@ -25,6 +25,8 @@ export function useSystemHealth() {
     // Mỗi lần poll là một lần đo mới — không thử lại (thử lại chỉ làm chậm việc báo đỏ) và không coi kết quả cũ là "tươi".
     staleTime: 0,
     retry: false,
+    // Lỗi đã hiện bằng chấm đỏ — toast mỗi 30 giây chỉ làm phiền.
+    meta: { suppressGlobalError: true },
   });
 }
 

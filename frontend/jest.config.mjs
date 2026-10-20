@@ -4,7 +4,8 @@ const createJestConfig = nextJest({ dir: './' });
 
 /** @type {import('jest').Config} */
 const config = {
-  testEnvironment: 'jsdom',
+  // jsdom + Fetch API của Node — `ky` (lib/api-client) dựng `Request`/`Response` thật.
+  testEnvironment: '<rootDir>/test-utils/jsdom-fetch-environment.js',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: { '^@/(.*)$': '<rootDir>/src/$1' },
   testPathIgnorePatterns: ['<rootDir>/e2e/', '<rootDir>/.next/'],
