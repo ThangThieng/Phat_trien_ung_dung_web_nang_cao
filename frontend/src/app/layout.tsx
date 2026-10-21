@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
-import { Inter } from 'next/font/google';
+import { Inter, Geist } from 'next/font/google';
+import { cn } from '@/lib/utils';
 import Providers from './providers';
 import './globals.css';
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
 
 // Subset 'vietnamese' để hiển thị đầy đủ dấu tiếng Việt
 const inter = Inter({ subsets: ['latin', 'vietnamese'], variable: '--font-inter' });
@@ -17,7 +21,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
-    <html lang="vi">
+    <html lang="vi" className={cn("font-sans", geist.variable)}>
       <body
         className={`${inter.variable} flex min-h-screen flex-col bg-orange-50/30 font-sans antialiased`}
       >

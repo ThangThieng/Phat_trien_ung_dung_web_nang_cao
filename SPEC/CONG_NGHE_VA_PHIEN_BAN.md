@@ -126,6 +126,10 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | sonner | 2.0.8 | Toast notification (NFR-USE-004) | ➕ |
 | clsx / tailwind-merge | 2.1.1 / 3.6.0 | Gộp className Tailwind | ➕ |
 | lucide-react | 1.44.0 | Icon | ➕ |
+| shadcn/ui (CLI) | 4.21.4 | Chép component Tailwind vào `components/ui/` | ➕ *(cài ở Buổi 6 – Dev 2; không phải phụ thuộc runtime)* |
+| radix-ui | 1.8.1 | Hành vi và accessibility của component shadcn | ➕ *(cài ở Buổi 6 – Dev 2)* |
+| class-variance-authority | 0.7.1 | Biến thể (variant) của component shadcn | ➕ *(cài ở Buổi 6 – Dev 2)* |
+| tw-animate-css | 1.4.0 | Hiệu ứng mở/đóng component shadcn trên Tailwind v4 | ➕ *(cài ở Buổi 6 – Dev 2)* |
 
 > **Đã gỡ ở Buổi 5 (Dev 4):** `next-auth` 5.0.0-beta.32 (Auth.js v5, cài ở Buổi 2 theo SRS v1.0.0). SRS v1.1.0 (MT-11) đã thay luồng này bằng Google Identity Services (`@react-oauth/google`, Buổi 3); trước khi gỡ, `git grep next-auth frontend/src` = 0 chỗ dùng (xem 6.12).
 
@@ -156,10 +160,6 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 | Gói thư viện | Phiên bản (12/10/2026) | Dùng cho | Buổi — Dev | Trạng thái |
 |---|---|---|---|---|
-| `shadcn` (CLI, không phải phụ thuộc runtime) | 4.21.4 | Chép component vào `components/ui/` | B6 (Dev 2) | ➕ |
-| `radix-ui` | 1.8.0 | Hành vi & accessibility của component shadcn (Dialog, DropdownMenu, Select, Tabs…) | B6 (Dev 2, cài qua CLI) | ➕ |
-| `class-variance-authority` | 0.7.1 | Biến thể (variant) của component shadcn | B6 (Dev 2, cài qua CLI) | ➕ |
-| `tw-animate-css` | 1.4.0 | Hiệu ứng mở/đóng của component shadcn trên Tailwind v4 | B6 (Dev 2, cài qua CLI) | ➕ |
 | `Asp.Versioning.Http` | 10.2.3 | API versioning theo URL `/api/v{version}` cho Minimal APIs | B5 (Dev 1) | ➕ |
 | `Asp.Versioning.OpenApi` | 10.2.3 | Tài liệu OpenAPI theo phiên bản cho Scalar `/scalar/v1` | B5 (Dev 1, Dev 2) | ➕ |
 | k6 (công cụ, chạy bằng Docker image `grafana/k6`, không phải gói npm) | ghim tag khi chạy | Load test (NFR-PERF-001/002) | B8 (Dev 4) | ✅ (SRS NFR-PERF-001/002 chỉ định *"k6 smoke test → load test → stress test"*) |
