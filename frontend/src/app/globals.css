@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,5 +127,24 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Lab 7: trình duyệt tự in/lưu PDF; không cần tải thêm thư viện sinh PDF. */
+@media print {
+  [data-recipe-actions],
+  .recipe-breadcrumb,
+  body > header,
+  footer,
+  nav {
+    display: none !important;
+  }
+  article {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  article section,
+  article li {
+    break-inside: avoid;
   }
 }
