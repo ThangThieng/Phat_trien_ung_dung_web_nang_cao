@@ -1,6 +1,7 @@
 # Culinary Blog – Development stack (SRS §6.5)
 # 8 services: nginx, api, frontend, postgres, redis, minio, hangfire, seq  (+ mailhog: profile "dev")
 # Chạy:   cp .env.example .env  &&  docker compose --profile dev up -d --build
+# Production (HTTPS, 3 bản sao api — Buổi 7): docker-compose.prod.yml — cùng project "culinaryblog", không chạy song song với file này.
 
 name: culinaryblog
 
@@ -13,7 +14,9 @@ x-api-env: &api-env
   Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
   Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
   MinIO__Endpoint: http://minio:9000
-  MinIO__PublicBaseUrl: ${MINIO_PUBLIC_URL}/culinary-blog
+  # D-14 (Buổi 7): URL công khai của ảnh = Nginx /media/ → bucket culinary-blog (không còn localhost:9000). Biến mới, có mặc định,
+  # nên file .env cũ (MINIO_PUBLIC_URL) không làm sai URL ảnh.
+  MinIO__PublicBaseUrl: ${MEDIA_PUBLIC_URL:-http://localhost/media}
   MinIO__AccessKey: ${MINIO_ROOT_USER}
   MinIO__SecretKey: ${MINIO_ROOT_PASSWORD}
   MinIO__BucketName: culinary-blog
@@ -105,7 +108,7 @@ services:
       args:
         NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-/api/v1}
         NEXT_PUBLIC_SITE_URL: ${SITE_URL:-http://localhost:3000}
-        NEXT_PUBLIC_MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
+        NEXT_PUBLIC_MINIO_PUBLIC_URL: ${MEDIA_PUBLIC_URL:-http://localhost/media}
         NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     image: culinaryblog-web
     ports:

@@ -9,11 +9,14 @@
 #
 #   ./nginx/generate-htpasswd.sh                 # đọc user/mật khẩu từ .env
 #   ./nginx/generate-htpasswd.sh admin 'MatKhau' # truyền trực tiếp
+#   ENV_FILE=.env.production ./nginx/generate-htpasswd.sh
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 repo_dir=$(dirname "$script_dir")
-env_file="$repo_dir/.env"
+# ENV_FILE=.env.production cho bản production (docker-compose.prod.yml); mặc định .env của bản dev.
+env_file="${ENV_FILE:-$repo_dir/.env}"
+case "$env_file" in /*) ;; *) env_file="$repo_dir/$env_file" ;; esac
 
 user=${1:-}
 password=${2:-}

@@ -1,0 +1,165 @@
+# Các location của Culinary Blog — include trong server cổng 80 (dev) và server cổng 443 (production). Template: envsubst chỉ
+# thay biến HANGFIRE_* (NGINX_ENVSUBST_FILTER), giữ nguyên biến của Nginx ($host, $remote_addr…).
+
+# proxy_pass dùng biến để buộc Nginx phân giải qua resolver ở runtime (MT-50)
+set $api_upstream      http://api:8080;
+set $frontend_upstream http://frontend:3000;
+set $minio_upstream    http://minio:9000;
+
+include /etc/nginx/snippets/security-headers.conf;
+
+# FR-OBS-001 (Buổi 5): /api/health là Route Handler của Next.js (proxy sang /health của API cho Health UI), không
+# phải endpoint của API. Khớp chính xác "=" luôn thắng mọi prefix/regex, nên không rơi vào khối /api/ bên dưới.
+location = /api/health {
+    proxy_pass $frontend_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+
+location /api/ {
+    limit_req zone=api_limit burst=20 nodelay;
+    limit_req_status 429;
+    # Body > 10m: trả RFC 7807 JSON thay vì trang HTML mặc định để Frontend đọc được lỗi
+    error_page 413 @payload_too_large;
+    # FR-OBS-001 / NFR-REL-001: instance API lỗi → thử instance kế tiếp. Vẫn hoạt động với resolver động: khi
+    # "api" phân giải ra nhiều địa chỉ (--scale api=3), Nginx luân phiên và bỏ qua địa chỉ đang lỗi. Mặc định Nginx
+    # KHÔNG gửi lại request không idempotent (POST/PATCH) đã tới upstream, nên không có nguy cơ ghi trùng.
+    proxy_next_upstream error timeout http_502 http_503 http_504;
+    proxy_pass $api_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Correlation-ID $correlation_id;
+}
+
+location @payload_too_large {
+    default_type application/problem+json;
+    return 413 '{"type":"FILE_SIZE_EXCEEDED","title":"Content Too Large","status":413,"detail":"Kích thước file vượt quá giới hạn 5MB."}';
+}
+
+# Retrofit D-14 (Buổi 7): ảnh phục vụ qua đường dẫn công khai /media/ → bucket culinary-blog của MinIO. Trình duyệt và mọi
+# container cùng dùng MỘT địa chỉ ảnh (MinIO__PublicBaseUrl = <site>/media) thay vì localhost:9000 (đúng với trình duyệt, sai với
+# container) — điều kiện để bật lại tối ưu ảnh của next/image (Buổi 8 — Dev 3) và để production đóng cổng 9000 của MinIO. Ảnh
+# cùng origin với trang nên CSP img-src 'self' (Buổi 6) cho phép, không phải nới thêm nguồn nào.
+#
+# Không dùng "proxy_pass $minio_upstream/culinary-blog/;" như kế hoạch phác thảo: khi proxy_pass có biến mà kèm URI, Nginx
+# gửi ĐÚNG URI đó cho mọi request (không nối phần còn lại của đường dẫn) → mọi ảnh thành request tới /culinary-blog/.
+# rewrite ... break + proxy_pass chỉ có biến mới chuyển đúng /media/<key> → /culinary-blog/<key>.
+location = /media/ {
+    # Không cho liệt kê bucket (bucket chỉ cấp s3:GetObject cho khách, nhưng chặn luôn ở đây).
+    return 404;
+}
+
+location /media/ {
+    limit_except GET HEAD {
+        deny all;
+    }
+    rewrite ^/media/(.*)$ /culinary-blog/$1 break;
+    proxy_pass $minio_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Host minio:9000;
+    proxy_set_header Authorization "";
+    proxy_set_header Cookie "";
+
+    proxy_cache media;
+    proxy_cache_key $uri;
+    proxy_cache_valid 200 30d;
+    proxy_cache_valid 404 1m;
+    proxy_cache_lock on;
+    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+
+    # Lỗi của MinIO là XML lộ tên bucket/khóa — đổi thành 404 trống. Khách không có quyền liệt kê nên MinIO trả 403 cho
+    # object không tồn tại.
+    proxy_intercept_errors on;
+    error_page 403 404 = @media_not_found;
+
+    proxy_hide_header Set-Cookie;
+    proxy_hide_header x-amz-request-id;
+    proxy_hide_header x-amz-id-2;
+    proxy_hide_header X-Amz-Bucket-Region;
+    proxy_hide_header Cache-Control;
+    proxy_hide_header Expires;
+
+    # = "expires 30d" + immutable: URL của ảnh không bao giờ trỏ sang nội dung khác (tên object là Guid do server sinh).
+    add_header Cache-Control "public, max-age=2592000, immutable" always;
+    add_header X-Cache-Status $upstream_cache_status always;
+    include /etc/nginx/snippets/security-headers.conf;
+}
+
+location @media_not_found {
+    add_header Cache-Control "no-store" always;
+    include /etc/nginx/snippets/security-headers.conf;
+    return 404;
+}
+
+# FR-JOB-001 / MT-39: Hangfire Dashboard là trang HTML mở thẳng trong trình duyệt nên không đính kèm
+# được header Authorization: Bearer, mà SRS §5.2 lại loại bỏ cookie → bảo vệ bằng HTTP Basic Auth tại đây.
+# Khối này phải đứng TRƯỚC khối regex bên dưới: Nginx ưu tiên prefix match dài nhất chỉ khi không có
+# regex nào khớp, nên nếu thiếu khối riêng này thì /hangfire rơi vào khối regex và mất Basic Auth.
+location /hangfire {
+    auth_basic           "Hangfire Dashboard Restricted";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+
+    # Lớp bảo vệ thứ hai (NginxGateDashboardFilter): secret chỉ Nginx biết và chỉ được gắn SAU khi
+    # người dùng đã qua Basic Auth. Nhờ đó gọi thẳng http://localhost:5000/hangfire (cổng dev của
+    # container api, bỏ qua Nginx) vẫn bị API trả 401.
+    proxy_set_header     X-Hangfire-Gate ${HANGFIRE_GATE_SECRET};
+
+    proxy_pass           $api_upstream;
+    proxy_http_version   1.1;
+    proxy_set_header     Host $host;
+    proxy_set_header     X-Real-IP $remote_addr;
+    proxy_set_header     X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header     X-Forwarded-Proto $scheme;
+}
+
+# Scalar + tài liệu OpenAPI (Buổi 5). Production tắt ở API (OpenApi__Enabled=false) nên các đường dẫn này trả 404.
+location ^~ /scalar/ {
+    proxy_pass $api_upstream;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location = /scalar {
+    proxy_pass $api_upstream;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location ^~ /openapi/ {
+    proxy_pass $api_upstream;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location ~ ^/health(?:/|$) {
+    proxy_pass $api_upstream;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+
+# File tĩnh của Next.js có hash nội dung trong tên → cache 1 năm, immutable an toàn (đổi code = đổi tên file). Thay hẳn
+# Cache-Control của upstream để chỉ có MỘT header.
+location /_next/static/ {
+    proxy_pass $frontend_upstream;
+    proxy_http_version 1.1;
+    proxy_hide_header Cache-Control;
+    add_header Cache-Control "public, max-age=31536000, immutable" always;
+    include /etc/nginx/snippets/security-headers.conf;
+}
+
+location / {
+    proxy_pass $frontend_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
