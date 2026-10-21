@@ -26,6 +26,19 @@ client_max_body_size 10m;
 # Nginx "rate limiting basic" (SRS §6.1) – lớp phòng thủ ngoài cùng
 limit_req_zone $binary_remote_addr zone=api_limit:10m rate=100r/m;
 
+# NFR-SEC-003 khi chạy nhiều bản sao api (Buổi 7): rate limiter của ASP.NET Core đếm trong bộ nhớ TỪNG bản sao, nên với 3 bản
+# sao hạn mức /auth/* 10/phút/IP thành ~30 (đo 21/10/2026: đăng nhập sai tới lần thứ 23 mới gặp 429). Nginx là điểm vào duy nhất
+# nên đếm ở đây đúng cho cả cụm, bất kể bao nhiêu bản sao; middleware của API giữ nguyên làm lớp thứ hai.
+# Thuật toán của Nginx là leaky bucket: lâu dài đúng 10/phút (auth) và 5/phút (upload); burst cho phép một loạt request liền
+# nhau hợp lệ (đăng nhập → /auth/me → /auth/refresh) mà không bị chặn.
+limit_req_zone $binary_remote_addr zone=auth_limit:10m rate=10r/m;
+# Upload chỉ tính POST (PATCH/DELETE ảnh không phải tải lên).
+map $request_method $upload_limit_key {
+    POST    $binary_remote_addr;
+    default "";
+}
+limit_req_zone $upload_limit_key zone=upload_limit:10m rate=5r/m;
+
 # DNS nội bộ Docker: phân giải lại tên service mỗi 10s. Nếu dùng "upstream { server api:8080; }"
 # Nginx chỉ phân giải một lần lúc khởi động → container api/frontend được tạo lại (đổi IP) sẽ gây 502 (MT-50).
 # Với --scale api=3, Docker DNS trả về mọi bản sao và Nginx tự luân phiên; bản sao mới được nhận trong ≤ 10 giây.
