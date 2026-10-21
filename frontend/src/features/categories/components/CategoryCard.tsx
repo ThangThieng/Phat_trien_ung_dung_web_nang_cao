@@ -13,11 +13,16 @@ const EMOJI: Record<string, string> = {
   'trang-mieng-do-uong': '🍧',
 };
 
+/**
+ * Thẻ danh mục (FR-CAT-001): ảnh, tên, mô tả tối đa hai dòng, huy hiệu số công thức. `recipeCount` chỉ đếm công thức Published
+ * — Backend đã tính. Huy hiệu là `<span>` Tailwind có cùng dáng với `Badge` của shadcn/ui (chưa vào `develop` — xem báo cáo
+ * Lab 07); khi có thì thay đúng phần này, chỗ dùng không đổi. `h-full` để các thẻ cùng hàng cao bằng nhau.
+ */
 export default function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/categories/${category.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="relative flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-orange-100 via-amber-50 to-white">
         {category.imageUrl ? (
@@ -42,8 +47,10 @@ export default function CategoryCard({ category }: { category: Category }) {
         {category.description && (
           <p className="line-clamp-2 text-sm text-gray-600">{category.description}</p>
         )}
-        <p className="mt-auto pt-2 text-sm font-medium text-orange-700">
-          {category.recipeCount} công thức
+        <p className="mt-auto pt-3">
+          <span className="inline-block rounded-full bg-orange-50 px-2.5 py-0.5 text-xs font-semibold text-orange-800 ring-1 ring-orange-200 ring-inset">
+            {category.recipeCount} công thức
+          </span>
         </p>
       </div>
     </Link>

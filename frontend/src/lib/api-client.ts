@@ -117,7 +117,23 @@ export function createCorrelationId(): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-const attachCorrelationId: BeforeRequestHook = ({ request }) => {
+/**
+ * Request chạy ở server và dùng Data Cache của Next.js (`next.revalidate`) — dữ liệu công khai dùng chung cho mọi lượt xem
+ * (SRS §5.1, MT-67). Next.js tính khóa cache từ URL **và toàn bộ header của request**; `X-Correlation-ID` mới cho từng lời
+ * gọi sẽ làm mọi lời gọi có khóa khác nhau → không bao giờ trúng cache, `revalidate` vô tác dụng và API bị gọi lại ở mỗi
+ * lượt xem trang (đã đo: 4 lượt xem → 4 request tới API). Với các request này không đặt header; Backend tự sinh mã khi
+ * request không có (SRS §5.2 "Correlation ID") và mã đó vốn không gắn được với một lượt xem cụ thể vì dữ liệu cache dùng chung.
+ */
+const usesDataCache = (options: ApiRequestOptions) => {
+  const revalidate = options.next?.revalidate;
+  return isServer() && (revalidate === false || (typeof revalidate === 'number' && revalidate > 0));
+};
+
+const isDataCached = (options: NormalizedOptions) =>
+  Boolean((options.context as { dataCached?: boolean }).dataCached);
+
+const attachCorrelationId: BeforeRequestHook = ({ request, options }) => {
+  if (isDataCached(options)) return;
   if (!request.headers.has(CORRELATION_ID_HEADER)) {
     request.headers.set(CORRELATION_ID_HEADER, createCorrelationId());
   }
@@ -241,7 +257,7 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
     next: options.next,
     cache: options.cache,
     signal: options.signal,
-    context: { auth },
+    context: { auth, dataCached: usesDataCache(options) },
   });
 
   if (response.status === 204) return undefined as T;

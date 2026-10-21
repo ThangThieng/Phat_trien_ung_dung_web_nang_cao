@@ -9,13 +9,17 @@ import HighlightText from './HighlightText';
  * Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001).
  * `primaryImageUrl` là ảnh thu nhỏ do FR-JOB-002 sinh, hoặc ảnh gốc khi job chưa chạy xong — API đã chọn sẵn.
  * `terms` (tùy chọn): từ khóa tìm kiếm đã bỏ dấu để tô sáng trong tiêu đề và mô tả (FR-SRCH-001).
+ * `priority` (tùy chọn): chỉ đặt cho thẻ đầu tiên ở đầu trang — ảnh của nó thường là phần tử LCP, nên tải trước
+ * (`fetchpriority="high"`); các thẻ còn lại giữ `loading="lazy"` mặc định của `next/image` (NFR-PERF-005).
  */
 export default function RecipeCard({
   recipe,
   terms,
+  priority = false,
 }: {
   recipe: RecipeSummary;
   terms?: readonly string[];
+  priority?: boolean;
 }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -30,6 +34,7 @@ export default function RecipeCard({
               alt={recipe.title}
               fill
               unoptimized
+              priority={priority}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover transition group-hover:scale-105"
             />
