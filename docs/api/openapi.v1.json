@@ -2982,7 +2982,7 @@
         "tags": [
           "Recipes"
         ],
-        "summary": "FR-SRCH-001 \u2013 T\u00ECm ki\u1EBFm to\u00E0n v\u0103n ti\u1EBFng Vi\u1EC7t kh\u00F4ng d\u1EA5u (ch\u1EC9 Published, x\u1EBFp theo ts_rank)",
+        "summary": "FR-SRCH-001 \u2013 T\u00ECm ki\u1EBFm to\u00E0n v\u0103n ti\u1EBFng Vi\u1EC7t kh\u00F4ng d\u1EA5u (ch\u1EC9 Published, x\u1EBFp theo ts_rank; l\u1ECDc categoryId, difficulty, maxCookTime, maxPrepTime, minServings)",
         "description": "FR-SRCH-001 \u2014 SRS \u00A78.3. T\u00ECm ki\u1EBFm to\u00E0n v\u0103n c\u00F4ng th\u1EE9c Published, chu\u1EA9n h\u00F3a ti\u1EBFng Vi\u1EC7t v\u00E0 x\u1EBFp theo \u0111\u1ED9 li\u00EAn quan.",
         "operationId": "SearchRecipes",
         "parameters": [
@@ -3032,6 +3032,42 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/RecipeDifficulty"
+            }
+          },
+          {
+            "name": "maxCookTime",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "maxPrepTime",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "minServings",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
             }
           }
         ],

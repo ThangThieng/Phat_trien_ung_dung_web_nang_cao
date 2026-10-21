@@ -1,11 +1,14 @@
 'use client';
 
-import { InterimErrorFallback } from '@/components/layout/interim-shell';
+import ErrorFallback from '@/components/shared/ErrorFallback';
 
-/** Dev 3 thay bằng `ErrorFallback`. */
-export default function AuthError(props: {
+/** Lỗi trong trang đăng nhập/đăng ký. Câu thân thiện + mã tra cứu + "Thử lại" (NFR-USE-003). */
+export default function AuthError({
+  error,
+  reset,
+}: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  return <InterimErrorFallback {...props} />;
+  return <ErrorFallback error={error} reset={reset} />;
 }

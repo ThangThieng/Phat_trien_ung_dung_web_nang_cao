@@ -57,6 +57,9 @@ const searchParamsKeys = {
   pageSize: true,
   categoryId: true,
   difficulty: true,
+  maxCookTime: true,
+  maxPrepTime: true,
+  minServings: true,
 } satisfies Record<keyof RecipeSearchParams, true>;
 
 const sorted = (keys: readonly string[]) => [...keys].sort();
@@ -82,15 +85,30 @@ describe('types/search.ts ↔ Backend', () => {
     },
   );
 
-  it('RecipeSearchParams chỉ có q, page, pageSize, categoryId, difficulty (SRS §8.3)', () => {
+  it('RecipeSearchParams: q + phân trang + 5 bộ lọc, không có sắp xếp (SRS v1.2.3 §8.3 — MT-66)', () => {
     expect(sorted(Object.keys(searchParamsKeys))).toEqual([
       'categoryId',
       'difficulty',
+      'maxCookTime',
+      'maxPrepTime',
+      'minServings',
       'page',
       'pageSize',
       'q',
     ]);
   });
+
+  // Tham số vị trí của `record SearchRecipesQuery(...)` = tham số endpoint nhận; bỏ thuộc tính tính toán (Filter, CacheKey…).
+  const searchQuery = backendDtoKeys('SearchRecipesQuery', 'Recipes/SearchRecipesQuery.cs');
+  contractIt(searchQuery)(
+    'RecipeSearchParams khớp tham số của SearchRecipesQuery (Backend)',
+    () => {
+      const computed = ['filter', 'cacheKey', 'expiration'];
+      expect(sorted(Object.keys(searchParamsKeys))).toEqual(
+        sorted((searchQuery as string[]).filter((k) => !computed.includes(k))),
+      );
+    },
+  );
 
   it('RecipeListParams có đủ 5 bộ lọc + sắp xếp + phân trang (SRS §8.1)', () => {
     expect(sorted(Object.keys(listParamsKeys))).toEqual([

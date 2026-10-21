@@ -9,7 +9,7 @@ import { useAuth } from '@/features/auth/auth-context';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import HealthIndicator from '@/features/system/components/HealthIndicator';
 import DashboardSidebar from './DashboardSidebar';
-import { InterimUserMenu } from './interim-shell';
+import UserMenu from './UserMenu';
 
 const MOBILE_NAV_ID = 'dashboard-mobile-nav';
 
@@ -62,7 +62,7 @@ function DashboardFrame({ children }: { children: ReactNode }) {
           <div className="ml-auto flex items-center gap-2">
             {/* FR-OBS-001: chỉ Admin thấy (và chỉ khi đó mới poll /api/health) */}
             {roles.includes('Admin') && <HealthIndicator />}
-            <InterimUserMenu />
+            <UserMenu />
           </div>
         </header>
 

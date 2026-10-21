@@ -9,8 +9,10 @@ namespace CulinaryBlog.Application.Features.Recipes;
 
 /// <summary>
 /// FR-SRCH-001 — tìm kiếm toàn văn tiếng Việt không dấu trên công thức Published, xếp theo <c>ts_rank</c> giảm dần, kèm
-/// <c>relevanceScore</c>. Bộ lọc là hai tham số SRS §8.3 cho phép (<c>categoryId</c>, <c>difficulty</c>) của
-/// <see cref="RecipeFilterSpec"/> dùng chung. Redis cache-aside <c>search:{queryHash}</c>, TTL 1 phút, KHÔNG invalidate chủ động
+/// <c>relevanceScore</c>. Bộ lọc dùng <see cref="RecipeFilterSpec"/> chung với <c>GET /recipes</c>: <c>categoryId</c>,
+/// <c>difficulty</c> và — từ SRS v1.2.3 (CR-2026-05 / MT-66) — <c>maxCookTime</c>, <c>maxPrepTime</c>, <c>minServings</c> (tùy chọn,
+/// tương thích ngược; lọc ở cơ sở dữ liệu để <c>totalCount</c> và phân trang đúng). Không có tham số sắp xếp: kết quả luôn theo
+/// <c>ts_rank</c>. Redis cache-aside <c>search:{queryHash}</c>, TTL 1 phút, KHÔNG invalidate chủ động
 /// — TTL ngắn nên để hết hạn tự nhiên (NFR-PERF-003).
 /// </summary>
 public sealed record SearchRecipesQuery(
@@ -18,13 +20,20 @@ public sealed record SearchRecipesQuery(
     int Page = 1,
     int PageSize = RecipeQueryRules.DefaultPageSize,
     Guid? CategoryId = null,
-    RecipeDifficulty? Difficulty = null) : IRequest<PagedResult<RecipeSearchResultDto>>, ICacheable
+    RecipeDifficulty? Difficulty = null,
+    int? MaxCookTime = null,
+    int? MaxPrepTime = null,
+    int? MinServings = null) : IRequest<PagedResult<RecipeSearchResultDto>>, ICacheable
 {
     public const int MinTermLength = 2;
 
-    public RecipeFilterSpec Filter => new(CategoryId, Difficulty);
+    /// <summary>Cùng specification với <c>GetRecipesQuery</c> — không có bộ lọc thứ hai (MT-66).</summary>
+    public RecipeFilterSpec Filter => new(CategoryId, Difficulty, MaxCookTime, MaxPrepTime, MinServings);
 
-    /// <summary>Băm theo biểu thức tsquery đã chuẩn hóa: "Phở bò", "pho  bo" và "PHO BO" dùng chung một khóa.</summary>
+    /// <summary>
+    /// Băm theo biểu thức tsquery đã chuẩn hóa: "Phở bò", "pho  bo" và "PHO BO" dùng chung một khóa. Ba bộ lọc thời gian/khẩu phần
+    /// nằm trong <see cref="RecipeFilterSpec.ToCacheSegment"/> nên hai request chỉ khác <c>maxCookTime</c> có hai khóa khác nhau.
+    /// </summary>
     public string CacheKey => RecipeCacheKeys.Search(string.Create(
         CultureInfo.InvariantCulture,
         $"q={SearchTermBuilder.Build(Q)}&page={Page}&pageSize={PageSize}&{Filter.ToCacheSegment()}"));
@@ -44,6 +53,9 @@ public sealed class SearchRecipesQueryValidator : AbstractValidator<SearchRecipe
         RuleFor(x => x.Page).ValidPage();
         RuleFor(x => x.PageSize).ValidPageSize();
         RuleFor(x => x.Difficulty).ValidDifficulty();
+        RuleFor(x => x.MaxCookTime).NonNegativeMinutes();
+        RuleFor(x => x.MaxPrepTime).NonNegativeMinutes();
+        RuleFor(x => x.MinServings).PositiveServings();
     }
 }
 

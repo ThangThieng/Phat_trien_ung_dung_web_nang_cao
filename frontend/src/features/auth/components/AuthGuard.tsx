@@ -2,7 +2,7 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { InterimPageLoading } from '@/components/layout/interim-shell';
+import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
 import { useAuth } from '../auth-context';
 
 /** Client navigation guard; authorization remains enforced by the backend. */
@@ -17,6 +17,6 @@ export function AuthGuard({ children }: { children: ReactNode }) {
     router.replace(`/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   }, [isAuthenticated, isReady, pathname, router]);
 
-  if (!isReady || !isAuthenticated) return <InterimPageLoading label="Đang kiểm tra phiên đăng nhập…" />;
+  if (!isReady || !isAuthenticated) return <LoadingSkeleton variant="table" label="Đang kiểm tra phiên đăng nhập…" />;
   return children;
 }

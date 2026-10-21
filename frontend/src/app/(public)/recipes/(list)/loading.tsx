@@ -1,5 +1,5 @@
-import RecipeGridSkeleton from '@/components/shared/RecipeGridSkeleton';
+import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
 
 export default function Loading() {
-  return <RecipeGridSkeleton />;
+  return <LoadingSkeleton variant="recipe-grid" />;
 }

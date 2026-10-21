@@ -1,6 +1,6 @@
-import { InterimPageLoading } from '@/components/layout/interim-shell';
+import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
 
-/** Dev 3 thay bằng `LoadingSkeleton variant="table"`. */
+/** Trang dashboard phần lớn là bảng/danh sách — khung chờ dạng bảng trong khung sidebar + thanh trên cùng. */
 export default function DashboardLoading() {
-  return <InterimPageLoading />;
+  return <LoadingSkeleton variant="table" />;
 }
