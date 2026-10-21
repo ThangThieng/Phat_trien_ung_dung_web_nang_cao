@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
-import { InterimRequireRole } from '@/components/layout/interim-shell';
+import { RequireRole } from '@/features/auth/components/RequireRole';
 import ImageUploader from '@/components/shared/ImageUploader';
 import { useAuth } from '@/features/auth/auth-context';
 import type { UploadedFile } from '@/types/api';
@@ -101,8 +101,8 @@ function MediaLibrary() {
  */
 export default function MediaPage() {
   return (
-    <InterimRequireRole roles={['Admin']}>
+    <RequireRole roles={['Admin']}>
       <MediaLibrary />
-    </InterimRequireRole>
+    </RequireRole>
   );
 }

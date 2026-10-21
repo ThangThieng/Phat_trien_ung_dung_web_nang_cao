@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ChefHat } from 'lucide-react';
+import { GuestOnly } from '@/features/auth/components/GuestOnly';
 
 /**
  * Trang đăng nhập/đăng ký: khung tối giản căn giữa, không header/footer đầy đủ. Đã đăng nhập thì `AuthCard` chuyển
@@ -13,9 +14,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <ChefHat aria-hidden className="h-6 w-6" />
         Culinary Blog
       </Link>
-      <main id="main-content" className="flex w-full flex-1 justify-center">
-        {children}
-      </main>
+      <GuestOnly><main id="main-content" className="flex w-full flex-1 justify-center">{children}</main></GuestOnly>
     </div>
   );
 }

@@ -11,8 +11,8 @@ beforeEach(() => mockReplace.mockClear());
 describe('AuthCard redirect for a signed-in user', () => {
   it.each([
     ['/auth/login?callbackUrl=%2Fdashboard%2Fsystem%3Ftab%3Djobs', '/dashboard/system?tab=jobs'],
-    ['/auth/login', '/recipes'],
-    ['/auth/login?callbackUrl=%2F%2Fevil.com', '/recipes'],
+    ['/auth/login', '/dashboard'],
+    ['/auth/login?callbackUrl=%2F%2Fevil.com', '/dashboard'],
   ])('%s → %s', (url, expected) => {
     window.history.replaceState(null, '', url);
     render(

@@ -16,12 +16,9 @@ import {
   formatQuantity,
 } from '@/features/recipes/format';
 
-// SRS §5.1: /recipes/[slug] – ISR revalidate=300. Không prerender lúc build, sinh theo yêu cầu rồi cache.
-export const revalidate = 300;
-export const dynamicParams = true;
-export function generateStaticParams() {
-  return [];
-}
+// SRS v1.2.3 §5.1 (MT-67): CSP có nonce làm mọi trang render theo request — không `revalidate`/`generateStaticParams` ở
+// cấp trang (ISR gặp `headers()` của root layout là lỗi DYNAMIC_SERVER_USAGE → 500). Dữ liệu vẫn cache 300 giây ở Data Cache
+// qua `next.revalidate` trong `getRecipeBySlug`.
 
 type Params = Promise<{ slug: string }>;
 

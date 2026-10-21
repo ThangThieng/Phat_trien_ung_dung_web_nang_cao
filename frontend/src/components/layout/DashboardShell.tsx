@@ -6,9 +6,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChefHat, Menu, X } from 'lucide-react';
 import { useAuth } from '@/features/auth/auth-context';
+import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import HealthIndicator from '@/features/system/components/HealthIndicator';
 import DashboardSidebar from './DashboardSidebar';
-import { InterimAuthGuard, InterimUserMenu } from './interim-shell';
+import { InterimUserMenu } from './interim-shell';
 
 const MOBILE_NAV_ID = 'dashboard-mobile-nav';
 
@@ -87,8 +88,8 @@ function DashboardFrame({ children }: { children: ReactNode }) {
 /** Khung chung của mọi trang `(dashboard)`: chặn khi chưa đăng nhập, sidebar theo vai trò, thanh trên cùng. */
 export default function DashboardShell({ children }: { children: ReactNode }) {
   return (
-    <InterimAuthGuard>
+    <AuthGuard>
       <DashboardFrame>{children}</DashboardFrame>
-    </InterimAuthGuard>
+    </AuthGuard>
   );
 }
