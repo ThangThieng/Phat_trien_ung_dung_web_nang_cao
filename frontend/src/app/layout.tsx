@@ -3,6 +3,8 @@ import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
 import Providers from './providers';
+// Phía server: apiFetch chuyển tiếp X-Forwarded-For của trình duyệt cho API (rate limit theo IP thật — NFR-SEC-003).
+import '@/lib/server-request-context';
 import './globals.css';
 
 // Subset 'vietnamese' để hiển thị đầy đủ dấu tiếng Việt
