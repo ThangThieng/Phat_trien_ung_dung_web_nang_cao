@@ -12,6 +12,8 @@ const DEBOUNCE_MS = 300;
  * FR-SRCH-001: thanh tìm kiếm trên header. Enter → điều hướng `/search?q=`. Khi đang ở trang `/search`, gõ tới đâu kết quả
  * cập nhật tới đó sau 300 ms ngừng gõ (debounce) — thay URL bằng `replace` để lịch sử không bị đầy từng ký tự và vẫn giữ
  * bộ lọc đang bật. Dưới ngưỡng 2 ký tự không gọi API (sẽ là 400).
+ * Buổi 7 (Dev 4): trên `/search` dùng `history.replaceState` thay cho `router.replace` — trang tìm kiếm đọc URL bằng
+ * `useSearchParams` và tự gọi API ở client, nên đổi từ khóa chỉ tốn một request JSON, không render lại Server Component.
  */
 export default function SearchBar({ className = '' }: { className?: string }) {
   const router = useRouter();
@@ -40,8 +42,8 @@ export default function SearchBar({ className = '' }: { className?: string }) {
     next.set('q', term);
     next.delete('page');
     lastReplaced.current = term;
-    router.replace(`/search?${next.toString()}`);
-  }, [debounced, value, urlQuery, onSearchPage, params, router]);
+    window.history.replaceState(null, '', `/search?${next.toString()}`);
+  }, [debounced, value, urlQuery, onSearchPage, params]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
