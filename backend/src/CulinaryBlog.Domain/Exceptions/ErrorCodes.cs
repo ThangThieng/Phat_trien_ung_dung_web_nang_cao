@@ -22,6 +22,7 @@ public static class ErrorCodes
     public const string AuthAccountDisabled = "AUTH_ACCOUNT_DISABLED";
     public const string AuthAccountLocked = "AUTH_ACCOUNT_LOCKED";
     public const string AuthUserNotFound = "AUTH_USER_NOT_FOUND";
+    public const string AuthPasswordResetTokenInvalid = "AUTH_PASSWORD_RESET_TOKEN_INVALID";
 
     // ---- Recipe ----
     public const string RecipeNotFound = "RECIPE_NOT_FOUND";

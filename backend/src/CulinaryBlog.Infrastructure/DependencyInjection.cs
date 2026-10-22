@@ -169,6 +169,8 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, MailKitEmailService>();
         services.AddScoped<WelcomeEmailJob>();
         services.AddScoped<IWelcomeEmailScheduler, HangfireWelcomeEmailScheduler>();
+        services.AddScoped<PasswordResetEmailJob>();
+        services.AddScoped<IPasswordResetEmailScheduler, HangfirePasswordResetEmailScheduler>();
 
         // FR-RCP-008 bước 16: xóa tệp MinIO bất đồng bộ (xóa ảnh đơn lẻ, dọn tệp mồ côi khi lưu DB thất bại).
         services.AddScoped<DeleteStoredFilesJob>();

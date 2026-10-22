@@ -63,6 +63,31 @@ public static class AuthEndpoints
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
+        group.MapPost("/change-password", ChangePasswordAsync)
+            .RequireAuthorization()
+            .WithName("ChangePassword")
+            .WithSummary("FR-AUTH-010 – Đổi mật khẩu và thu hồi các phiên khác")
+            .WithDescription("FR-AUTH-010 — Đổi mật khẩu, giữ phiên hiện tại và thu hồi các phiên refresh khác.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+
+        group.MapPost("/forgot-password", ForgotPasswordAsync)
+            .AllowAnonymous()
+            .WithName("ForgotPassword")
+            .WithSummary("FR-AUTH-011 – Gửi liên kết đặt lại mật khẩu")
+            .WithDescription("FR-AUTH-011 — Luôn trả phản hồi chung để không tiết lộ email có tồn tại.")
+            .Produces(StatusCodes.Status202Accepted)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+
+        group.MapPost("/reset-password", ResetPasswordAsync)
+            .AllowAnonymous()
+            .WithName("ResetPassword")
+            .WithSummary("FR-AUTH-011 – Đặt lại mật khẩu từ liên kết email")
+            .WithDescription("FR-AUTH-011 — Đặt lại mật khẩu bằng token email dùng một lần và thu hồi mọi phiên.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status403Forbidden);
+
         group.MapGet("/me", GetMeAsync)
             .RequireAuthorization()
             .WithName("GetCurrentUser")
@@ -153,6 +178,24 @@ public static class AuthEndpoints
         return Results.NoContent();
     }
 
+    private static async Task<IResult> ChangePasswordAsync(ChangePasswordRequest body, ISender sender, CancellationToken ct)
+    {
+        await sender.Send(new ChangePasswordCommand(body.CurrentPassword ?? string.Empty, body.NewPassword ?? string.Empty), ct).ConfigureAwait(false);
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> ForgotPasswordAsync(ForgotPasswordRequest body, HttpContext http, ISender sender, CancellationToken ct)
+    {
+        await sender.Send(new ForgotPasswordCommand(body.Email ?? string.Empty, http.TraceIdentifier), ct).ConfigureAwait(false);
+        return Results.Accepted();
+    }
+
+    private static async Task<IResult> ResetPasswordAsync(ResetPasswordRequest body, ISender sender, CancellationToken ct)
+    {
+        await sender.Send(new ResetPasswordCommand(body.Email ?? string.Empty, body.Token ?? string.Empty, body.NewPassword ?? string.Empty), ct).ConfigureAwait(false);
+        return Results.NoContent();
+    }
+
     /// <summary>FR-AUTH-006: phụ thuộc danh tính → không cache (NFR-SEC-006).</summary>
     private static async Task<IResult> GetMeAsync(HttpContext http, ISender sender, CancellationToken ct)
     {
@@ -234,6 +277,12 @@ public static class AuthEndpoints
     public sealed record RefreshRequest(string? RefreshToken);
 
     public sealed record LogoutRequest(string? RefreshToken);
+
+    public sealed record ChangePasswordRequest(string? CurrentPassword, string? NewPassword);
+
+    public sealed record ForgotPasswordRequest(string? Email);
+
+    public sealed record ResetPasswordRequest(string? Email, string? Token, string? NewPassword);
 
     public sealed record UpdateProfileRequest(string? DisplayName, string? AvatarUrl, string? Bio);
 }
