@@ -7,17 +7,20 @@ export function getCspMode(value = process.env.NEXT_PUBLIC_CSP_MODE): CspMode {
 export function buildContentSecurityPolicy(nonce: string, development = process.env.NODE_ENV !== 'production'): string {
   const scriptSources = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", 'https://accounts.google.com/gsi/client'];
   if (development) scriptSources.push("'unsafe-eval'");
+  const styleSources = ["'self'"];
+  if (development) styleSources.push("'unsafe-inline'");
   return [
     "default-src 'self'",
     `script-src ${scriptSources.join(' ')}`,
-    // Next and Google Identity inject runtime style attributes; this does not relax script execution.
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
+    `style-src ${styleSources.join(' ')}`,
+    "font-src 'self'",
     "img-src 'self' data: blob: https://lh3.googleusercontent.com",
     "connect-src 'self' https://accounts.google.com",
     "frame-src https://accounts.google.com",
     "base-uri 'self'",
-    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
     "object-src 'none'",
+    ...(development ? [] : ['upgrade-insecure-requests']),
   ].join('; ');
 }
