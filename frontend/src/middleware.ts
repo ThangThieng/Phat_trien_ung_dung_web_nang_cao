@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   const header = getCspMode() === 'report-only' ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
   response.headers.set(header, buildContentSecurityPolicy(nonce));
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   return response;
 }
 
