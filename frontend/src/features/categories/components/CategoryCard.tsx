@@ -2,7 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Category } from '@/types/category';
 
-const EMOJI: Record<string, string> = {
+/** Biểu tượng khi danh mục chưa có ảnh — khóa là slug của 20 danh mục mẫu (seed `categories.json`). */
+export const CATEGORY_EMOJI: Record<string, string> = {
   'mon-khai-vi': '🥗',
   'mon-chinh': '🍛',
   'canh-sup': '🍲',
@@ -11,6 +12,19 @@ const EMOJI: Record<string, string> = {
   'bun-pho': '🍜',
   banh: '🥐',
   'trang-mieng-do-uong': '🍧',
+  // 12 danh mục bổ sung theo CR-2026-03 (≥ 20 danh mục) — trước Buổi 7 đều rơi về biểu tượng chung 🍽️.
+  'com-xoi': '🍚',
+  lau: '🫕',
+  'hai-san': '🦐',
+  'goi-salad': '🥬',
+  'mon-cuon': '🌯',
+  'mon-hap': '🥟',
+  'mon-chien': '🍤',
+  'an-vat': '🍡',
+  'mon-han-quoc': '🥢',
+  'mon-nhat-ban': '🍣',
+  'mon-thai': '🌶️',
+  'mon-au': '🍝',
 };
 
 /**
@@ -36,7 +50,7 @@ export default function CategoryCard({ category }: { category: Category }) {
           />
         ) : (
           <span aria-hidden className="text-5xl transition group-hover:scale-110">
-            {EMOJI[category.slug] ?? '🍽️'}
+            {CATEGORY_EMOJI[category.slug] ?? '🍽️'}
           </span>
         )}
       </div>

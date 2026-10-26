@@ -1,6 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import { mockCategories } from '@/mocks/fixtures/categories';
-import CategoryCard from './CategoryCard';
+import { readBackendFile } from '../../../../test-utils/csharp-source';
+import CategoryCard, { CATEGORY_EMOJI } from './CategoryCard';
+
+/** Cùng quy tắc `SlugHelper.Generate` của Backend: chữ thường, đ → d, bỏ dấu, ký tự khác chữ/số → "-". */
+const slugify = (text: string) =>
+  text
+    .trim()
+    .toLowerCase()
+    .replace(/đ/g, 'd')
+    .normalize('NFD')
+    .replace(/\p{Mn}/gu, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
 describe('<CategoryCard />', () => {
   it('liên kết tới trang danh mục, hiện tên, mô tả và huy hiệu số công thức', () => {
@@ -29,5 +41,15 @@ describe('<CategoryCard />', () => {
     );
 
     expect(container.querySelector('img')).toHaveAttribute('alt', '');
+  });
+
+  it('mọi danh mục mẫu (seed CR-2026-03, 20 danh mục) đều có biểu tượng riêng khi chưa có ảnh', () => {
+    const seed = JSON.parse(
+      readBackendFile('src/CulinaryBlog.Infrastructure/Persistence/Seed/Data/categories.json'),
+    ) as { name: string }[];
+    const slugs = seed.map((c) => slugify(c.name));
+
+    expect(slugs.length).toBeGreaterThanOrEqual(20);
+    expect(slugs.filter((slug) => !CATEGORY_EMOJI[slug])).toEqual([]);
   });
 });

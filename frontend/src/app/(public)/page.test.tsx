@@ -84,9 +84,11 @@ describe('Trang chủ /', () => {
   it('có cả sidebar danh mục (≥ 1200 px) lẫn hàng nhãn cuộn ngang (< 1200 px) — CSS chọn cái hiện ra', async () => {
     await renderHome();
 
-    const sidebar = screen.getByRole('navigation', { name: 'Danh mục' });
+    // Lớp ẩn/hiện đặt trên landmark <aside> bọc nav — cả cột phụ ẩn cùng lúc dưới 1200 px.
+    const aside = screen.getByRole('complementary', { name: 'Danh mục công thức' });
+    const sidebar = within(aside).getByRole('navigation', { name: 'Danh mục' });
     const chips = screen.getByRole('navigation', { name: 'Danh mục nhanh' });
-    expect(sidebar).toHaveClass('hidden', 'min-[1200px]:block');
+    expect(aside).toHaveClass('hidden', 'min-[1200px]:block');
     expect(chips).toHaveClass('min-[1200px]:hidden');
     mockCategories.forEach((category) => {
       expect(
