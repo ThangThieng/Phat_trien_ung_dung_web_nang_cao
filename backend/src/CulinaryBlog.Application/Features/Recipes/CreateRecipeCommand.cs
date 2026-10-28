@@ -1,3 +1,4 @@
+using CulinaryBlog.Application.Common.Diagnostics;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Domain.Common;
@@ -26,6 +27,8 @@ public sealed record NutritionInput(decimal? Calories, decimal? Protein, decimal
 /// FR-RCP-003 – tạo công thức ở trạng thái Draft (<c>PublishedAt = NULL</c>). Nutrition đi kèm body vì là Owned Entity
 /// (không có endpoint riêng — MT-02). Buổi 4 (Dev 2) kích hoạt hai mảng tùy chọn <c>steps?</c>/<c>ingredients?</c>: chúng đi
 /// qua ĐÚNG validator và phương thức Domain của FR-RCP-009/010 — mỗi quy tắc chỉ tồn tại ở một chỗ.
+/// Không cài <c>ICacheInvalidator</c> (CR-2026-06, MT-69 — Buổi 8): công thức mới luôn là bản nháp, không xuất hiện ở endpoint công
+/// khai nào, nên không có khóa cache công khai nào cần xóa.
 /// </summary>
 public sealed record CreateRecipeCommand(
     string Title,
@@ -38,10 +41,7 @@ public sealed record CreateRecipeCommand(
     string? Instructions,
     NutritionInput? Nutrition,
     IReadOnlyList<StepInput>? Steps = null,
-    IReadOnlyList<IngredientInput>? Ingredients = null) : IRequest<RecipeDetailDto>, ICacheInvalidator
-{
-    public IReadOnlyCollection<string> CacheKeysToInvalidate => [RecipeCacheKeys.ListPrefix];
-}
+    IReadOnlyList<IngredientInput>? Ingredients = null) : IRequest<RecipeDetailDto>;
 
 /// <summary>Giới hạn độ dài của Recipe theo SRS §7.9 (validator và cột DB bằng nhau — MT-37).</summary>
 public static class RecipeLimits
@@ -170,6 +170,7 @@ public sealed class CreateRecipeCommandHandler(
 
         await unitOfWork.Recipes.AddAsync(recipe, cancellationToken).ConfigureAwait(false);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        CulinaryBlogMetrics.RecipesCreated.Add(1);
 
         return await readRepository.GetDetailByIdAsync(recipe.Id, cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Không đọc lại được công thức vừa tạo '{recipe.Id}'.");

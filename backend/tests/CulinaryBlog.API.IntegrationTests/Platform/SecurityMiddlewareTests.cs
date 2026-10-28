@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using CulinaryBlog.API.Extensions;
+using CulinaryBlog.API.Logging;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.API.OpenApi;
@@ -239,6 +240,9 @@ public sealed class SecurityMiddlewareTests
         builder.Services.AddTrustedForwardedHeaders(builder.Configuration);
         builder.Services.AddSecurityCors(builder.Configuration);
         builder.Services.AddSecurityRateLimiting(builder.Configuration);
+
+        // Buổi 8: UseRequestSecurity có request logging của Serilog (FR-OBS-002) — đăng ký như Program.cs.
+        builder.Services.AddCulinarySerilog(builder.Configuration, "CulinaryBlog.API.SecurityTests");
         var app = builder.Build();
         app.UseRequestSecurity();
         var api = app.MapV1Api();

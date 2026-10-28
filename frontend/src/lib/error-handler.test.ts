@@ -82,6 +82,14 @@ describe('normalizeError', () => {
     expect(result.correlationId).toBe('t-1');
   });
 
+  it('prefers the header, then the Problem Details correlationId (Buổi 8), over traceId', () => {
+    const body = { correlationId: 'c-body', traceId: 't-1' };
+    expect(normalizeError(apiError('INTERNAL_ERROR', 500, body)).correlationId).toBe('c-body');
+    expect(
+      normalizeError(apiError('INTERNAL_ERROR', 500, body, { correlationId: 'c-header' })).correlationId,
+    ).toBe('c-header');
+  });
+
   it('treats anything else as unknown', () => {
     expect(normalizeError('boom')).toMatchObject({ kind: 'unknown', code: 'UNKNOWN_ERROR' });
   });

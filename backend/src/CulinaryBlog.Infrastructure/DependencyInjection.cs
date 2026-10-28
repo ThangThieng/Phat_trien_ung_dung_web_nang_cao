@@ -9,6 +9,7 @@ using CulinaryBlog.Infrastructure.Caching;
 using CulinaryBlog.Infrastructure.Email;
 using CulinaryBlog.Infrastructure.Identity;
 using CulinaryBlog.Infrastructure.Jobs;
+using CulinaryBlog.Infrastructure.Logging;
 using CulinaryBlog.Infrastructure.Persistence;
 using CulinaryBlog.Infrastructure.Persistence.Interceptors;
 using CulinaryBlog.Infrastructure.Persistence.Repositories;
@@ -19,6 +20,7 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -44,6 +46,9 @@ public static class DependencyInjection
         AddJobs(services, configuration, connectionString);
         AddHealthChecks(services, configuration, connectionString);
 
+        // FR-OBS-002 (Buổi 8): CorrelationId của request/job hiện tại cho tầng Application.
+        services.AddSingleton<ICorrelationIdAccessor, CorrelationIdAccessor>();
+
         services.AddOptions<SeedOptions>().Bind(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseSeeder>();
         services.AddOptions<PerformanceSeedOptions>().Bind(configuration.GetSection(PerformanceSeedOptions.SectionName));
@@ -56,6 +61,9 @@ public static class DependencyInjection
     {
         services.AddSingleton<AuditInterceptor>();
 
+        // NFR-PERF-004 (Buổi 8): cảnh báo câu SQL > 100 ms — không ghi giá trị tham số; EnableSensitiveDataLogging KHÔNG bật.
+        services.AddSingleton<SlowQueryInterceptor>();
+
         // EnableRetryOnFailure: Postgres khởi động chậm hơn API (57P03) hoặc mất kết nối tạm thời → retry thay vì crash.
         // Ignore 20606: RecipeNutrition là optional dependent có chủ đích (§7.2.1) – mọi cột Nutrition_* null ⇒ Nutrition = null.
         services.AddDbContext<CulinaryBlogDbContext>((sp, options) =>
@@ -64,7 +72,7 @@ public static class DependencyInjection
                     .MigrationsHistoryTable("__EFMigrationsHistory")
                     .EnableRetryOnFailure(maxRetryCount: 6, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null))
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.OptionalDependentWithoutIdentifyingPropertyWarning))
-                .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
+                .AddInterceptors(sp.GetRequiredService<AuditInterceptor>(), sp.GetRequiredService<SlowQueryInterceptor>()));
 
         // Buổi 3 – Repository & Unit of Work: repository generic đăng ký dạng open generic nên mọi entity có sẵn
         // repository cơ bản; bộ dịch lỗi ghi DB của từng module được quét tự động, dev module không phải sửa file này.
@@ -130,12 +138,18 @@ public static class DependencyInjection
         var redis = configuration.GetConnectionString("Redis")
             ?? throw new InvalidOperationException("Thiếu ConnectionStrings:Redis.");
 
+        // abortConnect=false: Redis down không làm crash app; timeout ngắn để fallback DB nhanh (NFR-REL-002).
+        // Buổi 8: MỘT ConnectionMultiplexer dùng chung cho IDistributedCache (GET/SET/REMOVE) và cho SCAN của
+        // RemoveByPrefixAsync — multiplexer được thiết kế để chia sẻ, mỗi kết nối thừa là thêm một socket + luồng đọc.
+        var redisConfiguration = $"{redis},abortConnect=false,connectTimeout=2000,syncTimeout=2000";
+        services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConfiguration));
         services.AddStackExchangeRedisCache(o =>
         {
-            // abortConnect=false: Redis down không làm crash app; timeout ngắn để fallback DB nhanh (NFR-REL-002)
-            o.Configuration = $"{redis},abortConnect=false,connectTimeout=2000,syncTimeout=2000";
+            o.Configuration = redisConfiguration;
             o.InstanceName = "culinaryblog:";
         });
+        services.AddOptions<RedisCacheOptions>().Configure<IServiceProvider>((o, sp) =>
+            o.ConnectionMultiplexerFactory = () => Task.FromResult(sp.GetRequiredService<IConnectionMultiplexer>()));
         services.AddSingleton<ICacheService, RedisCacheService>();
     }
 
@@ -191,6 +205,13 @@ public static class DependencyInjection
         var pollInterval = TimeSpan.FromSeconds(configuration.GetValue("Hangfire:PollIntervalSeconds", 15));
 
         // SRS §3.6: Hangfire dùng chung PostgreSQL (schema "hangfire")
+        // FR-OBS-002 (Buổi 8): CorrelationId của request đi theo job sang container hangfire. Filter Hangfire là danh sách TOÀN CỤC
+        // (GlobalJobFilters) — host thứ hai trong cùng process (integration test) không được thêm bản thứ hai.
+        if (!GlobalJobFilters.Filters.Any(f => f.Instance is CorrelationIdJobFilter))
+        {
+            GlobalJobFilters.Filters.Add(new CorrelationIdJobFilter());
+        }
+
         services.AddHangfire(cfg => cfg
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()

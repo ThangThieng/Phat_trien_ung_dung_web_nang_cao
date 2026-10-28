@@ -91,6 +91,7 @@ public sealed class UpdateRecipeCommandHandler(
         unitOfWork.Recipes.SetOriginalRowVersion(recipe, Convert.FromBase64String(request.RowVersion!));
 
         var oldSlug = recipe.Slug;
+        var oldCategoryId = recipe.CategoryId;
         var title = request.Title?.Trim() ?? recipe.Title;
 
         // Slug chỉ sinh lại khi tiêu đề ĐỔI và công thức là bản nháp CHƯA TỪNG xuất bản (MT-27): sau lần publish đầu,
@@ -124,10 +125,15 @@ public sealed class UpdateRecipeCommandHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         // Xóa cache theo CẢ slug cũ lẫn slug mới (FR-RCP-004 bước 10).
-        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(oldSlug));
+        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(oldSlug, recipe.Status));
         if (recipe.Slug != oldSlug)
         {
             request.InvalidateOnSuccess([RecipeCacheKeys.Detail(recipe.Slug)]);
+        }
+
+        if (recipe.CategoryId != oldCategoryId)
+        {
+            request.InvalidateOnSuccess(RecipeCacheKeys.ForCategoryChange(recipe.Status));
         }
 
         return await reader.GetDetailByIdAsync(recipe.Id, cancellationToken).ConfigureAwait(false)

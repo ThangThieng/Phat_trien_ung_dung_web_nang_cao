@@ -1,6 +1,6 @@
 # CONS-009: multi-stage build SDK -> aspnet runtime
 # ---------- build ----------
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.402 AS build
 WORKDIR /src
 
 # Restore trước để tận dụng Docker layer cache
@@ -15,7 +15,7 @@ COPY src/ src/
 RUN dotnet publish src/CulinaryBlog.API/CulinaryBlog.API.csproj -c Release -o /app/publish --no-restore /p:UseAppHost=false
 
 # ---------- runtime ----------
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.13 AS runtime
 WORKDIR /app
 # ASPNETCORE_HTTP_PORTS thay cho ASPNETCORE_URLS để không đè cấu hình cổng mặc định của image .NET
 ENV ASPNETCORE_HTTP_PORTS=8080 \
@@ -28,8 +28,9 @@ COPY --from=build /app/publish .
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
-# Thư mục khóa DataProtection thuộc user "app" để volume mount vào kế thừa quyền ghi
-RUN mkdir -p /home/app/dpkeys && chown app:app /home/app/dpkeys
+# Thư mục khóa DataProtection thuộc user "app" để volume mount vào kế thừa quyền ghi; /app/logs: sink File của Serilog
+# (logs/culinaryblog-YYYYMMDD.json, xoay vòng theo ngày — FR-OBS-002, Buổi 8) — /app thuộc root nên user "app" không tự tạo được.
+RUN mkdir -p /home/app/dpkeys /app/logs && chown app:app /home/app/dpkeys /app/logs
 # Image aspnet có sẵn user non-root "app"
 USER app
 EXPOSE 8080

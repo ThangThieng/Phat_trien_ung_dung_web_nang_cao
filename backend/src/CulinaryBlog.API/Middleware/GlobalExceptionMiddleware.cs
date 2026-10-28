@@ -18,7 +18,8 @@ namespace CulinaryBlog.API.Middleware;
 /// 3. <see cref="AppException"/> — lỗi tầng Application tự mang mã HTTP (phân quyền tài nguyên, tệp, dịch vụ ngoài).
 /// 4. <see cref="BadHttpRequestException"/> — body/tham số sai định dạng.
 /// 5. Còn lại (kể cả DbUpdateException mà UnitOfWork không dịch được) — 500 INTERNAL_ERROR.
-/// "traceId" được IProblemDetailsService tự thêm vào mọi response để tra log (Buổi 6 bổ sung CorrelationId).
+/// "traceId" được IProblemDetailsService tự thêm vào mọi response; từ Buổi 8 thêm "correlationId" (= header X-Correlation-ID,
+/// cấu hình ở AddProblemDetails của Program.cs) — mã tra cứu mà Frontend hiển thị.
 /// </summary>
 public sealed partial class GlobalExceptionMiddleware(
     RequestDelegate next,
@@ -113,7 +114,9 @@ public sealed partial class GlobalExceptionMiddleware(
                     Type = ErrorCodes.InternalError,
                     Title = "Internal Server Error",
                     Status = StatusCodes.Status500InternalServerError,
-                    Detail = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau và gửi kèm mã traceId nếu lỗi lặp lại.",
+
+                    // Phụ lục B (MT-46): detail chỉ có thông báo chung + CorrelationId để tra log.
+                    Detail = $"Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau; nếu lỗi lặp lại, gửi kèm mã tra cứu {CorrelationIdMiddleware.Get(context)}.",
                     Instance = context.Request.Path,
                 };
         }

@@ -1,4 +1,6 @@
+using CulinaryBlog.Application.Common.Caching;
 using CulinaryBlog.Application.Common.Interfaces;
+using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Infrastructure.Persistence;
 using Hangfire;
@@ -19,10 +21,13 @@ namespace CulinaryBlog.Infrastructure.Jobs;
 /// Chạy trong container worker <c>hangfire</c> — tác vụ nặng CPU không tranh CPU với API (SRS MT-47).
 /// Thất bại hết lượt thử lại thì hai URL giữ nguyên null: FE hiển thị ảnh gốc, việc tải lên không bị ảnh hưởng.
 /// Hai biến thể mã hóa WebP: nhỏ hơn JPEG cùng chất lượng và mọi trình duyệt hiện hành đều hỗ trợ.
+/// Ghi xong hai URL thì xóa cache công khai của công thức (Buổi 8 — audit cache): job ghi DB ngoài pipeline MediatR nên
+/// <c>CacheInvalidationBehavior</c> không chạy; thiếu bước này trang chi tiết/danh sách giữ bản không có thumbnail tới hết TTL.
 /// </summary>
 public sealed partial class ImageResizeJob(
     CulinaryBlogDbContext db,
     IFileStorageService storage,
+    ICacheService cache,
     ILogger<ImageResizeJob> logger)
 {
     public static readonly Size MediumSize = new(800, 600);
@@ -43,6 +48,13 @@ public sealed partial class ImageResizeJob(
     {
         Configuration = new Configuration(new JpegConfigurationModule(), new PngConfigurationModule(), new WebpConfigurationModule()),
     };
+
+    /// <summary>
+    /// Định dạng job giải mã được — chỉ JPEG/PNG/WebP. Là bằng chứng cho mọi miễn trừ advisory TIFF trong Directory.Build.props
+    /// (BigTIFF, tile nén fax GHSA-v76p-62qx-wwq2…): decoder TIFF không có trong cấu hình nên không đường nào tới được code lỗi.
+    /// </summary>
+    public static IReadOnlyCollection<string> DecodableFormats { get; } =
+        [.. UploadFormatsOnly.Configuration.ImageFormats.Select(f => f.Name).Order(StringComparer.Ordinal)];
 
     [AutomaticRetry(Attempts = 3)]
     public async Task ExecuteAsync(Guid imageId, CancellationToken cancellationToken)
@@ -87,7 +99,27 @@ public sealed partial class ImageResizeJob(
             await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        await InvalidatePublicCacheAsync(image.RecipeId, cancellationToken).ConfigureAwait(false);
         LogResized(logger, imageId);
+    }
+
+    /// <summary>
+    /// Cùng bộ khóa với mọi thay đổi nội dung công thức (<see cref="RecipeCacheKeys.ForContentChange"/>): bản nháp chỉ xóa chi tiết,
+    /// công thức đã xuất bản xóa cả danh sách và trang danh mục (CR-2026-06).
+    /// </summary>
+    private async Task InvalidatePublicCacheAsync(Guid recipeId, CancellationToken cancellationToken)
+    {
+        var recipe = await db.Recipes.AsNoTracking()
+            .Where(r => r.Id == recipeId)
+            .Select(r => new { r.Slug, r.Status })
+            .FirstOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
+        if (recipe is null)
+        {
+            return;
+        }
+
+        await cache.InvalidateAsync(RecipeCacheKeys.ForContentChange(recipe.Slug, recipe.Status), cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<(string? MediumUrl, string? ThumbnailUrl)> CreateVariantsAsync(RecipeImage image, CancellationToken cancellationToken)

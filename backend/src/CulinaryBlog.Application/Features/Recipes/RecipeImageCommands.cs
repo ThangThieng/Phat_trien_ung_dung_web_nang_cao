@@ -113,7 +113,7 @@ public sealed class UploadRecipeImageCommandHandler(
         // FR-JOB-002 (Buổi 4 — Dev 4): chỉ xếp hàng SAU KHI bản ghi ảnh đã commit — job cần đọc được bản ghi đó.
         imageResize.ScheduleResize(created!.Id);
 
-        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug));
+        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug, recipe.Status));
         return RecipeImageResultDto.From(created);
     }
 }
@@ -167,7 +167,7 @@ public sealed class UpdateRecipeImageCommandHandler(
             },
             cancellationToken).ConfigureAwait(false);
 
-        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug));
+        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug, recipe.Status));
         return RecipeImageResultDto.From(updated!);
     }
 }
@@ -214,6 +214,6 @@ public sealed class DeleteRecipeImageCommandHandler(
         fileCleanup.ScheduleDelete(
             new[] { removed!.OriginalUrl, removed.MediumUrl, removed.ThumbnailUrl }.OfType<string>().ToArray());
 
-        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug));
+        request.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug, recipe.Status));
     }
 }
