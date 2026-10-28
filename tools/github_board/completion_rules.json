@@ -104,7 +104,7 @@
     {"label": "429 RATE_LIMIT_EXCEEDED + Retry-After", "grep": ["RateLimitExceeded|RATE_LIMIT_EXCEEDED", "Retry-After|RetryAfter"], "in": "backend/src/*.cs"},
     {"label": "CORS named policy expose ETag/Retry-After, cho phép If-Match", "grep": ["WithExposedHeaders", "ETag", "If-Match"], "in": "backend/src/*.cs"},
     {"label": "API Versioning (Asp.Versioning) route /api/v{version:apiVersion}", "grep": ["AddApiVersioning", "NewApiVersionSet|ApiVersionSet", "v\\{version:apiVersion\\}"], "in": "backend/src/*.cs"},
-    {"label": "Integration test rate limit, CORS, versioning", "grep": ["class\\s+RateLimitingTests", "class\\s+CorsTests", "class\\s+ApiVersioningTests"], "in": "backend/tests/*.cs"}
+    {"label": "Integration test rate limit, CORS (expose header), versioning", "grep": ["class\\s+RateLimitingTests", "Access-Control-Expose-Headers|ExposedHeaders|AccessControlExposeHeaders", "class\\s+ApiVersioningTests"], "in": "backend/tests/*.cs"}
   ],
   "b5-dev2-1": [
     {"label": "Trang /dashboard/recipes/[id]/edit", "file": "frontend/src/app/*recipes/*/edit/page.tsx"},
@@ -185,7 +185,8 @@
   "b7-dev1-1": [
     {"label": "API change-password, forgot-password, reset-password", "grep": ["\"/change-password\"", "\"/forgot-password\"", "\"/reset-password\""], "in": "backend/src/*.cs"},
     {"label": "Mã AUTH_PASSWORD_RESET_TOKEN_INVALID + PasswordResetEmailJob", "grep": ["AUTH_PASSWORD_RESET_TOKEN_INVALID", "class\\s+PasswordResetEmailJob"], "in": "backend/src/*.cs"},
-    {"label": "Integration test đổi/quên/đặt lại mật khẩu", "grep": ["auth/change-password", "auth/forgot-password", "auth/reset-password"], "in": "backend/tests/*.cs"},
+    {"label": "Integration test gửi request thật tới change/forgot/reset-password và kiểm mã lỗi token", "grep": ["(Post|Send)\\w*\\([^)\\n]*auth/change-password", "(Post|Send)\\w*\\([^)\\n]*auth/forgot-password", "(Post|Send)\\w*\\([^)\\n]*auth/reset-password", "AUTH_PASSWORD_RESET_TOKEN_INVALID|AuthPasswordResetTokenInvalid"], "in": "backend/tests/*.cs"},
+    {"label": "Đăng ký token provider của Identity + thời hạn token đặt lại 30 phút", "grep": ["AddDefaultTokenProviders|AddTokenProvider", "TokenLifespan"], "in": "backend/src/*.cs"},
     {"label": "Trang /auth/forgot-password", "file": "frontend/src/app/*auth/forgot-password/page.tsx"},
     {"label": "Trang /auth/reset-password", "file": "frontend/src/app/*auth/reset-password/page.tsx"},
     {"label": "Trang /profile", "file": "frontend/src/app/*profile/page.tsx"},
@@ -199,7 +200,7 @@
   ],
   "b7-dev3-1": [
     {"label": "Trang chủ trong route group (public)", "file": "frontend/src/app/(public)/page.tsx"},
-    {"label": "D-7: không còn revalidate 3600 / 600", "absent": "revalidate:\\s*(3600|600)\\b", "in": "frontend/src"},
+    {"label": "D-7: không còn revalidate 3600 / 600 (bỏ qua file test)", "absent": "revalidate:\\s*(3600|600)\\b", "in": ["frontend/src", ":(exclude)frontend/src/**/*.test.ts", ":(exclude)frontend/src/**/*.test.tsx"]},
     {"label": "revalidate 1800 / 120 khớp TTL cache API", "grep": ["revalidate\\s*[:=]\\s*1800", "revalidate\\s*[:=]\\s*120"], "in": "frontend/src"},
     {"label": "SidebarCategory dùng trên trang", "grep": "SidebarCategory", "in": "frontend/src/app"}
   ],

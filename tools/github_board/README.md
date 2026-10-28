@@ -14,6 +14,7 @@ Bảng: https://github.com/users/ThangThieng/projects/9
 ```bash
 python tools/github_board/auto_complete.py --all --dry-run   # chỉ xem kết quả chấm
 python tools/github_board/auto_complete.py --all             # cập nhật Project
+python tools/github_board/auto_complete.py --all --recheck   # sau khi sửa luật: hạ đầu việc Done không còn đạt về In Progress
 python tools/github_board/sync_board.py                       # khi README đổi đầu việc
 ```
 
@@ -28,4 +29,12 @@ Workflow luôn lấy tool + tiêu chí từ `main`. Cần secret **`BOARD_TOKEN`
 ## Thêm / sửa tiêu chí
 
 Sửa `completion_rules.json` (khóa = khóa issue, vd. `b5-dev2-1`), thử bằng `--dry-run`, rồi merge vào `main`.
+
+- Một đầu việc Buổi n chỉ được chứng minh bằng nhánh `buoiso{m}` với m ≥ n — tiêu chí dò file/từ khóa có thể đã đúng từ buổi trước
+  (ví dụ trang chủ tĩnh Buổi 6 khớp tiêu chí trang chủ Buổi 7) dù việc của buổi đó chưa làm.
+- Tiêu chí "không còn X" (`absent`) nên loại file test (`":(exclude)…*.test.ts"`): test khẳng định "không còn X" thường chứa chính chuỗi X.
+- Tiêu chí về kiểm thử nên dò **lời gọi thật** (`PostAsJsonAsync("/api/v1/…")`), không dò chuỗi route — danh sách route của
+  `ApiSurfaceTests` chứa mọi endpoint nên luôn khớp.
+- Sửa luật xong chạy `--recheck`: đầu việc Done mà không còn nhánh nào đạt sẽ về In Progress, issue được mở lại kèm danh sách tiêu chí thiếu;
+  nhận xét minh chứng tự cập nhật khi nhánh/commit minh chứng thay đổi.
 Tiêu chí chỉ xác nhận *sản phẩm có mặt và có kiểm thử*; không thay cho việc đọc code.

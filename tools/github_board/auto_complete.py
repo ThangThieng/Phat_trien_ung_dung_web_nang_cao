@@ -36,6 +36,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 MARKER = "culinary-board:key="
 AUTO_MARK = "<!-- culinary-board:auto-done -->"
+REOPEN_MARK = "<!-- culinary-board:auto-reopen -->"
 BRANCH_RE = re.compile(r"^(?P<mssv>\d{7})[_-].*?buoi(?:so)?[_-]?(?P<session>\d+)", re.IGNORECASE)
 
 
@@ -129,7 +130,9 @@ def grade(tasks: list[Task], members: list[Member], rules: dict, remote: str,
             continue
         owner, session = by_mssv[m["mssv"]], int(m["session"])
         for v in verdicts.values():
-            if v.task.member is not owner:
+            # Nhánh của buổi TRƯỚC không chứng minh được việc của buổi sau: tiêu chí dò file/từ khóa có thể đã đúng từ trước
+            # (ví dụ trang chủ tĩnh Buổi 6 đã khớp tiêu chí trang chủ Buổi 7) dù việc của buổi đó chưa làm.
+            if v.task.member is not owner or session < v.task.session:
                 continue
             ev = evaluate(remote, branch, rules[v.task.key])
             if ev.complete:
@@ -184,7 +187,7 @@ def evidence_comment(v: Verdict, repo: str) -> str:
     return "\n".join(lines)
 
 
-def apply(verdicts: list[Verdict], members: list[Member], cfg: dict, dry_run: bool) -> None:
+def apply(verdicts: list[Verdict], members: list[Member], cfg: dict, dry_run: bool, recheck: bool = False) -> None:
     repo = cfg["repo"]
     project = Project(repo.split("/")[0], cfg["project_title"])
     fields = project.ensure_grading_fields(members)
@@ -240,9 +243,32 @@ def apply(verdicts: list[Verdict], members: list[Member], cfg: dict, dry_run: bo
                     gh(f"repos/{repo}/issues/{issue['number']}", "-X", "PATCH",
                        payload={"state": "closed", "state_reason": "completed"})
                 comments = paginate(f"repos/{repo}/issues/{issue['number']}/comments")
-                if not any(AUTO_MARK in (c.get("body") or "") for c in comments):
-                    gh(f"repos/{repo}/issues/{issue['number']}/comments", "-X", "POST",
-                       payload={"body": evidence_comment(v, repo)})
+                body = evidence_comment(v, repo)
+                mine = [c for c in comments if AUTO_MARK in (c.get("body") or "")]
+                if not mine:
+                    gh(f"repos/{repo}/issues/{issue['number']}/comments", "-X", "POST", payload={"body": body})
+                elif mine[-1].get("body") != body:
+                    # Minh chứng đổi (nhánh/commit khác, luật chấm chặt hơn) → sửa lại đúng nhận xét cũ, không để minh chứng sai.
+                    gh(f"repos/{repo}/issues/comments/{mine[-1]['id']}", "-X", "PATCH", payload={"body": body})
+        elif recheck and v.best_partial and current == STATUS_DONE:
+            # --recheck: đầu việc đang Done nhưng không nhánh nào (cùng buổi trở về sau) còn đạt đủ tiêu chí — thường vì luật chấm
+            # vừa được sửa cho đúng. Hạ về In Progress, mở lại issue và ghi rõ tiêu chí còn thiếu.
+            ev = v.best_partial
+            missing = [c.label for c in ev.checks if not c.ok]
+            print(f"  ↺ #{issue['number']} {v.task.title} → In Progress ({ev.passed}/{v.total}, {ev.branch}; thiếu: {'; '.join(missing)})")
+            put(item, FIELD_SCORE, f"{ev.passed}/{v.total}")
+            put(item, FIELD_BRANCH, ev.branch)
+            put(item, FIELD_COMMIT, None)
+            put(item, FIELD_DONE_AT, None)
+            put(item, "Status", STATUS_DOING)
+            if not dry_run:
+                sync_body_status(repo, issue, STATUS_DOING)
+                if issue["state"] == "closed":
+                    gh(f"repos/{repo}/issues/{issue['number']}", "-X", "PATCH", payload={"state": "open"})
+                lines = "\n".join(f"- [ ] {label}" for label in missing)
+                gh(f"repos/{repo}/issues/{issue['number']}/comments", "-X", "POST", payload={"body": (
+                    f"{REOPEN_MARK}\n**Chấm lại:** nhánh `{ev.branch}` @ `{ev.sha[:7]}` đạt {ev.passed}/{v.total} tiêu chí — "
+                    f"đầu việc trở về **In Progress**. Còn thiếu:\n{lines}")})
         elif v.best_partial and current != STATUS_DONE:
             ev = v.best_partial
             put(item, FIELD_SCORE, f"{ev.passed}/{v.total}")
@@ -330,6 +356,8 @@ def main() -> None:
     ap.add_argument("--remote", default="origin")
     ap.add_argument("--dry-run", action="store_true", help="chỉ in kết quả, không ghi lên GitHub")
     ap.add_argument("--fetch", action="store_true", help="git fetch remote trước khi chấm")
+    ap.add_argument("--recheck", action="store_true",
+                    help="hạ đầu việc Done về In Progress (mở lại issue) nếu không còn nhánh nào đạt đủ tiêu chí — dùng sau khi sửa luật chấm")
     args = ap.parse_args()
 
     cfg = json.loads((HERE / "config.json").read_text(encoding="utf-8"))
@@ -358,9 +386,13 @@ def main() -> None:
         print(f"  [{v.task.key}] {v.task.member.name}: {state}")
 
     if args.dry_run:
+        if args.recheck:
+            for v in verdicts:
+                if not v.done and v.best_partial:
+                    print(f"  (recheck) [{v.task.key}] sẽ về In Progress nếu đang Done")
         return
     cfg["_all_tasks"] = {t.key: t for t in plan.tasks}
-    apply(verdicts, plan.members, cfg, dry_run=False)
+    apply(verdicts, plan.members, cfg, dry_run=False, recheck=args.recheck)
     missing = ensure_views(cfg)
     if missing:
         print("Không tạo được view qua API: " + ", ".join(missing))
