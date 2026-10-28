@@ -1,7 +1,5 @@
 'use client';
 
-import { Printer, Share2 } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
 /** In bằng CSS hệ thống và chia sẻ progressive enhancement, không thêm SDK bên thứ ba. */
@@ -20,10 +18,13 @@ export default function RecipeActions({
         return;
       }
       await navigator.clipboard.writeText(url);
+      const { toast } = await import('sonner');
       toast.success('Đã sao chép liên kết');
     } catch (error) {
-      if ((error as DOMException).name !== 'AbortError')
+      if ((error as DOMException).name !== 'AbortError') {
+        const { toast } = await import('sonner');
         toast.error('Không thể chia sẻ liên kết. Vui lòng thử lại.');
+      }
     }
   };
   return (
@@ -34,11 +35,9 @@ export default function RecipeActions({
         onClick={() => window.print()}
         aria-label="In công thức"
       >
-        <Printer aria-hidden />
         In công thức
       </Button>
       <Button type="button" variant="outline" onClick={share} aria-label="Chia sẻ công thức">
-        <Share2 aria-hidden />
         Chia sẻ
       </Button>
     </div>

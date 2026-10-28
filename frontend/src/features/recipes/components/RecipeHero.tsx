@@ -1,4 +1,3 @@
-import { ChefHat, Clock, Flame, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Recipe } from '@/types/recipe';
 import { DIFFICULTY_LABEL, formatDate, formatMinutes } from '../format';
@@ -6,11 +5,11 @@ import { DIFFICULTY_LABEL, formatDate, formatMinutes } from '../format';
 /** Phần thông tin ngữ nghĩa đầu trang công thức (FR-RCP-002). */
 export default function RecipeHero({ recipe }: { recipe: Recipe }) {
   const facts = [
-    { icon: Clock, label: 'Chuẩn bị', value: formatMinutes(recipe.prepTimeMinutes) },
-    { icon: Flame, label: 'Nấu', value: formatMinutes(recipe.cookTimeMinutes) },
-    { icon: Clock, label: 'Tổng thời gian', value: formatMinutes(recipe.totalTimeMinutes) },
-    { icon: Users, label: 'Khẩu phần', value: `${recipe.servings} người` },
-    { icon: ChefHat, label: 'Độ khó', value: DIFFICULTY_LABEL[recipe.difficulty] },
+    { symbol: '◷', label: 'Chuẩn bị', value: formatMinutes(recipe.prepTimeMinutes) },
+    { symbol: '♨', label: 'Nấu', value: formatMinutes(recipe.cookTimeMinutes) },
+    { symbol: '◷', label: 'Tổng thời gian', value: formatMinutes(recipe.totalTimeMinutes) },
+    { symbol: '♟', label: 'Khẩu phần', value: `${recipe.servings} người` },
+    { symbol: '★', label: 'Độ khó', value: DIFFICULTY_LABEL[recipe.difficulty] },
   ];
 
   return (
@@ -40,10 +39,12 @@ export default function RecipeHero({ recipe }: { recipe: Recipe }) {
         </span>
       </p>
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {facts.map(({ icon: Icon, label, value }) => (
+        {facts.map(({ symbol, label, value }) => (
           <div key={label} className="rounded-xl border border-orange-100 bg-orange-50/60 p-3">
             <dt className="flex items-center gap-1 text-xs text-gray-600">
-              <Icon aria-hidden className="size-3.5" />
+              <span aria-hidden className="inline-flex size-3.5 items-center justify-center text-sm">
+                {symbol}
+              </span>
               {label}
             </dt>
             <dd className="mt-1 font-semibold text-gray-900">{value}</dd>

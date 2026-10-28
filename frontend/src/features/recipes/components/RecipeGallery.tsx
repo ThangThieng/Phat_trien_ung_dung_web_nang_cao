@@ -1,15 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import type { RecipeImage } from '@/types/recipe';
+
+const RecipeLightbox = dynamic(() => import('./RecipeLightbox'), { ssr: false });
 
 /** Ảnh chính 800×600 là LCP nên luôn `priority`; ảnh phụ mở bằng dialog. */
 export default function RecipeGallery({ images, title }: { images: RecipeImage[]; title: string }) {
   const ordered = [...images].sort((a, b) => a.orderIndex - b.orderIndex);
   const primary = ordered.find((image) => image.isPrimary) ?? ordered[0];
   const [selected, setSelected] = useState<RecipeImage | null>(null);
+  const [lightboxActivated, setLightboxActivated] = useState(false);
+  const openerRef = useRef<HTMLButtonElement | null>(null);
+
+  const openLightbox = (image: RecipeImage, opener: HTMLButtonElement) => {
+    openerRef.current = opener;
+    setLightboxActivated(true);
+    setSelected(image);
+  };
 
   if (!primary) {
     return (
@@ -27,7 +37,7 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
     <section aria-label={`Ảnh ${title}`}>
       <button
         type="button"
-        onClick={() => setSelected(primary)}
+        onClick={(event) => openLightbox(primary, event.currentTarget)}
         className="relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-orange-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
       >
         <Image
@@ -46,7 +56,7 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
             <li key={image.id}>
               <button
                 type="button"
-                onClick={() => setSelected(image)}
+                onClick={(event) => openLightbox(image, event.currentTarget)}
                 className="relative block size-16 overflow-hidden rounded-lg ring-offset-2 focus-visible:outline-2 focus-visible:outline-orange-700"
               >
                 <Image
@@ -62,23 +72,14 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
           ))}
         </ul>
       )}
-      <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="max-w-4xl p-2" aria-describedby={undefined}>
-          <DialogTitle className="sr-only">{selected?.altText ?? title}</DialogTitle>
-          {selected && (
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-              <Image
-                src={selected.originalUrl}
-                alt={selected.altText ?? title}
-                fill
-                unoptimized
-                sizes="(max-width: 1024px) 100vw, 900px"
-                className="object-contain"
-              />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {lightboxActivated && (
+        <RecipeLightbox
+          image={selected}
+          title={title}
+          opener={openerRef.current}
+          onOpenChange={(open) => !open && setSelected(null)}
+        />
+      )}
     </section>
   );
 }

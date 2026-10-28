@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { LoaderCircle } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
@@ -66,7 +65,12 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     >
-      {isLoading && <LoaderCircle aria-hidden className="animate-spin" />}
+      {isLoading && (
+        <span
+          aria-hidden
+          className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+        />
+      )}
       {props.children}
     </Comp>
   )

@@ -6,10 +6,10 @@ import { ApiError } from '@/lib/api-client';
 import { getRecipeBySlug } from '@/features/recipes/api';
 import IngredientList from '@/features/recipes/components/IngredientList';
 import NutritionTable from '@/features/recipes/components/NutritionTable';
-import RecipeActions from '@/features/recipes/components/RecipeActions';
+import RecipeActions from '@/features/recipes/components/RecipeActionsLazy';
 import RecipeGallery from '@/features/recipes/components/RecipeGallery';
 import RecipeHero from '@/features/recipes/components/RecipeHero';
-import StepChecklist from '@/features/recipes/components/StepChecklist';
+import StepChecklist from '@/features/recipes/components/StepChecklistLazy';
 
 // CSP nonce của root layout khiến route này render theo request. Không khai báo
 // `revalidate`/`generateStaticParams`: Data Cache 300 giây nằm ở getRecipeBySlug.

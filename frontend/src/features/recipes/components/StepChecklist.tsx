@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Timer } from 'lucide-react';
-import { toast } from 'sonner';
 import type { RecipeStep } from '@/types/recipe';
 
 /** Các bước thực hiện dạng checklist – người đọc tick bước đã làm khi nấu. */
@@ -17,7 +15,7 @@ export default function StepChecklist({ steps }: { steps: RecipeStep[] }) {
         setActiveTimer((current) => {
           if (!current) return null;
           if (current.remaining <= 1) {
-            toast.success('Hẹn giờ đã kết thúc.');
+            import('sonner').then(({ toast }) => toast.success('Hẹn giờ đã kết thúc.'));
             return null;
           }
           return { ...current, remaining: current.remaining - 1 };
@@ -75,7 +73,7 @@ export default function StepChecklist({ steps }: { steps: RecipeStep[] }) {
                         className="flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800 hover:bg-orange-200"
                         aria-label={`Hẹn giờ ${step.timerMinutes} phút cho bước ${step.stepNumber}`}
                       >
-                        <Timer aria-hidden className="h-3 w-3" />{' '}
+                        <span aria-hidden>⏱</span>{' '}
                         {activeTimer?.id === step.id
                           ? `${Math.floor(activeTimer.remaining / 60)}:${String(activeTimer.remaining % 60).padStart(2, '0')}`
                           : `${step.timerMinutes} phút`}
