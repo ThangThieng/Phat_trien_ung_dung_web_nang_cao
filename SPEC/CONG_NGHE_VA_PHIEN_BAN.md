@@ -162,29 +162,37 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | `tw-animate-css` | 1.4.0 | Hiệu ứng mở/đóng của component shadcn trên Tailwind v4 | B6 (Dev 2, cài qua CLI) | ➕ |
 | `Asp.Versioning.Http` | 10.2.3 | API versioning theo URL `/api/v{version}` cho Minimal APIs | B5 (Dev 1) | ➕ |
 | `Asp.Versioning.OpenApi` | 10.2.3 | Tài liệu OpenAPI theo phiên bản cho Scalar `/scalar/v1` | B5 (Dev 1, Dev 2) | ➕ |
-| k6 (công cụ, chạy bằng Docker image `grafana/k6`, không phải gói npm) | ghim tag khi chạy | Load test (NFR-PERF-001/002) | B8 (Dev 4) | ✅ (SRS NFR-PERF-001/002 chỉ định *"k6 smoke test → load test → stress test"*) |
+| k6 (công cụ, chạy bằng Docker image `grafana/k6`, không phải gói npm) | **2.3.0** (`grafana/k6:2.3.0`, service `k6` của `docker-compose.loadtest.yml`) | Load test (NFR-PERF-001/002) | B8 (Dev 4) | ✅ (SRS NFR-PERF-001/002 chỉ định *"k6 smoke test → load test → stress test"*) |
+| Trivy (công cụ quét lỗ hổng image, chạy bằng Docker image `aquasec/trivy`) | **0.75.0** | Quét image trước khi phát hành — không chấp nhận lỗ hổng Critical | B8 (Dev 4) | ➕ (kế hoạch B8 — đóng gói) |
 
 ---
 
 ## 4. Hạ tầng Docker Compose (SRS §6.5)
 
-| Service | Image | Phiên bản chạy thực tế | SRS | Port (host:container) |
-|---|---|---|---|---|
-| nginx | nginx:alpine | nginx **1.31.5** | Nginx 1.24+ | 80:80 |
-| api | culinaryblog-api (build) | ASP.NET Core **10.0.12** | .NET 10 | 5000:8080 |
-| hangfire | culinaryblog-api (cùng image) | ASP.NET Core 10.0.12 | Hangfire | — (worker) |
-| frontend | culinaryblog-web (build) | Node **22.23.2** | Node 22 LTS (khuyến nghị) | 3000:3000 |
-| postgres | postgres:16-alpine | PostgreSQL **16.15** | PostgreSQL 16 | `${POSTGRES_HOST_PORT:-5432}`:5432 – máy này dùng **5434** (xem 6.10) |
-| redis | redis:7-alpine | Redis **7.4.11** (AOF bật) | Redis 7 | 6379:6379 |
-| minio | minio/minio:latest | RELEASE.**2025-09-07** | MinIO RELEASE.2024+ | 9000, 9001 (console) |
-| seq | datalust/seq:latest | latest | Seq | 5341:80 |
-| mailhog | mailhog/mailhog | latest (profile `dev`) | Mailhog (dev only) | 8025, 1025 |
+| Service | Image (tag ghim từ Buổi 8) | Phiên bản chạy thực tế | SRS | Port (host:container) | Healthcheck |
+|---|---|---|---|---|---|
+| nginx | `nginx:1.31.5-alpine` | nginx **1.31.5** | Nginx 1.24+ | 80:80 (prod thêm 443) | `curl /nginx-health` (chỉ 127.0.0.1) |
+| api | culinaryblog-api (build từ `dotnet/aspnet:10.0.13`) | ASP.NET Core **10.0.13** | .NET 10 | 5000:8080 (prod: không mở cổng, 3 bản sao) | `curl /health/ready` |
+| hangfire | culinaryblog-api (cùng image) | ASP.NET Core 10.0.13 | Hangfire | — (worker) | `curl /health/ready` (Buổi 8) |
+| frontend | culinaryblog-web (build từ `node:22.23.2-alpine`) | Node **22.23.2** | Node 22 LTS (khuyến nghị) | 3000:3000 | `wget` trang chủ |
+| postgres | `postgres:16.15-alpine` | PostgreSQL **16.15** | PostgreSQL 16 | `${POSTGRES_HOST_PORT:-5432}`:5432 – máy này dùng **5434** (xem 6.10) | `pg_isready -h 127.0.0.1` |
+| redis | `redis:7.4.11-alpine` | Redis **7.4.11** (AOF bật) | Redis 7 | 6379:6379 | `redis-cli ping` |
+| minio | `quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z` | RELEASE.**2025-09-07** | MinIO RELEASE.2024+ | 9000, 9001 (console) | `mc ready local` |
+| seq | `datalust/seq:2026.1.17114` | Seq **2026.1** (nhận cả OTLP logs/traces/metrics) | Seq | 5341:80 (ingest nội bộ `seq:5341`) | `curl /health` (Buổi 8) |
+| mailhog | `mailhog/mailhog:v1.0.1` | 1.0.1 (profile `dev`; overlay E2E) | Mailhog (dev only) | 8025, 1025 | — |
+
+**Ghim tag (Buổi 8 — CONS-009):** tag trôi (`latest`, `alpine`, `10.0`) làm hai máy build ra hai hệ thống khác nhau và một lần `pull` có thể đổi
+phiên bản giữa hai lần đo. Mỗi tag đã kéo thử để chắc tồn tại; `nginx`, `seq`, `mailhog`, `dotnet/sdk` cùng image ID với bản đang chạy trước đó; `redis`,
+`postgres`, `node` cùng phiên bản ứng dụng (7.4.11 / 16.15 / 22.23.2), image dựng lại ngày 17/09/2026 với bản vá hệ điều hành mới hơn. Testcontainers
+của bộ integration test dùng cùng tag `postgres`/`redis`.
 
 **PostgreSQL extensions** (`docker/postgres/init.sql`): `unaccent`, `pg_trgm`, cùng text search configuration `vietnamese_unaccent`. Đã kiểm tra: `to_tsvector('vietnamese_unaccent','Phở bò Hà Nội') @@ to_tsquery('pho & bo')` = **true**.
 
 **Dockerfile multi-stage (CONS-009):**
-- `backend/Dockerfile`: `dotnet/sdk:10.0` → `dotnet/aspnet:10.0`, chạy bằng người dùng non-root `app`.
-- `frontend/Dockerfile`: `node:22-alpine` ×3 stage → Next.js `output: 'standalone'`, chạy bằng người dùng non-root `nextjs`.
+- `backend/Dockerfile`: `dotnet/sdk:10.0.402` → `dotnet/aspnet:10.0.13`, chạy bằng người dùng non-root `app`; `dotnet restore` tách layer riêng (chỉ
+  chép `*.csproj` trước) để đổi code không phải tải lại gói NuGet; `/app/logs` thuộc `app` cho sink File của Serilog (Buổi 8).
+- `frontend/Dockerfile`: `node:22.23.2-alpine` ×3 stage → Next.js `output: 'standalone'`, chạy bằng người dùng non-root `nextjs`; `npm ci` ở stage
+  `deps` riêng.
 
 ---
 
@@ -219,6 +227,12 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
   | GHSA-j3p4-wp97-rph4 (cao) | `HistogramEqualization` | Không gọi ở đâu |
   | GHSA-wmxv-xphr-5c9g (trung bình) | Decoder BigTIFF lặp vô hạn | `ImageResizeJob` chỉ nạp decoder JPEG/PNG/WebP; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` thay object gốc trên MinIO bằng TIFF hợp lệ → job không giải mã (bỏ giới hạn thì test đỏ — đã thử) |
   | GHSA-gwg2-r3hj-4w44 (trung bình) | Đọc CLUT trong ICC profile | Quét IL của 3.1.12: chỉ `IccWriter.Write` → `IccProfile.Entries` mới đọc CLUT, và `IccProfile.ToByteArray()` chỉ gọi `IccWriter.Write` khi profile được dựng bằng code; profile đọc từ ảnh (`new IccProfile(byte[])`) được sao chép nguyên byte. Vì vậy không cần `SkipMetadata` — giữ EXIF orientation của ảnh chụp bằng điện thoại |
+
+  **Bổ sung 28/10/2026 (Buổi 8):** NuGet audit báo thêm **GHSA-v76p-62qx-wwq2** (cao, công bố 07/10/2026) — làm đỏ build của mọi nhánh, kể cả `develop`. Bản vá: 3.2.0 (chưa phát hành trên NuGet) hoặc 4.1.1+ (đòi license key). Xử lý như 5 advisory trên: miễn trừ đúng mã này, kèm bằng chứng.
+
+  | Advisory | Chỗ lỗi | Vì sao không chạm tới |
+  |---|---|---|
+  | GHSA-v76p-62qx-wwq2 (cao) | Decoder TIFF: ảnh chia tile nén fax (T4/T6/MH) ghi tràn bộ đệm của tile | Backend chỉ có **một** chỗ giải mã ảnh (`ImageResizeJob`), dùng cấu hình chỉ JPEG/PNG/WebP. Test `Job_DecodesOnlyJpegPngAndWebp` khẳng định danh sách định dạng giải mã được; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` khẳng định TIFF thật không được giải mã |
 
   Gỡ khối miễn trừ khi chuyển sang một bản đã vá.
 
