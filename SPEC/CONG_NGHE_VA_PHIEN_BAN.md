@@ -220,6 +220,12 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
   | GHSA-wmxv-xphr-5c9g (trung bình) | Decoder BigTIFF lặp vô hạn | `ImageResizeJob` chỉ nạp decoder JPEG/PNG/WebP; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` thay object gốc trên MinIO bằng TIFF hợp lệ → job không giải mã (bỏ giới hạn thì test đỏ — đã thử) |
   | GHSA-gwg2-r3hj-4w44 (trung bình) | Đọc CLUT trong ICC profile | Quét IL của 3.1.12: chỉ `IccWriter.Write` → `IccProfile.Entries` mới đọc CLUT, và `IccProfile.ToByteArray()` chỉ gọi `IccWriter.Write` khi profile được dựng bằng code; profile đọc từ ảnh (`new IccProfile(byte[])`) được sao chép nguyên byte. Vì vậy không cần `SkipMetadata` — giữ EXIF orientation của ảnh chụp bằng điện thoại |
 
+  **Bổ sung 28/10/2026 (Buổi 8):** NuGet audit báo thêm **GHSA-v76p-62qx-wwq2** (cao, công bố 07/10/2026) — làm đỏ build của mọi nhánh, kể cả `develop`. Bản vá: 3.2.0 (chưa phát hành trên NuGet) hoặc 4.1.1+ (đòi license key). Xử lý như 5 advisory trên: miễn trừ đúng mã này, kèm bằng chứng.
+
+  | Advisory | Chỗ lỗi | Vì sao không chạm tới |
+  |---|---|---|
+  | GHSA-v76p-62qx-wwq2 (cao) | Decoder TIFF: ảnh chia tile nén fax (T4/T6/MH) ghi tràn bộ đệm của tile | Backend chỉ có **một** chỗ giải mã ảnh (`ImageResizeJob`), dùng cấu hình chỉ JPEG/PNG/WebP. Test `Job_DecodesOnlyJpegPngAndWebp` khẳng định danh sách định dạng giải mã được; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` khẳng định TIFF thật không được giải mã |
+
   Gỡ khối miễn trừ khi chuyển sang một bản đã vá.
 
 ### 6.3 ESLint – dùng ESLint 8.57.1 (không dùng ESLint 9) để giữ bộ luật Airbnb 📌
