@@ -1,0 +1,9 @@
+# Buổi 8 — healthcheck của container nginx (CONS-009: 8 service đều healthy). Chỉ trả lời chính container (127.0.0.1) — người
+# ngoài nhận 403; không proxy tới đâu nên "nginx healthy" phản ánh đúng Nginx, không lẫn với trạng thái của api/frontend.
+location = /nginx-health {
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
+    default_type text/plain;
+    return 200 "ok\n";
+}

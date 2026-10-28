@@ -1,0 +1,45 @@
+# Culinary Blog – môi trường ĐO TẢI (Buổi 8 — Dev 4, NFR-PERF-001/002/003, NFR-REL-002). Kịch bản: tests/load/README.md.
+#
+# Lớp phủ (overlay) của docker-compose.prod.yml — cùng project "culinaryblog", cùng 3 bản sao api, HTTPS, cùng dữ liệu. Khác production
+# ĐÚNG MỘT điểm: hạn mức rate limit được nâng lên mức không bao giờ chạm tới, ở cả hai lớp:
+#   - Nginx: nginx/loadtest/rate-limit-zones.conf.template thay snippet vùng rate limit (cùng tên zone);
+#   - API: RateLimiting__{General,Auth,Upload}__PermitLimit=1000000 (cấu hình của Buổi 5).
+# Vì sao: k6 chạy từ MỘT máy nên mọi request cùng một IP; giữ hạn mức thật thì từ giây thứ hai hầu hết request là 429 và con số đo
+# vô nghĩa. Rate limit có kiểm thử riêng trên hạn mức thật (Buổi 5, Buổi 7, Buổi 8 — Dev 1). Báo cáo đo ghi rõ việc nâng hạn mức.
+#
+# Chạy:
+#   docker compose --profile dev down
+#   docker compose -f docker-compose.prod.yml -f docker-compose.loadtest.yml --env-file .env.production up -d --build
+#   docker compose -f docker-compose.prod.yml -f docker-compose.loadtest.yml --env-file .env.production --profile loadtest \
+#     run --rm k6 run /scripts/smoke.js          # rồi load.js, stress.js
+# Trả về bản dev: ... down  &&  docker compose --profile dev up -d --build
+
+name: culinaryblog
+
+x-unlimited-rate: &unlimited-rate
+  RateLimiting__General__PermitLimit: "1000000"
+  RateLimiting__Auth__PermitLimit: "1000000"
+  RateLimiting__Upload__PermitLimit: "1000000"
+
+services:
+  nginx:
+    volumes:
+      - ./nginx/loadtest/rate-limit-zones.conf.template:/etc/nginx/templates/snippets/rate-limit-zones.conf.template:ro
+
+  api:
+    environment:
+      <<: *unlimited-rate
+
+  # k6 chạy TRONG mạng Docker của project và đi qua Nginx (https://nginx — đúng đường đi của người dùng thật: TLS, gzip, luân phiên
+  # 3 bản sao). Chứng chỉ tự ký → insecureSkipTLSVerify trong tests/load/lib/config.js.
+  k6:
+    image: grafana/k6:2.3.0
+    profiles: ["loadtest"]
+    volumes:
+      - ./tests/load:/scripts:ro
+      - ./tests/load/results:/results
+    environment:
+      BASE_URL: https://nginx
+      K6_NO_USAGE_REPORT: "true"
+    depends_on:
+      nginx: { condition: service_healthy }

@@ -1,0 +1,14 @@
+# CHỈ DÙNG KHI ĐO TẢI (docker-compose.loadtest.yml — Buổi 8, NFR-PERF-001/002). Thay nginx/templates/snippets/rate-limit-zones.conf
+# của bản production: CÙNG tên zone nên mọi location giữ nguyên, chỉ nâng tốc độ lên mức không bao giờ chạm tới.
+#
+# Vì sao: k6 chạy từ MỘT máy nên mọi request cùng một IP. Giữ hạn mức thật (100/phút cho /api/, 10/phút cho /auth/*) thì từ giây
+# thứ hai hầu hết request là 429 và con số đo vô nghĩa. Rate limit đã có kiểm thử riêng (Buổi 5, Buổi 7, Buổi 8 — Dev 1) trên
+# hạn mức thật; tests/load/README.md và docs/load-test-report.md ghi rõ việc nâng hạn mức.
+# Khóa rỗng: Nginx không đếm request nào (tài liệu limit_req_zone — "requests with an empty key value are not accounted"). Tốc độ cao
+# mà vẫn có khóa thì burst=20 của location vẫn chặn: stress 28/10/2026, 254 request HTTP/2 tới cùng lúc từ IP của k6 nhận 429.
+map $request_method $no_limit_key {
+    default "";
+}
+limit_req_zone $no_limit_key zone=api_limit:10m rate=100000r/s;
+limit_req_zone $no_limit_key zone=auth_limit:10m rate=100000r/s;
+limit_req_zone $no_limit_key zone=upload_limit:10m rate=100000r/s;

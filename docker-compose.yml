@@ -1,6 +1,7 @@
 # Culinary Blog – Development stack (SRS §6.5)
-# 8 services: nginx, api, frontend, postgres, redis, minio, hangfire, seq  (+ mailhog: profile "dev")
+# 8 services: nginx, api, frontend, postgres, redis, minio, hangfire, seq  (+ mailhog: profile "dev") — cả 8 có healthcheck (Buổi 8)
 # Chạy:   cp .env.example .env  &&  docker compose --profile dev up -d --build
+# Image ghim đúng phiên bản (Buổi 8 — CONS-009): tag trôi như "latest"/"alpine" làm hai máy build ra hai hệ thống khác nhau.
 # Production (HTTPS, 3 bản sao api — Buổi 7): docker-compose.prod.yml — cùng project "culinaryblog", không chạy song song với file này.
 
 name: culinaryblog
@@ -8,7 +9,8 @@ name: culinaryblog
 x-api-env: &api-env
   ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
   # GSS Encryption Mode=Disable: không dùng Kerberos, tránh Npgsql tìm libgssapi_krb5 (không có trong image aspnet)
-  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};GSS Encryption Mode=Disable
+  # Pool tối đa mỗi tiến trình — cùng giá trị với production (Buổi 8): api + hangfire = 2 × 25 < max_connections 100 mặc định.
+  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};GSS Encryption Mode=Disable;Maximum Pool Size=${DB_MAX_POOL_SIZE:-25}
   ConnectionStrings__Redis: redis:6379
   Jwt__SigningKey: ${JWT_SIGNING_KEY}
   Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
@@ -23,14 +25,18 @@ x-api-env: &api-env
   Smtp__Host: ${SMTP_HOST:-mailhog}
   Smtp__Port: ${SMTP_PORT:-1025}
   Smtp__UseSsl: ${SMTP_USE_SSL:-false}
-  Seq__ServerUrl: http://seq:80
-  OpenTelemetry__OtlpEndpoint: http://seq:80/ingest/otlp
+  # FR-OBS-002/003 (Buổi 8): log Serilog → Seq (cổng ingest 5341 — SRS §5.3), trace + metric OTLP/HTTP → Seq.
+  # Mức log Debug cho development (FR-OBS-002): appsettings.Development.json không vào image (.dockerignore) nên đặt ở đây;
+  # production giữ Information của appsettings.json.
+  Serilog__MinimumLevel__Default: ${LOG_LEVEL:-Debug}
+  Seq__ServerUrl: http://seq:5341
+  OpenTelemetry__OtlpEndpoint: http://seq:5341/ingest/otlp
   Cors__AllowedOrigins__0: ${SITE_URL:-http://localhost:3000}
   Smtp__SiteUrl: ${SITE_URL:-http://localhost:3000}
 
 services:
   nginx:
-    image: nginx:alpine
+    image: nginx:1.31.5-alpine
     ports:
       - "80:80"
     environment:
@@ -47,6 +53,13 @@ services:
       # FR-OBS-001: chỉ nhận traffic khi API đã sẵn sàng (/health/ready trả 200), không chỉ "container đã chạy"
       api: { condition: service_healthy }
       frontend: { condition: service_started }
+    healthcheck:
+      # Buổi 8: location /nginx-health chỉ trả lời 127.0.0.1 (nginx/templates/snippets/health.conf.template); image có curl.
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/nginx-health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     restart: unless-stopped
 
   api:
@@ -99,6 +112,13 @@ services:
       api: { condition: service_started }
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
+    healthcheck:
+      # Buổi 8: worker không xử lý được job khi mất PostgreSQL (storage của Hangfire) hoặc Redis (khóa phân tán) → /health/ready.
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   frontend:
@@ -132,7 +152,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16.15-alpine
     ports:
       - "${POSTGRES_HOST_PORT:-5432}:5432"
     environment:
@@ -151,7 +171,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:7-alpine
+    image: redis:7.4.11-alpine
     command: redis-server --appendonly yes
     ports:
       - "6379:6379"
@@ -185,19 +205,27 @@ services:
     restart: unless-stopped
 
   seq:
-    image: datalust/seq:latest
+    image: datalust/seq:2026.1.17114
     ports:
+      # Giao diện Seq: http://localhost:5341 (cổng 80 trong container). Ingest của api/hangfire đi qua mạng nội bộ seq:5341.
       - "5341:80"
     environment:
       ACCEPT_EULA: "Y"
       SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
     volumes:
       - seqdata:/data
+    healthcheck:
+      # Image Seq (Ubuntu) có curl; /health trả 200 khi Seq sẵn sàng nhận log.
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
   # Dev only – SMTP test cho FR-JOB-001 (UI :8025)
   mailhog:
-    image: mailhog/mailhog
+    image: mailhog/mailhog:v1.0.1
     profiles: ["dev"]
     ports:
       - "8025:8025"

@@ -27,7 +27,10 @@ name: culinaryblog
 
 x-api-env: &api-env
   ASPNETCORE_ENVIRONMENT: Production
-  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:?};Username=${POSTGRES_USER:?};Password=${POSTGRES_PASSWORD:?};GSS Encryption Mode=Disable
+  # Buổi 8 (stress test): mỗi tiến trình .NET giữ tối đa DB_MAX_POOL_SIZE kết nối (mặc định Npgsql là 100). Tổng kết nối lúc cao nhất =
+  # (bản sao api × 2 khi rolling-update-api.sh chạy + hangfire) × pool = (3 × 2 + 1) × 25 = 175 < max_connections 200 của service postgres.
+  # Đổi số bản sao hay pool thì giữ công thức này đúng — vượt max_connections là PostgreSQL trả "too many clients" (stress 28/10/2026: 27.429 lần).
+  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:?};Username=${POSTGRES_USER:?};Password=${POSTGRES_PASSWORD:?};GSS Encryption Mode=Disable;Maximum Pool Size=${DB_MAX_POOL_SIZE:-25}
   ConnectionStrings__Redis: redis:6379
   Jwt__SigningKey: ${JWT_SIGNING_KEY:?}
   Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID:-}
@@ -60,7 +63,7 @@ x-api-volumes: &api-volumes
 
 services:
   nginx:
-    image: nginx:alpine
+    image: nginx:1.31.5-alpine
     ports:
       - "80:80"
       - "443:443"
@@ -95,6 +98,13 @@ services:
     depends_on:
       api: { condition: service_healthy }
       frontend: { condition: service_started }
+    healthcheck:
+      # Cổng 80 trả /nginx-health trước khi chuyển hướng HTTPS (nginx/prod/nginx.conf.template).
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/nginx-health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     restart: unless-stopped
 
   migrate:
@@ -154,6 +164,12 @@ services:
       migrate: { condition: service_completed_successfully }
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   frontend:
@@ -184,7 +200,9 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16.15-alpine
+    # Mặc định 100 không đủ cho 3 bản sao api + hangfire với pool 25 khi cập nhật cuốn chiếu (xem ConnectionStrings ở trên).
+    command: ["postgres", "-c", "max_connections=200"]
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?}
       POSTGRES_USER: ${POSTGRES_USER:?}
@@ -200,7 +218,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:7-alpine
+    image: redis:7.4.11-alpine
     command: redis-server --appendonly yes
     volumes:
       - redisdata:/data

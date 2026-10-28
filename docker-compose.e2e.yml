@@ -1,0 +1,44 @@
+# Culinary Blog – môi trường E2E "giống production" (Buổi 8 — đầu buổi, Dev 4; cả nhóm chạy Playwright trên môi trường này).
+#
+# Lớp phủ (overlay) của docker-compose.prod.yml — CÙNG project "culinaryblog", cùng volume dữ liệu; chỉ khác production ở ba điểm
+# mà kiểm thử cần, rate limit GIỮ NGUYÊN giá trị SRS (kiểm thử bảo mật của Dev 1 cần hạn mức thật):
+#   1. mailhog: email đặt lại mật khẩu (FR-AUTH-011) và chào mừng (FR-JOB-001) đi vào MailHog, đọc qua http://localhost:8025/api/v2/messages;
+#   2. Jwt__AccessTokenMinutes=1: access token hết hạn sau 1 phút để E2E kiểm được refresh tự động (NFR-MAINT-002);
+#   3. migrate chạy dữ liệu mẫu CR-2026-03 (idempotent: cơ sở dữ liệu đã có dữ liệu thì không chèn thêm).
+#
+# Chạy (dừng bản dev trước — một project, một bộ container):
+#   docker compose --profile dev down
+#   docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml --env-file .env.production up -d --build
+#   cd frontend && PLAYWRIGHT_BASE_URL=https://localhost npx playwright test
+# Trả về bản dev:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml --env-file .env.production down
+#   docker compose --profile dev up -d --build
+
+name: culinaryblog
+
+x-e2e-smtp: &e2e-smtp
+  Smtp__Host: mailhog
+  Smtp__Port: "1025"
+  Smtp__UseSsl: "false"
+  Smtp__Username: ""
+  Smtp__Password: ""
+
+services:
+  migrate:
+    environment:
+      Seed__Enabled: "true"
+
+  api:
+    environment:
+      <<: *e2e-smtp
+      Jwt__AccessTokenMinutes: "1"
+
+  hangfire:
+    environment:
+      <<: *e2e-smtp
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "8025:8025"
+    restart: unless-stopped

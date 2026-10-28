@@ -7,6 +7,7 @@ set $frontend_upstream http://frontend:3000;
 set $minio_upstream    http://minio:9000;
 
 include /etc/nginx/snippets/security-headers.conf;
+include /etc/nginx/snippets/health.conf;
 
 # FR-OBS-001 (Buổi 5): /api/health là Route Handler của Next.js (proxy sang /health của API cho Health UI), không
 # phải endpoint của API. Khớp chính xác "=" luôn thắng mọi prefix/regex, nên không rơi vào khối /api/ bên dưới.
