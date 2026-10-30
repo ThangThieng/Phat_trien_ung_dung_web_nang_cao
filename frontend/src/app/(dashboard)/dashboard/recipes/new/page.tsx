@@ -26,7 +26,7 @@ export default function NewRecipePage() {
         <p className="mt-2 text-gray-600">Bạn cần đăng nhập để viết công thức.</p>
         <Link
           href="/auth/login?callbackUrl=/dashboard/recipes/new"
-          className="mt-6 inline-block rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white hover:bg-orange-700"
+          className="mt-6 inline-block rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white hover:bg-orange-800"
         >
           Đăng nhập
         </Link>
@@ -52,7 +52,7 @@ export default function NewRecipePage() {
           >
             <span
               className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${
-                index <= step ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-600'
+                index <= step ? 'bg-orange-700 text-white' : 'bg-gray-200 text-gray-600'
               }`}
             >
               {index + 1}
@@ -79,7 +79,7 @@ export default function NewRecipePage() {
             />
             <Link
               href={`/dashboard/recipes/${draft.id}/edit`}
-              className="mt-5 inline-block rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+              className="mt-5 inline-block rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
             >
               Tiếp tục thêm nguyên liệu và bước nấu
             </Link>

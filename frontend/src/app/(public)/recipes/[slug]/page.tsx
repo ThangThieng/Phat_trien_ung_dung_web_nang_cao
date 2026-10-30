@@ -6,8 +6,13 @@ import { cache } from 'react';
 import { ChefHat, Clock, Flame, Users } from 'lucide-react';
 import { ApiError } from '@/lib/api-client';
 import { getRecipeBySlug } from '@/features/recipes/api';
+import JsonLd from '@/components/seo/JsonLd';
 import NutritionTable from '@/features/recipes/components/NutritionTable';
 import StepChecklist from '@/features/recipes/components/StepChecklist';
+import { IMAGE_UNOPTIMIZED } from '@/lib/images';
+import { buildRecipeMetadata } from '@/lib/seo/metadata';
+import { buildBreadcrumbJsonLd, buildRecipeJsonLd } from '@/lib/seo/recipe-json-ld';
+import { SITE_URL } from '@/lib/seo/site';
 import {
   DIFFICULTY_LABEL,
   DIFFICULTY_STYLE,
@@ -35,11 +40,7 @@ const loadRecipe = cache(async (slug: string) => {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const recipe = await loadRecipe((await params).slug);
   if (!recipe) return { title: 'Không tìm thấy công thức', robots: { index: false } };
-  return {
-    title: recipe.title,
-    description: recipe.description.slice(0, 160),
-    alternates: { canonical: `/recipes/${recipe.slug}` },
-  };
+  return buildRecipeMetadata(recipe);
 }
 
 export default async function RecipeDetailPage({ params }: { params: Params }) {
@@ -50,6 +51,14 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-10">
+      <JsonLd data={buildRecipeJsonLd(recipe, SITE_URL)} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: 'Trang chủ', path: '/' },
+          { name: recipe.category.name, path: `/categories/${recipe.category.slug}` },
+          { name: recipe.title, path: `/recipes/${recipe.slug}` },
+        ])}
+      />
       <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
         <Link href="/recipes" className="hover:text-orange-700">
           Công thức
@@ -68,7 +77,7 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
               alt={primaryImage.altText ?? recipe.title}
               fill
               priority
-              unoptimized
+              unoptimized={IMAGE_UNOPTIMIZED}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />

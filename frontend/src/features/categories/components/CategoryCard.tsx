@@ -1,3 +1,4 @@
+import { IMAGE_UNOPTIMIZED } from '@/lib/images';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Category } from '@/types/category';
@@ -44,7 +45,7 @@ export default function CategoryCard({ category }: { category: Category }) {
             src={category.imageUrl}
             alt=""
             fill
-            unoptimized
+            unoptimized={IMAGE_UNOPTIMIZED}
             sizes="(max-width: 768px) 100vw, 25vw"
             className="object-cover"
           />

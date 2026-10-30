@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "lighthouse": "lhci autorun --config=lighthouserc.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

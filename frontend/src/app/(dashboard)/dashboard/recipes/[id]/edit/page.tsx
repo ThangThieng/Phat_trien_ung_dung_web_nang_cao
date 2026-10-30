@@ -30,7 +30,7 @@ export default function EditRecipePage() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (isReady && !isAuthenticated) return <div className="mx-auto max-w-xl px-4 py-16 text-center"><h1 className="text-2xl font-bold">Chỉnh sửa công thức</h1><p className="mt-2 text-gray-600">Bạn cần đăng nhập để tiếp tục.</p><Link href={`/auth/login?callbackUrl=/dashboard/recipes/${params.id}/edit`} className="mt-6 inline-block rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white">Đăng nhập</Link></div>;
+  if (isReady && !isAuthenticated) return <div className="mx-auto max-w-xl px-4 py-16 text-center"><h1 className="text-2xl font-bold">Chỉnh sửa công thức</h1><p className="mt-2 text-gray-600">Bạn cần đăng nhập để tiếp tục.</p><Link href={`/auth/login?callbackUrl=/dashboard/recipes/${params.id}/edit`} className="mt-6 inline-block rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white">Đăng nhập</Link></div>;
   if (loading) return <div className="mx-auto max-w-4xl px-4 py-12 text-gray-600">Đang tải công thức…</div>;
   if (!recipe || !accessToken) return <div className="mx-auto max-w-2xl px-4 py-12"><p role="alert" className="rounded-lg bg-red-50 p-4 text-red-700">{error ?? 'Không tìm thấy công thức.'}</p><Link href="/dashboard/recipes/new" className="mt-4 inline-block text-orange-700 underline">Tạo công thức mới</Link></div>;
 

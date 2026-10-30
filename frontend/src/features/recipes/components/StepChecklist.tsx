@@ -26,6 +26,7 @@ export default function StepChecklist({ steps }: { steps: RecipeStep[] }) {
           const checked = done.has(step.id);
           return (
             <li
+              id={`buoc-${step.stepNumber}`}
               key={step.id}
               className={`rounded-xl border p-4 transition ${checked ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-white'}`}
             >

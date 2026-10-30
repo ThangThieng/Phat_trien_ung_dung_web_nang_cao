@@ -68,7 +68,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded-lg bg-orange-600 px-4 py-2.5 font-semibold text-white transition hover:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
+        className="rounded-lg bg-orange-700 px-4 py-2.5 font-semibold text-white transition hover:bg-orange-800 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
       >
         {isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
       </button>

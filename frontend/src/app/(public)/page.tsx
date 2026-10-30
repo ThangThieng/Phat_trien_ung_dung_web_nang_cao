@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BookOpen, Search } from 'lucide-react';
+import JsonLd from '@/components/seo/JsonLd';
 import CategoryChips from '@/components/layout/CategoryChips';
 import SidebarCategory from '@/components/layout/SidebarCategory';
 import EmptyState from '@/components/shared/EmptyState';
 import { getCategories } from '@/features/categories/api';
 import { getLatestRecipes } from '@/features/recipes/api';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
+import { buildWebSiteJsonLd } from '@/lib/seo/recipe-json-ld';
 import type { Category } from '@/types/category';
 import { MIN_SEARCH_LENGTH } from '@/types/search';
 
@@ -37,6 +39,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={buildWebSiteJsonLd()} />
       <section className="bg-gradient-to-br from-orange-100 via-amber-50 to-white">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
           <h1 className="max-w-2xl text-3xl font-bold text-gray-900 sm:text-4xl">

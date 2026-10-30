@@ -15,6 +15,7 @@ import {
   type RawSearchParams,
 } from '@/features/recipes/search-params';
 import type { Category } from '@/types/category';
+import { buildSearchMetadata } from '@/lib/seo/metadata';
 import { DEFAULT_PAGE_SIZE, MIN_SEARCH_LENGTH } from '@/types/search';
 
 // SRS §5.1: /search render SSR
@@ -30,7 +31,7 @@ export async function generateMetadata({
   searchParams: SearchParams;
 }): Promise<Metadata> {
   const { q } = parseSearchState(await searchParams);
-  return { title: q ? `Tìm kiếm: ${q}` : 'Tìm kiếm công thức' };
+  return buildSearchMetadata(q);
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: SearchParams }) {
@@ -73,7 +74,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
         />
         <button
           type="submit"
-          className="flex items-center gap-1.5 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+          className="flex items-center gap-1.5 rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
         >
           <Search aria-hidden className="h-4 w-4" />
           Tìm
@@ -148,8 +149,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
               />
             ) : (
               <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {result.items.map((recipe) => (
-                  <RecipeCard key={recipe.id} recipe={recipe} terms={terms} />
+                <h2 className="sr-only">Kết quả tìm kiếm</h2>
+                {result.items.map((recipe, index) => (
+                  <RecipeCard key={recipe.id} recipe={recipe} terms={terms} priority={index === 0} />
                 ))}
               </div>
             )}

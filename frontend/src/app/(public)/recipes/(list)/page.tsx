@@ -92,8 +92,10 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
             />
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {result.items.map((recipe) => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
+              {/* WCAG 1.3.1: tiêu đề thẻ là h3 nên cần một h2 phía trên — bảng lọc (h2) bị ẩn dưới 1024 px. */}
+              <h2 className="sr-only">Danh sách công thức</h2>
+              {result.items.map((recipe, index) => (
+                <RecipeCard key={recipe.id} recipe={recipe} priority={index === 0} />
               ))}
             </div>
           )}

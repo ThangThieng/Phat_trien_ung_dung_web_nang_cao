@@ -1,3 +1,4 @@
+import { GRID_IMAGE_SIZES, IMAGE_UNOPTIMIZED } from '@/lib/images';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, Users } from 'lucide-react';
@@ -33,9 +34,9 @@ export default function RecipeCard({
               src={recipe.primaryImageUrl}
               alt={recipe.title}
               fill
-              unoptimized
+              unoptimized={IMAGE_UNOPTIMIZED}
               priority={priority}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes={GRID_IMAGE_SIZES}
               className="object-cover transition group-hover:scale-105"
             />
           ) : (

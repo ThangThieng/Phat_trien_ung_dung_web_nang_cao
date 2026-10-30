@@ -38,7 +38,7 @@ function MediaLibrary() {
         <p className="mt-2 text-gray-600">Bạn cần đăng nhập để tải ảnh lên.</p>
         <Link
           href="/auth/login?callbackUrl=/dashboard/media"
-          className="mt-6 inline-block rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white hover:bg-orange-700"
+          className="mt-6 inline-block rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white hover:bg-orange-800"
         >
           Đăng nhập
         </Link>

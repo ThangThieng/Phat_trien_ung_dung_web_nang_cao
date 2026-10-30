@@ -17,10 +17,20 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe('revalidate của Frontend (quy tắc vàng — kế hoạch §2.3)', () => {
-  const files = sourceFiles(SRC).map((file) => ({
-    name: path.relative(SRC, file).replace(/\\/g, '/'),
-    text: fs.readFileSync(file, 'utf8'),
-  }));
+  // Ngoại lệ duy nhất: `GET /recipes/sitemap` có TTL Redis 1 giờ (MT-48, NFR-SEO-003) nên `revalidate: 3600` ở đây ĐÚNG —
+  // quy tắc vàng là revalidate ≤ TTL của CHÍNH endpoint đó, không phải ≤ 1800 chung cho mọi endpoint.
+  const SITEMAP_SOURCE = 'lib/seo/sitemap-source.ts';
+  const files = sourceFiles(SRC)
+    .map((file) => ({
+      name: path.relative(SRC, file).replace(/\\/g, '/'),
+      text: fs.readFileSync(file, 'utf8'),
+    }))
+    .filter(({ name }) => name !== SITEMAP_SOURCE);
+
+  it('sitemap-source dùng đúng 3600 giây (= TTL Redis của GET /recipes/sitemap)', () => {
+    const text = fs.readFileSync(path.join(SRC, SITEMAP_SOURCE), 'utf8');
+    expect(text).toMatch(/revalidate:\s*3600/);
+  });
 
   it('không còn revalidate: 3600 hoặc 600 (các giá trị lệch TTL của Buổi 2)', () => {
     const offenders = files.filter(({ text }) => /revalidate\s*[:=]\s*(3600|600)\b/.test(text));
