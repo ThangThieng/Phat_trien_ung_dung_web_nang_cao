@@ -15,6 +15,13 @@ describe('<SidebarCategory />', () => {
     });
   });
 
+  it('nằm trong landmark complementary (<aside>) để cả cột phụ ẩn/hiện cùng nhau', () => {
+    render(<SidebarCategory categories={mockCategories} className="hidden min-[1200px]:block" />);
+    const aside = screen.getByRole('complementary', { name: 'Danh mục công thức' });
+    expect(aside).toHaveClass('hidden');
+    expect(within(aside).getByRole('navigation', { name: 'Danh mục' })).toBeInTheDocument();
+  });
+
   it('chỉ mục đang xem có aria-current="page"', () => {
     const active = mockCategories[2];
     render(<SidebarCategory categories={mockCategories} activeSlug={active.slug} />);

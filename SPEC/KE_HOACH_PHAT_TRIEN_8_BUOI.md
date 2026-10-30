@@ -166,7 +166,7 @@ ptudwnc_nhom20/
 | Định danh | **Đọc theo `slug`**, **ghi theo `id`**; DTO luôn mang cả `id` lẫn `slug` |
 | Policy | `"AuthorPolicy"` = `RequireRole("Author","Admin")` (role Identity **không phân cấp**), `"AdminPolicy"`, `RecipeAuthorizationHandler` (Owner/Admin). **Không có policy `VerifiedAuthor`.** |
 | Token phía Frontend | Access token **chỉ trong bộ nhớ**; refresh token là dữ liệu xác thực duy nhất lưu bền; access token mang claim **`sid`** (Id bản ghi refresh token) để nhận diện phiên hiện tại — SRS v1.2.0 NFR-SEC-002 (MT-55, MT-45) |
-| FE API client | `lib/api-client.ts` — B2: fetch wrapper; **từ B6: instance `ky` bọc `fetch`** (giữ Data Cache của Next.js), hook gắn Bearer + `X-Correlation-ID`, refresh 401 single-flight, đổi lỗi sang `ApiError`; chỉ tự thử lại `GET`. API công khai (`apiFetch`, `ApiError`) không đổi. Lỗi xử lý tập trung ở `lib/error-handler.ts` (thông báo theo `ErrorCode`). TanStack Query keys theo module. **Từ B7:** request phía server dùng Data Cache không gắn `X-Correlation-ID` (header nằm trong khóa Data Cache), request phía server không cache chuyển tiếp `X-Forwarded-For` của trình duyệt (rate limit theo IP thật) |
+| FE API client | `lib/api-client.ts` — B2: fetch wrapper; **từ B6: instance `ky` bọc `fetch`** (giữ Data Cache của Next.js), hook gắn Bearer + `X-Correlation-ID`, refresh 401 single-flight, đổi lỗi sang `ApiError`; chỉ tự thử lại `GET`. API công khai (`apiFetch`, `ApiError`) không đổi. Lỗi xử lý tập trung ở `lib/error-handler.ts` (thông báo theo `ErrorCode`). TanStack Query keys theo module. **Từ B7:** request phía server dùng Data Cache không gắn `X-Correlation-ID` (header nằm trong khóa Data Cache — MT-67 phần bổ sung, O-8), request phía server không cache chuyển tiếp `X-Forwarded-For` của trình duyệt (rate limit theo IP thật) |
 | FE form | React Hook Form + Zod schema mirror validator backend, lỗi inline theo `errors{}` |
 | FE state (từ B6) | Dữ liệu server → **TanStack Query**; phiên đăng nhập phía client → **Zustand** `stores/auth-store.ts` (chỉ refresh token + `user` lưu bền); biểu mẫu → React Hook Form; bộ lọc/trang → `searchParams`. Không đưa dữ liệu server vào Zustand |
 | FE UI (từ B6) | **shadcn/ui** (Radix UI + Tailwind) trong `components/ui/` — code chép vào repo, sửa trực tiếp; màu qua token CSS đạt tương phản WCAG AA |
@@ -257,7 +257,7 @@ Buổi 2 đã code và merge theo **SRS v1.0.0**. Nội dung Buổi 2 trong tài
 | **D-4** 🔴 | `GetRecipesQuery` lọc theo danh tính (Guest 46 / Author 47 / Admin 50 bản ghi) **và** bị Output Cache theo khóa công khai; `GetRecipeBySlug` trả **403** cho Draft (lộ sự tồn tại của bản nháp) | `RecipeReadRepository.cs:87-97`, `GetRecipeBySlugQuery.cs:31-33` | **Chỉ `Published` cho mọi người gọi**; Draft/Archived → **404** như slug không tồn tại; dữ liệu riêng qua `/recipes/mine` | **B4 – Dev 3** *(kéo từ B6 — hợp đồng `GET /recipes`)* | **MT-34** |
 | **D-5** 🔴 | `GetCategoryBySlugQuery` cũng lọc theo danh tính | `GetCategoryBySlugQuery.cs:36` | **Chỉ `Published`**, không đọc `ICurrentUser` | **B4 – Dev 3** *(kéo từ B6)* | **MT-34** |
 | **D-6** | Output Cache (Redis-backed) `RecipeList` 15′ / `RecipeDetail` 60′ | `OutputCachePolicies.cs:16-24`, `RecipesEndpoints.cs:19,26` | **Bỏ Output Cache**, dùng `ICacheable` Redis cache-aside TTL 2′/5′ | **B4 – Dev 3** *(kéo từ B6)*; audit **B8 – Dev 4** | MT-16, MT-17, MT-34 |
-| **D-7** | FE fetch `revalidate` 3600 (`/categories`) và 600 (`/categories/[slug]`) | `BAO_CAO_BUOI_2.md` §4.5 | **1800** và **120** | `/categories/[slug]`: **B5 – Dev 3** (đã làm) · `/categories`: **B7 – Dev 3** | MT-33.3 |
+| **D-7** | FE fetch `revalidate` 3600 (`/categories`) và 600 (`/categories/[slug]`) | `BAO_CAO_BUOI_2.md` §4.5 | **1800** và **120** | `/categories/[slug]`: **B5 – Dev 3** (đã làm) · `/categories`: **B7 – Dev 3** (✅ 21/10/2026 — khóa bằng `api.test.ts` + `revalidate-ttl.test.ts`) | MT-33.3 |
 | **D-8** | `Recipe.Instructions` là `NOT NULL` | `RecipeConfiguration.cs:25` `.IsRequired()` | **NULL** (trường cũ) | **B3 – Dev 2** — *phải làm trước khi `POST /recipes` nhận `instructions?` tùy chọn, nếu không mọi request thiếu trường này sẽ lỗi ở DB* | MT-20.8 |
 | **D-9** | Hangfire chạy ở **container worker riêng** (`Hangfire__WorkerOnly=true`), trong khi SRS v1.1.0 §3.6 ghi "in-process" | `docker-compose.yml` service `hangfire`, `Program.cs:17-18` | **SRS v1.2.0 đã chuẩn hóa theo code** — worker riêng (MT-47). Không còn lệch, không retrofit | — | MT-47 |
 | **D-10** | Sắp xếp bằng **một tham số `sort=-field`**; enum thiếu `PrepTime`; FE gửi `sort=-createdAt` | `RecipeSortParser.cs`, `IRecipeReadRepository.cs:7-13`, `RecipesEndpoints.cs:42`, `frontend/src/app/recipes/(list)/page.tsx:37` | **`sortBy` + `sortOrder`**, danh sách cho phép 5 trường | **B4 – Dev 3** (API) · **B5 – Dev 3** (FE) | MT-01 |
@@ -2317,6 +2317,16 @@ feat(ui): shadcn/ui primitives (button, input, dialog, dropdown-menu, sonner, fo
    - `ErrorBoundary.test.tsx` — component con ném lỗi → hiện fallback; bấm "Thử lại" → render lại;
    - `SidebarCategory.test.tsx` — `aria-current` đúng mục.
 
+**Ghi chú khi thực hiện (17/10/2026 — nhánh `2314291_DoanHongTien_buoiso6`, tách từ `develop` sau commit nền của Dev 4):**
+
+- **Chưa có shadcn/ui** (commit nền của Dev 2 chưa vào `develop`): `Badge`, `DropdownMenu`, `Sheet` được dựng bằng Tailwind + ARIA ngay trong component — huy hiệu số công thức là `<span>`; `UserMenu` theo mẫu WAI-ARIA *menu button* (mũi tên/Home/End, Escape trả focus về nút, bấm ra ngoài/Tab/đổi trang đều đóng); menu điện thoại là ngăn phủ cố định như bản tạm của Dev 4. Khi Dev 2 merge, có thể thay phần khung bằng component shadcn mà không đổi chỗ dùng.
+- **Danh mục lấy một lần ở `PublicShell`** (Server Component, `async`) rồi truyền cho `Header` và `Footer`; API lỗi → mảng rỗng, khung trang không hỏng. `CategoryNav` nhận `initialCategories` nên menu có dữ liệu ngay. `getCategories()` đổi `revalidate` 3600 → **1800** (một phần D-7) vì header/footer dùng hàm này từ buổi này.
+- **Ô tìm kiếm trên header chỉ hiện từ 1024 px** (trước là 768 px): ảnh chụp 768 px cho thấy "Công thức", "Danh mục", "Đăng nhập", "Đăng ký" bị xuống dòng. Dưới 1024 px dùng nút kính lúp tới `/search`; dưới 640 px header chỉ còn biểu tượng logo và "Đăng nhập" ("Đăng ký" nằm trong menu điện thoại).
+- **Menu điện thoại gắn vào `document.body` (portal):** header có `backdrop-blur`, mà `backdrop-filter` biến header thành khối chứa của con `position: fixed` → ngăn phủ bị giam trong 64 px của header và bị nội dung trang đè lên (đã chụp ở 320 px). Ngăn phủ đặt `top` theo mép dưới thật của header lúc mở.
+- **Mockup bị chặn ở production ở CẢ layout lẫn từng trang** (`app/(dev)/mockups/dev-only.ts`): chỉ gọi `notFound()` ở layout thì `next build && next start` vẫn trả 404 nhưng payload RSC của bản dựng sẵn chứa nguyên nội dung mockup (đã đo — layout và page render song song). Sau khi sửa: 6/6 URL `/mockups/**` → 404, không còn dữ liệu mẫu trong HTML.
+- **`/search` (MT-66):** giữ cách khai báo tham số của endpoint như `GET /recipes` (tham số mặc định trên handler) thay cho `[AsParameters]`, để hai endpoint lọc cùng bộ tham số trông giống nhau. Kiểm tra khoảng giá trị dùng chung `RecipeQueryRules` (đã có từ Buổi 4) — unit test khẳng định `SearchRecipesQueryValidator` và `GetRecipesQueryValidator` cho cùng kết quả. Kiểm thử hợp đồng Frontend so `RecipeSearchParams` với tham số của `record SearchRecipesQuery`.
+- **Kiểm chứng:** Jest **250/250**, `npm run lint` sạch, `next build` xanh (First Load JS `/` 106 kB, lớn nhất `/dashboard/categories` 188 kB ≤ 200 kB); Playwright đo 5 mockup × 3 kích thước (320/768/1200 px) — **0 px cuộn ngang**, menu điện thoại mở không làm trang cuộn, Escape đóng. Ảnh chụp: `docs/lab06-dev3/`. Phần Backend (MT-66) cần chạy `dotnet build && dotnet test` trên máy có .NET 10 + Docker (Testcontainers).
+
 **3. Định hướng & lý do kiến trúc:**
 
 **Giao diện tĩnh làm bằng route trong app, không dùng Storybook:**
@@ -2409,7 +2419,7 @@ feat(ui-shell,search): shared layout and accessible pagination, skeleton, empty 
 5. **Kiểm thử:**
    - Hồi quy: toàn bộ `api-client.test.ts` của Buổi 2 – 4 xanh nguyên vẹn.
    - Mới:
-     - mọi request có `X-Correlation-ID` dạng UUID;
+     - mọi request có `X-Correlation-ID` dạng UUID *(từ Buổi 7: trừ request phía server có `next.revalidate > 0` — xem ghi chú Buổi 7 Dev 3, O-8)*;
      - 5 request song song gặp 401 `AUTH_TOKEN_EXPIRED` → đúng **1** lần gọi `/auth/refresh`, cả 5 được thử lại với token mới;
      - `GET` gặp 429 `Retry-After: 1` → thử lại 1 lần; `POST` gặp 503 → **không** thử lại;
      - option `next.revalidate` tới được `fetch`;
@@ -2718,6 +2728,15 @@ feat(recipes-ui): recipe detail page with servings scaler, gallery, nutrition, p
 
    `features/recipes/api.test.ts` làm tương tự cho trang chủ (120) và trang chi tiết (300, Dev 2). Kèm lệnh kiểm tay `grep -rn "revalidate: \(3600\|600\)" frontend/src` → rỗng.
 5. **Kiểm tra bố cục** ở 320 / 768 / 1200 px trên dữ liệu thật — so với mockup Buổi 6, ghi ảnh chụp vào báo cáo Lab 07.
+
+**Ghi chú khi thực hiện (21/10 → 26/10/2026 — nhánh `2314291_DoanHongTien_buoiso7`):**
+
+- **Data Cache không giữ dữ liệu trên code thật — đã sửa (bổ sung cho MT-67):** lớp `ky` của Buổi 6 gắn `X-Correlation-ID` mới cho mọi request, mà Next.js đưa header vào khóa cache của `fetch` → `revalidate` vô tác dụng, mỗi lượt xem gọi lại API (đo: **55** lượt gọi API cho 15 lượt xem). `lib/api-client.ts` bỏ header này cho request phía server có `next.revalidate > 0` → **3** lượt gọi cho cùng 15 lượt xem; sau 125 giây gọi lại đúng `/recipes` và `/categories/{slug}` (120), `/categories` (1800) đứng yên. Backend tự sinh mã tương quan khi request không có (SRS §5.2) nên không cần CR; đánh đổi ghi ở `SRS_MAU_THUAN_VA_GIAI_PHAP.md` O-8. `next build` dựng sẵn `/_not-found` và gọi `GET /categories` một lần lúc build (API lỗi → mảng rỗng) — không ảnh hưởng lúc chạy.
+- **`export const dynamic = 'force-dynamic'` được giữ ở ba trang** (image Docker build khi chưa có API); đo xác nhận `revalidate` đặt trên `fetch` vẫn được tôn trọng dưới `force-dynamic` — không cần `export const revalidate`.
+- **Bước 2 — chưa có shadcn `Card`/`Badge`:** commit nền shadcn của Dev 2 (Buổi 6) chưa vào `develop` (`components/ui/` trống). `CategoryCard` và huy hiệu số công thức dựng bằng Tailwind cùng dáng; thay bằng component shadcn khi Dev 2 merge, chỗ dùng không đổi. Biểu tượng thay ảnh bổ sung đủ **20/20** danh mục mẫu CR-2026-03 (trước chỉ 8 danh mục của Buổi 2), có kiểm thử đọc `categories.json` của seed.
+- **Sidebar là landmark `<aside>`** bọc `<nav aria-label="Danh mục">` (NFR-USE-002 liệt kê `<aside>`); lớp ẩn/hiện theo 1200 px đặt trên `<aside>`.
+- **Ảnh chụp "dữ liệu thật":** máy đo không có .NET 10 / Docker registry → frontend chạy `next build && next start` thật, gọi một API giả trả đúng hợp đồng §8.2/§8.3 từ **nguyên văn** catalog seed (20 danh mục, 100 công thức, ~85% Published như `DatabaseSeeder`). Seed không có ảnh nên thẻ hiện biểu tượng thay ảnh — giống CSDL dev. Kết quả: 9 ảnh + 2 ảnh trạng thái ở `docs/lab07-dev3/`; 0 px cuộn ngang, 0 vi phạm CSP, axe (WCAG 2.1 A/AA) **0 vi phạm** ở 320 và 1200 px trên cả ba trang.
+- **Kiểm chứng:** Jest **309/309**, `npm run lint`, `tsc --noEmit` sạch; `next build` xanh (`/` 112 kB, `/categories` 112 kB, `/categories/[slug]` 113 kB First Load JS).
 
 **3. Định hướng & lý do kiến trúc:**
 
