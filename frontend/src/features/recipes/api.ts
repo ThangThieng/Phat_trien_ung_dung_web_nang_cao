@@ -39,6 +39,28 @@ export function getRecipes(params: RecipeListParams = {}) {
   return apiFetch<PagedResult<RecipeSummary>>(`/recipes${toQuery(params)}`, { cache: 'no-store' });
 }
 
+/** Số công thức hiện trên trang chủ (SRS §5.1 `/`, MT-23: `pageSize=8`). */
+export const HOME_RECIPE_COUNT = 8;
+
+/**
+ * Trang chủ `/` – "công thức nổi bật" = mới xuất bản nhất (SRS §5.1, MT-23): chính endpoint `GET /recipes` với
+ * `sortBy=publishedAt&sortOrder=desc&pageSize=8`, dùng index `IDX_Recipe_PublishedAt` có sẵn, không thêm cột hay endpoint.
+ *
+ * SSR + Data Cache `revalidate: 120` = TTL Redis `recipes:list:{queryHash}` 2 phút (NFR-PERF-003; quy tắc vàng: `revalidate`
+ * ≤ TTL API). Mỗi lời gọi `fetch` mang TTL của chính dữ liệu đó — danh mục (30 phút) ghép cùng trang này vẫn dùng 1800
+ * riêng ở `getCategories()`. Danh sách `/recipes` có bộ lọc người dùng nên vẫn `no-store` ở `getRecipes()`.
+ */
+export function getLatestRecipes() {
+  const params: RecipeListParams = {
+    pageSize: HOME_RECIPE_COUNT,
+    sortBy: 'publishedAt',
+    sortOrder: 'desc',
+  };
+  return apiFetch<PagedResult<RecipeSummary>>(`/recipes${toQuery(params)}`, {
+    next: { revalidate: 120, tags: ['recipes'] },
+  });
+}
+
 /**
  * Trạng thái URL của /search → tham số API (SRS v1.2.3 §8.3; ba bộ lọc thời gian/khẩu phần của CR-2026-05 / MT-66). Server
  * (prefetch lúc SSR) và trình duyệt (`useQuery` khi đổi bộ lọc) cùng gọi hàm này nên query key hai phía luôn trùng nhau.
@@ -68,9 +90,12 @@ export function searchRecipes(params: RecipeSearchParams, signal?: AbortSignal) 
   });
 }
 
-/** FR-RCP-002 – GET /recipes/{slug} (ISR revalidate 300s – SRS §5.1). */
+/**
+ * FR-RCP-002 – GET /recipes/{slug}. Trang vẫn render theo request vì CSP nonce,
+ * còn riêng dữ liệu được Next Data Cache trong tối đa 5 phút (MT-67).
+ */
 export function getRecipeBySlug(slug: string) {
   return apiFetch<RecipeDetail>(`/recipes/${encodeURIComponent(slug)}`, {
-    next: { revalidate: 300 },
+    next: { revalidate: 300, tags: [`recipe:${slug}`] },
   });
 }

@@ -1,7 +1,7 @@
 # PHÂN TÍCH MÂU THUẪN TRONG SRS & ĐỀ XUẤT GIẢI PHÁP
 
 **Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.4.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
-**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5) · 29/09/2026 (lượt 6) · 12/10/2026 (lượt 7) · 21/10/2026 (lượt 8)
+**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5) · 29/09/2026 (lượt 6) · 12/10/2026 (lượt 7) · 21/10/2026 (lượt 8) · 26/10/2026 (bổ sung khi hiện thực Buổi 7 — ghi chú hiện thực ở MT-23, MT-57, MT-67, D-7 và đánh đổi O-8; không phát sinh mâu thuẫn SRS mới)
 **Phạm vi:** Toàn bộ 8 chương + các phụ lục; lượt 4 mở rộng sang **hệ thống đang chạy** (code, cấu hình Docker/Nginx, báo cáo Buổi 2)
 **Kết quả:** **69 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4, 1 mục ở lượt 5, 5 mục ở lượt 6, 5 mục ở lượt 7 và 1 mục ở lượt 8. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 13 điểm xung đột giữa lộ trình / yêu cầu Lab và SRS (§5).
 **Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026). MT-59 → MT-63 đã áp dụng vào **SRS v1.2.2** (CR-2026-04, 29/09/2026). MT-64 → MT-68 đã áp dụng vào **SRS v1.2.3** (CR-2026-05, 12/10/2026). MT-69 đã áp dụng vào **SRS v1.2.4** (CR-2026-06, 21/10/2026).
@@ -639,6 +639,8 @@ Chương 8 còn có `orderIndex` và `altText` mà FR-RCP-008 không nhắc; FR-
 | C | Thêm `ViewCount` và sắp xếp theo lượt xem | "Nổi bật" có căn cứ tự nhiên | Phải ghi DB mỗi lượt xem → đụng NFR-PERF (write nóng, hỏng cache); cần chống spam đếm view |
 
 **➡️ Khuyến nghị: Phương án A** cho v1.0 (sửa mục 5.1 thành "công thức mới xuất bản"), **B** nếu muốn có điểm nhấn cho phần demo. Tránh C vì xung đột trực tiếp với mục tiêu cache và p95 ≤ 500ms.
+
+**Hiện thực (Buổi 7 — Dev 3, phương án A):** trang chủ gọi `getLatestRecipes()` = `GET /recipes?pageSize=8&sortBy=publishedAt&sortOrder=desc` (Data Cache `revalidate: 120` = TTL `recipes:list`), mục "Công thức mới xuất bản"; không thêm cột, không thêm endpoint. `features/recipes/api.test.ts` khẳng định đúng tham số và `revalidate`.
 
 ---
 
@@ -1405,6 +1407,8 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 **➡️ Quyết định (v1.2.0): Phương án A.** Quy tắc "thời gian tái sinh ≤ TTL cache API" được phát biểu lại để áp dụng cho cả ISR lẫn Data Cache. Sửa: §5.1.
 
+**Hiện thực:** `getCategoryBySlug()` mang `next: { revalidate: 120 }` từ Buổi 5; Buổi 7 (Dev 3) thêm sidebar/nhãn danh mục, sắp xếp + phân trang qua link thật, 404 → `notFound()`. Đo trên `next build && next start` (26/10/2026): 1 lượt gọi API cho mọi lượt xem trong 120 giây, gọi lại đúng 1 lần sau khi hết hạn (báo cáo Lab 07 của Dev 3).
+
 ### MT-58 🟡 — Yêu cầu dữ liệu mẫu của giảng viên khác SRS §2.6.1
 
 **Hiện trạng:** SRS v1.2.0 §2.6.1 ghi *"Dữ liệu test (seed) được tạo bằng thư viện Bogus với 50 recipe mẫu và 5 tác giả mẫu"*; kế hoạch Buổi 2 seed ~8 danh mục. Khi đánh số lại 8 buổi (21/09/2026), giảng viên yêu cầu Buổi 2 phải có CSDL chứa dữ liệu ngẫu nhiên cho **ít nhất 20 categories, 100 recipes; mỗi recipe ít nhất 10 nguyên liệu và 5 bước chế biến**. Cơ sở dữ liệu thực tế lúc đó: 8 danh mục, 50 công thức, mỗi công thức 4–9 nguyên liệu chọn ngẫu nhiên từ một danh sách chung và 3–6 bước có mô tả Lorem ipsum.
@@ -1571,6 +1575,15 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 **➡️ Quyết định (v1.2.3, CR-2026-05): Phương án B** — sửa §5.1, §6.1, NFR-SEC-005, NFR-PERF-005, Phụ lục C. `sitemap.xml`, `robots.txt` không chứa script nên vẫn sinh định kỳ. Hiện thực: Buổi 6 Dev 1 (CSP), Buổi 7 Dev 2, Dev 3 (trang).
 
+**Bổ sung khi hiện thực (Buổi 7 — Dev 3, 21/10 → 26/10/2026): điều kiện để Data Cache thật sự giữ dữ liệu.** App tối giản của thực nghiệm trên gọi `fetch` trần; app thật gọi qua lớp `ky` (Buổi 6), lớp này gắn `X-Correlation-ID` mới cho **mỗi** request. Next.js đưa **header của request vào khóa cache** của `fetch`, nên mỗi lời gọi có một khóa khác nhau: Data Cache không bao giờ trúng, `revalidate` vô tác dụng, và việc gộp lời gọi trùng trong cùng một lần render cũng mất. Tức là phương án B đúng, nhưng trên code của nhóm nó chưa đạt yêu cầu "không tạo thêm tải cho API" cho tới Buổi 7.
+
+| Đo trên `next build && next start` + API giả đếm lượt gọi, 15 lượt xem (5 × `/`, 5 × `/categories`, 5 × `/categories/mon-chinh`) | Lượt gọi API |
+| --- | --- |
+| Lớp gọi API của Buổi 6 (gắn `X-Correlation-ID` cho mọi request) | **55** — 45 × `/categories` (3 lần mỗi lượt xem — các component cùng cần danh sách danh mục không còn dùng chung một lời gọi), 5 × `/recipes`, 5 × `/categories/mon-chinh` |
+| Buổi 7: không gắn header cho request phía server có `next.revalidate > 0` | **3** — mỗi nguồn dữ liệu 1 lần; sau 125 giây gọi lại đúng `/recipes` và `/categories/mon-chinh` (TTL 120), `/categories` (1800) đứng yên |
+
+Cách sửa (`lib/api-client.ts`, kiểm thử `api-client.server.test.ts`): request phía server dùng Data Cache **không** mang `X-Correlation-ID`; Backend tự sinh mã khi request không có header (SRS §5.2 "Correlation ID"), nên không lệch SRS và không cần Change Request. Request từ trình duyệt và request phía server không cache vẫn mang header như cũ. Đánh đổi ghi ở **O-8** (§6). Quy tắc rút ra cho mọi `fetch` có `revalidate`: header phải giống nhau giữa các lượt xem — không gắn giá trị sinh theo request (mã tương quan, thời điểm, token người dùng).
+
 ---
 ### MT-68 🟡 — Danh sách header CORS thiếu header mà chính SRS dùng
 
@@ -1637,7 +1650,7 @@ Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS
 | D-4 🔴 | Danh sách công thức lọc theo danh tính + Output Cache khóa công khai; Draft trả 403 | Chỉ Published cho mọi người gọi; Draft → 404; riêng tư qua `/recipes/mine` | **MT-34** | Buổi 4 *(kéo từ Buổi 6)* |
 | D-5 🔴 | Chi tiết danh mục lọc theo danh tính | Chỉ Published | **MT-34** | Buổi 4 *(kéo từ Buổi 6)* |
 | D-6 | Output Cache (Redis-backed) 15′/60′ | Redis cache-aside 2′/5′, không Output Cache | MT-16, MT-17 | Buổi 4 *(kéo từ Buổi 6)* |
-| D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | Buổi 6 |
+| D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | ✅ Buổi 5 (`/categories/[slug]` → 120) · Buổi 6–7 (`/categories` → 1800); khóa bằng kiểm thử `features/categories/api.test.ts`, `lib/revalidate-ttl.test.ts` — Buổi 7, Dev 3 |
 | D-8 | `Instructions` NOT NULL | NULL | MT-20.8 | Buổi 3 |
 | D-9 | Hangfire worker riêng | **Đã chuẩn hóa theo code** | MT-47 | — (không còn lệch) |
 | D-10 | `sort=-field` | `sortBy` + `sortOrder` | MT-01 | Buổi 4 (API) · Buổi 5 (FE) |
@@ -1694,6 +1707,7 @@ Sau khi áp dụng CR-2026-02, SRS không còn mâu thuẫn nội bộ nào đư
 | O-5 | Khôi phục dữ liệu xóa mềm chỉ do quản trị viên vận hành làm trên DB (MT-49) | Không có trong lộ trình 8 buổi | FR "Thùng rác" ở phiên bản sau |
 | O-6 | TTL cache ngắn hơn (5′ thay 60′) nên **hit rate thấp hơn**, mốc ≥ 80% của NFR-PERF-003 khó đạt hơn | Dữ liệu tươi và một cơ chế cache duy nhất quan trọng hơn con số đẹp | Nếu đo được < 80%: ghi nhận trung thực và phân tích, **không** nới TTL chỉ để đạt chỉ tiêu |
 | O-7 | *(từ MT-67, v1.2.3)* Mọi trang HTML render theo request vì CSP có nonce — máy chủ Next.js tốn CPU ở mỗi lượt xem, HTML không cache được ở Nginx/CDN | Bảo vệ refresh token khỏi XSS quan trọng hơn; Data Cache giữ cho API không bị gọi thêm (đã đo) | Nếu Next.js ổn định Partial Prerendering tương thích nonce, hoặc refresh token chuyển sang cookie `HttpOnly` qua một CR riêng (O-2), có thể xét lại trang tĩnh |
+| O-8 | *(từ MT-67, ghi nhận 26/10/2026 — Buổi 7)* Request phía server dùng Data Cache không mang `X-Correlation-ID` của Frontend → log của Backend cho các lời gọi này mang mã do Backend tự sinh (SRS §5.2), không nối được với một lượt xem trang cụ thể | Header nằm trong khóa cache của Next.js; gắn mã mới mỗi request là mất Data Cache (đo: 55 so với 3 lượt gọi API cho 15 lượt xem). Một lời gọi được cache vốn phục vụ nhiều lượt xem, nên cũng không có "một lượt xem" để gắn mã vào. Request từ trình duyệt và request không cache vẫn mang mã | Nếu Buổi 8 cần nối log Next.js ↔ API cho lời gọi cache: ghi mã tương quan vào log của chính máy chủ Next.js khi lời gọi thật sự đi ra mạng (lúc cache hết hạn), không đưa vào header của request |
 
 ---
 

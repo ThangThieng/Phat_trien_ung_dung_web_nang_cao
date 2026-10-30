@@ -118,7 +118,12 @@ public static class DependencyInjection
                 options.User.RequireUniqueEmail = true;
             })
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<CulinaryBlogDbContext>();
+            .AddEntityFrameworkStores<CulinaryBlogDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.Configure<DataProtectionTokenProviderOptions>(o =>
+            o.TokenLifespan = TimeSpan.FromMinutes(
+                configuration.GetValue("Identity:PasswordResetTokenLifespanMinutes", 30)));
 
         // NFR-SEC-001: IPasswordHasher<ApplicationUser> = PBKDF2-HMAC-SHA512 (Identity V3), 100.000 vòng lặp
         services.Configure<PasswordHasherOptions>(o =>
@@ -183,6 +188,8 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, MailKitEmailService>();
         services.AddScoped<WelcomeEmailJob>();
         services.AddScoped<IWelcomeEmailScheduler, HangfireWelcomeEmailScheduler>();
+        services.AddScoped<PasswordResetEmailJob>();
+        services.AddScoped<IPasswordResetEmailScheduler, HangfirePasswordResetEmailScheduler>();
 
         // FR-RCP-008 bước 16: xóa tệp MinIO bất đồng bộ (xóa ảnh đơn lẻ, dọn tệp mồ côi khi lưu DB thất bại).
         services.AddScoped<DeleteStoredFilesJob>();

@@ -12,15 +12,19 @@ import HighlightText from './HighlightText';
  * `prefetch` (tùy chọn, Buổi 7): `false` ở lưới kết quả `/search` — mỗi lần đổi bộ lọc là một lứa thẻ mới, để mặc định thì
  * Next.js tải trước trang chi tiết của từng thẻ vừa hiện (đo: tới 12 request RSC cho một lần lọc). Không truyền = mặc định của
  * Next.js như trước.
+ * `priority` (tùy chọn): chỉ đặt cho thẻ đầu tiên ở đầu trang — ảnh của nó thường là phần tử LCP, nên tải trước
+ * (`fetchpriority="high"`); các thẻ còn lại giữ `loading="lazy"` mặc định của `next/image` (NFR-PERF-005).
  */
 export default function RecipeCard({
   recipe,
   terms,
   prefetch,
+  priority = false,
 }: {
   recipe: RecipeSummary;
   terms?: readonly string[];
   prefetch?: boolean;
+  priority?: boolean;
 }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -36,6 +40,7 @@ export default function RecipeCard({
               alt={recipe.title}
               fill
               unoptimized
+              priority={priority}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover transition group-hover:scale-105"
             />
