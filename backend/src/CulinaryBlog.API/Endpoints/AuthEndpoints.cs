@@ -186,7 +186,13 @@ public static class AuthEndpoints
 
     private static async Task<IResult> ForgotPasswordAsync(ForgotPasswordRequest body, HttpContext http, ISender sender, CancellationToken ct)
     {
-        await sender.Send(new ForgotPasswordCommand(body.Email ?? string.Empty, http.TraceIdentifier), ct).ConfigureAwait(false);
+        var candidate = http.Request.Headers["X-Correlation-ID"].ToString();
+        var correlationId = candidate.Length is >= 1 and <= 64 && candidate.All(character =>
+            (character is >= 'A' and <= 'Z') || (character is >= 'a' and <= 'z') ||
+            (character is >= '0' and <= '9') || character == '-')
+            ? candidate
+            : http.TraceIdentifier;
+        await sender.Send(new ForgotPasswordCommand(body.Email ?? string.Empty, correlationId), ct).ConfigureAwait(false);
         return Results.Accepted();
     }
 

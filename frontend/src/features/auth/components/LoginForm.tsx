@@ -65,6 +65,9 @@ export default function LoginForm() {
         error={errors.password?.message}
         {...register('password')}
       />
+      <Link href="/auth/forgot-password" className="-mt-2 text-sm font-medium text-orange-700 hover:underline">
+        Quên mật khẩu?
+      </Link>
       <button
         type="submit"
         disabled={isSubmitting}

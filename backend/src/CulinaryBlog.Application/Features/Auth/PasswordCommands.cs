@@ -1,4 +1,3 @@
-using CulinaryBlog.Application.Common.Exceptions;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Domain.Exceptions;
 using CulinaryBlog.Domain.Exceptions.Auth;
@@ -79,7 +78,7 @@ public sealed class ResetPasswordCommandHandler(IIdentityService identityService
             case PasswordResetStatus.Disabled:
                 throw new AccountDisabledException();
             default:
-                throw new BadRequestException(ErrorCodes.AuthPasswordResetTokenInvalid, "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.");
+                throw new PasswordResetTokenInvalidException();
         }
     }
 }

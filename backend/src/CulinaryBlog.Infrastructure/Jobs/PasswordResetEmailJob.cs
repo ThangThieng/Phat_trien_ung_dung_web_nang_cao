@@ -15,8 +15,9 @@ public sealed partial class PasswordResetEmailJob(
     ILogger<PasswordResetEmailJob> logger)
 {
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = [60, 300, 1800])]
-    public async Task ExecuteAsync(string userId, string correlationId, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(string userId, string correlationId)
     {
+        var cancellationToken = CancellationToken.None;
         var user = await identityService.FindByIdAsync(userId, cancellationToken).ConfigureAwait(false);
         var token = await identityService.GeneratePasswordResetTokenAsync(userId, cancellationToken).ConfigureAwait(false);
         if (user is null || string.IsNullOrWhiteSpace(token))
@@ -43,5 +44,5 @@ public sealed partial class PasswordResetEmailJob(
 public sealed class HangfirePasswordResetEmailScheduler(IBackgroundJobClient jobs) : IPasswordResetEmailScheduler
 {
     public void SchedulePasswordResetEmail(string userId, string correlationId) =>
-        jobs.Enqueue<PasswordResetEmailJob>(job => job.ExecuteAsync(userId, correlationId, CancellationToken.None));
+        jobs.Enqueue<PasswordResetEmailJob>(job => job.ExecuteAsync(userId, correlationId));
 }

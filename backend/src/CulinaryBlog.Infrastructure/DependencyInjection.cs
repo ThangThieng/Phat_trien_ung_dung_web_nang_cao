@@ -110,7 +110,12 @@ public static class DependencyInjection
                 options.User.RequireUniqueEmail = true;
             })
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<CulinaryBlogDbContext>();
+            .AddEntityFrameworkStores<CulinaryBlogDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.Configure<DataProtectionTokenProviderOptions>(o =>
+            o.TokenLifespan = TimeSpan.FromMinutes(
+                configuration.GetValue("Identity:PasswordResetTokenLifespanMinutes", 30)));
 
         // NFR-SEC-001: IPasswordHasher<ApplicationUser> = PBKDF2-HMAC-SHA512 (Identity V3), 100.000 vòng lặp
         services.Configure<PasswordHasherOptions>(o =>
