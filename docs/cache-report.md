@@ -17,7 +17,7 @@ retrofit D-6 (gỡ Output Cache). **Ngày đo:** 21/10/2026, nhánh `2312755_Ngu
 | Query không xóa cache, command không được cache | Đạt | `ObservabilityRulesTests.CommandsNeverImplementICacheable_AndQueriesNeverInvalidate` |
 | Tiền tố instance `culinaryblog:` | Đạt — `RedisCacheOptions.InstanceName`; mẫu SCAN mang đúng tiền tố này | `RedisCacheService.RemoveByPrefixAsync` |
 | Xóa theo tiền tố dùng `SCAN`, không `KEYS` | **Trước Buổi 8: không có** — xem §2. Nay `IServer.KeysAsync` (SCAN, COUNT 250) + `DEL` theo lô | `ObservabilityInfrastructureTests.RemoveByPrefix_DeletesWholeFamilyOnly` |
-| Redis lỗi → đọc DB, không ném exception (NFR-REL-002) | Đạt — đo dưới tải ở `docs/load-test-report.md` §5 | lượt "tắt Redis giữa lúc đo" |
+| Redis lỗi → đọc DB, không ném exception (NFR-REL-002) | Đạt — đo dưới tải ở `docs/load-test-report.md` §5. Lượt đo đầu (30/10) tìm ra mỗi request chờ timeout ~5,6 s; nay `RedisCacheService` ngắt mạch GET/SET (lệnh xóa không bị ngắt theo thời gian) → đọc 21 – 33 ms khi Redis tắt | lượt "tắt Redis giữa lúc đo"; `ObservabilityInfrastructureTests.RedisUnreachable_*`, `AfterAFailure_*` |
 
 ## 2. Lỗi tìm ra: "xóa theo tiền tố" không xóa gì
 
