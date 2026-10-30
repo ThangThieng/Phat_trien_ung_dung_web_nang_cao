@@ -90,9 +90,12 @@ export function searchRecipes(params: RecipeSearchParams, signal?: AbortSignal) 
   });
 }
 
-/** FR-RCP-002 – GET /recipes/{slug} (ISR revalidate 300s – SRS §5.1). */
+/**
+ * FR-RCP-002 – GET /recipes/{slug}. Trang vẫn render theo request vì CSP nonce,
+ * còn riêng dữ liệu được Next Data Cache trong tối đa 5 phút (MT-67).
+ */
 export function getRecipeBySlug(slug: string) {
   return apiFetch<RecipeDetail>(`/recipes/${encodeURIComponent(slug)}`, {
-    next: { revalidate: 300 },
+    next: { revalidate: 300, tags: [`recipe:${slug}`] },
   });
 }

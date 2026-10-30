@@ -1,12 +1,29 @@
 'use client';
 
-import { useState } from 'react';
-import { Timer } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { RecipeStep } from '@/types/recipe';
 
 /** Các bước thực hiện dạng checklist – người đọc tick bước đã làm khi nấu. */
 export default function StepChecklist({ steps }: { steps: RecipeStep[] }) {
   const [done, setDone] = useState<Set<string>>(new Set());
+  const [activeTimer, setActiveTimer] = useState<{ id: string; remaining: number } | null>(null);
+
+  useEffect(() => {
+    if (!activeTimer) return undefined;
+    const interval = window.setInterval(
+      () =>
+        setActiveTimer((current) => {
+          if (!current) return null;
+          if (current.remaining <= 1) {
+            import('sonner').then(({ toast }) => toast.success('Hẹn giờ đã kết thúc.'));
+            return null;
+          }
+          return { ...current, remaining: current.remaining - 1 };
+        }),
+      1000,
+    );
+    return () => window.clearInterval(interval);
+  }, [activeTimer]);
 
   const toggle = (id: string) =>
     setDone((current) => {
@@ -48,9 +65,19 @@ export default function StepChecklist({ steps }: { steps: RecipeStep[] }) {
                       {step.title}
                     </span>
                     {step.timerMinutes !== null && (
-                      <span className="flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800">
-                        <Timer aria-hidden className="h-3 w-3" /> {step.timerMinutes} phút
-                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveTimer({ id: step.id, remaining: (step.timerMinutes ?? 0) * 60 })
+                        }
+                        className="flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800 hover:bg-orange-200"
+                        aria-label={`Hẹn giờ ${step.timerMinutes} phút cho bước ${step.stepNumber}`}
+                      >
+                        <span aria-hidden>⏱</span>{' '}
+                        {activeTimer?.id === step.id
+                          ? `${Math.floor(activeTimer.remaining / 60)}:${String(activeTimer.remaining % 60).padStart(2, '0')}`
+                          : `${step.timerMinutes} phút`}
+                      </button>
                     )}
                   </span>
                   <span
