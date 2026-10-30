@@ -57,6 +57,11 @@ public sealed class UserRepository(CulinaryBlogDbContext db) : IUserRepository
             .Where(t => t.UserId == userId && t.RevokedAt == null)
             .ExecuteUpdateAsync(set => set.SetProperty(t => t.RevokedAt, utcNow), cancellationToken);
 
+    public Task<int> RevokeOtherRefreshTokensAsync(string userId, Guid? currentSessionId, DateTime utcNow, CancellationToken cancellationToken = default) =>
+        db.RefreshTokens
+            .Where(t => t.UserId == userId && t.RevokedAt == null && (!currentSessionId.HasValue || t.Id != currentSessionId.Value))
+            .ExecuteUpdateAsync(set => set.SetProperty(t => t.RevokedAt, utcNow), cancellationToken);
+
     public async Task RevokeRefreshTokenFamilyAsync(
         string userId,
         string startingTokenHash,
