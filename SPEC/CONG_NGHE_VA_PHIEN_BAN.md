@@ -113,7 +113,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 | Gói thư viện | Phiên bản | SRS | Trạng thái |
 |---|---|---|---|
-| next | **15.5.25** | Next.js 15 App Router (tài liệu tham chiếu #10) | ✅ |
+| next | **15.5.28** | Next.js 15 App Router (tài liệu tham chiếu #10) — vá bảo mật từ 15.5.25 ở Buổi 8, xem mục 6.13 | ✅ |
 | react / react-dom | 19.1.0 | (đi kèm Next 15) | ✅ |
 | typescript | 5.9.3 | TypeScript | ✅ |
 | tailwindcss / @tailwindcss/postcss | 4.3.3 | Tailwind CSS utility-first (NFR-USE-001) | ✅ |
@@ -142,7 +142,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | @typescript-eslint/eslint-plugin / parser | 7.18.0 | Peer của airbnb-typescript | ✅ |
 | eslint-plugin-import / react / jsx-a11y | 2.32.0 / 7.37.5 / 6.10.2 | Peer của Airbnb | ✅ |
 | eslint-plugin-react-hooks | **5.2.0** | Peer của Airbnb (`airbnb/hooks`) | 📌 xem 6.3 |
-| eslint-config-next | 15.5.25 | Quy tắc của Next.js | ✅ |
+| eslint-config-next | 15.5.28 | Quy tắc của Next.js (cùng phiên bản với `next`) | ✅ |
 | prettier / eslint-config-prettier | 3.9.6 / 10.1.8 | Prettier | ✅ |
 | prettier-plugin-tailwindcss | 0.8.1 | Sắp xếp class Tailwind | ➕ |
 | ajv | **8.20.0** | — | 📌 xem 6.3 |
@@ -171,7 +171,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 | Service | Image (tag ghim từ Buổi 8) | Phiên bản chạy thực tế | SRS | Port (host:container) | Healthcheck |
 |---|---|---|---|---|---|
-| nginx | `nginx:1.31.5-alpine` | nginx **1.31.5** | Nginx 1.24+ | 80:80 (prod thêm 443) | `curl /nginx-health` (chỉ 127.0.0.1) |
+| nginx | `culinaryblog-nginx` = `nginx:1.31.6-alpine` + bản vá Alpine (`nginx/image/Dockerfile`) | nginx **1.31.6** (vá bảo mật Buổi 8, mục 6.13) | Nginx 1.24+ | 80:80 (prod thêm 443) | `curl /nginx-health` (chỉ 127.0.0.1) |
 | api | culinaryblog-api (build từ `dotnet/aspnet:10.0.13`) | ASP.NET Core **10.0.13** | .NET 10 | 5000:8080 (prod: không mở cổng, 3 bản sao) | `curl /health/ready` |
 | hangfire | culinaryblog-api (cùng image) | ASP.NET Core 10.0.13 | Hangfire | — (worker) | `curl /health/ready` (Buổi 8) |
 | frontend | culinaryblog-web (build từ `node:22.23.2-alpine`) | Node **22.23.2** | Node 22 LTS (khuyến nghị) | 3000:3000 | `wget` trang chủ |
@@ -286,6 +286,22 @@ của bộ integration test dùng cùng tag `postgres`/`redis`.
 - **shadcn/ui không vi phạm NFR-USE-001** (*"Tailwind CSS utility-first, không sử dụng CSS framework override"*): component shadcn viết bằng chính class Tailwind và được chép vào repo, không mang CSS framework riêng.
 - **Gỡ `next-auth`:** gói này được cài ở Buổi 2 theo SRS v1.0.0 (Auth.js v5 xử lý callback PKCE). SRS v1.1.0 (MT-11, Change Request CR-2026 đã duyệt) đổi sang **ID Token flow** với Google Identity Services, đã hiện thực bằng `@react-oauth/google` ở Buổi 3; `next-auth` không còn chỗ nào dùng. Gỡ gói không dùng là việc dọn dẹp theo SRS hiện hành, **không phải thay công nghệ** — công nghệ của SRS v1.0.0 đã được chính quy trình CR thay trước đó.
 - **Cài bằng npm 10** (`npx npm@10 install …`) theo mục 6.5 để lockfile tương thích container.
+
+### 6.13 Vá bảo mật theo quét Trivy (Buổi 8, 30/10/2026) 📌
+- **Bối cảnh:** kế hoạch Buổi 8 (Dev 4, bước 9) yêu cầu quét Trivy mọi image và *không chấp nhận lỗ hổng Critical*. Trivy 0.76.1 quét 8 image của compose
+  ngày 30/10/2026; kết quả đầy đủ và phần rủi ro được chấp nhận nằm ở `docs/load-test-report.md` §7. Trưởng nhóm chọn: vá những gì có bản vá, ghi nhận phần còn lại.
+- **Thay đổi (vẫn đúng công nghệ SRS, chỉ nâng bản vá):**
+
+  | Thành phần | Trước → sau | Lỗ hổng Critical được vá |
+  |---|---|---|
+  | `next`, `eslint-config-next` | 15.5.25 → **15.5.28** | GHSA-2464-fhr4-w9xw — thực thi mã từ xa không cần xác thực qua Image Optimization API khi dùng ảnh SVG |
+  | `sharp` (phụ thuộc tùy chọn của `next`) | 0.35.4 → 0.35.5 | — (Next.js 15.5.28 yêu cầu `^0.35.5`) |
+  | Image chạy của frontend | gỡ `npm`/`npx`/`corepack` khỏi stage `runtime` | CVE-2026-59873 — `tar` trong npm của image nền (server standalone chỉ cần `node`) |
+  | `nginx` | `1.31.5-alpine` → **`1.31.6-alpine`** + `apk add 'brotli-libs>=1.2.1-r0'` trong `nginx/image/Dockerfile` (image chính thức 1.31.6 vẫn mang bản 1.2.0-r1) | CVE-2026-111497 — `brotli-libs` (phụ thuộc của `curl` dùng cho healthcheck) |
+
+- **Cách nâng:** chỉ sửa đúng các mục `next`/`@next/*`/`eslint-config-next`/`sharp`/`@img/*` trong `package-lock.json` (phiên bản, `resolved`, `integrity` và metadata
+  lấy từ registry), rồi kiểm bằng `npm ci` trong `node:22.23.2-alpine` như Dockerfile — `npm install` trên Windows viết lại cả lockfile và bỏ các mục
+  tùy chọn cho nền tảng khác (xem mục 6.5).
 
 ### 6.9 Các điểm SRS tự mâu thuẫn
 Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện xuất bản, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`.

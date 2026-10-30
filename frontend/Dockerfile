@@ -33,7 +33,11 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
     HOSTNAME=0.0.0.0
-RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs
+# Server standalone chỉ cần `node`: gỡ npm/npx/corepack của image nền — không dùng lúc chạy, và mang theo lỗ hổng của các gói
+# đi kèm (Trivy 30/10/2026: CVE-2026-59873 Critical ở node-tar của npm).
+RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+        /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static

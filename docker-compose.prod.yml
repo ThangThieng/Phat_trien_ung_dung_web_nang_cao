@@ -63,7 +63,9 @@ x-api-volumes: &api-volumes
 
 services:
   nginx:
-    image: nginx:1.31.5-alpine
+    # nginx:1.31.6-alpine + bản vá gói Alpine (nginx/image/Dockerfile — Trivy, Buổi 8).
+    build: ./nginx/image
+    image: culinaryblog-nginx
     ports:
       - "80:80"
       - "443:443"
