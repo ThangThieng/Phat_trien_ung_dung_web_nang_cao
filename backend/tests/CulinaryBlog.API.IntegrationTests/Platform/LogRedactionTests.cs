@@ -1,10 +1,12 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.RegularExpressions;
 using CulinaryBlog.API.IntegrationTests.Auth;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.API.Logging;
 using CulinaryBlog.Application.Features.Auth;
+using CulinaryBlog.Infrastructure.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -16,8 +18,8 @@ namespace CulinaryBlog.API.IntegrationTests.Platform;
 /// sink nhận (sink trong bộ nhớ nhận đúng những gì Console/File/Seq nhận, sau bước che) — chuỗi bí mật nào xuất hiện là đỏ.
 /// Lời hứa "không log bí mật" trở thành điều kiện build.
 ///
-/// <c>change-password</c> và <c>reset-password</c> (FR-AUTH-010/011) do Dev 1 làm ở Buổi 7 — khi nhánh đó vào <c>develop</c>, thêm
-/// hai luồng vào <see cref="AuthFlows_NeverWriteSecretsToAnySink"/> theo cùng mẫu.
+/// Gồm cả <c>change-password</c>, <c>forgot-password</c> (chạy thật <see cref="PasswordResetEmailJob"/>) và <c>reset-password</c>
+/// (FR-AUTH-010/011, Dev 1 — Buổi 7): mật khẩu cũ/mới, token đặt lại mật khẩu và nguyên link trong email đều là bí mật.
 /// </summary>
 [Collection(IntegrationTestSuite.Name)]
 public class LogRedactionTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
@@ -67,11 +69,48 @@ public class LogRedactionTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
             .PostAsJsonAsync("/api/v1/auth/logout", new { refreshToken = google.RefreshToken });
         Assert.True(logout.IsSuccessStatusCode, $"Đăng xuất trả {(int)logout.StatusCode}.");
 
+        // Đổi mật khẩu (FR-AUTH-010): sai mật khẩu hiện tại (nhánh lỗi 400) rồi đổi thật; cả hai mật khẩu nằm trong body.
+        var authorized = factory.CreateClient().Authorized(refreshed.AccessToken);
+        const string changedPassword = "DoiMatKhau#B8-2026";
+        const string wrongCurrentPassword = "SaiHienTai#B8-2026";
+        secrets.AddRange([changedPassword, wrongCurrentPassword]);
+        var wrongChange = await authorized.PostAsJsonAsync("/api/v1/auth/change-password", new { currentPassword = wrongCurrentPassword, newPassword = changedPassword });
+        Assert.Equal(HttpStatusCode.BadRequest, wrongChange.StatusCode);
+        var changed = await authorized.PostAsJsonAsync("/api/v1/auth/change-password", new { currentPassword = TestDataSeeder.ValidPassword, newPassword = changedPassword });
+        Assert.Equal(HttpStatusCode.NoContent, changed.StatusCode);
+
+        // Quên mật khẩu (FR-AUTH-011): 202 + job; chạy job như worker Hangfire — token được sinh và gửi trong email, không vào log.
+        var forgot = await client.PostAsJsonAsync("/api/v1/auth/forgot-password", new { email });
+        Assert.Equal(HttpStatusCode.Accepted, forgot.StatusCode);
+        factory.Emails.Clear();
+        using (var scope = factory.Services.CreateScope())
+        {
+            await scope.ServiceProvider.GetRequiredService<PasswordResetEmailJob>().ExecuteAsync(registered.User.Id, "log-redaction-test");
+        }
+
+        var resetLink = Regex.Match(WebUtility.HtmlDecode(Assert.Single(factory.Emails.Sent).HtmlBody), @"https?://[^""<\s]+reset-password\?[^""<\s]+").Value;
+        var resetToken = Uri.UnescapeDataString(Regex.Match(resetLink, "[?&]token=([^&]+)").Groups[1].Value);
+        Assert.False(string.IsNullOrEmpty(resetToken), "Email đặt lại mật khẩu phải chứa link có token.");
+        secrets.AddRange([resetLink, resetToken]);
+
+        // Đặt lại mật khẩu: token + mật khẩu mới trong body; dùng lại token (nhánh lỗi 400) cũng không được ghi token.
+        const string resetPassword = "DatLaiMatKhau#B8-2026";
+        secrets.Add(resetPassword);
+        var reset = await client.PostAsJsonAsync("/api/v1/auth/reset-password", new { email, token = resetToken, newPassword = resetPassword });
+        Assert.Equal(HttpStatusCode.NoContent, reset.StatusCode);
+        var reused = await client.PostAsJsonAsync("/api/v1/auth/reset-password", new { email, token = resetToken, newPassword = resetPassword });
+        Assert.Equal(HttpStatusCode.BadRequest, reused.StatusCode);
+
         await Task.Delay(500); // dòng hoàn tất của request logging ghi sau khi response đã về client.
         var events = factory.Logs.Events;
 
         // Đối chứng: các luồng trên THẬT SỰ sinh log (audit của từng command), nếu không bài kiểm tra vô nghĩa.
-        foreach (var command in new[] { "RegisterUserCommand", "LoginUserCommand", "RefreshTokenCommand", "GoogleLoginCommand", "LogoutCommand" })
+        string[] auditedCommands =
+        [
+            "RegisterUserCommand", "LoginUserCommand", "RefreshTokenCommand", "GoogleLoginCommand", "LogoutCommand",
+            "ChangePasswordCommand", "ForgotPasswordCommand", "ResetPasswordCommand",
+        ];
+        foreach (var command in auditedCommands)
         {
             Assert.Contains(events, e => e.MessageTemplate.Text.StartsWith("AUDIT ", StringComparison.Ordinal)
                 && InMemoryLogSink.Scalar(e.Properties["Command"]) == command);
