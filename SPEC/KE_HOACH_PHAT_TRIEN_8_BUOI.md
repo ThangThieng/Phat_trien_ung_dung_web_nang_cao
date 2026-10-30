@@ -141,9 +141,9 @@ ptudwnc_nhom20/
 │  └─ tests/ (Domain.UnitTests, Application.UnitTests, API.IntegrationTests, ArchitectureTests)
 ├─ frontend/                      # Next.js 15 App Router + TS + Tailwind v4 + TanStack Query + RHF + Zod (+ từ B5–B6: Zustand, ky, shadcn/ui)
 │  └─ src/{app/{(public),(auth),(dashboard)}, components/{ui,layout,shared}, features/{auth,recipes,categories,search,users,system}, hooks, lib/{api-client,error-handler,query-client,seo}, stores, types}
-├─ nginx/nginx.conf               # B3: chuyển sang templates/ (envsubst secret) + htpasswd (gitignore)
+├─ nginx/nginx.conf               # B3: chuyển sang templates/ (envsubst secret) + htpasswd (gitignore); B7: templates/snippets/ dùng chung dev–prod + prod/ (HTTPS, HSTS)
 ├─ docker/postgres/init.sql       # chỉ CREATE EXTENSION; mọi DDL mà code phụ thuộc nằm trong migration (D-18)
-├─ docker-compose.yml             # dev: 8 service + mailhog; docker-compose.prod.yml tạo ở B7; .env.example
+├─ docker-compose.yml             # dev: 8 service + mailhog; docker-compose.prod.yml tạo ở B7 (+ service migrate chạy một lần); .env.example, .env.production.example
 └─ e2e/ (Playwright)
 ```
 
@@ -166,7 +166,7 @@ ptudwnc_nhom20/
 | Định danh | **Đọc theo `slug`**, **ghi theo `id`**; DTO luôn mang cả `id` lẫn `slug` |
 | Policy | `"AuthorPolicy"` = `RequireRole("Author","Admin")` (role Identity **không phân cấp**), `"AdminPolicy"`, `RecipeAuthorizationHandler` (Owner/Admin). **Không có policy `VerifiedAuthor`.** |
 | Token phía Frontend | Access token **chỉ trong bộ nhớ**; refresh token là dữ liệu xác thực duy nhất lưu bền; access token mang claim **`sid`** (Id bản ghi refresh token) để nhận diện phiên hiện tại — SRS v1.2.0 NFR-SEC-002 (MT-55, MT-45) |
-| FE API client | `lib/api-client.ts` — B2: fetch wrapper; **từ B6: instance `ky` bọc `fetch`** (giữ Data Cache của Next.js), hook gắn Bearer + `X-Correlation-ID`, refresh 401 single-flight, đổi lỗi sang `ApiError`; chỉ tự thử lại `GET`. API công khai (`apiFetch`, `ApiError`) không đổi. Lỗi xử lý tập trung ở `lib/error-handler.ts` (thông báo theo `ErrorCode`). TanStack Query keys theo module |
+| FE API client | `lib/api-client.ts` — B2: fetch wrapper; **từ B6: instance `ky` bọc `fetch`** (giữ Data Cache của Next.js), hook gắn Bearer + `X-Correlation-ID`, refresh 401 single-flight, đổi lỗi sang `ApiError`; chỉ tự thử lại `GET`. API công khai (`apiFetch`, `ApiError`) không đổi. Lỗi xử lý tập trung ở `lib/error-handler.ts` (thông báo theo `ErrorCode`). TanStack Query keys theo module. **Từ B7:** request phía server dùng Data Cache không gắn `X-Correlation-ID` (header nằm trong khóa Data Cache), request phía server không cache chuyển tiếp `X-Forwarded-For` của trình duyệt (rate limit theo IP thật) |
 | FE form | React Hook Form + Zod schema mirror validator backend, lỗi inline theo `errors{}` |
 | FE state (từ B6) | Dữ liệu server → **TanStack Query**; phiên đăng nhập phía client → **Zustand** `stores/auth-store.ts` (chỉ refresh token + `user` lưu bền); biểu mẫu → React Hook Form; bộ lọc/trang → `searchParams`. Không đưa dữ liệu server vào Zustand |
 | FE UI (từ B6) | **shadcn/ui** (Radix UI + Tailwind) trong `components/ui/` — code chép vào repo, sửa trực tiếp; màu qua token CSS đạt tương phản WCAG AA |
@@ -264,10 +264,10 @@ Buổi 2 đã code và merge theo **SRS v1.0.0**. Nội dung Buổi 2 trong tài
 | **D-11** | Mọi lỗi kiểm tra hợp lệ trả **422**; FE bắt lỗi trường bằng `status === 422` | `GlobalExceptionMiddleware.cs:65-83`, `AuthEndpoints.cs:17,26`, `RecipesEndpoints.cs:21`, `LoginForm.tsx:35`, `RegisterForm.tsx:44` | **400** cho mọi lỗi kiểm tra hợp lệ; **bỏ hẳn 422** | **B3 – commit nền đầu buổi** (Dev 4 dẫn) | MT-08 |
 | **D-12** | Access token **và** refresh token lưu trong **`localStorage`** | `auth-context.tsx:39-56`; `BAO_CAO_BUOI_2.md` §4.12 ("cần xem lại Buổi 4") | Access token **chỉ trong bộ nhớ**; refresh token là thứ duy nhất được lưu bền (xem giải trình B4 Dev 1) | **B4 – Dev 1** *(làm sớm — kế hoạch đặt B5; commit `5239618`, `f473fca`)* | NFR-SEC-002 |
 | **D-13** | TTL `categories:all` = **60 phút** | `GetCategoriesQuery.cs:11` | **30 phút** | **B3 – Dev 3** | MT-17 |
-| **D-14** | `next/image` chạy `unoptimized`; URL ảnh là `localhost:9000` — **container frontend không truy cập được** | `BAO_CAO_BUOI_2.md` §4.13, `MinioOptions.PublicBaseUrl` | Ảnh phục vụ qua Nginx `/media/` → MinIO, bật lại tối ưu ảnh | **B7 – Dev 4** (Nginx) + **B8 – Dev 3** (Next.js) | NFR-PERF-005 |
+| **D-14** | `next/image` chạy `unoptimized`; URL ảnh là `localhost:9000` — **container frontend không truy cập được** | `BAO_CAO_BUOI_2.md` §4.13, `MinioOptions.PublicBaseUrl` | Ảnh phục vụ qua Nginx `/media/` → MinIO, bật lại tối ưu ảnh | **B7 – Dev 4** (Nginx — đã làm, commit `863d16b`) + **B8 – Dev 3** (Next.js) | NFR-PERF-005 |
 | **D-15** | `Recipe.Publish()` **cho phép Archived → Published** và coi Published → xuất bản là no-op; ném `DomainException` chung không có mã lỗi | `Recipe.cs:114-128` | Chuyển trạng thái ngoài bảng → **409 `RECIPE_INVALID_STATE_TRANSITION`**; thiếu bước/nguyên liệu → **400 `RECIPE_PUBLISH_INCOMPLETE`** | **B4 – Dev 4** *(kéo từ B5 — đi cùng API xuất bản)* | MT-35, MT-06 |
 | **D-16** | UNIQUE `(RecipeId, StepNumber)` khai báo bằng **unique index** — PostgreSQL **không cho phép index là `DEFERRABLE`** | `RecipeConfiguration.cs:87` `HasIndex(...).IsUnique()` | Đổi thành **unique constraint `DEFERRABLE INITIALLY DEFERRED`** để đánh số lại trong một transaction | **B4 – Dev 2** | MT-03 |
-| **D-17** | Khóa DataProtection lưu **không mã hóa** trên volume `dpkeys` | `BAO_CAO_BUOI_2.md` §5.1 (cảnh báo `XmlKeyManager[35]`) | `ProtectKeysWithCertificate` ở production | **B7 – Dev 4** (cùng HTTPS) | NFR-SEC-007 |
+| **D-17** | Khóa DataProtection lưu **không mã hóa** trên volume `dpkeys` | `BAO_CAO_BUOI_2.md` §5.1 (cảnh báo `XmlKeyManager[35]`) | `ProtectKeysWithCertificate` ở production | **B7 – Dev 4** (cùng HTTPS — đã làm, commit `863d16b`) | NFR-SEC-007 |
 | **D-18** | `init.sql` tạo text search config `vietnamese_unaccent` — **cơ chế FTS thứ hai**, lại chỉ chạy trong Docker (Testcontainers không chạy file này) | `docker/postgres/init.sql` | Một cơ chế duy nhất theo SRS: `simple` + `unaccent_immutable`, khai báo **trong migration** | **B4 – Dev 3** | MT-25 |
 
 **Phân bổ retrofit theo buổi (cập nhật 12/10/2026):** B3 → D-1, D-8, D-11, D-13 · **B4 → D-2, D-3, D-4, D-5, D-6, D-10 (API), D-12 (làm sớm), D-15, D-16, D-18** · B5 → D-10 (FE), D-7 (một phần) · B7 → D-7 (phần còn lại), D-14 (Nginx), D-17 · B8 → D-14 (Next.js), audit D-6. Mọi retrofit làm **thay đổi hợp đồng của một endpoint** dồn về Buổi 4, vì yêu cầu "hoàn thành tất cả API endpoints" không đạt được khi endpoint còn trả sai mã hoặc rò dữ liệu. Hệ quả tốt: lỗ hổng MT-34 được vá sớm hai buổi.
@@ -2777,7 +2777,8 @@ feat(home,categories): homepage with latest recipes and category sidebar, catego
 *Hạ tầng production (Dev 4):*
 
 6. **Nginx — `nginx/templates/nginx.conf.template`** (giữ resolver động `127.0.0.11 valid=10s` + `proxy_pass` qua biến — MT-50; giữ `proxy_next_upstream` (Buổi 5), `X-Forwarded-*`, `X-Correlation-ID` (Buổi 2), `/hangfire` + gate (Buổi 3), `/scalar/` (Buổi 5)):
-   - **Retrofit D-14 — ảnh qua `/media/`:** `location /media/ { set $minio_upstream http://minio:9000; proxy_pass $minio_upstream/culinary-blog/; proxy_cache media; expires 30d; }`.
+   - **Retrofit D-14 — ảnh qua `/media/`:** `location /media/ { rewrite ^/media/(.*)$ /culinary-blog/$1 break; proxy_pass $minio_upstream; proxy_cache media; … }`, cache 30 ngày `immutable`.
+     - **Đính chính (21/10/2026):** bản phác thảo trước ghi `proxy_pass $minio_upstream/culinary-blog/;`. Khi `proxy_pass` dùng biến **và** có URI, Nginx gửi đúng URI đó cho mọi request, không nối phần còn lại của đường dẫn — mọi ảnh thành request tới `/culinary-blog/`. `rewrite … break` + `proxy_pass` chỉ có biến mới chuyển đúng `/media/<key>` → `/culinary-blog/<key>`.
      - `MinIO__PublicBaseUrl` → `https://<domain>/media` (dev: `http://localhost/media`).
      - Từ đây trình duyệt **và** container `frontend` cùng truy cập ảnh qua một địa chỉ → Dev 3 gỡ `unoptimized` của `next/image` ở Buổi 8.
      - Script một lần đổi URL ảnh đã lưu trong cơ sở dữ liệu từ `http://localhost:9000/culinary-blog/` sang `/media/` (bảng `RecipeImages`, `RecipeSteps.ImageUrl`, `Categories.ImageUrl`, `AspNetUsers.AvatarUrl`), chạy trong một transaction, có bản sao lưu trước khi chạy.
@@ -2792,8 +2793,46 @@ feat(home,categories): homepage with latest recipes and category sidebar, catego
    - không có `seq`, `mailhog`; `env_file: .env.production` (quyền đọc giới hạn — NFR-SEC-007);
    - `OpenApi__Enabled=false`.
 
-   Kiểm chứng: `docker compose -f docker-compose.prod.yml up -d --scale api=3` chạy được; `docker compose up -d --force-recreate --no-deps api` giữa lúc gửi request liên tục → **không có 502** (MT-50).
+   Kiểm chứng: `docker compose -f docker-compose.prod.yml up -d --scale api=3` chạy được; **cập nhật `api` khi đang có request liên tục → không có 502** (MT-50).
+   - **Đính chính (21/10/2026 — đã đo):** `docker compose up -d --force-recreate --no-deps api` dừng **cả ba** bản sao cùng lúc (Docker Compose không có cập nhật cuốn chiếu như Swarm/Kubernetes) → 502 trong ~3 giây (7/372 và 2/113 request). Resolver động (MT-50) chỉ bảo đảm 502 không kéo dài. Cập nhật không gián đoạn dùng `tools/deploy/rolling-update-api.sh`: tạo N bản sao mới bên cạnh N bản cũ → chờ healthy + 12 giây (resolver `valid=10s`) → dừng êm từng bản cũ.
 8. **Retrofit D-17:** production gọi `.ProtectKeysWithCertificate(cert)` cho DataProtection — chứng chỉ nạp qua biến môi trường/secret, dùng chung nguồn với bước HTTPS. Khóa trên volume `dpkeys` không còn nằm dạng rõ. Khóa này cũng ký token đặt lại mật khẩu của FR-AUTH-011.
+   - **"Chung nguồn" = chung script sinh (`nginx/generate-ssl-cert.sh`) và chung thư mục bí mật `./ssl/`, nhưng hai cặp khóa riêng:** chứng chỉ TLS thật (Let's Encrypt) đổi khóa mỗi ≤ 90 ngày; dùng chính nó mã hóa khóa DataProtection thì sau lần gia hạn API không giải mã được khóa cũ. `dataprotection.pfx` giữ lâu dài, script không bao giờ ghi đè khi file đã có.
+
+**Ghi chú khi thực hiện (21/10/2026 — nhánh `2312755_NguyenThangThieng_buoiso7`, tách từ `develop` `adae8aa`):**
+
+- **Kiểm tra cuối Buổi 6 trước khi tách nhánh** (trưởng nhóm chọn 21/10/2026): Buổi 6 của Dev 1 (PR #55) và Dev 3 đạt kế hoạch + DoD nên được merge vào `develop` (`4c7b4cc`, `adae8aa`). Hai xung đột ngữ nghĩa được giải quyết trong merge commit:
+  - bỏ `revalidate`/`generateStaticParams` ở `/recipes/[slug]` — root layout đọc nonce nên trang ISR trả 500 `DYNAMIC_SERVER_USAGE`;
+  - `AuthGuard`/`GuestOnly` dùng `LoadingSkeleton` thay `InterimPageLoading` mà Dev 3 đã gỡ; `components/layout/interim-shell.tsx` bị xóa vì hết chỗ dùng.
+
+  Buổi 6 của Dev 2 (PR #52) chưa đạt (6/16 component shadcn, 7 file xung đột) nên chờ.
+- **Bản tạm cho shadcn/ui của Dev 2** — gom trong **một** file `components/shared/interim-ui.tsx`: `Sheet*`, `Select*`, `Badge` cùng tên và props với shadcn. Dev 2 đổi một dòng import ở `features/search/components/SearchResults.tsx` và `SearchFilterPanel.tsx` rồi xóa file. `Sheet` tạm giữ đúng hành vi Radix (focus trap, Escape, trả focus, khóa cuộn — có kiểm thử); `Select` tạm là `<select>` gốc có `name` để gửi được trong form GET khi chưa có JavaScript.
+- **`/search`:** bảng bộ lọc mới `features/search/components/SearchFilterPanel.tsx`; `FilterPanel` cũ (Buổi 5) ở lại cho `/recipes`.
+  - Mọi lựa chọn bộ lọc, nhãn gỡ bộ lọc và link phân trang là **link thật** — chạy khi chưa có JavaScript. Có JavaScript thì một bộ xử lý `onClickCapture` ở gốc `SearchResults` đổi URL bằng `history.pushState`, kể cả `next/link` của `Pagination` (Next.js bỏ qua cú bấm đã `preventDefault`).
+  - `SearchBar` trên header dùng `history.replaceState` khi đang ở `/search`; `RecipeCard` thêm prop `prefetch`, tắt ở lưới kết quả — mỗi lần lọc có thể sinh tới 12 request RSC tải trước trang chi tiết.
+  - Đo trên Docker (Edge): lần tải đầu trình duyệt **không** gọi API (dữ liệu SSR qua `HydrationBoundary`); mỗi lần đổi bộ lọc/trang **đúng 1** request `GET /api/v1/recipes/search`, không có request RSC cho `/search`; back/forward trong 60 giây không gọi gì; tắt JavaScript vẫn lọc được. Bộ lọc thời gian khớp lọc tay trên tập không lọc ở **16/16** tổ hợp (5 từ khóa × 4 tổ hợp).
+- **Hai lỗi của lớp gọi API Buổi 6 (Dev 4) — sửa ở `4bd5100`:**
+  - `ky` truyền đối tượng `Request` cho `fetch`, và Next.js 15.5 lấy **toàn bộ header** làm khóa Data Cache (chỉ bỏ `traceparent`/`tracestate`). `X-Correlation-ID` ngẫu nhiên khiến Data Cache không bao giờ trúng: 5 lượt tải `/categories` → API nhận **15** lần dù `revalidate: 1800`; sau khi sửa: **1** lần. Kết luận "Data Cache vẫn giữ dữ liệu" của MT-67 (đo bằng `fetch` thuần) nay mới đúng với `apiFetch`.
+  - Request SSR đi thẳng `frontend` → `api:8080`, nên mọi người dùng chung hạn mức 100 request/phút theo IP của container `frontend`: vượt ngưỡng thì **mọi** trang `/search` render không có kết quả (25/115 lượt có kết quả). Nay chuyển tiếp `X-Forwarded-For` của trình duyệt (API chỉ tin từ dải mạng Docker và lấy giá trị ngoài cùng bên phải do Nginx thêm): người dùng A bị chặn đúng ở lượt 101, người dùng B cùng lúc vẫn 5/5.
+- **D-14:** `MinIO__PublicBaseUrl` = biến **mới** `MEDIA_PUBLIC_URL` (mặc định `http://localhost/media`) — file `.env` cũ không làm sai URL ảnh; `next.config.ts` suy đường dẫn cho phép từ cùng URL.
+  - Script `tools/media-url-migration/`: 6 cột, gồm dòng xóa mềm; sao lưu = script khôi phục chỉ chứa Id + URL; một transaction tự hủy nếu còn sót; xóa cache Redis. Thử trên bản sao cơ sở dữ liệu: đổi 7 giá trị, ảnh Google giữ nguyên, chạy lại không đổi gì, khôi phục trả đủ 7, lỗi giữa chừng không đổi dòng nào. Trên cơ sở dữ liệu dev: 0 dòng cần đổi (dữ liệu mẫu chưa có ảnh).
+  - Kiểm 15/15 trên dev và prod: tải lên/resize (container `hangfire`) ra URL `/media/`; cache Nginx MISS → HIT; liệt kê bucket, ảnh không tồn tại, `PUT` → 404 không lộ XML của MinIO. Ảnh tải lên qua "Viết công thức" hiển thị dưới CSP `img-src 'self'` — trước D-14, ảnh `localhost:9000` bị CSP của Buổi 6 chặn.
+  - **Lưu ý cho Dev 3 (Buổi 8):** ở dev, container `frontend` vẫn không tới được `http://localhost/media` (localhost trong container là chính nó). Khi gỡ `unoptimized`, bộ tối ưu ảnh phía server cần đi qua Nginx nội bộ hoặc loader riêng.
+- **Production (`docker-compose.prod.yml`, cùng project `culinaryblog` và cùng volume dữ liệu — chạy thay bản dev rồi trả lại):**
+  - service `migrate` (`Database:MigrateOnly`) chạy migration/seed **một lần** rồi thoát; `api` (3 bản sao) và `hangfire` chỉ khởi động sau khi nó thành công — thay cho ba bản sao cùng migrate và cùng seed;
+  - bí mật qua `--env-file .env.production`; thiếu biến chỉ có ở production thì Compose dừng (không lặng lẽ dùng bí mật dev trong `.env`); file chứng chỉ/htpasswd thiếu thì báo lỗi thay vì Docker tạo thư mục rỗng;
+  - đo: `http` → 301 `https`; TLS 1.0/1.1 bị từ chối, 1.2/1.3 nhận; HSTS ở mọi phản hồi, kể cả `/_next/static` và `/media/` (trước đây location có `add_header` riêng làm mất header bảo mật); cổng 3000/5000/9000/9001/6379 đóng; `/scalar`, `/openapi` 404; 3 bản sao đều nhận traffic; scale 3 → 5 được Nginx nhận không cần reload;
+  - cập nhật cuốn chiếu dưới `ab` 10 kết nối đồng thời trong 70 giây: **49.657 request, 0 lỗi, 0 phản hồi khác 2xx**; thu về 3 bản sao dưới tải: 0 lỗi;
+  - `proxy_connect_timeout 2s`: sau khi gỡ một bản sao, Nginx còn giữ IP cũ ≤ 10 giây, SYN tới IP không tồn tại bị bỏ lặng lẽ nên request treo tới 60 giây mặc định (`ab` gặp request > 15 giây). Nay chậm nhất 6,0 giây trong cửa sổ đó, 99% request ≤ 31 ms.
+- **D-17:** volume riêng `dpkeys-prod` (khóa mỗi môi trường một bộ, mọi khóa được mã hóa từ đầu). Khóa production có `encryptedSecret` (`EncryptedXmlDecryptor`), không còn `masterKey`; khóa dev cũ vẫn có `masterKey` dạng rõ. Production thiếu chứng chỉ thì **không khởi động** (6 kiểm thử: khóa trên đĩa đã mã hóa, container thứ hai giải được, không có khóa riêng thì không đọc được…). Hai file `.ps1` lưu UTF-8 có BOM — Windows PowerShell 5.1 đọc file không BOM theo ANSI nên `generate-htpasswd.ps1` (Buổi 3) không phân tích được cú pháp.
+- **Rate limit khi chạy nhiều bản sao (trưởng nhóm chọn 21/10/2026 — chặn thêm ở Nginx):** middleware rate limit của ASP.NET Core đếm trong bộ nhớ từng bản sao. Với 3 bản sao, đăng nhập sai tới lần thứ 23 mới bị 429 (27/40 lần lọt).
+  - Nginx (điểm vào duy nhất) nay đếm cho cả cụm: 10/phút cho `/api/v*/auth/*`, 5/phút cho upload (chỉ `POST`); 429 cùng hợp đồng với API (`RATE_LIMIT_EXCEEDED` + `Retry-After`); middleware của Dev 1 giữ nguyên làm lớp thứ hai.
+  - Location dùng regex không phân biệt hoa/thường vì `/api/v1/Auth/Login` và `/API/v1.0/auth/login` đều tới được endpoint đăng nhập.
+  - Đo lại với 3 bản sao: 429 đầu tiên ở lần 12, 15/40 lần lọt (10 lượt + 1 lượt mỗi 6 giây).
+- **Sao lưu cơ sở dữ liệu (trưởng nhóm chọn 21/10/2026 — Dev 4 thêm migration):** bản `pg_dump` không khôi phục được — `unaccent_immutable` (B4, D-18) gọi `unaccent` không kèm schema, `pg_dump` khôi phục với `search_path` rỗng nên bảng `Recipes` không được tạo.
+  - Migration `B7_Search_UnaccentSchemaQualified` gọi `public.unaccent('public.unaccent'::regdictionary, $1)`; kiểm thử `DatabaseBackupRestoreTests` đỏ khi thiếu migration.
+  - Trên cơ sở dữ liệu dev: kết quả tìm kiếm 6 từ khóa giống hệt trước/sau; `pg_dump` → khôi phục thành công, 105 công thức / 9 kết quả FTS "phở" / 11 người dùng / 20 danh mục ở cả hai phía.
+- **`Document_MatchesCommittedSnapshot` (Buổi 5) đỏ trên mọi bản clone Windows:** `WriteIndented` xuống dòng CRLF còn git checkout LF — nay chuẩn hóa LF ở cả hai phía (`4b7f412`).
+- **Kiểm thử:** Jest **319/319** (thêm `SearchResults`, bộ lọc, `interim-ui`, `SearchBar`, `api-client.server`); backend **81 + 113 + 18 + 366** (thêm 6 kiểm thử D-17, 1 kiểm thử sao lưu/khôi phục).
 
 **3. Định hướng & lý do kiến trúc:**
 
@@ -3316,6 +3355,10 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 | **B7** | `PasswordResetEmailJob` (Dev 1) chạy ở container `hangfire` cần cùng khóa DataProtection với `api` | Đã có volume `dpkeys` dùng chung từ Buổi 2; D-17 (Dev 4, cùng buổi) bảo vệ khóa bằng chứng chỉ — Dev 1 kiểm lại luồng đặt lại mật khẩu sau khi Dev 4 merge |
 | **B7** | Giao diện `/search` (Dev 4) dựa trên API của Dev 3 (Buổi 4 + MT-66 ở Buổi 6) | Hợp đồng là SRS v1.2.3 §8.3 + integration test của Dev 3; Dev 4 không sửa handler |
 | **B7** | Trang chủ và trang danh mục (Dev 3) dùng `RecipeCard`, `SidebarCategory`; trang chi tiết (Dev 2) dùng `ImageUploader`/ảnh qua `/media/` | Ảnh vẫn chạy `unoptimized` tới khi Dev 4 dựng `/media/` (cùng buổi); gỡ `unoptimized` để sang Buổi 8 — Dev 3 |
+| **B7** | `/search` (Dev 4) dùng `Sheet`, `Select`, `Badge` của shadcn/ui — phần khởi tạo của Dev 2 (Buổi 6, PR #52) chưa vào `develop` | Bản tạm cùng tên, cùng props trong **một** file `components/shared/interim-ui.tsx`; Dev 2 merge xong thì đổi một dòng import ở `SearchResults.tsx`, `SearchFilterPanel.tsx` rồi xóa file |
+| **B7** | URL ảnh đổi sang `<site>/media` (D-14) — mọi dev chạy Docker | Biến mới `MEDIA_PUBLIC_URL` có mặc định `http://localhost/media` nên `.env` cũ vẫn chạy; ảnh đã lưu với `localhost:9000` đổi bằng `tools/media-url-migration/migrate-media-urls.sh` |
+| **B7** | Nginx chặn thêm 10/phút cho `/api/v*/auth/*` và 5/phút cho upload, đếm cho cả cụm (Dev 4) | Ba endpoint mật khẩu mới của Dev 1 nằm dưới `/auth/` nên tự được tính; 429 từ Nginx cùng hợp đồng `RATE_LIMIT_EXCEEDED` + `Retry-After` nhưng **không** có `X-RateLimit-Remaining` (chỉ API gửi) |
+| **B7** | Migration `B7_Search_UnaccentSchemaQualified` (Dev 4) sửa hàm `unaccent_immutable` của migration FTS (Dev 3) | Kết quả hàm không đổi (kiểm 6 từ khóa trước/sau); Dev 3 rà soát; migration của Dev 1/2/3 trong buổi xếp sau theo thứ tự Dev 4 → Dev 1 → Dev 3 → Dev 2 |
 | **B8** | ⚠️ Cả 4 dev chạy E2E trên cùng một môi trường giống production | Dev 4 dựng **đầu Buổi 8** (`docker-compose.prod.yml`, HTTPS tự ký, dữ liệu mẫu CR-2026-03); E2E chạy với `Jwt__AccessTokenMinutes=1` để kiểm refresh |
 | **B8** | Dev 3 thêm `<JsonLd …/>` vào `(public)/recipes/[slug]/page.tsx` (file của Dev 2) | Một dòng, Dev 2 rà soát |
 | **B8** | Dev 2 đọc `RecipeStatusTransitions.cs` (Dev 4, Buổi 4) để kiểm thử chống lệch bảng chuyển trạng thái | Chỉ đọc; đổi luật ở Backend phải sửa cả bảng Frontend trong cùng PR |

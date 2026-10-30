@@ -73,7 +73,12 @@ public sealed partial class OpenApiDocumentTests(OpenApiTestFactory factory) : I
     public async Task Document_MatchesCommittedSnapshot()
     {
         using var document = await GetDocumentAsync();
-        var actual = JsonNode.Parse(document.RootElement.GetRawText())!.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + Environment.NewLine;
+
+        // Ảnh chụp luôn dùng LF (.gitattributes: eol=lf). WriteIndented xuống dòng theo hệ điều hành — CRLF trên Windows — nên
+        // so nguyên văn thì test đỏ ngay sau khi clone trên máy Windows dù tài liệu không đổi (đo ở Buổi 7).
+        var actual = JsonNode.Parse(document.RootElement.GetRawText())!
+            .ToJsonString(new JsonSerializerOptions { WriteIndented = true })
+            .ReplaceLineEndings("\n") + "\n";
         var snapshot = FindRepositoryRoot().Combine("docs", "api", "openapi.v1.json");
 
         if (string.Equals(Environment.GetEnvironmentVariable("OPENAPI_SNAPSHOT_UPDATE"), "1", StringComparison.Ordinal))
@@ -84,7 +89,7 @@ public sealed partial class OpenApiDocumentTests(OpenApiTestFactory factory) : I
         }
 
         Assert.True(snapshot.Exists, $"Thiếu snapshot {snapshot.FullName}. Chạy test với OPENAPI_SNAPSHOT_UPDATE=1 để tạo.");
-        Assert.Equal(await File.ReadAllTextAsync(snapshot.FullName), actual);
+        Assert.Equal((await File.ReadAllTextAsync(snapshot.FullName)).ReplaceLineEndings("\n"), actual);
     }
 
     private async Task<JsonDocument> GetDocumentAsync()

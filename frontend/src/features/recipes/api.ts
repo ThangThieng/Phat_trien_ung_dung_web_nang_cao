@@ -39,10 +39,32 @@ export function getRecipes(params: RecipeListParams = {}) {
   return apiFetch<PagedResult<RecipeSummary>>(`/recipes${toQuery(params)}`, { cache: 'no-store' });
 }
 
-/** FR-SRCH-001 – GET /recipes/search (SSR dynamic; backend cache Redis 1 phút, xếp theo ts_rank). */
-export function searchRecipes(params: RecipeSearchParams) {
+/**
+ * Trạng thái URL của /search → tham số API (SRS v1.2.3 §8.3; ba bộ lọc thời gian/khẩu phần của CR-2026-05 / MT-66). Server
+ * (prefetch lúc SSR) và trình duyệt (`useQuery` khi đổi bộ lọc) cùng gọi hàm này nên query key hai phía luôn trùng nhau.
+ */
+export function toRecipeSearchParams(state: RecipeQueryState): RecipeSearchParams {
+  return {
+    q: state.q ?? '',
+    page: state.page,
+    pageSize: DEFAULT_PAGE_SIZE,
+    categoryId: state.categoryId,
+    difficulty: state.difficulty,
+    maxCookTime: state.maxCookTime,
+    maxPrepTime: state.maxPrepTime,
+    minServings: state.minServings,
+  };
+}
+
+/**
+ * FR-SRCH-001 – GET /recipes/search. Không dùng Data Cache của Next (`no-store`): backend đã cache Redis 1 phút
+ * (`search:{queryHash}`), còn phía trình duyệt TanStack Query giữ kết quả 60 giây (`staleTime`). `signal` để TanStack Query
+ * hủy request cũ khi người dùng đổi bộ lọc liên tiếp.
+ */
+export function searchRecipes(params: RecipeSearchParams, signal?: AbortSignal) {
   return apiFetch<RecipeSearchResult>(`/recipes/search${toQuery(params)}`, {
     cache: 'no-store',
+    signal,
   });
 }
 

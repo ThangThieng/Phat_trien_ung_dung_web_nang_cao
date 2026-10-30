@@ -1,0 +1,3 @@
+# Production (NFR-SEC-005): trình duyệt nhớ 1 năm rằng site chỉ đi qua HTTPS, kể cả khi người dùng gõ http:// hay bấm link cũ —
+# chặn tấn công hạ cấp xuống HTTP (SSL stripping) ngay từ lần truy cập thứ hai. "always": gắn cả vào phản hồi lỗi 4xx/5xx.
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;

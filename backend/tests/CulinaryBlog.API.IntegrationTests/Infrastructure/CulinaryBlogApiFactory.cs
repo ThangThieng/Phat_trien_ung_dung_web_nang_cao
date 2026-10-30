@@ -6,6 +6,7 @@ using Amazon.S3.Util;
 using CulinaryBlog.API.IntegrationTests.Infrastructure.Fakes;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Infrastructure.Persistence;
+using DotNet.Testcontainers.Containers;
 using Hangfire;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -72,6 +73,12 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
 
     /// <summary>Buổi 4: Google ID token giả cho FR-AUTH-003 (không gọi Google thật).</summary>
     public FakeGoogleIdTokenValidator GoogleTokens { get; } = new();
+
+    /// <summary>
+    /// Buổi 7: chạy lệnh trong container PostgreSQL của bộ test (pg_dump/psql có sẵn trong image) — kiểm chứng sao lưu/khôi phục
+    /// trên đúng schema mà migration sinh ra.
+    /// </summary>
+    public Task<ExecResult> ExecInPostgresAsync(IList<string> command) => _postgres.ExecAsync(command);
 
     /// <summary>Endpoint S3 của container MinIO (dùng cho cả cấu hình app lẫn kiểm chứng trực tiếp trong test).</summary>
     public string MinioEndpoint => $"http://{_minio.Hostname}:{_minio.GetMappedPublicPort(9000)}";
