@@ -16,6 +16,13 @@ jest.mock('@/features/recipes/api', () => {
   return { ...actual, searchRecipes: (...args: unknown[]) => mockSearchRecipes(...args) };
 });
 
+// jsdom thiếu các API con trỏ/cuộn mà Radix Select gọi khi mở danh sách.
+beforeAll(() => {
+  Element.prototype.scrollIntoView ??= jest.fn();
+  Element.prototype.hasPointerCapture ??= jest.fn(() => false);
+  Element.prototype.releasePointerCapture ??= jest.fn();
+});
+
 const MON_VIET = '11111111-1111-4111-8111-111111111111';
 const MON_AU = '22222222-2222-4222-8222-222222222222';
 const categories: Category[] = [
@@ -137,11 +144,22 @@ describe('<SearchResults />', () => {
     renderAt(`/search?q=ga&page=2&categoryId=${MON_VIET}`, page(2, 57));
     await screen.findByText('Hiển thị 13–24 trên 57 kết quả');
 
-    const select = within(filters()).getByRole('combobox', { name: 'Danh mục' });
-    expect(select).toHaveValue(MON_VIET);
-    fireEvent.change(select, { target: { value: MON_AU } });
+    // Sau hydrate là Select của shadcn (Radix): mở bằng bàn phím, chọn mục bằng Enter.
+    // Select của shadcn được nạp muộn (React.lazy) — chờ tới khi nút Radix thay cho <select> gốc.
+    await waitFor(() =>
+      expect(within(filters()).getByRole('combobox', { name: 'Danh mục' }).tagName).toBe('BUTTON'),
+    );
+    const chooseCategory = async (name: string) => {
+      const trigger = within(filters()).getByRole('combobox', { name: 'Danh mục' });
+      fireEvent.keyDown(trigger, { key: 'Enter' });
+      fireEvent.keyDown(await screen.findByRole('option', { name }), { key: 'Enter' });
+    };
+    expect(within(filters()).getByRole('combobox', { name: 'Danh mục' })).toHaveTextContent(
+      'Món Việt',
+    );
+    await chooseCategory('Món Âu');
     expect(lastPushedUrl()).toBe(`/search?q=ga&categoryId=${MON_AU}`);
-    fireEvent.change(select, { target: { value: 'all' } });
+    await chooseCategory('Tất cả danh mục');
     expect(lastPushedUrl()).toBe('/search?q=ga');
   });
 
@@ -272,7 +290,8 @@ describe('<SearchResults />', () => {
 
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(open).toHaveFocus();
+    // Radix trả focus cho SheetTrigger trong một tick sau khi đóng.
+    await waitFor(() => expect(open).toHaveFocus());
   });
 });
 

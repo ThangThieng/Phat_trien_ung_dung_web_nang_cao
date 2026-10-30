@@ -1,20 +1,14 @@
 'use client';
 
-import { useId } from 'react';
+import { lazy, Suspense, useId, useSyncExternalStore } from 'react';
 import clsx from 'clsx';
 import type { Category } from '@/types/category';
 import type { RecipeQueryState } from '@/types/search';
 import { DIFFICULTIES } from '@/types/search';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/shared/interim-ui';
 import { DIFFICULTY_LABEL } from '@/features/recipes/format';
 import { buildHref } from '@/features/recipes/search-params';
 import {
+  ALL_CATEGORIES,
   COOK_TIME_OPTIONS,
   PREP_TIME_OPTIONS,
   SERVINGS_OPTIONS,
@@ -22,8 +16,7 @@ import {
 } from '../filters';
 import { SEARCH_PATHNAME } from '../query-keys';
 
-/** Radix Select không cho giá trị rỗng — "tất cả danh mục" dùng giá trị riêng, URL thì không có `categoryId`. */
-const ALL_CATEGORIES = 'all';
+const CategorySelectMenu = lazy(() => import('./CategorySelectMenu'));
 
 interface Option {
   label: string;
@@ -87,6 +80,69 @@ const limitOptions = (
   })),
 ];
 
+const subscribeNothing = () => () => {};
+
+/** `false` trong HTML do server render (và mãi `false` khi trình duyệt tắt JavaScript), `true` sau khi trang hydrate. */
+function useHydrated(): boolean {
+  return useSyncExternalStore(
+    subscribeNothing,
+    () => true,
+    () => false,
+  );
+}
+
+interface CategorySelectProps {
+  labelId: string;
+  triggerId: string;
+  value: string;
+  categories: readonly Category[];
+  onChange: (value: string) => void;
+}
+
+/** `<select>` gốc của trình duyệt: gửi được trong form GET (`name`), dùng được bằng bàn phím và trình đọc màn hình sẵn có. */
+function NativeCategorySelect({
+  labelId,
+  triggerId,
+  value,
+  categories,
+  onChange,
+}: CategorySelectProps) {
+  return (
+    <select
+      id={triggerId}
+      name="categoryId"
+      aria-labelledby={labelId}
+      value={value === ALL_CATEGORIES ? '' : value}
+      onChange={(event) => onChange(event.target.value || ALL_CATEGORIES)}
+      className="h-9 w-full rounded-lg border border-gray-300 bg-white px-2 text-sm text-gray-800"
+    >
+      <option value="">Tất cả danh mục</option>
+      {categories.map((category) => (
+        <option key={category.id} value={category.id}>
+          {category.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+/**
+ * Chọn danh mục. Radix Select (shadcn) chỉ hoạt động khi có JavaScript — nút mở và danh sách đều do JS dựng, còn `<select>` ẩn
+ * nó render kèm `name` chỉ để gửi giá trị trong form, người dùng không thao tác được. Vì vậy HTML do server render dùng `<select>`
+ * gốc (cùng `name`, cùng nhãn), chọn xong bấm "Lọc theo danh mục" trong `<noscript>` → form GET: tắt JavaScript vẫn lọc được như
+ * các nhóm lựa chọn khác (đều là link thật). Trang hydrate xong thì nạp muộn `Select` của shadcn; trong lúc nạp `<select>` gốc
+ * vẫn chọn được.
+ */
+function CategorySelect(props: CategorySelectProps) {
+  const hydrated = useHydrated();
+  if (!hydrated) return <NativeCategorySelect {...props} />;
+  return (
+    <Suspense fallback={<NativeCategorySelect {...props} />}>
+      <CategorySelectMenu {...props} />
+    </Suspense>
+  );
+}
+
 /**
  * FR-SRCH-002 — bảng bộ lọc đa tiêu chí của `/search`: danh mục (`Select`), độ khó (đủ 4 mức, có `Expert`), thời gian nấu tối
  * đa, thời gian chuẩn bị tối đa, khẩu phần tối thiểu (ba tiêu chí sau của CR-2026-05 / MT-66 — lọc ở cơ sở dữ liệu).
@@ -128,10 +184,12 @@ export default function SearchFilterPanel({
         <span id={categoryLabelId} className="text-sm font-medium text-gray-700">
           Danh mục
         </span>
-        <Select
-          name="categoryId"
+        <CategorySelect
+          labelId={categoryLabelId}
+          triggerId={categoryTriggerId}
           value={state.categoryId ?? ALL_CATEGORIES}
-          onValueChange={(value) =>
+          categories={categories}
+          onChange={(value) =>
             onNavigate(
               buildHref(SEARCH_PATHNAME, state, {
                 categoryId: value === ALL_CATEGORIES ? undefined : value,
@@ -139,19 +197,7 @@ export default function SearchFilterPanel({
               }),
             )
           }
-        >
-          <SelectTrigger id={categoryTriggerId} aria-labelledby={categoryLabelId}>
-            <SelectValue placeholder="Tất cả danh mục" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL_CATEGORIES}>Tất cả danh mục</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        />
         <noscript>
           <button
             type="submit"
