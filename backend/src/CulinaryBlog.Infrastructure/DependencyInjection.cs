@@ -112,7 +112,6 @@ public static class DependencyInjection
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<CulinaryBlogDbContext>()
             .AddDefaultTokenProviders();
-
         services.Configure<DataProtectionTokenProviderOptions>(o =>
             o.TokenLifespan = TimeSpan.FromMinutes(
                 configuration.GetValue("Identity:PasswordResetTokenLifespanMinutes", 30)));

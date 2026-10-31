@@ -24,7 +24,7 @@ export default function Providers({ children, nonce }: { children: ReactNode; no
         <Toaster richColors position="top-right" />
         </AuthBootstrap>
       </AuthStoreProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools initialIsOpen={false} styleNonce={nonce} />}
     </QueryClientProvider>
   );
 

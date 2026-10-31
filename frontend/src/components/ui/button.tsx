@@ -47,33 +47,45 @@ function Button({
   asChild = false,
   isLoading = false,
   disabled,
+  type = "button",
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
     isLoading?: boolean
   }) {
-  const Comp = asChild ? Slot.Root : "button"
+  if (asChild) {
+    return (
+      <Slot.Root
+        data-slot="button"
+        data-variant={variant}
+        data-size={size}
+        aria-busy={isLoading || undefined}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      >
+        {children}
+      </Slot.Root>
+    )
+  }
 
-  return (
-    <Comp
-      data-slot="button"
-      data-variant={variant}
-      data-size={size}
-      aria-busy={isLoading || undefined}
-      disabled={disabled || isLoading}
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    >
-      {isLoading && (
-        <span
-          aria-hidden
-          className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-        />
-      )}
-      {props.children}
-    </Comp>
-  )
+  const buttonProps = {
+    "data-slot": "button",
+    "data-variant": variant,
+    "data-size": size,
+    "aria-busy": isLoading || undefined,
+    disabled: disabled || isLoading,
+    className: cn(buttonVariants({ variant, size, className })),
+    ...props,
+  }
+  const content = <>{isLoading && <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}{children}</>
+
+  if (type === "submit") {
+    return <button {...buttonProps} type="submit">{content}</button>
+  }
+
+  return <button {...buttonProps} type="button">{content}</button>
 }
 
 export { Button, buttonVariants }
