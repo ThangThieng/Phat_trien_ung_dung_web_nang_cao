@@ -168,9 +168,10 @@ public sealed class AccountApiTests(CulinaryBlogApiFactory factory) : IAsyncLife
 
         await using var scope = factory.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
+        Assert.False(await db.Users.Where(user => user.Id == target.User.Id).Select(user => user.IsActive).SingleAsync().ConfigureAwait(true));
         Assert.False(await db.RefreshTokens.AnyAsync(token => token.UserId == target.User.Id && token.RevokedAt == null).ConfigureAwait(true));
         Assert.True(await db.RefreshTokens.AnyAsync(token => token.UserId == admin.User.Id && token.RevokedAt == null).ConfigureAwait(true));
-        using var enable = await client.PatchAsJsonAsync($"/api/v1/users/{target.User.Id}/status", new { isActive = true }).ConfigureAwait(true);
+        using var enable = await client.PatchAsJsonAsync($"/api/v1/users/{target.User.Id}/status", new { isActive = true, reason = "Integration test" }).ConfigureAwait(true);
         Assert.Equal(HttpStatusCode.OK, enable.StatusCode);
         using var oldRefresh = await client.PostAsJsonAsync("/api/v1/auth/refresh", new { target.RefreshToken }).ConfigureAwait(true);
         await AssertProblemAsync(oldRefresh, HttpStatusCode.Unauthorized, "AUTH_REFRESH_TOKEN_REVOKED").ConfigureAwait(true);
@@ -203,12 +204,48 @@ public sealed class AccountApiTests(CulinaryBlogApiFactory factory) : IAsyncLife
     {
         using var client = factory.CreateClient();
         var admin = await RegisterAsync(client, admin: true).ConfigureAwait(true);
-        using var self = await client.PatchAsJsonAsync($"/api/v1/users/{admin.User.Id}/status", new { isActive = false }).ConfigureAwait(true);
+        using var self = await client.PatchAsJsonAsync($"/api/v1/users/{admin.User.Id}/status", new { isActive = false, reason = "Self lock request" }).ConfigureAwait(true);
         Assert.Equal(HttpStatusCode.Forbidden, self.StatusCode);
-        using var missing = await client.PatchAsJsonAsync($"/api/v1/users/{Guid.NewGuid()}/status", new { isActive = false }).ConfigureAwait(true);
+        using var missing = await client.PatchAsJsonAsync($"/api/v1/users/{Guid.NewGuid()}/status", new { isActive = false, reason = "Missing user request" }).ConfigureAwait(true);
         await AssertProblemAsync(missing, HttpStatusCode.NotFound, "AUTH_USER_NOT_FOUND").ConfigureAwait(true);
         using var invalid = await client.PatchAsJsonAsync($"/api/v1/users/{admin.User.Id}/status", new { reason = "Missing flag" }).ConfigureAwait(true);
         await AssertProblemAsync(invalid, HttpStatusCode.BadRequest, "VALIDATION_ERROR").ConfigureAwait(true);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData(" abc ")]
+    public async Task AdminStatusRejectsInvalidReason(string? reason)
+    {
+        using var client = factory.CreateClient();
+        var target = await RegisterAsync(client).ConfigureAwait(true);
+        await RegisterAsync(client, admin: true).ConfigureAwait(true);
+        using var response = await client.PatchAsJsonAsync($"/api/v1/users/{target.User.Id}/status", new { isActive = false, reason }).ConfigureAwait(true);
+        await AssertProblemAsync(response, HttpStatusCode.BadRequest, "VALIDATION_ERROR").ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task AdminStatusRejectsReasonLongerThanFiveHundredCharacters()
+    {
+        using var client = factory.CreateClient();
+        var target = await RegisterAsync(client).ConfigureAwait(true);
+        await RegisterAsync(client, admin: true).ConfigureAwait(true);
+        using var response = await client.PatchAsJsonAsync($"/api/v1/users/{target.User.Id}/status", new { isActive = false, reason = new string('x', 501) }).ConfigureAwait(true);
+        await AssertProblemAsync(response, HttpStatusCode.BadRequest, "VALIDATION_ERROR").ConfigureAwait(true);
+    }
+
+    [Theory]
+    [InlineData(" abcde ")]
+    [InlineData("Vi phạm quy định cộng đồng")]
+    public async Task AdminStatusAcceptsReasonFromFiveToFiveHundredCharacters(string reason)
+    {
+        using var client = factory.CreateClient();
+        var target = await RegisterAsync(client).ConfigureAwait(true);
+        await RegisterAsync(client, admin: true).ConfigureAwait(true);
+        using var response = await client.PatchAsJsonAsync($"/api/v1/users/{target.User.Id}/status", new { isActive = false, reason }).ConfigureAwait(true);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Theory]

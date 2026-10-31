@@ -136,7 +136,7 @@ public class AccountEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifet
         var victim = await AuthApi.RegisterAsync(factory.CreateClient());
         var admin = factory.CreateClientAs("Author,Admin", TestDataSeeder.AdminUserId);
 
-        var response = await admin.PatchAsJsonAsync($"/api/v1/users/{victim.User.Id}/status", new { isActive = false, reason = "Spam" });
+        var response = await admin.PatchAsJsonAsync($"/api/v1/users/{victim.User.Id}/status", new { isActive = false, reason = "Spam abuse" });
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var status = await response.ReadAsAsync<UserStatusDto>();
@@ -186,13 +186,13 @@ public class AccountEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifet
     {
         var admin = factory.CreateClientAs("Author,Admin", TestDataSeeder.AdminUserId);
 
-        var self = await admin.PatchAsJsonAsync($"/api/v1/users/{TestDataSeeder.AdminUserId}/status", new { isActive = false });
+        var self = await admin.PatchAsJsonAsync($"/api/v1/users/{TestDataSeeder.AdminUserId}/status", new { isActive = false, reason = "Không được tự khóa" });
         Assert.Equal(HttpStatusCode.Forbidden, self.StatusCode);
 
-        var unknown = await admin.PatchAsJsonAsync($"/api/v1/users/{Guid.NewGuid()}/status", new { isActive = false });
+        var unknown = await admin.PatchAsJsonAsync($"/api/v1/users/{Guid.NewGuid()}/status", new { isActive = false, reason = "Không tìm thấy tài khoản" });
         await unknown.ShouldBeProblemAsync(HttpStatusCode.NotFound, ErrorCodes.AuthUserNotFound);
 
-        var missing = await admin.PatchAsJsonAsync($"/api/v1/users/{TestDataSeeder.AuthorUserId}/status", new { reason = "Quên isActive" });
+        var missing = await admin.PatchAsJsonAsync($"/api/v1/users/{TestDataSeeder.AuthorUserId}/status", new { reason = "Quên trường isActive" });
         await missing.ShouldBeProblemAsync(HttpStatusCode.BadRequest, ErrorCodes.ValidationError);
     }
 

@@ -22,6 +22,20 @@ test('login responds with a nonce CSP and hydrates without CSP violations', asyn
   expect(violations).toEqual([]);
 });
 
+test('auth, public, and guarded Dev1 routes do not emit CSP violations', async ({ page }) => {
+  const violations: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error' && /content security policy/i.test(message.text())) violations.push(message.text());
+  });
+
+  for (const route of ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/dashboard/users', '/profile', '/recipes']) {
+    await page.goto(route);
+    await expect(page.locator('body')).toBeVisible();
+  }
+
+  expect(violations).toEqual([]);
+});
+
 test('a guest dashboard visit keeps the encoded internal callback', async ({ page }) => {
   await page.goto('/dashboard');
   await expect(page).toHaveURL(/\/auth\/login\?callbackUrl=%2Fdashboard$/);
