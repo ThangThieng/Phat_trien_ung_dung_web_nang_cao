@@ -713,7 +713,7 @@ Lab 7/8 giao lại tính năng nào đã có thì buổi đó **nâng cấp lên
 - **Xong khi:** kiểm thử đồng thời thu hồi phiên xanh.
 - **Commit:** `feat(auth): harden session revocation concurrency and auth contracts`
 
-### Dev 1 – Hoàng Bình Quân · Lab 5: CORS, rate limit, API versioning
+### Dev 1 – Hoàng Bình Quân · Lab 5: CORS, rate limit, API versioning (đã hoàn thành)
 - **Hướng đi:**
   1. **CORS** (`CorsExtensions`):
      - named policy, danh sách origin đọc từ cấu hình, **kiểm lúc khởi động** (`*` hoặc sai định dạng → không chạy);
