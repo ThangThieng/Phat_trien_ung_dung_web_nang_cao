@@ -7,14 +7,13 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { toast } from 'sonner';
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -70,7 +69,7 @@ function UsersPageContent() {
     {users.isError && <p role="alert" className="mt-6 text-red-700">{getErrorMessage(users.error)}</p>}
     {users.isPending ? <p className="mt-6">Đang tải danh sách…</p> : <div className="mt-6 rounded-xl border border-gray-200"><Table className="text-left"><TableCaption className="sr-only">Danh sách người dùng</TableCaption><TableHeader className="bg-gray-50"><TableRow><TableHead className="p-3">Người dùng</TableHead><TableHead className="p-3">Vai trò</TableHead><TableHead className="p-3">Trạng thái</TableHead><TableHead className="p-3">Ngày tạo</TableHead><TableHead className="p-3">Công thức</TableHead><TableHead className="p-3">Thao tác</TableHead></TableRow></TableHeader><TableBody>{result?.items.map((item) => <TableRow key={item.id}><TableCell className="p-3"><div className="flex items-center gap-3">{item.avatarUrl ? <><span className="sr-only">Ảnh đại diện của {item.displayName}</span><img src={item.avatarUrl} alt="" className="h-9 w-9 rounded-full object-cover" /></> : <span aria-label={`Ảnh đại diện mặc định của ${item.displayName}`} className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-100 font-semibold text-orange-800">{item.displayName.slice(0, 1).toLocaleUpperCase('vi')}</span>}<div><p className="font-medium">{item.displayName}</p><p className="text-gray-600">{item.email}</p></div></div></TableCell><TableCell className="p-3">{item.roles.join(', ')}</TableCell><TableCell className="p-3">{item.isActive ? 'Đang hoạt động' : 'Đã khóa'}</TableCell><TableCell className="p-3">{new Date(item.createdAt).toLocaleDateString('vi-VN')}</TableCell><TableCell className="p-3">{item.recipeCount}</TableCell><TableCell className="p-3">{item.id !== user?.id && <button type="button" onClick={() => setTarget(item)} className="rounded-md border px-3 py-1 text-orange-700">{item.isActive ? 'Khóa' : 'Mở khóa'}</button>}</TableCell></TableRow>)}</TableBody></Table></div>}
     {result && <Pagination page={result.page} totalPages={result.totalPages} hasNextPage={result.hasNextPage} hasPreviousPage={result.hasPreviousPage} buildHref={(nextPage) => { const query = new URLSearchParams({ page: String(nextPage), pageSize: String(PAGE_SIZE) }); if (search) query.set('search', search); if (isActive !== undefined) query.set('isActive', String(isActive)); return `?${query.toString()}`; }} />}
-    <AlertDialog open={target !== null} onOpenChange={(open) => { if (!open) setTarget(null); }}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>{target?.isActive ? 'Khóa' : 'Mở khóa'} {target?.displayName}?</AlertDialogTitle><AlertDialogDescription>Nhập lý do để xác nhận thay đổi trạng thái tài khoản.</AlertDialogDescription></AlertDialogHeader><span id="status-reason-label" className="text-sm font-medium">Lý do</span><Textarea id="status-reason" aria-labelledby="status-reason-label" value={reason} onChange={(event) => setReason(event.target.value)} minLength={5} maxLength={500} /><AlertDialogFooter><AlertDialogCancel>Hủy</AlertDialogCancel><AlertDialogAction disabled={!canSubmit || target === null} onClick={(event) => { event.preventDefault(); if (target) mutation.mutate({ targetUser: target, active: !target.isActive, actionReason: reason.trim() }); }}>Xác nhận</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+    <AlertDialog open={target !== null} onOpenChange={(open) => { if (!open && !mutation.isPending) { setTarget(null); setReason(''); } }}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>{target?.isActive ? 'Khóa' : 'Mở khóa'} {target?.displayName}?</AlertDialogTitle><AlertDialogDescription>Nhập lý do để xác nhận thay đổi trạng thái tài khoản.</AlertDialogDescription></AlertDialogHeader><span id="status-reason-label" className="text-sm font-medium">Lý do</span><Textarea id="status-reason" aria-labelledby="status-reason-label" value={reason} onChange={(event) => setReason(event.target.value)} minLength={5} maxLength={500} /><AlertDialogFooter><Button type="button" variant="outline" onClick={() => { setTarget(null); setReason(''); }} disabled={mutation.isPending}>Hủy</Button><Button type="button" disabled={!canSubmit || target === null} onClick={() => { if (!target) return; mutation.mutate({ targetUser: target, active: !target.isActive, actionReason: reason.trim() }); }}>Xác nhận</Button></AlertDialogFooter></AlertDialogContent></AlertDialog>
   </section>;
 }
 
