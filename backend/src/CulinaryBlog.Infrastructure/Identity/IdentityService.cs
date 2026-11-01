@@ -129,8 +129,12 @@ public sealed class IdentityService(
             // A3: tăng AccessFailedCount – đạt 5 lần thì Identity tự đặt LockoutEnd = now + 15 phút
             await userManager.AccessFailedAsync(user).ConfigureAwait(false);
 
-            return await userManager.IsLockedOutAsync(user).ConfigureAwait(false)
-                ? new PasswordCheckResult(PasswordCheckStatus.LockedOut, null, user.LockoutEnd)
+            // AccessFailedAsync persists through the Identity store. Re-read the user before reporting the
+            // threshold-crossing attempt so the API observes the newly persisted LockoutEnd consistently.
+            var updatedUser = await userManager.FindByIdAsync(user.Id).ConfigureAwait(false);
+
+            return updatedUser is not null && await userManager.IsLockedOutAsync(updatedUser).ConfigureAwait(false)
+                ? new PasswordCheckResult(PasswordCheckStatus.LockedOut, null, updatedUser.LockoutEnd)
                 : new PasswordCheckResult(PasswordCheckStatus.InvalidCredentials, null, null);
         }
 

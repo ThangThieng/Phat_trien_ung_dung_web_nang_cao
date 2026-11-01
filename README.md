@@ -1124,7 +1124,7 @@ Không đưa dữ liệu server vào Zustand.
 
 **Đầu buổi:** Thiêng dựng môi trường giống production để cả nhóm chạy E2E.
 
-### Dev 1 – Hoàng Bình Quân · Trang quản lý người dùng (`GET /users` đã có từ Buổi 4) + E2E xác thực & kiểm thử bảo mật
+### Dev 1 – Hoàng Bình Quân · Trang quản lý người dùng (`GET /users` đã có từ Buổi 4) + E2E xác thực & kiểm thử bảo mật (đã hoàn thành)
 - **Hướng đi:**
   1. **`GET /api/v1/users`** (Buổi 4) giữ chỉ Admin; đo `EXPLAIN ANALYZE` tìm kiếm trên 10.000 người dùng — chậm mới thêm index trigram `B8_Auth_UserSearchTrgm`.
   2. **`/dashboard/users`** (`RequireRole Admin`):
