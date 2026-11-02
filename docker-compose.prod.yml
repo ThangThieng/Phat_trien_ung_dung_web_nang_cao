@@ -1,0 +1,235 @@
+# Culinary Blog – Production stack (Buổi 7 — NFR-SEC-005, NFR-SCALE-003, NFR-PERF-005, retrofit D-14 phía Nginx, D-17)
+#
+# Khác bản dev (docker-compose.yml):
+#   - Nginx: cổng 80 chỉ trả 301 sang HTTPS; cổng 443 TLS 1.2/1.3 + HSTS (nginx/prod/*); ảnh qua /media/.
+#   - api: KHÔNG mở cổng ra máy chủ (ba container không thể cùng bind một cổng) và chạy 3 bản sao; Nginx phân giải tên "api"
+#     động nên luân phiên giữa các bản sao và tự nhận bản sao mới trong ≤ 10 giây (MT-50).
+#   - migrate: một container chạy migration (+ seed khi SEED_ENABLED=true) rồi thoát; api/hangfire chỉ khởi động sau khi nó
+#     thành công — ba bản sao api không cùng lúc áp migration hay chèn dữ liệu mẫu.
+#   - hangfire: 1 bản sao (scale riêng khi cần — MT-47). Không có seq, mailhog. OpenAPI/Scalar tắt.
+#   - PostgreSQL, Redis, MinIO không mở cổng ra máy chủ (chỉ mạng nội bộ) — ảnh đi qua Nginx /media/.
+#   - DataProtection mã hóa khóa bằng chứng chỉ (D-17), khóa nằm ở volume riêng dpkeys-prod.
+#
+# Chuẩn bị (một lần):
+#   cp .env.production.example .env.production  &&  chmod 600 .env.production   # điền giá trị thật (NFR-SEC-007)
+#   ./nginx/generate-ssl-cert.sh                  # ./ssl/: chứng chỉ TLS + dataprotection.pfx (Windows: .ps1)
+#   ENV_FILE=.env.production ./nginx/generate-htpasswd.sh
+# Chạy (cùng project "culinaryblog" và cùng volume dữ liệu với bản dev — dừng bản dev trước):
+#   docker compose --profile dev down
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+# Quay về bản dev:
+#   docker compose -f docker-compose.prod.yml --env-file .env.production down  &&  docker compose --profile dev up -d --build
+#
+# Biến được thay từ --env-file .env.production. Thiếu DATAPROTECTION_CERT_PASSWORD (chỉ có trong file production) thì Compose
+# dừng ngay — chặn trường hợp quên --env-file và Compose lặng lẽ lấy bí mật của bản dev trong .env.
+
+name: culinaryblog
+
+x-api-env: &api-env
+  ASPNETCORE_ENVIRONMENT: Production
+  ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:?};Username=${POSTGRES_USER:?};Password=${POSTGRES_PASSWORD:?};GSS Encryption Mode=Disable
+  ConnectionStrings__Redis: redis:6379
+  Jwt__SigningKey: ${JWT_SIGNING_KEY:?}
+  Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID:-}
+  Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET:-}
+  MinIO__Endpoint: http://minio:9000
+  MinIO__PublicBaseUrl: ${MEDIA_PUBLIC_URL:?}
+  MinIO__AccessKey: ${MINIO_ROOT_USER:?}
+  MinIO__SecretKey: ${MINIO_ROOT_PASSWORD:?}
+  MinIO__BucketName: culinary-blog
+  Smtp__Host: ${SMTP_HOST:?}
+  Smtp__Port: ${SMTP_PORT:-587}
+  Smtp__UseSsl: ${SMTP_USE_SSL:-true}
+  Smtp__Username: ${SMTP_USERNAME:-}
+  Smtp__Password: ${SMTP_PASSWORD:-}
+  Smtp__SiteUrl: ${SITE_URL:?}
+  Cors__AllowedOrigins__0: ${SITE_URL:?}
+  OpenApi__Enabled: "false"
+  # D-17: khóa DataProtection trên volume được mã hóa bằng chứng chỉ này (api và hangfire phải dùng CÙNG chứng chỉ).
+  DataProtection__CertificatePath: /run/secrets/dataprotection.pfx
+  DataProtection__CertificatePassword: ${DATAPROTECTION_CERT_PASSWORD:?Thiếu DATAPROTECTION_CERT_PASSWORD - chạy với --env-file .env.production}
+
+x-api-volumes: &api-volumes
+  - dpkeys-prod:/home/app/dpkeys
+  - type: bind
+    source: ./ssl/dataprotection.pfx
+    target: /run/secrets/dataprotection.pfx
+    read_only: true
+    bind:
+      create_host_path: false
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+      NGINX_ENVSUBST_FILTER: "^HANGFIRE_"
+      HANGFIRE_GATE_SECRET: ${HANGFIRE_GATE_SECRET:?}
+    volumes:
+      # Snippet dùng chung với bản dev; hai file của production đè lên file chính và file header theo môi trường (HSTS).
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/prod/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
+      - ./nginx/prod/environment-headers.conf.template:/etc/nginx/templates/snippets/environment-headers.conf.template:ro
+      # File bí mật (không commit): thiếu thì báo lỗi, KHÔNG để Docker tự tạo thư mục rỗng trùng tên.
+      - type: bind
+        source: ./nginx/.htpasswd
+        target: /etc/nginx/.htpasswd
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./ssl/fullchain.pem
+        target: /etc/nginx/ssl/fullchain.pem
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./ssl/privkey.pem
+        target: /etc/nginx/ssl/privkey.pem
+        read_only: true
+        bind:
+          create_host_path: false
+    depends_on:
+      api: { condition: service_healthy }
+      frontend: { condition: service_started }
+    restart: unless-stopped
+
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: culinaryblog-api
+    environment:
+      <<: *api-env
+      Database__MigrateOnly: "true"
+      Hangfire__ServerEnabled: "false"
+      Hangfire__RegisterRecurringJobs: "false"
+      # Dữ liệu mẫu (CR-2026-03) chỉ khi triển khai mới cần trình diễn; production thật để false.
+      Seed__Enabled: ${SEED_ENABLED:-false}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
+      Seed__AuthorPassword: ${SEED_AUTHOR_PASSWORD:-}
+    volumes: *api-volumes
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: "no"
+
+  api:
+    image: culinaryblog-api
+    # NFR-SCALE-003: không có khối "ports" — chỉ Nginx gọi tới qua mạng nội bộ.
+    deploy:
+      replicas: 3
+    environment:
+      <<: *api-env
+      Hangfire__WorkerOnly: "false"
+      Hangfire__ServerEnabled: "false"
+      Hangfire__DashboardGateSecret: ${HANGFIRE_GATE_SECRET:?}
+      Database__MigrateOnStartup: "false"
+    volumes: *api-volumes
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      minio: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  hangfire:
+    image: culinaryblog-api
+    deploy:
+      replicas: 1
+    environment:
+      <<: *api-env
+      Hangfire__WorkerOnly: "true"
+    volumes: *api-volumes
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-/api/v1}
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL:?}
+        NEXT_PUBLIC_MINIO_PUBLIC_URL: ${MEDIA_PUBLIC_URL:?}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+    image: culinaryblog-web
+    environment:
+      API_INTERNAL_BASE_URL: http://api:8080/api/v1
+      AUTH_SECRET: ${AUTH_SECRET:-}
+      AUTH_GOOGLE_ID: ${GOOGLE_CLIENT_ID:-}
+      AUTH_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      AUTH_TRUST_HOST: "true"
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?}
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?}
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:
+  # D-17: khóa DataProtection của production tách khỏi volume "dpkeys" của bản dev — khóa mỗi môi trường một bộ, và mọi khóa
+  # trong volume này đều được mã hóa từ đầu (khóa cũ dạng rõ của bản dev không bị mang sang).
+  dpkeys-prod:

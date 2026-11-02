@@ -40,3 +40,15 @@ export const loginSchema = z.object({
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().min(1, 'Email không được để trống.').email('Email không đúng định dạng.'),
+});
+
+export const resetPasswordSchema = z.object({
+  newPassword: registerSchema.shape.password,
+  confirmPassword: z.string(),
+}).refine((value) => value.newPassword === value.confirmPassword, { path: ['confirmPassword'], message: 'Mật khẩu xác nhận không khớp.' });
+
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

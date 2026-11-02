@@ -10,22 +10,28 @@ import HighlightText from './HighlightText';
  * Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001).
  * `primaryImageUrl` là ảnh thu nhỏ do FR-JOB-002 sinh, hoặc ảnh gốc khi job chưa chạy xong — API đã chọn sẵn.
  * `terms` (tùy chọn): từ khóa tìm kiếm đã bỏ dấu để tô sáng trong tiêu đề và mô tả (FR-SRCH-001).
+ * `prefetch` (tùy chọn, Buổi 7): `false` ở lưới kết quả `/search` — mỗi lần đổi bộ lọc là một lứa thẻ mới, để mặc định thì
+ * Next.js tải trước trang chi tiết của từng thẻ vừa hiện (đo: tới 12 request RSC cho một lần lọc). Không truyền = mặc định của
+ * Next.js như trước.
  * `priority` (tùy chọn): chỉ đặt cho thẻ đầu tiên ở đầu trang — ảnh của nó thường là phần tử LCP, nên tải trước
  * (`fetchpriority="high"`); các thẻ còn lại giữ `loading="lazy"` mặc định của `next/image` (NFR-PERF-005).
  */
 export default function RecipeCard({
   recipe,
   terms,
+  prefetch,
   priority = false,
 }: {
   recipe: RecipeSummary;
   terms?: readonly string[];
+  prefetch?: boolean;
   priority?: boolean;
 }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <Link
         href={`/recipes/${recipe.slug}`}
+        prefetch={prefetch}
         className="flex flex-1 flex-col focus-visible:outline-none"
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50">
@@ -33,11 +39,12 @@ export default function RecipeCard({
             <Image
               src={recipe.primaryImageUrl}
               alt={recipe.title}
-              fill
+              width={800}
+              height={600}
               unoptimized={IMAGE_UNOPTIMIZED}
               priority={priority}
               sizes={GRID_IMAGE_SIZES}
-              className="object-cover transition group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-105"
             />
           ) : (
             <span

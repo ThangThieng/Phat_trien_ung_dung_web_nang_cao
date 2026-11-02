@@ -1,0 +1,60 @@
+# Phần cấp "http" dùng chung cho bản dev (nginx/templates/nginx.conf.template) và production
+# (nginx/prod/nginx.conf.template). Là template để entrypoint của nginx:alpine chép sang /etc/nginx/snippets/ (chỉ file
+# *.template được xử lý); file này không có biến nào cần thay.
+
+include       /etc/nginx/mime.types;
+default_type  application/octet-stream;
+sendfile      on;
+keepalive_timeout 65;
+server_tokens off;
+
+# NFR-PERF-005: nén text/JSON/JS/CSS. gzip_proxied any: nén cả phản hồi từ upstream; gzip_vary: báo cache trung gian
+# rằng nội dung đổi theo Accept-Encoding.
+gzip on;
+gzip_vary on;
+gzip_proxied any;
+gzip_comp_level 5;
+gzip_min_length 1024;
+gzip_types text/plain text/css text/xml text/javascript application/javascript application/json
+           application/problem+json application/xml application/rss+xml application/manifest+json image/svg+xml;
+
+# CONS-007 giới hạn FILE ảnh 5MB – kiểm tra chính xác ở API (400 FILE_SIZE_EXCEEDED).
+# Body multipart = file + boundary/header, nên để 5m thì ảnh hợp lệ gần 5MB bị Nginx chặn 413 dạng HTML.
+# 10m khớp RequestSizeLimit của endpoint /files/upload (FilesEndpoints.MaxRequestBodyBytes).
+client_max_body_size 10m;
+
+# Nginx "rate limiting basic" (SRS §6.1) – lớp phòng thủ ngoài cùng
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=100r/m;
+
+# NFR-SEC-003 khi chạy nhiều bản sao api (Buổi 7): rate limiter của ASP.NET Core đếm trong bộ nhớ TỪNG bản sao, nên với 3 bản
+# sao hạn mức /auth/* 10/phút/IP thành ~30 (đo 21/10/2026: đăng nhập sai tới lần thứ 23 mới gặp 429). Nginx là điểm vào duy nhất
+# nên đếm ở đây đúng cho cả cụm, bất kể bao nhiêu bản sao; middleware của API giữ nguyên làm lớp thứ hai.
+# Thuật toán của Nginx là leaky bucket: lâu dài đúng 10/phút (auth) và 5/phút (upload); burst cho phép một loạt request liền
+# nhau hợp lệ (đăng nhập → /auth/me → /auth/refresh) mà không bị chặn.
+limit_req_zone $binary_remote_addr zone=auth_limit:10m rate=10r/m;
+# Upload chỉ tính POST (PATCH/DELETE ảnh không phải tải lên).
+map $request_method $upload_limit_key {
+    POST    $binary_remote_addr;
+    default "";
+}
+limit_req_zone $upload_limit_key zone=upload_limit:10m rate=5r/m;
+
+# DNS nội bộ Docker: phân giải lại tên service mỗi 10s. Nếu dùng "upstream { server api:8080; }"
+# Nginx chỉ phân giải một lần lúc khởi động → container api/frontend được tạo lại (đổi IP) sẽ gây 502 (MT-50).
+# Với --scale api=3, Docker DNS trả về mọi bản sao và Nginx tự luân phiên; bản sao mới được nhận trong ≤ 10 giây.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+# Kết nối tới container trong mạng Docker mất < 1 ms. Khi một bản sao api vừa bị gỡ (tools/deploy/rolling-update-api.sh), Nginx có
+# thể còn giữ IP cũ trong ≤ 10 giây (valid=10s); SYN tới IP không còn tồn tại bị bỏ lặng lẽ nên kết nối TREO tới hết
+# proxy_connect_timeout — mặc định 60 giây (đo 21/10/2026: ab 10 kết nối đồng thời gặp request treo > 15 giây). 2 giây: bỏ
+# địa chỉ chết nhanh rồi proxy_next_upstream chuyển sang bản sao còn sống.
+proxy_connect_timeout 2s;
+
+map $http_x_correlation_id $correlation_id {
+    default $http_x_correlation_id;
+    ""      $request_id;
+}
+
+# D-14 (Buổi 7): cache ảnh của /media/ ngay tại Nginx — mỗi ảnh chỉ đọc từ MinIO một lần trong 30 ngày. Tên object do server
+# sinh ({folder}/{Guid}{ext} — FR-FILE-001) nên nội dung của một URL không bao giờ đổi.
+proxy_cache_path /var/cache/nginx/media levels=1:2 keys_zone=media:10m max_size=1g inactive=30d use_temp_path=off;

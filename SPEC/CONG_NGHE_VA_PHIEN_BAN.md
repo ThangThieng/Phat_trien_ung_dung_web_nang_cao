@@ -126,6 +126,10 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | sonner | 2.0.8 | Toast notification (NFR-USE-004) | ➕ |
 | clsx / tailwind-merge | 2.1.1 / 3.6.0 | Gộp className Tailwind | ➕ |
 | lucide-react | 1.44.0 | Icon | ➕ |
+| shadcn/ui (CLI) | 4.21.4 | Chép component Tailwind vào `components/ui/` | ➕ *(cài ở Buổi 6 – Dev 2; không phải phụ thuộc runtime)* |
+| radix-ui | 1.8.1 | Hành vi và accessibility của component shadcn | ➕ *(cài ở Buổi 6 – Dev 2)* |
+| class-variance-authority | 0.7.1 | Biến thể (variant) của component shadcn | ➕ *(cài ở Buổi 6 – Dev 2)* |
+| tw-animate-css | 1.4.0 | Hiệu ứng mở/đóng component shadcn trên Tailwind v4 | ➕ *(cài ở Buổi 6 – Dev 2)* |
 
 > **Đã gỡ ở Buổi 5 (Dev 4):** `next-auth` 5.0.0-beta.32 (Auth.js v5, cài ở Buổi 2 theo SRS v1.0.0). SRS v1.1.0 (MT-11) đã thay luồng này bằng Google Identity Services (`@react-oauth/google`, Buổi 3); trước khi gỡ, `git grep next-auth frontend/src` = 0 chỗ dùng (xem 6.12).
 
@@ -156,10 +160,6 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 
 | Gói thư viện | Phiên bản (12/10/2026) | Dùng cho | Buổi — Dev | Trạng thái |
 |---|---|---|---|---|
-| `shadcn` (CLI, không phải phụ thuộc runtime) | 4.21.4 | Chép component vào `components/ui/` | B6 (Dev 2) | ➕ |
-| `radix-ui` | 1.8.0 | Hành vi & accessibility của component shadcn (Dialog, DropdownMenu, Select, Tabs…) | B6 (Dev 2, cài qua CLI) | ➕ |
-| `class-variance-authority` | 0.7.1 | Biến thể (variant) của component shadcn | B6 (Dev 2, cài qua CLI) | ➕ |
-| `tw-animate-css` | 1.4.0 | Hiệu ứng mở/đóng của component shadcn trên Tailwind v4 | B6 (Dev 2, cài qua CLI) | ➕ |
 | `Asp.Versioning.Http` | 10.2.3 | API versioning theo URL `/api/v{version}` cho Minimal APIs | B5 (Dev 1) | ➕ |
 | `Asp.Versioning.OpenApi` | 10.2.3 | Tài liệu OpenAPI theo phiên bản cho Scalar `/scalar/v1` | B5 (Dev 1, Dev 2) | ➕ |
 | k6 (công cụ, chạy bằng Docker image `grafana/k6`, không phải gói npm) | ghim tag khi chạy | Load test (NFR-PERF-001/002) | B8 (Dev 4) | ✅ (SRS NFR-PERF-001/002 chỉ định *"k6 smoke test → load test → stress test"*) |
@@ -219,6 +219,12 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
   | GHSA-j3p4-wp97-rph4 (cao) | `HistogramEqualization` | Không gọi ở đâu |
   | GHSA-wmxv-xphr-5c9g (trung bình) | Decoder BigTIFF lặp vô hạn | `ImageResizeJob` chỉ nạp decoder JPEG/PNG/WebP; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` thay object gốc trên MinIO bằng TIFF hợp lệ → job không giải mã (bỏ giới hạn thì test đỏ — đã thử) |
   | GHSA-gwg2-r3hj-4w44 (trung bình) | Đọc CLUT trong ICC profile | Quét IL của 3.1.12: chỉ `IccWriter.Write` → `IccProfile.Entries` mới đọc CLUT, và `IccProfile.ToByteArray()` chỉ gọi `IccWriter.Write` khi profile được dựng bằng code; profile đọc từ ảnh (`new IccProfile(byte[])`) được sao chép nguyên byte. Vì vậy không cần `SkipMetadata` — giữ EXIF orientation của ảnh chụp bằng điện thoại |
+
+  **Bổ sung 28/10/2026 (Buổi 8):** NuGet audit báo thêm **GHSA-v76p-62qx-wwq2** (cao, công bố 07/10/2026) — làm đỏ build của mọi nhánh, kể cả `develop`. Bản vá: 3.2.0 (chưa phát hành trên NuGet) hoặc 4.1.1+ (đòi license key). Xử lý như 5 advisory trên: miễn trừ đúng mã này, kèm bằng chứng.
+
+  | Advisory | Chỗ lỗi | Vì sao không chạm tới |
+  |---|---|---|
+  | GHSA-v76p-62qx-wwq2 (cao) | Decoder TIFF: ảnh chia tile nén fax (T4/T6/MH) ghi tràn bộ đệm của tile | Backend chỉ có **một** chỗ giải mã ảnh (`ImageResizeJob`), dùng cấu hình chỉ JPEG/PNG/WebP. Test `Job_DecodesOnlyJpegPngAndWebp` khẳng định danh sách định dạng giải mã được; test `Run_WhenOriginalIsReplacedByTiff_DoesNotDecodeIt_AndKeepsOriginal` khẳng định TIFF thật không được giải mã |
 
   Gỡ khối miễn trừ khi chuyển sang một bản đã vá.
 

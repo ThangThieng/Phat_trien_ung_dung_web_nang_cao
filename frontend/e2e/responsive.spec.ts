@@ -8,11 +8,15 @@ for (const viewport of VIEWPORTS) {
   test(`${viewport.name}px: không cuộn ngang, đủ landmark, một h1`, async ({ page, request }) => {
     test.setTimeout(120_000);
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
-    const routes = PUBLIC_ROUTES(await discoverRoutes(request)).filter((r) => !r.startsWith('/auth/'));
+    const routes = PUBLIC_ROUTES(await discoverRoutes(request)).filter(
+      (r) => !r.startsWith('/auth/'),
+    );
     for (const route of routes) {
       await test.step(route, async () => {
         await page.goto(route, { waitUntil: 'networkidle' });
-        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - window.innerWidth,
+        );
         expect(overflow, 'cuộn ngang (px)').toBeLessThanOrEqual(0);
         await expect(page.locator('header').first()).toBeVisible();
         await expect(page.locator('main')).toHaveCount(1);
@@ -23,7 +27,9 @@ for (const viewport of VIEWPORTS) {
   });
 }
 
-test('lưới công thức trang chủ: 1 cột ở 320, 2 cột ở 768, 2 cột ở 1200 (còn cột phụ danh mục), 3 cột ở ≥ 1280', async ({ page }) => {
+test('lưới công thức trang chủ: 1 cột ở 320, 2 cột ở 768, 2 cột ở 1200 (còn cột phụ danh mục), 3 cột ở ≥ 1280', async ({
+  page,
+}) => {
   const columns = async () =>
     page.evaluate(() => {
       const cards = [...document.querySelectorAll('main article')] as HTMLElement[];
@@ -56,4 +62,36 @@ test('bộ lọc /recipes dạng Sheet dùng được bằng bàn phím ở 320 
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   await expect(open).toBeFocused();
+});
+
+// CSP production chặn thuộc tính `style` trong HTML: ảnh `next/image fill` (dựa vào style="position:absolute") rơi về static,
+// cao ~24 px. Ảnh phải phủ kín khung ở mọi breakpoint — xem ghi chú ở `lib/images.ts`.
+test('ảnh lấp đầy khung (thẻ công thức, ảnh chính trang chi tiết) dưới CSP production', async ({
+  page,
+  request,
+}) => {
+  const found = await discoverRoutes(request);
+  for (const route of ['/', '/recipes', found.recipe]) {
+    await test.step(route, async () => {
+      await page.goto(route, { waitUntil: 'networkidle' });
+      const images = page.locator('main img[src*="/_next/image"], main img[srcset]');
+      const count = await images.count();
+      test.skip(count === 0, 'Dữ liệu không có ảnh');
+      const sizes = await images.evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const img = node.getBoundingClientRect();
+          const box = (node.parentElement as HTMLElement).getBoundingClientRect();
+          return {
+            imgH: Math.round(img.height),
+            boxH: Math.round(box.height),
+            position: getComputedStyle(node).position,
+          };
+        }),
+      );
+      for (const s of sizes) {
+        expect(s.position).toBe('absolute');
+        expect(Math.abs(s.imgH - s.boxH)).toBeLessThanOrEqual(1);
+      }
+    });
+  }
 });

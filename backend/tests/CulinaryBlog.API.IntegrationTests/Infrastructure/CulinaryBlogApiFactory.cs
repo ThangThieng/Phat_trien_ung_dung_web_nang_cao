@@ -5,7 +5,9 @@ using Amazon.S3.Model;
 using Amazon.S3.Util;
 using CulinaryBlog.API.IntegrationTests.Infrastructure.Fakes;
 using CulinaryBlog.Application.Features.Auth;
+using CulinaryBlog.Infrastructure.Email;
 using CulinaryBlog.Infrastructure.Persistence;
+using DotNet.Testcontainers.Containers;
 using Hangfire;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -70,8 +72,16 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
     /// <summary>Ghi lại mọi lời gọi Hangfire mà không cần BackgroundJobServer chạy.</summary>
     public FakeBackgroundJobClient BackgroundJobs { get; } = new();
 
+    public FakeEmailService Emails { get; } = new();
+
     /// <summary>Buổi 4: Google ID token giả cho FR-AUTH-003 (không gọi Google thật).</summary>
     public FakeGoogleIdTokenValidator GoogleTokens { get; } = new();
+
+    /// <summary>
+    /// Buổi 7: chạy lệnh trong container PostgreSQL của bộ test (pg_dump/psql có sẵn trong image) — kiểm chứng sao lưu/khôi phục
+    /// trên đúng schema mà migration sinh ra.
+    /// </summary>
+    public Task<ExecResult> ExecInPostgresAsync(IList<string> command) => _postgres.ExecAsync(command);
 
     /// <summary>Endpoint S3 của container MinIO (dùng cho cả cấu hình app lẫn kiểm chứng trực tiếp trong test).</summary>
     public string MinioEndpoint => $"http://{_minio.Hostname}:{_minio.GetMappedPublicPort(9000)}";
@@ -113,6 +123,7 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
 
         await _respawner.ResetAsync(_respawnConnection).ConfigureAwait(false);
         BackgroundJobs.Clear();
+        Emails.Clear();
 
         // Buổi 4 (D-6): endpoint công khai nay cache Redis cache-aside. Dữ liệu DB vừa được làm mới thì cache cũng phải sạch,
         // nếu không một response của lớp test trước (TTL 1–60 phút) sẽ được trả cho lớp test sau.
@@ -212,6 +223,8 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
             // "endpoint CÓ enqueue đúng job" — bản thân WelcomeEmailJob đã chạy thật từ Buổi 2.
             services.RemoveAll<IBackgroundJobClient>();
             services.AddSingleton<IBackgroundJobClient>(BackgroundJobs);
+            services.RemoveAll<IEmailService>();
+            services.AddSingleton<IEmailService>(Emails);
 
             // Buổi 3: middleware chỉ có trong test, ném từng loại lỗi để kiểm hợp đồng Problem Details.
             services.AddTransient<IStartupFilter, ErrorTriggerStartupFilter>();

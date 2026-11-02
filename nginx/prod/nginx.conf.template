@@ -1,0 +1,42 @@
+# Production reverse proxy (Buổi 7 — NFR-SEC-005): mọi traffic qua HTTPS. docker-compose.prod.yml mount file này đè lên
+# templates/nginx.conf.template của bản dev; hai snippet dùng chung (http-common, app-locations) giữ nguyên.
+#
+# Chứng chỉ nằm ở ./ssl/ (không commit — .gitignore + gitleaks): ./nginx/generate-ssl-cert.sh sinh chứng chỉ tự ký cho
+# localhost để chạy thử; production thật thay fullchain.pem/privkey.pem bằng chứng chỉ của CA (ví dụ Let's Encrypt).
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/snippets/http-common.conf;
+
+    # Cổng 80 chỉ còn một việc: chuyển sang HTTPS (301 — trình duyệt và crawler nhớ địa chỉ mới).
+    server {
+        listen 80 default_server;
+        server_name _;
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 443 ssl default_server;
+        http2 on;
+        server_name _;
+
+        ssl_certificate     /etc/nginx/ssl/fullchain.pem;
+        ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+        # TLS 1.2+ (NFR-SEC-005): TLS 1.0/1.1 đã bị IETF loại bỏ (RFC 8996). Bộ cipher mặc định của OpenSSL 3 cho TLS 1.2
+        # đều là AEAD/forward secrecy; để trình duyệt chọn (ssl_prefer_server_ciphers off) theo khuyến nghị hiện hành.
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers off;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 1d;
+        ssl_session_tickets off;
+
+        include /etc/nginx/snippets/app-locations.conf;
+    }
+}

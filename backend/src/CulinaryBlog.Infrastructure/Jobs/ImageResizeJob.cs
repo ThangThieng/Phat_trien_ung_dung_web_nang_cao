@@ -44,6 +44,13 @@ public sealed partial class ImageResizeJob(
         Configuration = new Configuration(new JpegConfigurationModule(), new PngConfigurationModule(), new WebpConfigurationModule()),
     };
 
+    /// <summary>
+    /// Định dạng job giải mã được — chỉ JPEG/PNG/WebP. Là bằng chứng cho mọi miễn trừ advisory TIFF trong Directory.Build.props
+    /// (BigTIFF, tile nén fax GHSA-v76p-62qx-wwq2…): decoder TIFF không có trong cấu hình nên không đường nào tới được code lỗi.
+    /// </summary>
+    public static IReadOnlyCollection<string> DecodableFormats { get; } =
+        [.. UploadFormatsOnly.Configuration.ImageFormats.Select(f => f.Name).Order(StringComparer.Ordinal)];
+
     [AutomaticRetry(Attempts = 3)]
     public async Task ExecuteAsync(Guid imageId, CancellationToken cancellationToken)
     {

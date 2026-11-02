@@ -31,6 +31,17 @@ Kế hoạch dự đoán "phần lớn đã đúng từ Buổi 6 — buổi này
 | 4 | **`prefers-reduced-motion` không được tôn trọng**: tồn tại animation 2000 ms (skeleton/xoay). | WCAG 2.3.3 | Khối `@media (prefers-reduced-motion: reduce)` trong `globals.css`. Có kiểm thử đo `transition/animation-duration` ≤ 10 ms. |
 | 5 | `<title>` của trang công thức bị **lặp hậu tố** ("… \| Culinary Blog \| Culinary Blog") nếu `buildRecipeMetadata` tự thêm hậu tố, vì root layout đã có `template`. | SEO (không phải a11y) | `title: { absolute }` — ghi ở `seo-report.md`. |
 
+
+### 3b. Sau khi hợp nhất `develop` (03/11/2026)
+
+| # | Phát hiện | Cách xử lý |
+|---|---|---|
+| 1 | **Ảnh vỡ dưới CSP production.** `style-src` không có `'unsafe-inline'` (thay đổi của `develop`) chặn thuộc tính `style` mà `next/image fill` dựa vào → ảnh `position: static`, cao ~24 px trên mọi trang có ảnh. | Bỏ `fill` ở `RecipeCard`, `CategoryCard`, `RecipeGallery`, `RecipeLightbox`; dùng `width`/`height` + `absolute inset-0 h-full w-full`. Kiểm thử mới *"ảnh lấp đầy khung"* (`responsive.spec.ts`). |
+| 2 | Nút trong `ForgotPasswordForm`, `ResetPasswordForm` (mới ở Buổi 7) dùng chữ trắng trên `orange-600` (3,56 : 1). | Đổi sang `orange-700` / `hover:orange-800` như các nút khác. |
+| 3 | `RecipeGallery`, `RecipeLightbox` (mới) còn `unoptimized` cứng (D-14). | Dùng `IMAGE_UNOPTIMIZED` như mọi `<Image>` khác. |
+
+Quét lại toàn bộ trên bản đã hợp nhất: axe **0 vi phạm** ở 7 route công khai × 1200 px; 0 px cuộn ngang ở 320/768/1200; E2E a11y, responsive đạt.
+
 ## 4. Responsive (NFR-USE-001) — 320 / 768 / 1200 px
 
 Đo bằng Playwright trên 7 route (`/`, `/recipes`, công thức, `/categories`, danh mục, `/search?q=pho`, `/auth/login`):
@@ -58,7 +69,7 @@ Bộ lọc dạng drawer dưới 1024 px dùng được bằng chạm và bàn p
 | Dashboard với dữ liệu thật | ⏳ quét lại trên stack Docker |
 | `notFound()` từ trang (`/recipes/<slug-không-có>`, `/categories/<slug-không-có>`) | ⚠️ HTTP 404 đúng. Next 15.5 trả khung lỗi `<html id="__next_error__">` (chưa có `lang`) trong HTML đầu tiên, rồi router phía client dựng lại trang 404 trong root layout (`lang="vi"`, có header/footer) sau hydrate — đã kiểm trong Chromium trên bản production. Lỗi có sẵn từ Buổi 7, tái hiện y hệt trên mã `HEAD` và trên một trang tối thiểu chỉ gọi `notFound()` (nên là hành vi của Next 15.5.25, không phải mã dự án). Người dùng trình duyệt không bị ảnh hưởng; bộ cào/trình đọc màn hình không chạy JS sẽ thấy khung rỗng. Bài kiểm tra chờ hydrate rồi mới quét axe (đạt). Phiên bản Next khác có thể sửa — cần thử khi nâng cấp. |
 | `target-size` (WCAG 2.2, Lighthouse ≥ 13) | ⚠️ Liên kết danh mục ở footer/sidebar bị cảnh báo kích thước chạm. Nằm ngoài 2.1 AA; lhci 0.15 (đang dùng) không kiểm. |
-| `e2e/csp.spec.ts` (Dev 1, Buổi 6) | ⚠️ Viết cho `next dev` cùng origin; thất bại khi chạy với server dựng sẵn + API ở origin khác (đăng nhập không hiện nút, callback ngoài). Chưa đối chiếu với bản gốc và chưa chạy trên stack Docker/Nginx — nhiều khả năng do môi trường đo, cần xác minh. |
+| `e2e/csp.spec.ts` (Dev 1) | ⚠️ Trên bản đã hợp nhất, 1 ca còn đỏ: thẻ `<style>` do Sonner (toast) chèn bị CSP production chặn. Dev 1 và Dev 4 đang sửa bằng hash trên nhánh Buổi 8 của họ (`csp.ts`) — Dev 3 không sửa file này để tránh xung đột. |
 
 ## 6. Cách chạy lại
 

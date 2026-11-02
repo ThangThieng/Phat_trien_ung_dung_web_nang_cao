@@ -44,10 +44,11 @@ export default function CategoryCard({ category }: { category: Category }) {
           <Image
             src={category.imageUrl}
             alt=""
-            fill
+            width={800}
+            height={450}
             unoptimized={IMAGE_UNOPTIMIZED}
             sizes="(max-width: 768px) 100vw, 25vw"
-            className="object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
           <span aria-hidden className="text-5xl transition group-hover:scale-110">

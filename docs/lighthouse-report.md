@@ -47,6 +47,24 @@ Phân rã trước khi sửa: TTFB 452 ms · Load Delay 228 ms · Load Time 97 m
 
 Đánh đổi: khi API chậm, `/recipes` không còn khung chờ mà đứng yên tới khi có dữ liệu. `categories/(list)/loading.tsx` giữ nguyên (chưa phát hiện vấn đề LCP). Nếu cần khung chờ, đặt Suspense quanh phần lưới thay vì cả trang.
 
+## 4b. Đo lại sau khi hợp nhất `develop` (03/11/2026 — Buổi 7 của cả nhóm đã merge)
+
+Nhánh Buổi 8 được hợp nhất với `develop` (trang `/search` mới của Dev 4, trang chi tiết mới của Dev 2, CSP của Dev 1). Lần đo này chạy trên **máy yếu hơn**: Lighthouse báo `benchmarkIndex` ≈ 1 100–1 600, so với ≈ 3 100 ở lần đo 30/10 — dưới mức 1 300 Lighthouse coi là kém tin cậy. Vì vậy hạ `cpuSlowdownMultiplier` xuống 1,7 (≈ 4 × 1 300 / 3 100) cho **cả hai bản** và chỉ so sánh tương đối:
+
+| Trang | Bản 30/10 (trước hợp nhất), máy này | Bản đã hợp nhất, máy này | Nhận xét |
+|---|---|---|---|
+| `/` | LCP 2,67 / 3,10 / 2,91 s · TBT 60 ms | LCP 2,76 / 2,76 / 2,64 s · TBT 77 ms | Ngang nhau |
+| `/recipes` | LCP 2,81 / 3,00 / 3,25 s · TBT 77 ms | LCP 2,87 / 2,80 / 3,11 s · TBT 93 ms | Ngang nhau |
+| `/recipes/{slug}` | LCP 2,91 / 2,78 / 1,54 s · TBT 151 ms | LCP 3,46 / 3,64 / 3,80 s · TBT 87 ms | **Chậm hơn ~0,7 s** |
+
+CLS = 0 ở mọi lần; Accessibility 100, SEO 100 cả ba trang.
+
+**Trang chi tiết sau hợp nhất:** trang mới của Dev 2 (thư viện ảnh, lightbox, khẩu phần, in/chia sẻ) tải tổng **287 KB** JS theo Lighthouse (gồm cả chunk tải lười sau hydrate), so với 184 KB trước đây. Theo thước đo của kế hoạch — **First Load JS** do `next build` báo — trang này là **194 kB**, vẫn ≤ 200 kB. Vì `resource-summary:script:size` của Lighthouse tính cả chunk tải lười, ngưỡng này sẽ đỏ ở trang chi tiết; cần Dev 2 xem lại phần nào tải ngay sau hydrate. LCP là ảnh chính, thời gian nằm ở *render delay* (ảnh chỉ được vẽ sau khi luồng chính hydrate xong).
+
+**Kết luận trung thực:** trên máy đo lần này, **không trang nào đạt LCP ≤ 2,5 s — kể cả bản 30/10 từng đạt 2,23–2,35 s trên máy nhanh hơn**. Con số tuyệt đối phụ thuộc máy đo; cần đo lại bằng `npm run lighthouse` trên máy demo với stack thật và ảnh thật.
+
+**Phát hiện trong lúc đo — ảnh vỡ dưới CSP production:** CSP của `develop` (`style-src 'self'`, không `'unsafe-inline'` ở production) chặn thuộc tính `style` trong HTML. `next/image` với `fill` dựa vào `style="position:absolute;…"` nên mọi ảnh thẻ/ảnh chính rơi về `position: static`, cao ~24 px. Đã sửa ở phía ảnh (không đụng CSP của Dev 1): bỏ `fill`, dùng `width`/`height` + lớp `absolute inset-0 h-full w-full` (`RecipeCard`, `CategoryCard`, `RecipeGallery`, `RecipeLightbox`); thêm kiểm thử *"ảnh lấp đầy khung"* trong `e2e/responsive.spec.ts`.
+
 ## 5. Cách chạy lại
 
 ```bash

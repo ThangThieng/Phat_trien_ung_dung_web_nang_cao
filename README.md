@@ -1083,20 +1083,25 @@ Không đưa dữ liệu server vào Zustand.
   4. **Nginx:**
      - **`/media/` → MinIO (D-14)**, kèm script đổi URL ảnh cũ trong cơ sở dữ liệu;
      - HTTPS (TLS 1.2+), HSTS, gzip;
-     - `_next/static` cache 1 năm.
-  5. **`docker-compose.prod.yml`:** `api` bỏ `ports` + 3 bản sao; `hangfire` 1; không `seq`/`mailhog`; tắt Scalar.
-  6. **D-17:** `ProtectKeysWithCertificate`.
+     - `_next/static` cache 1 năm;
+     - giới hạn `/auth/*` 10/phút và upload 5/phút cho cả cụm (rate limit của API đếm riêng từng bản sao).
+  5. **`docker-compose.prod.yml`:**
+     - `api` bỏ `ports` + 3 bản sao; `hangfire` 1; không `seq`/`mailhog`; tắt Scalar;
+     - service `migrate` chạy migration một lần trước khi `api` khởi động;
+     - cập nhật `api` cuốn chiếu bằng `tools/deploy/rolling-update-api.sh`.
+  6. **D-17:** `ProtectKeysWithCertificate` (chứng chỉ riêng, không dùng lại chứng chỉ TLS).
 - **Vì sao:**
   - SSR cho crawler và link chia sẻ, client cho các lần lọc sau.
   - Một địa chỉ ảnh duy nhất cho cả trình duyệt lẫn container → mới bật lại được tối ưu ảnh.
   - Bỏ `ports` là điều kiện để `--scale api=3`.
+  - `--force-recreate` dừng cả ba bản sao cùng lúc (đo: 502 trong ~3 giây) — chỉ cập nhật cuốn chiếu mới không gián đoạn.
   - Khóa DataProtection ký cả token đặt lại mật khẩu.
 - **Xong khi:**
   - đổi bộ lọc chỉ có request JSON;
   - lọc theo thời gian đúng;
   - `https://` + HSTS;
   - ảnh qua `/media/`;
-  - `--scale api=3` chạy, tạo lại container `api` không có 502.
+  - `--scale api=3` chạy, cập nhật `api` khi đang có request liên tục không có 502.
 - **Commit:** `feat(search-ui,devops): client-hydrated search with multi-criteria filters and offset pagination; production nginx with tls/hsts and /media proxy (D-14), scaled prod compose and certificate-protected dataprotection keys (D-17)`
 
 **Kiểm chứng cuối Buổi 7:**

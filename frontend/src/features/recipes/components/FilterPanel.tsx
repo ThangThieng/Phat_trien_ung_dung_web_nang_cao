@@ -18,7 +18,7 @@ interface FilterPanelProps {
   /** Trạng thái URL hiện tại — từ khóa `q` và sắp xếp được giữ nguyên khi đổi bộ lọc. */
   state: Partial<RecipeQueryState>;
   categories: Category[];
-  /** Bộ lọc hiển thị: /recipes dùng đủ 5, /search chỉ có danh mục + độ khó (SRS §8.3). */
+  /** Bộ lọc hiển thị (/recipes dùng đủ 5). Từ Buổi 7, /search dùng `features/search/components/SearchFilterPanel`. */
   fields: readonly FilterField[];
 }
 

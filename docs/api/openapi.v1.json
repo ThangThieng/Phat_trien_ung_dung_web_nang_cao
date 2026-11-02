@@ -458,6 +458,176 @@
         ]
       }
     },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-010 \u2013 \u0110\u1ED5i m\u1EADt kh\u1EA9u v\u00E0 thu h\u1ED3i c\u00E1c phi\u00EAn kh\u00E1c",
+        "description": "FR-AUTH-010 \u2014 \u0110\u1ED5i m\u1EADt kh\u1EA9u, gi\u1EEF phi\u00EAn hi\u1EC7n t\u1EA1i v\u00E0 thu h\u1ED3i c\u00E1c phi\u00EAn refresh kh\u00E1c.",
+        "operationId": "ChangePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token thi\u1EBFu, h\u1EBFt h\u1EA1n ho\u1EB7c kh\u00F4ng h\u1EE3p l\u1EC7.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ng\u01B0\u1EDDi d\u00F9ng kh\u00F4ng c\u00F3 quy\u1EC1n th\u1EF1c hi\u1EC7n thao t\u00E1c.",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-011 \u2013 G\u1EEDi li\u00EAn k\u1EBFt \u0111\u1EB7t l\u1EA1i m\u1EADt kh\u1EA9u",
+        "description": "FR-AUTH-011 \u2014 Lu\u00F4n tr\u1EA3 ph\u1EA3n h\u1ED3i chung \u0111\u1EC3 kh\u00F4ng ti\u1EBFt l\u1ED9 email c\u00F3 t\u1ED3n t\u1EA1i.",
+        "operationId": "ForgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "FR-AUTH-011 \u2013 \u0110\u1EB7t l\u1EA1i m\u1EADt kh\u1EA9u t\u1EEB li\u00EAn k\u1EBFt email",
+        "description": "FR-AUTH-011 \u2014 \u0110\u1EB7t l\u1EA1i m\u1EADt kh\u1EA9u b\u1EB1ng token email d\u00F9ng m\u1ED9t l\u1EA7n v\u00E0 thu h\u1ED3i m\u1ECDi phi\u00EAn.",
+        "operationId": "ResetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem\u002Bjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/me": {
       "get": {
         "tags": [
@@ -3896,6 +4066,27 @@
         },
         "description": "Body d\u00F9ng chung cho POST (FR-CAT-003) v\u00E0 PUT (FR-CAT-004) \u2013 SRS \u00A78.2."
       },
+      "ChangePasswordRequest": {
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "newPassword": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreateRecipeRequest": {
         "required": [
           "title",
@@ -3999,6 +4190,7 @@
           "AUTH_GOOGLE_TOKEN_INVALID",
           "AUTH_GOOGLE_UNAVAILABLE",
           "AUTH_INVALID_CREDENTIALS",
+          "AUTH_PASSWORD_RESET_TOKEN_INVALID",
           "AUTH_REFRESH_TOKEN_EXPIRED",
           "AUTH_REFRESH_TOKEN_REVOKED",
           "AUTH_TOKEN_EXPIRED",
@@ -4051,6 +4243,20 @@
               "string"
             ],
             "format": "int64"
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -5186,6 +5392,34 @@
               "type": "string",
               "format": "uuid"
             }
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "required": [
+          "email",
+          "token",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "token": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "newPassword": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

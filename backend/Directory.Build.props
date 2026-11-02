@@ -26,6 +26,9 @@
     - TIFF CCITT T4/T6 encoder, HistogramEqualization: hệ thống chỉ mã hóa WebP, không gọi HistogramEqualization;
     - BigTIFF decoder: ImageResizeJob chỉ nạp decoder JPEG/PNG/WebP (ImageResizeJobTests chặn TIFF);
     - ICC CLUT parsing: chỉ chạy khi ghi một IccProfile dựng bằng code; profile đọc từ ảnh được sao chép nguyên byte.
+    NuGet audit 28/10/2026 (Buổi 8): thêm GHSA-v76p-62qx-wwq2 (cao, công bố 07/10/2026) — ghi tràn bộ nhớ khi DECODER TIFF giải
+    mã ảnh tile nén fax (T4/T6/MH); vá ở 3.2.0 (chưa phát hành) và 4.1.1+ (đòi license key). Không chạm tới được vì cùng lý do với
+    BigTIFF: decoder TIFF không bao giờ được tạo — ImageResizeJob.DecodableFormats chỉ có JPEG/PNG/WebP (ImageResizeJobTests khẳng định).
     Advisory MỚI vẫn làm build đỏ. Gỡ khối này khi chuyển sang bản đã vá.
   -->
   <ItemGroup>
@@ -34,5 +37,6 @@
     <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-j3p4-wp97-rph4" />
     <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-wmxv-xphr-5c9g" />
     <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-gwg2-r3hj-4w44" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-v76p-62qx-wwq2" />
   </ItemGroup>
 </Project>

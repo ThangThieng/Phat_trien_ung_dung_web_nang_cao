@@ -24,10 +24,7 @@ public partial class DomainExceptionRulesTests
     /// với API (giống danh sách chờ của ApiSurfaceTests), để không có mã nào khai báo trước khi Backend thật sự trả.
     /// Mỗi dòng ghi rõ ai gỡ và khi nào; mã đã vào ErrorCodes mà còn nằm đây thì test đỏ, nhắc gỡ dòng.
     /// </summary>
-    private static readonly (string Code, string Owner)[] PendingSrsCodes =
-    [
-        ("AUTH_PASSWORD_RESET_TOKEN_INVALID", "Dev 1 — Buổi 7, FR-AUTH-011 (SRS v1.2.3, CR-2026-05 / MT-65)"),
-    ];
+    private static readonly (string Code, string Owner)[] PendingSrsCodes = [];
 
     private static readonly Assembly DomainAssembly = typeof(DomainException).Assembly;
 

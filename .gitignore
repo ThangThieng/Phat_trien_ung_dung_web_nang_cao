@@ -3,12 +3,15 @@
 .env.*
 !.env.example
 !.env.local.example
+!.env.production.example
 *.pfx
 *.key
 ssl/
 # Basic Auth cho Hangfire Dashboard – sinh bằng nginx/generate-htpasswd.sh, không bao giờ commit
 nginx/.htpasswd
 .htpasswd
+# Script khôi phục URL ảnh do tools/media-url-migration sinh (D-14) — dữ liệu của máy chạy, không commit
+tools/media-url-migration/backups/
 
 # .NET
 bin/

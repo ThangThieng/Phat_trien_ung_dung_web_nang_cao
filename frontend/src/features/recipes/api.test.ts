@@ -55,3 +55,10 @@ describe('features/recipes/api – revalidate bám TTL cache API', () => {
     expect(options?.next).toBeUndefined();
   });
 });
+
+it('keeps recipe detail data cache aligned with the five-minute API TTL', () => {
+  getRecipeBySlug('bun-cha');
+  expect(apiFetch).toHaveBeenCalledWith('/recipes/bun-cha', {
+    next: { revalidate: 300, tags: ['recipe:bun-cha'] },
+  });
+});

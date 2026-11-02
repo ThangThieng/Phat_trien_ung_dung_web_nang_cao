@@ -31,7 +31,9 @@ test.describe('giao diện', () => {
     await expect(page.getByText(/ít nhất 2 ký tự/)).toBeVisible();
   });
 
-  test('bộ lọc thời gian ở /recipes: URL giữ trạng thái, F5 và back/forward đúng', async ({ page }) => {
+  test('bộ lọc thời gian ở /recipes: URL giữ trạng thái, F5 và back/forward đúng', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/recipes');
     const cookTime = page.getByLabel('Thời gian nấu tối đa (phút)');
@@ -54,28 +56,50 @@ test.describe('giao diện', () => {
     await expect(page).toHaveURL(/maxPrepTime=20/);
   });
 
+  // `/search` (Buổi 7 — Dev 4): mỗi tiêu chí là một nhóm liên kết, chọn là áp dụng ngay (không có nút "Áp dụng").
+  const filterGroup = (page: import('@playwright/test').Page, title: string) =>
+    page.getByRole('group', { name: title });
+
   test('bộ lọc độ khó + từ khóa ở /search giữ q khi đổi bộ lọc', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(`/search?q=${TERM}`);
-    await page.getByLabel('Độ khó').selectOption({ index: 1 });
-    await page.getByRole('button', { name: 'Áp dụng' }).click();
+    await page.goto(`/search?q=${TERM}`, { waitUntil: 'networkidle' });
+    await filterGroup(page, 'Độ khó').getByRole('link').nth(1).click();
     await expect(page).toHaveURL(new RegExp(`q=${TERM}`));
     await expect(page).toHaveURL(/difficulty=/);
   });
 
-  test('bộ lọc thời gian trên /search (MT-66) — chỉ kiểm khi giao diện Buổi 7 của Dev 4 đã có', async ({ page }) => {
+  test('bộ lọc thời gian trên /search (MT-66): URL giữ trạng thái, F5 và back/forward đúng', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(`/search?q=${TERM}`);
-    const field = page.getByLabel('Thời gian nấu tối đa (phút)');
-    test.skip((await field.count()) === 0, 'Chưa có ô lọc thời gian trên /search (Dev 4 — Buổi 7)');
-    await field.fill('45');
-    await page.getByRole('button', { name: 'Áp dụng' }).click();
-    await expect(page).toHaveURL(/maxCookTime=45/);
+    await page.goto(`/search?q=${TERM}`, { waitUntil: 'networkidle' });
+    await filterGroup(page, 'Thời gian nấu tối đa')
+      .getByRole('link', { name: /≤/ })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/maxCookTime=\d+/);
     await expect(page).toHaveURL(new RegExp(`q=${TERM}`));
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(page).toHaveURL(/maxCookTime=\d+/);
+    await expect(
+      filterGroup(page, 'Thời gian nấu tối đa').locator('[aria-current="true"]'),
+    ).toHaveText(/≤/);
+
+    await filterGroup(page, 'Thời gian chuẩn bị tối đa')
+      .getByRole('link', { name: /≤/ })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/maxPrepTime=\d+/);
+    await page.goBack();
+    await expect(page).not.toHaveURL(/maxPrepTime=/);
+    await expect(page).toHaveURL(/maxCookTime=\d+/);
+    await page.goForward();
+    await expect(page).toHaveURL(/maxPrepTime=\d+/);
   });
 
   test('phân trang giữ trạng thái URL (nếu đủ dữ liệu để có trang 2)', async ({ page }) => {
-    await page.goto('/recipes?pageSize=1');
+    await page.goto('/recipes', { waitUntil: 'networkidle' });
     const next = page.getByRole('link', { name: /trang sau|sau|tiếp/i }).first();
     test.skip((await next.count()) === 0, 'Không đủ công thức để có trang 2');
     await next.click();
@@ -89,7 +113,9 @@ test.describe('hợp đồng API (cần API thật)', () => {
   test.skip(!API, 'Đặt E2E_API_URL để kiểm hợp đồng của Backend');
   test.use({ ignoreHTTPSErrors: true });
 
-  test('GET /recipes?sortBy=maliciousColumn → 400 (danh sách trắng cột sắp xếp, FR-SRCH-003)', async ({ request }) => {
+  test('GET /recipes?sortBy=maliciousColumn → 400 (danh sách trắng cột sắp xếp, FR-SRCH-003)', async ({
+    request,
+  }) => {
     const response = await request.get(`${API}/recipes?sortBy=maliciousColumn`);
     expect(response.status()).toBe(400);
   });
@@ -104,7 +130,10 @@ test.describe('hợp đồng API (cần API thật)', () => {
     const { accessToken } = await login.json();
     const headers = { Authorization: `Bearer ${accessToken}` };
 
-    const categories = (await (await request.get(`${API}/categories`)).json()) as { id: string; recipeCount: number }[];
+    const categories = (await (await request.get(`${API}/categories`)).json()) as {
+      id: string;
+      recipeCount: number;
+    }[];
     const used = categories.find((c) => c.recipeCount > 0);
     test.skip(!used, 'Không có danh mục nào còn công thức');
     const response = await request.delete(`${API}/categories/${used!.id}`, { headers });

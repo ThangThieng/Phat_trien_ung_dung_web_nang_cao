@@ -45,6 +45,9 @@ public interface IUserRepository
     /// <returns>Số token vừa bị thu hồi.</returns>
     Task<int> RevokeAllRefreshTokensAsync(string userId, DateTime utcNow, CancellationToken cancellationToken = default);
 
+    /// <summary>FR-AUTH-010: revoke every active session except the one identified by the current JWT sid.</summary>
+    Task<int> RevokeOtherRefreshTokensAsync(string userId, Guid? currentSessionId, DateTime utcNow, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
     /// <summary>Thu hồi token được dùng lại và mọi hậu duệ của nó, không ảnh hưởng token family độc lập.</summary>
     Task RevokeRefreshTokenFamilyAsync(
         string userId,

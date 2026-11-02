@@ -1,21 +1,24 @@
-# FR-JOB-001 / MT-39 – sinh nginx/.htpasswd cho Basic Auth của Hangfire Dashboard (bản Windows).
+﻿# FR-JOB-001 / MT-39 – sinh nginx/.htpasswd cho Basic Auth của Hangfire Dashboard (bản Windows).
 # Xem chú thích đầy đủ ở generate-htpasswd.sh.
 #
 #   powershell -ExecutionPolicy Bypass -File .\nginx\generate-htpasswd.ps1
 #   powershell -ExecutionPolicy Bypass -File .\nginx\generate-htpasswd.ps1 -User admin -Password 'MatKhau'
+#   powershell -ExecutionPolicy Bypass -File .\nginx\generate-htpasswd.ps1 -EnvFile .env.production
 param(
     [string]$User,
-    [string]$Password
+    [string]$Password,
+    [string]$EnvFile = '.env'
 )
 
 $ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$envFile = Join-Path (Split-Path -Parent $scriptDir) '.env'
+# PowerShell không phân biệt hoa/thường tên biến: dùng tên khác hẳn tham số -EnvFile.
+$envPath = if ([System.IO.Path]::IsPathRooted($EnvFile)) { $EnvFile } else { Join-Path (Split-Path -Parent $scriptDir) $EnvFile }
 
 function Get-EnvValue([string]$key) {
-    if (-not (Test-Path $envFile)) { return '' }
-    $line = Select-String -Path $envFile -Pattern "^$key=" | Select-Object -First 1
+    if (-not (Test-Path $envPath)) { return '' }
+    $line = Select-String -Path $envPath -Pattern "^$key=" | Select-Object -First 1
     if ($null -eq $line) { return '' }
     return ($line.Line -replace "^$key=", '').Trim()
 }
