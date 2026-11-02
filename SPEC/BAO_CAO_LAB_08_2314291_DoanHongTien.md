@@ -27,7 +27,7 @@ FR thuộc Dev 3 (FR-CAT-001 → 005, FR-SRCH-001 → 004) đã xong ở Buổi 
 | # | Hạng mục | Kết quả |
 |---|---|---|
 | 1 | JSON-LD `Recipe` (NFR-SEO-001): đủ trường, `HowToStep` có `url`, dinh dưỡng, ảnh tuyệt đối, ISO 8601; **không** `aggregateRating` (MT-24); thoát `<` chống XSS. Thêm `BreadcrumbList`, `WebSite` + `SearchAction` | ✅ 30 test đơn vị + `seo.spec.ts`; gắn lại vào trang chi tiết mới của Dev 2 sau hợp nhất |
-| 2 | Metadata (SEO-002): title ≤ 60, description ≤ 160 (MT-37), canonical, Open Graph `article`, Twitter, **ảnh OG 1200×630** có chữ tiếng Việt; `/search?q=` noindex (gắn vào trang `/search` mới của Dev 4); `(auth)`, `(dashboard)`, `(dev)` noindex | ✅ |
+| 2 | Metadata (SEO-002) cho **mọi trang**: title ≤ 60, description ≤ 160 (MT-37), canonical, Open Graph, Twitter, **ảnh OG 1200×630** có chữ tiếng Việt (ảnh riêng cho trang công thức, thẻ chia sẻ chung cho các trang khác); `/search?q=` noindex (gắn vào trang `/search` mới của Dev 4); `(auth)`, `(dashboard)`, `(dev)` noindex | ✅ |
 | 3 | `sitemap.xml` + `robots.txt` bằng Next.js (MT-28, không ping Google); nguồn `GET /recipes/sitemap`, cache 3600 s (MT-48); Draft/Archived → 404 (MT-34) | ✅ |
 | 4 | Retrofit D-14: bỏ `unoptimized` (kể cả `RecipeGallery`, `RecipeLightbox` mới), `remotePatterns` theo `NEXT_PUBLIC_MINIO_PUBLIC_URL` = `<site>/media` của Dev 4, `sizes`, `priority`; lưới dùng `ThumbnailUrl` (API trả sẵn) | ✅ (chưa chạy qua Nginx thật) |
 | 5 | Responsive 320/768/1200 (USE-001): 0 px cuộn ngang; lưới 1/2/2/≥3 cột; **ảnh lấp đầy khung dưới CSP production** (kiểm thử mới) | ✅ Chromium giả lập |
@@ -61,7 +61,7 @@ FR thuộc Dev 3 (FR-CAT-001 → 005, FR-SRCH-001 → 004) đã xong ở Buổi 
 
 CLS 0, TBT < 100 ms, Accessibility 100, SEO 100 ở mọi trang. Con số tuyệt đối phụ thuộc máy đo — cần đo lại bằng `npm run lighthouse` trên máy demo.
 
-**Kiểm thử trên bản đã hợp nhất:** Jest **61 suite / 417 test** đạt; ESLint 0 lỗi; `tsc` sạch; Playwright **36 đạt**, 1 đỏ (`csp.spec.ts` — mục 5), 2 bỏ qua (cần API thật); ca phân trang chạy khi dữ liệu đủ 2 trang (đã chạy với dữ liệu 20 công thức: đạt).
+**Kiểm thử trên bản đã hợp nhất:** Jest **61 suite / 420 test** đạt; ESLint 0 lỗi; `tsc` sạch; Playwright **37 đạt**, 1 đỏ (`csp.spec.ts` — mục 5), 2 bỏ qua (cần API thật); ca phân trang chạy khi dữ liệu đủ 2 trang (đã chạy với dữ liệu 20 công thức: đạt).
 
 ## 4. Phát hiện khi kiểm chứng và đã sửa
 
@@ -71,6 +71,7 @@ CLS 0, TBT < 100 ms, Accessibility 100, SEO 100 ở mọi trang. Con số tuyệ
 - LCP `/recipes` 2,92 → 2,30 s: bỏ `loading.tsx` bọc cả trang (ảnh LCP bị giấu trong Suspense tới cuối luồng).
 - Metadata bị stream xuống `<body>` (Lighthouse SEO 92) → `htmlLimitedBots` → SEO 100.
 - **Sau hợp nhất:** CSP production của `develop` chặn thuộc tính `style` → mọi ảnh `next/image fill` vỡ (cao ~24 px). Sửa phía ảnh: `width`/`height` + lớp `absolute inset-0 h-full w-full`; thêm kiểm thử. Không đụng `csp.ts` của Dev 1.
+- **Đối chiếu SRS (03/11):** NFR-SEO-002 yêu cầu *mọi trang* có Open Graph + `og:image` 1200×630 + Twitter + canonical; trước đó chỉ trang công thức đủ. Đã thêm `app/opengraph-image.tsx` và `buildPageMetadata` cho trang chủ, `/recipes`, `/categories`, `/categories/[slug]`, `/search`.
 - **Sau hợp nhất:** E2E bộ lọc `/search` viết lại cho giao diện mới của Dev 4 (nhóm liên kết, chọn là áp dụng, không có nút "Áp dụng").
 
 ## 5. Tồn đọng — ghi thẳng
@@ -93,7 +94,7 @@ npx jest
 
 ## 7. File thay đổi (tóm tắt)
 
-Mới: `src/lib/seo/*` (site, metadata, recipe-json-ld, sitemap-source + test), `src/lib/images.ts`, `src/components/seo/JsonLd.tsx`, `src/app/{sitemap,robots}.ts` (+ test), `src/app/(public)/recipes/[slug]/opengraph-image.tsx`, `src/assets/fonts/*`, `e2e/{a11y,seo,responsive,search,support}.ts`, `lighthouserc.json`, `docs/{a11y,lighthouse,seo}-report.md`, `docs/lab08-dev3/*`.
+Mới: `src/lib/seo/*` (site, metadata, og-fonts, recipe-json-ld, sitemap-source + test), `src/app/opengraph-image.tsx`, `src/lib/images.ts`, `src/components/seo/JsonLd.tsx`, `src/app/{sitemap,robots}.ts` (+ test), `src/app/(public)/recipes/[slug]/opengraph-image.tsx`, `src/assets/fonts/*`, `e2e/{a11y,seo,responsive,search,support}.ts`, `lighthouserc.json`, `docs/{a11y,lighthouse,seo}-report.md`, `docs/lab08-dev3/*`.
 Sửa: trang công khai (home, recipes, recipes/[slug], categories/[slug], search), `RecipeCard`, `CategoryCard`, `RecipeGallery`, `RecipeLightbox`, `StepChecklist`, `FilterPanel`, màu nút (15 file), `globals.css`, `next.config.ts`, `Dockerfile`, `docker-compose.yml`, `.env.example`, `package.json`, `playwright.config.ts`, `revalidate-ttl.test.ts`; xóa `recipes/(list)/loading.tsx`.
 
 ## 8. Commit

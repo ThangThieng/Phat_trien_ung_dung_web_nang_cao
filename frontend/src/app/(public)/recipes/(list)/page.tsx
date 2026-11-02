@@ -13,13 +13,15 @@ import {
   countActiveFilters,
   parseRecipeListState,
 } from '@/features/recipes/search-params';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 import type { Category } from '@/types/category';
 
-export const metadata: Metadata = {
-  title: 'Công thức nấu ăn',
+export const metadata: Metadata = buildPageMetadata({
+  name: 'Công thức nấu ăn',
   description:
     'Khám phá hàng trăm công thức nấu ăn Việt Nam và quốc tế – từ món khai vị, món chính đến tráng miệng.',
-};
+  path: '/recipes',
+});
 
 // SRS §5.1: /recipes render SSR dynamic
 export const dynamic = 'force-dynamic';

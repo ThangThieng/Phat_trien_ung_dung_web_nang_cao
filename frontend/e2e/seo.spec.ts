@@ -12,7 +12,9 @@ function metaContent(html: string, attr: 'name' | 'property', key: string) {
 }
 
 function jsonLdBlocks(html: string) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(
+    (m) => m[1],
+  );
 }
 
 async function recipeHtml(request: APIRequestContext) {
@@ -28,19 +30,30 @@ test.describe('robots.txt và sitemap.xml (ở domain chính)', () => {
     expect(response.status()).toBe(200);
     const text = await response.text();
     expect(text).toMatch(/Allow: \//);
-    for (const path of ['/dashboard/', '/profile', '/auth/', '/api/', '/hangfire', '/scalar', '/mockups']) {
+    for (const path of [
+      '/dashboard/',
+      '/profile',
+      '/auth/',
+      '/api/',
+      '/hangfire',
+      '/scalar',
+      '/mockups',
+    ]) {
       expect(text).toContain(`Disallow: ${path}`);
     }
     expect(text).toMatch(/Sitemap: https?:\/\/[^\s]+\/sitemap\.xml/);
   });
 
-  test('sitemap.xml: XML chuẩn, đủ trang tĩnh, và MỌI URL công thức đều 200 (không có Draft/Archived)', async ({ request }) => {
+  test('sitemap.xml: XML chuẩn, đủ trang tĩnh, và MỌI URL công thức đều 200 (không có Draft/Archived)', async ({
+    request,
+  }) => {
     const response = await request.get('/sitemap.xml');
     expect(response.status()).toBe(200);
     expect(response.headers()['content-type']).toContain('xml');
     const xml = await response.text();
     expect(xml).toContain('<urlset');
-    for (const tag of ['<loc>', '<lastmod>', '<changefreq>', '<priority>']) expect(xml).toContain(tag);
+    for (const tag of ['<loc>', '<lastmod>', '<changefreq>', '<priority>'])
+      expect(xml).toContain(tag);
     const locs = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => new URL(m[1]));
     for (const page of ['/', '/recipes', '/categories', '/search']) {
       expect(locs.some((u) => u.pathname === page)).toBe(true);
@@ -62,7 +75,9 @@ test.describe('trang công thức', () => {
     expect(title.endsWith(' | Culinary Blog')).toBe(true);
     expect(title.split('Culinary Blog').length - 1, 'hậu tố không bị lặp').toBe(1);
     expect((metaContent(html, 'name', 'description') ?? '').length).toBeLessThanOrEqual(160);
-    expect(/<link rel="canonical" href="([^"]+)"/.exec(html)?.[1]).toMatch(new RegExp(`^https?://.+${path}$`));
+    expect(/<link rel="canonical" href="([^"]+)"/.exec(html)?.[1]).toMatch(
+      new RegExp(`^https?://.+${path}$`),
+    );
     expect(metaContent(html, 'name', 'robots'), 'Published thì được index').toBeUndefined();
   });
 
@@ -85,7 +100,9 @@ test.describe('trang công thức', () => {
     expect(png.readUInt32BE(20)).toBe(630); // IHDR: chiều cao
   });
 
-  test('JSON-LD Recipe đủ thuộc tính, không có aggregateRating, không còn "<" thô (chống XSS)', async ({ request }) => {
+  test('JSON-LD Recipe đủ thuộc tính, không có aggregateRating, không còn "<" thô (chống XSS)', async ({
+    request,
+  }) => {
     const { html } = await recipeHtml(request);
     const blocks = jsonLdBlocks(html);
     expect(blocks.length).toBeGreaterThanOrEqual(2); // Recipe + BreadcrumbList
@@ -94,7 +111,18 @@ test.describe('trang công thức', () => {
     const parsed = blocks.map((b) => JSON.parse(b));
     const recipe = parsed.find((d) => d['@type'] === 'Recipe');
     expect(recipe).toBeTruthy();
-    for (const key of ['name', 'description', 'author', 'datePublished', 'prepTime', 'cookTime', 'totalTime', 'recipeYield', 'recipeIngredient', 'recipeInstructions']) {
+    for (const key of [
+      'name',
+      'description',
+      'author',
+      'datePublished',
+      'prepTime',
+      'cookTime',
+      'totalTime',
+      'recipeYield',
+      'recipeIngredient',
+      'recipeInstructions',
+    ]) {
       expect(recipe, key).toHaveProperty(key);
     }
     expect(recipe.prepTime).toMatch(/^PT(\d+H)?(\d+M)?$/);
@@ -110,23 +138,60 @@ test.describe('trang công thức', () => {
     await expect(page.locator('#buoc-1')).toBeAttached();
   });
 
-  test('công thức không tồn tại / Draft → HTTP 404 thật (không phải 200 "soft 404")', async ({ request }) => {
+  test('công thức không tồn tại / Draft → HTTP 404 thật (không phải 200 "soft 404")', async ({
+    request,
+  }) => {
     const response = await request.get('/recipes/slug-khong-ton-tai-draft-xyz');
     expect(response.status()).toBe(404);
   });
 });
 
 test.describe('trang chủ, danh mục, tìm kiếm, khu vực riêng tư', () => {
+  test('mọi trang công khai có title, description, canonical, Open Graph (ảnh 1200×630) và Twitter Card (NFR-SEO-002)', async ({
+    request,
+  }) => {
+    const { category } = await discoverRoutes(request);
+    for (const path of ['/', '/recipes', '/categories', category, '/search']) {
+      const html = await (await request.get(path)).text();
+      const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '';
+      expect(title.length, `${path}: <title>`).toBeGreaterThan(0);
+      expect(title.length, `${path}: <title> ≤ 60`).toBeLessThanOrEqual(60);
+      expect(metaContent(html, 'name', 'description'), `${path}: description`).toBeTruthy();
+      expect(html, `${path}: canonical`).toMatch(/<link rel="canonical" href="[^"]+"/);
+      for (const key of ['og:title', 'og:description', 'og:url', 'og:type', 'og:image']) {
+        expect(metaContent(html, 'property', key), `${path}: ${key}`).toBeTruthy();
+      }
+      expect(metaContent(html, 'property', 'og:image:width'), `${path}: og:image:width`).toBe(
+        '1200',
+      );
+      expect(metaContent(html, 'property', 'og:image:height'), `${path}: og:image:height`).toBe(
+        '630',
+      );
+      expect(metaContent(html, 'name', 'twitter:card'), `${path}: twitter:card`).toBe(
+        'summary_large_image',
+      );
+    }
+    const image = await request.get('/opengraph-image');
+    expect(image.status()).toBe(200);
+    expect(image.headers()['content-type']).toContain('image/png');
+  });
+
   test('trang chủ có WebSite + SearchAction', async ({ request }) => {
     const html = await (await request.get('/')).text();
-    const site = jsonLdBlocks(html).map((b) => JSON.parse(b)).find((d) => d['@type'] === 'WebSite');
+    const site = jsonLdBlocks(html)
+      .map((b) => JSON.parse(b))
+      .find((d) => d['@type'] === 'WebSite');
     expect(site?.potentialAction?.target?.urlTemplate).toContain('/search?q={search_term_string}');
   });
 
   test('trang danh mục có BreadcrumbList và canonical', async ({ request }) => {
     const { category } = await discoverRoutes(request);
     const html = await (await request.get(category)).text();
-    expect(jsonLdBlocks(html).map((b) => JSON.parse(b)).some((d) => d['@type'] === 'BreadcrumbList')).toBe(true);
+    expect(
+      jsonLdBlocks(html)
+        .map((b) => JSON.parse(b))
+        .some((d) => d['@type'] === 'BreadcrumbList'),
+    ).toBe(true);
     expect(/<link rel="canonical" href="([^"]+)"/.exec(html)?.[1]).toContain(category);
   });
 

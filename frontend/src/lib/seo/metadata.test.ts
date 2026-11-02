@@ -3,7 +3,9 @@ import type { Recipe } from '@/types/recipe';
 import {
   DESCRIPTION_MAX,
   TITLE_MAX,
+  DEFAULT_OG_IMAGE,
   buildCategoryMetadata,
+  buildPageMetadata,
   buildPageTitle,
   buildRecipeMetadata,
   buildSearchMetadata,
@@ -65,5 +67,46 @@ describe('buildCategoryMetadata / buildSearchMetadata', () => {
   it('/search có q → noindex; không có q → index được', () => {
     expect(buildSearchMetadata('pho').robots).toEqual({ index: false, follow: true });
     expect(buildSearchMetadata(undefined).robots).toBeUndefined();
+  });
+});
+
+describe('buildPageMetadata — NFR-SEO-002 cho mọi trang không phải công thức', () => {
+  it('đủ canonical, Open Graph (có ảnh 1200×630), Twitter summary_large_image', () => {
+    const meta = buildPageMetadata({
+      name: 'Danh mục công thức',
+      description: 'Mô tả',
+      path: '/categories',
+    });
+    expect(meta.title).toEqual({ absolute: 'Danh mục công thức | Culinary Blog' });
+    expect(meta.alternates?.canonical).toBe('/categories');
+    expect(meta.openGraph).toMatchObject({
+      type: 'website',
+      url: '/categories',
+      images: [DEFAULT_OG_IMAGE],
+    });
+    expect(DEFAULT_OG_IMAGE).toMatchObject({ width: 1200, height: 630 });
+    expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
+  });
+
+  it('brand: false giữ nguyên tiêu đề đã có thương hiệu (trang chủ), vẫn ≤ 60 ký tự', () => {
+    const meta = buildPageMetadata({
+      name: 'Culinary Blog – Công thức nấu ăn từ bếp nhà Việt',
+      description: 'x',
+      path: '/',
+      brand: false,
+    });
+    expect((meta.title as { absolute: string }).absolute).toBe(
+      'Culinary Blog – Công thức nấu ăn từ bếp nhà Việt',
+    );
+    expect((meta.title as { absolute: string }).absolute.length).toBeLessThanOrEqual(60);
+  });
+
+  it('trang danh mục và trang tìm kiếm cũng có og:image', () => {
+    expect(
+      buildCategoryMetadata({ name: 'Món chính', slug: 'mon-chinh', description: null }).openGraph,
+    ).toMatchObject({
+      images: [DEFAULT_OG_IMAGE],
+    });
+    expect(buildSearchMetadata(undefined).openGraph).toMatchObject({ images: [DEFAULT_OG_IMAGE] });
   });
 });

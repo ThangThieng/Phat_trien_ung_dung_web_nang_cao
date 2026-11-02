@@ -35,6 +35,7 @@
 | 3 | `fetch(new URL('./font.woff', import.meta.url))` lỗi `Invalid URL` ở runtime Node. | Route OG dùng `runtime = 'edge'` — cách Next.js hướng dẫn nhúng font; không còn `Buffer` nên mã hóa base64 ảnh nền bằng `btoa`. Kiểm cả chế độ `standalone`. |
 | 4 | `title` bị **lặp hậu tố** nếu tự thêm "\| Culinary Blog" (root layout đã có `template`). | `title: { absolute }`, cắt tên theo `60 − len(" \| Culinary Blog")` = 44 ký tự để hậu tố thương hiệu không bị cắt. |
 | 5 | `revalidate-ttl.test.ts` (quy tắc vàng "≤ 1800 s") đỏ vì `sitemap-source.ts` dùng **3600**. | 3600 là **đúng**: là TTL Redis của chính `GET /recipes/sitemap` (MT-48). Kiểm thử có ngoại lệ **một file**, kèm một bài khẳng định file đó đúng 3600 — để ai đó đổi số cũng bị bắt. |
+| 6 | **Đối chiếu SRS 03/11/2026:** NFR-SEO-002 ghi *"Mỗi trang phải có đầy đủ"* title, description, Open Graph (kể cả `og:image` 1200×630), Twitter Card, canonical — trước đó chỉ trang công thức đủ; trang chủ, `/recipes`, `/categories`, `/search` thiếu Open Graph/Twitter, `/recipes` thiếu canonical, trang danh mục thiếu `og:image`. | Thêm thẻ chia sẻ chung `app/opengraph-image.tsx` (1200×630, `docs/lab08-dev3/og-site.png`) và `buildPageMetadata` trong `lib/seo/metadata.ts`, gắn cho mọi trang không phải công thức; font OG tách ra `lib/seo/og-fonts.ts`. Kiểm bằng 3 test đơn vị và 1 ca E2E duyệt cả 5 trang. |
 
 ## 4. Điểm lệch so với kế hoạch
 

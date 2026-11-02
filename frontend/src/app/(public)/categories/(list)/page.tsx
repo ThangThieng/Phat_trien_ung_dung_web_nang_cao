@@ -3,13 +3,14 @@ import { FolderOpen } from 'lucide-react';
 import EmptyState from '@/components/shared/EmptyState';
 import CategoryCard from '@/features/categories/components/CategoryCard';
 import { getCategories } from '@/features/categories/api';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 
-export const metadata: Metadata = {
-  title: 'Danh mục công thức',
+export const metadata: Metadata = buildPageMetadata({
+  name: 'Danh mục công thức',
   description:
     'Duyệt công thức theo danh mục: món khai vị, món chính, canh súp, món chay, bánh, tráng miệng…',
-  alternates: { canonical: '/categories' },
-};
+  path: '/categories',
+});
 
 /*
  * SRS §5.1: /categories – SSR + Data Cache `revalidate: 1800` (MT-67).
