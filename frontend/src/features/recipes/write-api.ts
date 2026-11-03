@@ -84,7 +84,12 @@ export function getMyRecipe(recipeId: string, accessToken: string) {
 }
 
 export function updateRecipe(recipeId: string, body: UpdateRecipeRequest, accessToken: string) {
-  return apiFetch<RecipeDetail>(`/recipes/${recipeId}`, { method: 'PUT', body, accessToken });
+  return apiFetch<RecipeDetail>(`/recipes/${recipeId}`, {
+    method: 'PUT',
+    body,
+    accessToken,
+    headers: { 'If-Match': `"${body.rowVersion}"` },
+  });
 }
 
 export function addIngredient(recipeId: string, body: IngredientInput, accessToken: string) {
@@ -113,4 +118,13 @@ export function publishRecipe(recipeId: string, accessToken: string) {
 }
 export function unpublishRecipe(recipeId: string, accessToken: string) {
   return apiFetch<RecipeDetail>(`/recipes/${recipeId}/unpublish`, { method: 'PATCH', accessToken });
+}
+export function archiveRecipe(recipeId: string, accessToken: string) {
+  return apiFetch<RecipeDetail>(`/recipes/${recipeId}/archive`, { method: 'PATCH', accessToken });
+}
+export function unarchiveRecipe(recipeId: string, accessToken: string) {
+  return apiFetch<RecipeDetail>(`/recipes/${recipeId}/unarchive`, { method: 'PATCH', accessToken });
+}
+export function deleteRecipe(recipeId: string, accessToken: string) {
+  return apiFetch<void>(`/recipes/${recipeId}`, { method: 'DELETE', accessToken });
 }

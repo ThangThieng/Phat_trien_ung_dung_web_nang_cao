@@ -13,6 +13,8 @@ interface RecipeImageGalleryProps {
   recipeId: string;
   recipeTitle: string;
   accessToken: string;
+  initialImages?: RecipeImageResult[];
+  onChanged?: () => void;
 }
 
 /**
@@ -24,10 +26,12 @@ export default function RecipeImageGallery({
   recipeId,
   recipeTitle,
   accessToken,
+  initialImages = [],
+  onChanged,
 }: RecipeImageGalleryProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [images, setImages] = useState<RecipeImageResult[]>([]);
+  const [images, setImages] = useState<RecipeImageResult[]>(initialImages);
   const [uploading, setUploading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -49,6 +53,7 @@ export default function RecipeImageGallery({
             altText: recipeTitle,
           });
           setImages((current) => [...current, uploaded]);
+          onChanged?.();
         }
       }
     } catch (error) {
@@ -66,6 +71,7 @@ export default function RecipeImageGallery({
         current.map((image) => ({ ...image, isPrimary: image.imageId === imageId })),
       );
       toast.success('Đã đổi ảnh chính.');
+      onChanged?.();
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
@@ -84,6 +90,7 @@ export default function RecipeImageGallery({
         return rest.map((image) => ({ ...image, isPrimary: image.imageId === next.imageId }));
       });
       toast.info('Đã xóa ảnh.');
+      onChanged?.();
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {

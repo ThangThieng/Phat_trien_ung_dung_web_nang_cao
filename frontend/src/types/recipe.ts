@@ -172,4 +172,4 @@ export interface MyRecipesParams {
   sortOrder?: SortOrder;
 }
 
-export type RecipeStatusAction = 'publish' | 'unpublish' | 'archive' | 'unarchive';
+export type RecipeStatusAction = 'publish' | 'unpublish' | 'archive' | 'unarchive' | 'delete';

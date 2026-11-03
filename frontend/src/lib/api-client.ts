@@ -25,6 +25,8 @@ export interface ApiRequestOptions {
   next?: NextFetchRequestConfig;
   cache?: RequestCache;
   signal?: AbortSignal;
+  /** Extra request headers such as `If-Match`; shared hooks still add auth/correlation headers afterwards. */
+  headers?: Record<string, string>;
   skipAuthRefresh?: boolean;
 }
 
@@ -291,7 +293,7 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   const response = await http(path, {
     prefix: getApiBaseUrl(),
     method: options.method ?? 'GET',
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', ...options.headers },
     ...payload,
     next: options.next,
     cache: options.cache,

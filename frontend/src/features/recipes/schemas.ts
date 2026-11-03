@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import { RECIPE_DIFFICULTIES, type CreateRecipeRequest } from '@/types/recipe';
+import { RECIPE_LIMITS } from './limits';
 
 export const DIFFICULTIES = RECIPE_DIFFICULTIES;
 
 /** Cột Nutrition_* là numeric(8,2) – mirror NutritionInputValidator (backend). */
-export const NUTRITION_MAX = 999_999.99;
+export const NUTRITION_MAX = RECIPE_LIMITS.nutritionMax;
 
 export const NUTRITION_FIELDS = [
   { key: 'calories', label: 'Năng lượng (kcal)' },
@@ -66,6 +67,41 @@ export const recipeBasicsSchema = z.object({
 
 export type RecipeBasicsValues = z.infer<typeof recipeBasicsSchema>;
 
+/**
+ * RHF reserves `id` for its own stable key.  Server identities therefore live in
+ * `serverId`, so edits can be diffed without corrupting FieldArray state.
+ */
+export const ingredientFormSchema = z
+  .object({
+    serverId: z.string().optional(),
+    name: z.string().trim().min(1, 'Tên nguyên liệu không được để trống.').max(RECIPE_LIMITS.ingredientNameMax),
+    quantity: z.number().positive('Số lượng phải lớn hơn 0.').max(RECIPE_LIMITS.quantityMax).nullable(),
+    quantityText: z.string().trim().max(RECIPE_LIMITS.quantityTextMax).nullable(),
+    unit: z.string().trim().max(RECIPE_LIMITS.unitMax).nullable(),
+    notes: z.string().trim().max(RECIPE_LIMITS.notesMax).nullable(),
+    orderIndex: z.number().int().min(0),
+  })
+  .refine((value) => value.quantity !== null || Boolean(value.quantityText) || Boolean(value.unit), {
+    message: 'Nhập số lượng, định lượng chữ hoặc đơn vị.',
+    path: ['quantity'],
+  });
+
+export const stepFormSchema = z.object({
+  serverId: z.string().optional(),
+  title: z.string().trim().min(1, 'Tiêu đề bước không được để trống.').max(RECIPE_LIMITS.stepTitleMax),
+  description: z.string().trim().min(1, 'Mô tả bước không được để trống.').max(RECIPE_LIMITS.stepDescriptionMax),
+  timerMinutes: z.number().int().min(0).nullable(),
+  imageUrl: z.string().trim().max(RECIPE_LIMITS.imageUrlMax).nullable(),
+});
+
+/** One source of truth for every one of the five wizard steps (SRS §7.9). */
+export const recipeFormSchema = recipeBasicsSchema.extend({
+  ingredients: z.array(ingredientFormSchema).max(RECIPE_LIMITS.inlineItemsMax),
+  steps: z.array(stepFormSchema).max(RECIPE_LIMITS.inlineItemsMax),
+});
+
+export type RecipeFormValues = z.infer<typeof recipeFormSchema>;
+
 /** Tên trường mà backend có thể trả trong errors{} của 400 – để gắn lỗi vào đúng ô (D-11). */
 export const RECIPE_BASICS_FIELDS = [
   'title',
@@ -102,6 +138,27 @@ export function toCreateRecipeRequest(values: RecipeBasicsValues): CreateRecipeR
     difficulty: values.difficulty,
     instructions: values.instructions.trim() === '' ? null : values.instructions.trim(),
     nutrition: hasNutrition ? nutrition : null,
+  };
+}
+
+/** POST /recipes receives the complete aggregate once; server assigns StepNumber. */
+export function toCreateRecipeAggregate(values: RecipeFormValues): CreateRecipeRequest {
+  return {
+    ...toCreateRecipeRequest(values),
+    ingredients: values.ingredients.map(({ name, quantity, quantityText, unit, notes, orderIndex }) => ({
+      name,
+      quantity,
+      quantityText: quantityText || null,
+      unit: unit || null,
+      notes: notes || null,
+      orderIndex,
+    })),
+    steps: values.steps.map(({ title, description, timerMinutes, imageUrl }) => ({
+      title,
+      description,
+      timerMinutes,
+      imageUrl: imageUrl || null,
+    })),
   };
 }
 
