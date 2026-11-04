@@ -2,7 +2,7 @@
 
 Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (nguyên liệu, các bước, ảnh), xuất bản, tìm kiếm tiếng Việt không dấu; Admin quản trị danh mục và tài khoản.
 **Công nghệ:** .NET 10 Minimal API (Clean Architecture + CQRS/MediatR) · Next.js 15 App Router · PostgreSQL 16 · Redis 7 · MinIO · Hangfire · Nginx · Docker Compose.
-**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.4.md`](SPEC/SRS_Culinary_Blog_v1.2.4.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (69 mâu thuẫn đã giải quyết).
+**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.6.md`](SPEC/SRS_Culinary_Blog_v1.2.6.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (69 mâu thuẫn đã giải quyết).
 
 ## Thành viên
 
@@ -34,7 +34,7 @@ Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (ng
 | Endpoint REST | **48** | SRS Chương 8: 45 endpoint **hoàn thành ở Buổi 4**; v1.2.3 thêm `change-password`, `forgot-password`, `reset-password` (CR-2026-05) — làm ở **Buổi 7** |
 | Mã lỗi ứng dụng | **30** | SRS Phụ lục B – mỗi mã phải có ít nhất 1 kiểm thử (v1.2.2 thêm `AUTH_USER_NOT_FOUND`, `CONCURRENCY_CONFLICT`; v1.2.3 thêm `AUTH_PASSWORD_RESET_TOKEN_INVALID`) |
 | Mâu thuẫn trong SRS đã giải quyết | **69** | MT-01 → MT-69 (CR-2026, CR-2026-02 → CR-2026-06) |
-| Dữ liệu mẫu (SRS §2.6.1, CR-2026-03) | **≥ 20 / ≥ 100** | ≥ 20 danh mục, ≥ 100 công thức; mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước chế biến |
+| Dữ liệu mẫu (SRS §2.6.1, CR-2026-03, CR-2026-07) | **≥ 20 / ≥ 100** | ≥ 20 danh mục, ≥ 100 công thức; mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước chế biến. Hiện có 26 danh mục, 201 công thức: 100 do nhóm biên soạn + 101 bổ sung từ Wikibooks Cookbook (CC BY-SA 4.0) đã dịch |
 
 Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = có thì tốt.
 
@@ -156,7 +156,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 
 ## 1.5 Hạ tầng & việc kỹ thuật chung (không gắn với một FR)
 
-- Dữ liệu mẫu theo SRS §2.6.1 (CR-2026-03): ≥ 20 danh mục, ≥ 100 công thức có nội dung thật, 5 tác giả; bộ sinh dữ liệu mẫu (seeder) idempotent, tự bù cho cơ sở dữ liệu đang có.
+- Dữ liệu mẫu theo SRS §2.6.1 (CR-2026-03, CR-2026-07): 26 danh mục, 201 công thức có nội dung thật (101 công thức dịch từ Wikibooks, chỉ xuất bản khi đã có ảnh giấy phép mở), dinh dưỡng không còn sinh ngẫu nhiên, 5 tác giả; bộ sinh dữ liệu mẫu (seeder) idempotent, tự bù cho cơ sở dữ liệu đang có.
 - Solution 4 tầng + 4 project kiểm thử, `BaseEntity` (Id, CreatedAt, UpdatedAt, IsDeleted, RowVersion), `AuditInterceptor`, `GlobalExceptionMiddleware`, `PagedResult<T>`.
 - Docker Compose 8 service (`nginx, api, hangfire, frontend, postgres, redis, minio, seq`) + `mailhog` cho dev; bản production `docker-compose.prod.yml` (scale `api`×3).
 - Nginx: reverse proxy, rate limit vòng ngoài, resolver DNS động, `/hangfire` có Basic Auth, `/media/` phục vụ ảnh, SSL/HSTS.
@@ -285,6 +285,8 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 - **Commit:** `b058654 chore: bootstrap…` · `9dc3d81 feat(infra): complete docker compose setup and FR-FILE minio upload component`
 
 ### Dev 4 – Nguyễn Thăng Thiêng · Yêu cầu bổ sung: dữ liệu mẫu (đã hoàn thành, 21/09/2026)
+> **Cập nhật sau (CR-2026-07, 04/11/2026):** phần dưới là số liệu tại thời điểm Buổi 2. Catalog hiện có thêm 6 danh mục và 101 công thức dịch từ Wikibooks; dinh dưỡng sinh ngẫu nhiên đã bỏ. Xem `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`, Phụ lục B.
+
 > **Yêu cầu mới, khác file SRS v1.2.0:** SRS v1.2.0 §2.6.1 chỉ yêu cầu 50 công thức và 5 tác giả mẫu. Giảng viên yêu cầu CSDL có ít nhất **20 danh mục, 100 công thức; mỗi công thức ít nhất 10 nguyên liệu và 5 bước chế biến**. Yêu cầu đã được ghi vào **SRS v1.2.1** (CR-2026-03, MT-58) trước khi code.
 - **Đã làm:** catalog dữ liệu thật trong `Infrastructure/Persistence/Seed/Data/` — 20 danh mục (8 cũ + 12 mới: Cơm & Xôi, Lẩu, Hải sản, Gỏi & Salad, Món cuốn, Món hấp, Món chiên, Ăn vặt, Món Hàn Quốc, Món Nhật Bản, Món Thái, Món Âu) và 100 món (50 món cũ giữ nguyên tên, slug, danh mục + 50 món mới), mỗi món 10 – 14 nguyên liệu có định lượng và 5 – 6 bước có mô tả, thời gian; `RecipeSeedCatalog` đọc catalog và khai báo ngưỡng; `DatabaseSeeder` idempotent, tự bù; xóa cache danh mục và Output Cache công thức khi dữ liệu thay đổi; `RecipeSeedCatalogTests` (5 kiểm thử).
 - **Vì sao:** Bogus chọn ngẫu nhiên từ danh sách nguyên liệu chung sẽ ra món sai (sinh tố có nước mắm, bước nấu bằng chữ Latin), trong khi dữ liệu này dùng để kiểm thử tìm kiếm, đo hiệu năng và trình diễn. Vì vậy nội dung món ăn viết tay; Bogus (seed cố định) chỉ sinh tác giả, trạng thái, ngày xuất bản, dinh dưỡng. Bộ sinh dữ liệu mẫu tự bù để không ai phải xóa volume: công thức mẫu cũ chưa từng bị sửa được thay bằng nội dung đúng, dữ liệu người dùng không bị động tới.

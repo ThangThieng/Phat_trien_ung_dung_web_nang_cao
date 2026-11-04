@@ -57,7 +57,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | Gói thư viện | Phiên bản | Mục đích theo SRS | Trạng thái |
 |---|---|---|---|
 | Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.3 | EF Core 10 + PostgreSQL 16, FTS tsvector | ✅ |
-| Microsoft.EntityFrameworkCore.Design | 10.0.12 | Migrations Code-First | ✅ |
+| Microsoft.EntityFrameworkCore.Design | 10.0.12 | Migrations Code-First; chỉ ở `CulinaryBlog.API` là startup project của `dotnet ef` | ✅ |
 | Microsoft.AspNetCore.Identity.EntityFrameworkCore | 10.0.12 | Identity, PBKDF2 (NFR-SEC-001) | ✅ |
 | System.IdentityModel.Tokens.Jwt | 8.22.0 | JwtService HS256 (§6.2) | ✅ |
 | Google.Apis.Auth | 1.76.0 | Xác minh Google ID Token (FR-AUTH-003) | ✅ |
@@ -67,7 +67,7 @@ Runtime: **ASP.NET Core 10.0.12**. Target framework: `net10.0`.
 | System.Security.Cryptography.Pkcs | 10.0.13 | Không dùng trực tiếp — ghim phụ thuộc bắc cầu MailKit → MimeKit (bản 10.0.0 dính GHSA-846f-f764-76mx, GHSA-2fmv-rv2c-59x7, vá ở 10.0.13) | ➕📌 *(thêm ở Buổi 5 — NuGet audit 13/10/2026)* |
 | Hangfire.Core | 1.8.25 | Background jobs (§3.6) | ✅ |
 | Hangfire.PostgreSql | 1.21.1 | Hangfire storage trên PostgreSQL | ✅ |
-| Bogus | 35.6.5 | tạo mẫu (seed) 50 recipe / 5 tác giả (§2.6.1) | ✅ |
+| Bogus | 35.6.5 | tác giả mẫu, phân công tác giả, trạng thái công thức do nhóm biên soạn, ngày xuất bản (§2.6.1, CR-2026-07) | ✅ |
 | Hangfire.AspNetCore | 1.8.25 | Đăng ký `AddHangfire` / `AddHangfireServer` trong DI Infrastructure | ✅ *(thêm ở Buổi 2)* |
 | AspNetCore.HealthChecks.NpgSql | 9.0.0 | FR-OBS-001 | ✅ |
 | AspNetCore.HealthChecks.Redis | 9.0.0 | FR-OBS-001 | ✅ |
@@ -265,7 +265,7 @@ của bộ integration test dùng cùng tag `postgres`/`redis`.
 - **Buổi 5 — biên dịch gói ESM thuần (`ky`):** `next/jest` luôn chèn mẫu `/node_modules/(?!.pnpm)(?!(geist)/)` vào `transformIgnorePatterns`. Jest bỏ qua file khớp **bất kỳ** mẫu nào, nên chỉ thêm `'/node_modules/(?!ky/)'` như hướng dẫn thường gặp là **không đủ** (đã thử: vẫn lỗi *"Must use import to load ES Module"*). `jest.config.mjs` vì vậy xuất một hàm async: dựng cấu hình bằng `next/jest` rồi **thay** mẫu `node_modules` của nó bằng `/node_modules/(?!(ky)/)` (danh sách `ESM_PACKAGES`). Không đổi `next.config.ts` (`transpilePackages`) vì đó là cấu hình build production, không phải của kiểm thử.
 
 ### 6.7 Font Inter (subset `vietnamese`) thay font Geist mặc định
-- **Lý do:** font Geist do `create-next-app` sinh ra **không có subset tiếng Việt**, nên dấu hiển thị bằng font dự phòng, lệch và gây layout shift (ảnh hưởng CLS, NFR-PERF-005). Inter có subset `vietnamese`. SRS không chỉ định font.
+- **Lý do:** font Geist do `create-next-app` sinh ra **không có subset tiếng Việt**, nên dấu hiển thị bằng font dự phòng, lệch và gây layout shift (ảnh hưởng CLS, NFR-PERF-005). Inter có subset `vietnamese`. SRS không chỉ định font. Phần khai báo Geist còn sót trong `layout.tsx` đã gỡ ngày 04/11/2026 (kế hoạch Phụ lục B, R-01).
 
 ### 6.8 Cấu hình StyleCop – tắt một số quy tắc
 - **Quy tắc đã tắt** (trong `.editorconfig`): `SA1101` (bắt buộc `this.`), `SA1309` (cấm `_field`), `SA1200`, `SA1600–1602` (bắt buộc XML doc mọi element), `SA1633` (file header), `SA1402/SA1649` (1 type / file), `SA1413`, `SA1010`, `SA1000`.
@@ -307,6 +307,11 @@ của bộ integration test dùng cùng tag `postgres`/`redis`.
 Bảng §1.3 của kế hoạch 6 buổi cũ (`KE_HOACH_PHAT_TRIEN_6_BUOI.md`, nay chỉ còn trong lịch sử git) đã chốt các điểm này theo SRS v1.0.0 (mã lỗi 422/409, Redis hay IMemoryCache cho danh mục, hard/soft delete recipe, độ dài refresh token, điều kiện xuất bản, Hangfire worker). Ở mỗi điểm đều chọn **một trong các phương án chính SRS nêu**, không đưa công nghệ ngoài vào. Từ 19/09/2026 các quyết định này được thay bằng SRS v1.2.0 và `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` (57 mục MT); kế hoạch hiện hành là `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`.
 
 ---
+
+
+### 6.14 Công cụ dữ liệu mẫu trong `tools/recipe-etl` (CR-2026-07, 04/11/2026) ➕
+
+Python 3.11, `mwparserfromhell` 0.6.6 và `pytest` 8.4.2 chỉ dùng để tạo dữ liệu mẫu từ Wikibooks, chạy ngoài ứng dụng và **không vào image production**. Đây là công cụ bổ sung, không thay thế công nghệ nào của SRS. Backend không thêm gói NuGet mới.
 
 ## 7. Lệnh kiểm tra nhanh
 
