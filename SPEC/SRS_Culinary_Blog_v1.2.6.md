@@ -8,7 +8,7 @@
 
 | Thuộc tính | Giá trị |
 | --- | --- |
-| Phiên bản tài liệu | 1.2.4 |
+| Phiên bản tài liệu | 1.2.6 |
 | Ngày phát hành | 21/10/2026 |
 | Trạng thái | Đã duyệt (Approved) |
 | Công nghệ Backend | .NET 10 Minimal APIs, C# |
@@ -25,6 +25,8 @@
 
 | Phiên bản | Ngày | Tác giả / Vai trò | Nội dung thay đổi | Trạng thái |
 | --- | --- | --- | --- | --- |
+| 1.2.5 | 04/11/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-07** (MT-70): §2.6.1 — **bổ sung** công thức thật từ Wikibooks Cookbook (CC BY-SA 4.0), dịch sang tiếng Việt, ghim theo revision, ghi công trên trang chi tiết, và chỉ xuất bản khi có ảnh giấy phép mở; **bỏ dinh dưỡng ngẫu nhiên** (lấy từ nguồn khi đạt kiểm tra hợp lý, nếu không thì NULL). 100 công thức do nhóm biên soạn và ngưỡng 20/100/10/5 giữ nguyên. Không đổi FR, endpoint, mã lỗi, schema. | Đã duyệt (Approved) |
+| 1.2.6 | 04/11/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-08** (MT-71): FR-SRCH-001, §7.2 — `SearchVector` có trọng số (`Title` A, `Description` B) và hàm `search_normalize` gộp từ ghép, để khớp ở tiêu đề xếp trên khớp ở mô tả và `pho` không còn khớp `phô mai`, `phổ biến`, `thành phố`. **Có đổi schema** (biểu thức cột generated, thêm một hàm). Không đổi FR, endpoint, mã lỗi. | Đã duyệt (Approved) |
 | 1.2.4 | 21/10/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-06** (MT-69), phát sinh khi **đo tải** cho yêu cầu Lab 8 (Buổi 8 — k6, 100 người dùng đồng thời, tỉ lệ 70 % đọc / 20 % tìm kiếm / 10 % ghi): cột "Invalidate khi" của bảng TTL chuẩn (NFR-PERF-003) xóa `recipes:list:` và `categories:detail:` ở **mọi** thay đổi công thức, kể cả bản nháp không bao giờ xuất hiện ở endpoint công khai — hit rate đo được **75,4 %**, trái chính chỉ tiêu ≥ 80 % của NFR-PERF-003 (lượt đối chứng không ghi: 97,9 %). Sửa: (1) hai họ khóa công khai chỉ bị xóa khi thay đổi **chạm tới tập Published** (công thức Published đổi nội dung, hoặc vào/ra trạng thái Published); `recipe:{slug}` vẫn xóa ở mọi thay đổi của công thức đó; (2) các bước "invalidate" trong FR-RCP-003 → FR-RCP-007 chỉ còn tham chiếu bảng TTL (trước đây ghi lại riêng và lệch bảng: xóa `search:` dù bảng ghi "không invalidate", xóa `categories:` khi tạo bản nháp dù `recipeCount` chỉ đếm Published). Đo lại sau khi sửa: **97,3 %**. Không đổi FR, endpoint, mã lỗi, schema. | Đã duyệt (Approved) |
 | 1.2.3 | 12/10/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-05** (MT-64 → MT-68), phát sinh khi lập kế hoạch cho **yêu cầu tối thiểu Lab 5 → Lab 8** của giảng viên: (1) bổ sung **FR-AUTH-010** Đổi mật khẩu và **FR-AUTH-011** Quên & đặt lại mật khẩu qua email — tổng FR 37 → **39**; (2) bổ sung **3 endpoint** `POST /auth/change-password`, `POST /auth/forgot-password`, `POST /auth/reset-password` — Chương 8: 45 → **48 endpoint**; (3) bổ sung **1 mã lỗi** `AUTH_PASSWORD_RESET_TOKEN_INVALID` (400) — Phụ lục B 29 → **30 mã**, và mã HTTP 202 ở Phụ lục A; (4) `GET /recipes/search` nhận thêm `maxCookTime`, `maxPrepTime`, `minServings` (tùy chọn, tương thích ngược); (5) NFR-SEC-007 cấm ghi log token đặt lại mật khẩu; §5.1 thêm hai route `/auth/forgot-password`, `/auth/reset-password`; (6) **CSP dùng nonce (NFR-SEC-005) buộc mọi trang HTML render động** — §5.1 đổi `/`, `/recipes/[slug]`, `/categories` từ ISR sang **SSR + Data Cache** với cùng giá trị `revalidate` (MT-67, đã kiểm chứng thực nghiệm trên Next.js 15.5.25); (7) §5.2 bổ sung `If-Match` vào `Access-Control-Allow-Headers` và danh sách `Access-Control-Expose-Headers` (MT-68). Không đổi schema. | Đã duyệt (Approved) |
 | 1.2.2 | 29/09/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-04** (MT-59 → MT-63), phát sinh khi lập kế hoạch cho hai yêu cầu của giảng viên — Buổi 3 *"cài đặt domain exceptions, repository & Unit of Work, middleware Problem Details"* và Buổi 4 *"hoàn thành việc cài đặt tất cả API endpoints"*: (1) bổ sung **2 mã lỗi** `AUTH_USER_NOT_FOUND` (404) và `CONCURRENCY_CONFLICT` (409) — Phụ lục B 27 → **29 mã**; (2) bổ sung **1 endpoint** `GET /recipes/mine/{id}` để trang sửa công thức đọc được bản nháp — Chương 8: 44 → **45 endpoint**; (3) làm rõ 2 chỗ tự mâu thuẫn (`AUTH_GOOGLE_TOKEN_INVALID` 400/401; `categoryId` không tồn tại → 400); (4) errata §6.2: interface truy cập dữ liệu thuộc tầng Application, `ApplicationUser` thuộc Infrastructure. Không thay đổi FR, schema hay hành vi của endpoint đang chạy. | Đã duyệt (Approved) |
@@ -36,7 +38,7 @@
 | 0.8.0 | 05/05/2026 | Senior BA | Hoàn thiện Chương 3 (FR), bổ sung FR-FILE, FR-JOB, FR-OBS. | Draft |
 | 0.5.0 | 15/04/2026 | Senior BA | Phác thảo ban đầu: Chương 1–4 (skeleton). | Draft |
 
-**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.4 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-06**, kế thừa toàn bộ quyết định của **CR-2026-05** (v1.2.3), **CR-2026-04** (v1.2.2), **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G), ở v1.2.3 được đánh dấu `[CR-2026-05 / MT-xx]` (Phụ lục H), ở v1.2.4 được đánh dấu `[CR-2026-06 / MT-69]` (Phụ lục I).
+**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.6 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-08**, kế thừa toàn bộ quyết định của **CR-2026-06** (v1.2.4), **CR-2026-05** (v1.2.3), **CR-2026-04** (v1.2.2), **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G), ở v1.2.3 được đánh dấu `[CR-2026-05 / MT-xx]` (Phụ lục H), ở v1.2.4 được đánh dấu `[CR-2026-06 / MT-69]` (Phụ lục I), ở v1.2.5 được đánh dấu `[CR-2026-07 / MT-70]` (Phụ lục J).
 
 **Phạm vi CR-2026 (v1.1.0):** xử lý toàn bộ 41 điểm mâu thuẫn/bất nhất (MT-01 → MT-41) được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi quyết định đều được chọn theo tiêu chí **kiến trúc dài hạn**: toàn vẹn dữ liệu (DDD/ràng buộc DB), cách ly bảo mật cache, giảm gánh nặng cho client, và chuẩn hóa RESTful API. Bảng truy vết đầy đủ 41 quyết định nằm tại **Phụ lục D**.
 
@@ -58,6 +60,10 @@ Bảng truy vết nằm tại **Phụ lục G**.
 - **hai lỗi kỹ thuật của chính SRS** lộ ra khi thiết kế phần bảo mật API (Lab 5) và Zustand store + CSP (Lab 6) — MT-67, MT-68: CSP dùng nonce không thể đi cùng ISR, và danh sách header CORS thiếu những header mà §8.3, §5.2 tự dùng.
 
 Bảng truy vết nằm tại **Phụ lục H**.
+
+**Phạm vi CR-2026-07 (v1.2.5):** chỉ §2.6.1 thay đổi. Dữ liệu mẫu được **bổ sung** công thức thật từ Wikibooks Cookbook, dịch sang tiếng Việt, kèm ảnh giấy phép mở; dinh dưỡng không còn sinh ngẫu nhiên. Giữ nguyên 100 công thức do nhóm biên soạn, ngưỡng 20/100/10/5, FR, endpoint, mã lỗi và schema. Bảng truy vết nằm tại **Phụ lục J**.
+
+**Phạm vi CR-2026-08 (v1.2.6):** chỉ FR-SRCH-001 và §7.2 thay đổi: cột generated `SearchVector` có trọng số và dùng hàm `search_normalize`. Tìm không dấu, prefix matching, endpoint, DTO và mã lỗi giữ nguyên. Bảng truy vết nằm tại **Phụ lục K**.
 
 **Phạm vi CR-2026-06 (v1.2.4):** lần đầu một Change Request phát sinh từ **số đo của hệ thống đang chạy** chứ không từ đọc tài liệu. Khi đo tải cho Lab 8 (Buổi 8), hai yêu cầu của chính NFR-PERF-003 mâu thuẫn nhau: chỉ tiêu hit rate ≥ 80 % và cột "Invalidate khi" của bảng TTL (MT-69). Đồng thời các bước "invalidate" mà FR-RCP-003 → FR-RCP-007 tự ghi lại lệch khỏi bảng — trái nguyên tắc "bảng TTL là nguồn sự thật duy nhất". Bảng truy vết nằm tại **Phụ lục I**.
 
@@ -224,7 +230,7 @@ Tài liệu SRS này được tổ chức thành 8 chương chính và **8 phụ
 - **Chương 6 – Kiến trúc Hệ thống:** Clean Architecture Backend, Next.js App Router Frontend, chiến lược caching và deployment.
 - **Chương 7 – Mô hình Dữ liệu:** ERD mô tả văn bản và bảng định nghĩa chi tiết từng entity/table, kèm Bảng Giới hạn Dữ liệu Chuẩn (mục 7.9) là nguồn sự thật duy nhất cho mọi validator và cột DB.
 - **Chương 8 – Đặc tả API REST:** Quy ước, chuẩn lỗi RFC 7807, và bảng tổng hợp tất cả **48 endpoint** (37 của v1.1.0 + 7 bổ sung ở CR-2026-02 + 1 bổ sung ở v1.2.2 + 3 bổ sung ở v1.2.3).
-- **Phụ lục A–H:** HTTP Status Codes, Application Error Codes, Từ điển thuật ngữ và các bảng truy vết Change Request: CR-2026 (v1.1.0), CR-2026-02 (v1.2.0), CR-2026-03 (v1.2.1), CR-2026-04 (v1.2.2), CR-2026-05 (v1.2.3).
+- **Phụ lục A–K:** HTTP Status Codes, Application Error Codes, Từ điển thuật ngữ và các bảng truy vết Change Request: CR-2026 (v1.1.0), CR-2026-02 (v1.2.0), CR-2026-03 (v1.2.1), CR-2026-04 (v1.2.2), CR-2026-05 (v1.2.3).
 
 > **Cách đếm FR:** 39 FR được liệt kê ở bảng mục 2.2. Trong đó **28 FR** có mục đặc tả đầy đủ theo template chuẩn (FR-AUTH-001 → 011, FR-CAT, FR-RCP, FR-SRCH-001); **11 FR** (FR-SRCH-002/003/004, FR-FILE-001/002, FR-JOB-001/002/003, FR-OBS-001/002/003) được trình bày dạng bảng gộp vì nội dung ngắn — nhưng từ v1.1.0 tất cả đều **có đầy đủ mức ưu tiên MoSCoW**.
 
@@ -372,9 +378,11 @@ Các ràng buộc sau đây là **bắt buộc và không thể thương lượn
 - Môi trường development có kết nối Internet để pull Docker images và package NuGet/npm.
 - PostgreSQL, Redis và MinIO được cung cấp qua Docker Compose trong development và dưới dạng managed service (hoặc VPS) trong production.
 - Người dùng cuối có trình duyệt hiện đại và kết nối Internet đủ ổn định để load ảnh từ MinIO.
-- Dữ liệu test (seed) có **ít nhất 20 danh mục và 100 công thức; mỗi công thức có ít nhất 10 nguyên liệu và ít nhất 5 bước chế biến**, cùng 5 tác giả mẫu. Nội dung món ăn (tên, mô tả, nguyên liệu, định lượng, các bước, thời gian) phải đúng với món; thư viện Bogus sinh các giá trị ngẫu nhiên (tác giả, trạng thái, ngày xuất bản, dinh dưỡng) với seed cố định. Việc seed là idempotent: chạy lại chỉ bổ sung phần còn thiếu, không ghi đè dữ liệu do người dùng tạo hoặc đã chỉnh sửa.
+- Dữ liệu test (seed) có **ít nhất 20 danh mục và 100 công thức; mỗi công thức có ít nhất 10 nguyên liệu và ít nhất 5 bước chế biến**, cùng 5 tác giả mẫu. Nội dung món ăn (tên, mô tả, nguyên liệu, định lượng, các bước, thời gian) phải đúng với món, gồm 100 công thức do nhóm biên soạn và các công thức bổ sung từ **Wikibooks Cookbook (CC BY-SA 4.0)**, được dịch sang tiếng Việt, ghim theo revision và ghi công trên trang chi tiết. Công thức bổ sung chỉ được xuất bản khi có ảnh giấy phép mở. Dinh dưỡng lấy từ nguồn khi đạt kiểm tra hợp lý, nếu không thì để NULL; không sinh số ngẫu nhiên. Thư viện Bogus chỉ sinh tác giả mẫu, phân công tác giả, trạng thái của 100 công thức do nhóm biên soạn và ngày xuất bản, với seed cố định. Việc seed là idempotent: chạy lại chỉ bổ sung phần còn thiếu, không ghi đè dữ liệu do người dùng tạo hoặc đã chỉnh sửa.
 
 > **[CR-2026-03 / MT-58]** v1.2.0 ghi *"Bogus với 50 recipe mẫu và 5 tác giả mẫu"*. Yêu cầu mới của giảng viên cho Buổi 2 nâng lên ≥ 20 danh mục, ≥ 100 công thức, ≥ 10 nguyên liệu và ≥ 5 bước mỗi công thức. Dữ liệu này dùng để kiểm thử tìm kiếm tiếng Việt, phân trang, lọc và trình diễn, nên phải là công thức có nghĩa chứ không phải chuỗi sinh ngẫu nhiên.
+
+> **[CR-2026-07 / MT-70]** v1.2.4 để Bogus sinh cả trạng thái và dinh dưỡng, nên trang chi tiết hiển thị số dinh dưỡng không liên quan tới nguyên liệu; dữ liệu mẫu cũng không có ảnh, khiến JSON-LD thiếu `image` (NFR-SEO-001). Ngưỡng 20/100/10/5 của giảng viên (CR-2026-03) giữ nguyên.
 - Email service **SMTP (gửi qua MailKit)** được cấu hình sẵn khi triển khai production để gửi email chào mừng; môi trường development dùng Mailhog.
 - Giới hạn dữ liệu kỳ vọng (initial scale): ≤ 10,000 công thức, ≤ 5,000 người dùng, ≤ 50 danh mục – phù hợp với single-server deployment.
 
@@ -1493,7 +1501,7 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 | **Nhóm chức năng** | Module Tìm kiếm và Phân trang (FR-SRCH) |
 | **Tác nhân** | Tất cả (Guest / Author / Admin) |
 | **Mức ưu tiên (MoSCoW)** | M – Must Have |
-| **Mô tả** | Hệ thống cung cấp tính năng tìm kiếm toàn văn bản (FTS) cho công thức sử dụng PostgreSQL `tsvector`/`tsquery` với text search configuration **`simple`** kết hợp **`unaccent`**. Cột `SearchVector` là **generated column `STORED`** — PostgreSQL tự tính lại mỗi khi `Title` hoặc `Description` thay đổi, không cần trigger và không thể quên đồng bộ. Kết quả được xếp hạng bởi `ts_rank()`. Bỏ dấu tiếng Việt nên "pho" tìm được "phở". |
+| **Mô tả** | Hệ thống cung cấp tính năng tìm kiếm toàn văn bản (FTS) cho công thức sử dụng PostgreSQL `tsvector`/`tsquery` với text search configuration **`simple`** kết hợp **`unaccent`**. Cột `SearchVector` là **generated column `STORED`** — PostgreSQL tự tính lại mỗi khi `Title` hoặc `Description` thay đổi, không cần trigger và không thể quên đồng bộ. Kết quả được xếp hạng bởi `ts_rank()`, khớp ở `Title` (trọng số A) xếp trên khớp ở `Description` (trọng số B). Bỏ dấu tiếng Việt nên "pho" tìm được "phở"; các từ ghép khác nghĩa trong danh sách của `search_normalize` (mục 7.2) không khớp. *(v1.2.6 — MT-71)* |
 | **Điều kiện tiên quyết** | 1. PostgreSQL extensions `unaccent` và `pg_trgm` đã được install. 2. Hàm wrapper `unaccent_immutable(text)` đã được tạo (xem mục 7.2). 3. GIN index trên cột `SearchVector` đã được tạo. 4. Tham số `q` không rỗng, tối thiểu 2 ký tự. |
 | **HTTP Method & Endpoint** | `GET /api/v1/recipes/search?q={searchTerm}&page={n}&pageSize={n}&categoryId={guid}&difficulty={d}&maxCookTime={minutes}&maxPrepTime={minutes}&minServings={n}` *(ba tham số cuối: v1.2.3 — CR-2026-05 / MT-66)* |
 | **Kết quả mong đợi** | `PagedResult<RecipeSummaryDto>` được xếp hạng theo độ liên quan (`ts_rank`), chỉ chứa công thức `Published`. Hỗ trợ tìm kiếm không dấu tiếng Việt. |
@@ -1981,7 +1989,7 @@ Thực thể trung tâm của hệ thống. Một Recipe thuộc một Category 
 | Status | `smallint` (enum) | NOT NULL, DEFAULT 0 | `IDX_Recipe_Status` | `RecipeStatus`: 0=Draft, 1=Published, 2=Archived. |
 | CategoryId | `uuid` | NOT NULL, FK → `Categories.Id` | `IDX_Recipe_CategoryId` (B-tree) | Khóa ngoại đến Category. ON DELETE RESTRICT (không xóa category có recipe). |
 | AuthorId | `varchar(450)` | NOT NULL, FK → `AspNetUsers.Id` | `IDX_Recipe_AuthorId` (B-tree) | Khóa ngoại đến ApplicationUser (Author). |
-| SearchVector | `tsvector` | **GENERATED ALWAYS AS (...) STORED** | `IDX_Recipe_Search` (GIN) | Full-text search vector. **Generated column**, PostgreSQL tự tính lại khi `Title`/`Description` thay đổi — không dùng trigger. Biểu thức: `to_tsvector('simple', unaccent_immutable(coalesce("Title",'') \|\| ' ' \|\| coalesce("Description",'')))`. |
+| SearchVector | `tsvector` | **GENERATED ALWAYS AS (...) STORED** | `IDX_Recipe_Search` (GIN) | Full-text search vector. **Generated column**, PostgreSQL tự tính lại khi `Title`/`Description` thay đổi — không dùng trigger. Biểu thức: `setweight(to_tsvector('simple', public.search_normalize(coalesce("Title",''))), 'A') \|\| setweight(to_tsvector('simple', public.search_normalize(coalesce("Description",''))), 'B')`. *(v1.2.6 — MT-71)* |
 | PublishedAt | `timestamptz` | NULL | `IDX_Recipe_PublishedAt` | Thời điểm publish. **Chỉ được gán ở lần publish đầu tiên** (`PublishedAt == null`); các lần publish sau **không ghi đè**. NULL nếu chưa từng publish. Là cột sắp xếp của trang chủ (mục 5.1) và nguồn của `datePublished` trong JSON-LD. |
 | CreatedAt | `timestamptz` | NOT NULL | — | (BaseEntity) |
 | UpdatedAt | `timestamptz` | NULL | — | (BaseEntity) |
@@ -2007,6 +2015,12 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE OR REPLACE FUNCTION unaccent_immutable(text)
 RETURNS text AS $$ SELECT unaccent('unaccent', $1) $$
 LANGUAGE sql IMMUTABLE STRICT;
+
+-- v1.2.6 (MT-71): chuyển chữ thường, gộp từ ghép khi còn dấu, rồi bỏ dấu.
+-- Danh sách: phô mai/phô mát, phổ biến, phổ thông, thành phố, đường phố, khu phố, phố cổ, phố hội.
+-- Mỗi từ ghép thành một token bắt đầu bằng "q" (qphomai, qthanhpho…) để truy vấn prefix pho:* không khớp.
+-- Toàn văn hàm: migration B8_Search_TitleWeightCompoundTerms.
+CREATE OR REPLACE FUNCTION public.search_normalize(text) RETURNS text ... LANGUAGE sql IMMUTABLE STRICT;
 
 CREATE UNIQUE INDEX "IDX_Recipe_Slug" ON "Recipes"("Slug") WHERE "IsDeleted" = false;
 ```
@@ -2536,6 +2550,26 @@ Bảng dưới đây truy vết **16 điểm** (MT-42 → MT-57) phát hiện �
 | MT-69 | NFR-PERF-003 tự mâu thuẫn: cột "Invalidate khi" xóa `recipes:list:`, `categories:detail:` ở mọi thay đổi công thức — kể cả bản nháp không thuộc endpoint công khai nào — nên đo tải Buổi 8 (10 % ghi lên bản nháp) chỉ đạt hit rate **75,4 %** < 80 %; đồng thời FR-RCP-003 → FR-RCP-007 tự ghi lại danh sách khóa cần xóa và lệch bảng (xóa `search:`, xóa `categories:` khi tạo bản nháp) | Hai họ khóa công khai chỉ bị xóa khi thay đổi **chạm tới tập Published**; `recipe:{slug}` vẫn xóa ở mọi thay đổi; `search:` không bao giờ bị xóa chủ động; FR chỉ tham chiếu bảng TTL. Đo lại: **97,3 %** | NFR-PERF-003 (bảng TTL + ghi chú), FR-RCP-003 (Kết quả mong đợi, bước 11), FR-RCP-004 bước 10, FR-RCP-005 bước 7, FR-RCP-006 bước 4, FR-RCP-007 bước 5 | Buổi 8 — Dev 4 (audit cache) |
 
 **Tổng kết:** 1/1 điểm đã xử lý. Số liệu sau v1.2.4 không đổi: **39 FR**, **48 endpoint**, **30 mã lỗi**. Toàn tài liệu: **69 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua sáu Change Request.
+
+---
+
+## PHỤ LỤC J – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-07
+
+| MT | Vấn đề ở v1.2.4 | Quyết định trong v1.2.5 | Mục SRS thay đổi | Hiện thực |
+| --- | --- | --- | --- | --- |
+| MT-70 | §2.6.1 để Bogus sinh dinh dưỡng và trạng thái, nên trang chi tiết hiển thị số dinh dưỡng không liên quan tới nguyên liệu; dữ liệu mẫu không có ảnh nên JSON-LD thiếu `image` (NFR-SEO-001) | Bổ sung công thức thật từ Wikibooks Cookbook (CC BY-SA 4.0), dịch sang tiếng Việt, ghim theo revision, ghi công trên trang chi tiết; công thức bổ sung chỉ xuất bản khi có ảnh giấy phép mở; dinh dưỡng lấy từ nguồn khi đạt kiểm tra, nếu không thì NULL. Giữ 100 công thức cũ và ngưỡng 20/100/10/5 | §2.6.1 | `tools/recipe-etl`, `tools/seed-nutrition-cleanup`, `Infrastructure/Persistence/Seed`, `Infrastructure/Jobs/SeedImageImportJob`, `RecipeSourceNote` |
+
+**Tổng kết:** 1/1 điểm đã xử lý. Số liệu sau v1.2.5 không đổi: **39 FR**, **48 endpoint**, **30 mã lỗi**. Toàn tài liệu: **70 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua bảy Change Request.
+
+---
+
+## PHỤ LỤC K – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-08
+
+| MT | Vấn đề ở v1.2.5 | Quyết định trong v1.2.6 | Mục SRS thay đổi | Hiện thực |
+| --- | --- | --- | --- | --- |
+| MT-71 | `SearchVector` không phân trọng số và bỏ dấu toàn bộ, nên trên dữ liệu thật tìm `pho` trả 55 kết quả và "Welsh Rarebit" (có "phô mai") xếp trên "Phở bò" | `Title` trọng số A, `Description` trọng số B; hàm `search_normalize` gộp từ ghép khác nghĩa thành token riêng; `SearchTermBuilder` ánh xạ từ khóa sang cùng token | FR-SRCH-001, §7.2 | Migration `B8_Search_TitleWeightCompoundTerms`, `SearchTermBuilder`, `RecipeSearchRelevanceTests` |
+
+**Tổng kết:** 1/1 điểm đã xử lý. Số liệu sau v1.2.6 không đổi: **39 FR**, **48 endpoint**, **30 mã lỗi**. Toàn tài liệu: **71 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua tám Change Request.
 
 ---
 
