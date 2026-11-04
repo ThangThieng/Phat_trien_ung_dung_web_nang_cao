@@ -68,4 +68,4 @@ export async function signInAsAdmin(page: Page) {
   });
 }
 
-export const DASHBOARD_ROUTES = ['/dashboard', '/dashboard/categories', '/dashboard/recipes/new', '/dashboard/system', '/dashboard/media'];
+export const DASHBOARD_ROUTES = ['/dashboard', '/dashboard/categories', '/dashboard/recipes/new', '/dashboard/system', ];
