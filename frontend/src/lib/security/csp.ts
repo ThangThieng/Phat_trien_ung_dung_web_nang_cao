@@ -26,13 +26,16 @@ export const IMAGE_STYLE_ATTRIBUTE_HASHES = [
   "'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk='", // next/image không fill: color:transparent
 ] as const;
 
+/** Nút đăng nhập của Google Identity Services nạp stylesheet này (FR-AUTH-003); tài liệu của Google yêu cầu cho phép đúng URL này. */
+const GOOGLE_STYLESHEET = 'https://accounts.google.com/gsi/style';
+
 export function buildContentSecurityPolicy(nonce: string, development = process.env.NODE_ENV !== 'production'): string {
   const scriptSources = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", 'https://accounts.google.com/gsi/client'];
   if (development) scriptSources.push("'unsafe-eval'");
   // Có nonce/hash thì trình duyệt bỏ qua 'unsafe-inline' — nên dev (Fast Refresh chèn style không nonce) chỉ dùng 'unsafe-inline'.
   const styleSources = development
     ? ["'self'", "'unsafe-inline'"]
-    : ["'self'", `'nonce-${nonce}'`, ...LIBRARY_STYLE_HASHES, ...IMAGE_STYLE_ATTRIBUTE_HASHES];
+    : ["'self'", `'nonce-${nonce}'`, ...LIBRARY_STYLE_HASHES, ...IMAGE_STYLE_ATTRIBUTE_HASHES, GOOGLE_STYLESHEET];
   return [
     "default-src 'self'",
     `script-src ${scriptSources.join(' ')}`,

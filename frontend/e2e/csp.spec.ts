@@ -51,6 +51,8 @@ test('an authenticated visitor with an external callback is sent to the safe fal
       version: 1,
     }));
   });
+  // Token ở đây là giả: API thật sẽ trả 401 và đẩy về trang đăng nhập, làm test phụ thuộc thời điểm. Route đăng ký sau được ưu tiên.
+  await page.route('**/api/v1/**', (route) => route.fulfill({ json: { items: [], totalCount: 0, page: 1, pageSize: 1, totalPages: 0, hasNextPage: false, hasPreviousPage: false } }));
   await page.route('**/api/v1/auth/refresh', async (route) => {
     await route.fulfill({
       contentType: 'application/json',

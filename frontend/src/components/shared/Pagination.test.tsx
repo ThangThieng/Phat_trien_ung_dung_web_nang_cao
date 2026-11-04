@@ -57,7 +57,7 @@ describe('<Pagination />', () => {
   it('trang đầu: nút "Trang trước" bị vô hiệu (không phải link)', () => {
     render(<Pagination page={1} totalPages={3} buildHref={buildHref} />);
     expect(screen.queryByRole('link', { name: 'Trang trước' })).not.toBeInTheDocument();
-    expect(screen.getByLabelText('Trang trước')).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByText('Trang trước').parentElement).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('tôn trọng hasNextPage/hasPreviousPage của PagedResult', () => {

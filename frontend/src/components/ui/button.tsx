@@ -53,10 +53,22 @@ function Button({
     asChild?: boolean
     isLoading?: boolean
   }) {
-  const Comp = asChild ? Slot.Root : "button"
+  // Slot chỉ nhận đúng một phần tử con: thêm cả `false` của biểu thức spinner vào là React báo lỗi và trang sập.
+  if (asChild) {
+    return (
+      <Slot.Root
+        data-slot="button"
+        data-variant={variant}
+        data-size={size}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+    )
+  }
 
   return (
-    <Comp
+    // eslint-disable-next-line react/button-has-type -- nơi dùng truyền `type` qua props
+    <button
       data-slot="button"
       data-variant={variant}
       data-size={size}
@@ -72,7 +84,7 @@ function Button({
         />
       )}
       {props.children}
-    </Comp>
+    </button>
   )
 }
 

@@ -37,8 +37,6 @@ describe('content security policy', () => {
     expect(policy).toContain("form-action 'self'");
     expect(policy).toContain("frame-ancestors 'none'");
     expect(policy).toContain('upgrade-insecure-requests');
-    expect(policy).toContain("style-src 'self' 'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='");
-    expect(policy).not.toContain("style-src 'self' 'unsafe-inline'");
     expect(policy).not.toContain('fonts.googleapis.com');
     expect(policy).not.toContain('fonts.gstatic.com');
   });
@@ -49,7 +47,7 @@ describe('content security policy', () => {
       'style-src',
     );
     expect(styleSource).toBe(
-      `style-src 'self' 'nonce-request-nonce' ${[...LIBRARY_STYLE_HASHES, ...IMAGE_STYLE_ATTRIBUTE_HASHES].join(' ')}`,
+      `style-src 'self' 'nonce-request-nonce' ${[...LIBRARY_STYLE_HASHES, ...IMAGE_STYLE_ATTRIBUTE_HASHES, 'https://accounts.google.com/gsi/style'].join(' ')}`,
     );
     expect(styleSource).not.toContain("'unsafe-inline'");
   });

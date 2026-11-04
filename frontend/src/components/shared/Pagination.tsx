@@ -66,7 +66,8 @@ export default function Pagination({
               <ChevronLeft aria-hidden className="h-4 w-4" />
             </Link>
           ) : (
-            <span className={DISABLED} aria-disabled="true" aria-label="Trang trước">
+            <span className={DISABLED} aria-disabled="true">
+              <span className="sr-only">Trang trước</span>
               <ChevronLeft aria-hidden className="h-4 w-4" />
             </span>
           )}
@@ -105,7 +106,8 @@ export default function Pagination({
               <ChevronRight aria-hidden className="h-4 w-4" />
             </Link>
           ) : (
-            <span className={DISABLED} aria-disabled="true" aria-label="Trang sau">
+            <span className={DISABLED} aria-disabled="true">
+              <span className="sr-only">Trang sau</span>
               <ChevronRight aria-hidden className="h-4 w-4" />
             </span>
           )}

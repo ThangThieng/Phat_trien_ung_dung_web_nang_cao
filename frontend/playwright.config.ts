@@ -17,6 +17,8 @@ export default defineConfig({
   use: {
     baseURL: external ?? `http://127.0.0.1:${port}`,
     trace: 'retain-on-failure',
+    // Stack production ở máy dùng chứng chỉ tự ký.
+    ignoreHTTPSErrors: Boolean(external),
     // Trình duyệt cài sẵn khác phiên bản Playwright của dự án (CI, container): trỏ thẳng tới file chạy.
     launchOptions: { executablePath: process.env.E2E_CHROMIUM_PATH || undefined },
   },
