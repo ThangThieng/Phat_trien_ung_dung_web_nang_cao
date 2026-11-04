@@ -137,7 +137,7 @@ namespace CulinaryBlog.Infrastructure.Persistence.Migrations
                     b.Property<NpgsqlTsVector>("SearchVector")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
-                        .HasComputedColumnSql("to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))", true);
+                        .HasComputedColumnSql("setweight(to_tsvector('simple', public.search_normalize(coalesce(\"Title\",''))), 'A') || setweight(to_tsvector('simple', public.search_normalize(coalesce(\"Description\",''))), 'B')", true);
 
                     b.Property<int>("Servings")
                         .HasColumnType("integer");

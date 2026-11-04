@@ -21,7 +21,8 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
     /// <c>B4_Search_FTS</c> tạo (unaccent() mặc định không IMMUTABLE nên không dùng trực tiếp được).
     /// </summary>
     public const string SearchVectorSql =
-        "to_tsvector('simple', unaccent_immutable(coalesce(\"Title\",'') || ' ' || coalesce(\"Description\",'')))";
+        "setweight(to_tsvector('simple', public.search_normalize(coalesce(\"Title\",''))), 'A') || "
+        + "setweight(to_tsvector('simple', public.search_normalize(coalesce(\"Description\",''))), 'B')";
 
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
