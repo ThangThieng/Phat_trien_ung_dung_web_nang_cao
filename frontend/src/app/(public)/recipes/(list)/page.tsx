@@ -13,13 +13,15 @@ import {
   countActiveFilters,
   parseRecipeListState,
 } from '@/features/recipes/search-params';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 import type { Category } from '@/types/category';
 
-export const metadata: Metadata = {
-  title: 'Công thức nấu ăn',
+export const metadata: Metadata = buildPageMetadata({
+  name: 'Công thức nấu ăn',
   description:
     'Khám phá hàng trăm công thức nấu ăn Việt Nam và quốc tế – từ món khai vị, món chính đến tráng miệng.',
-};
+  path: '/recipes',
+});
 
 // SRS §5.1: /recipes render SSR dynamic
 export const dynamic = 'force-dynamic';
@@ -92,8 +94,10 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
             />
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {result.items.map((recipe) => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
+              {/* WCAG 1.3.1: tiêu đề thẻ là h3 nên cần một h2 phía trên — bảng lọc (h2) bị ẩn dưới 1024 px. */}
+              <h2 className="sr-only">Danh sách công thức</h2>
+              {result.items.map((recipe, index) => (
+                <RecipeCard key={recipe.id} recipe={recipe} priority={index === 0} />
               ))}
             </div>
           )}

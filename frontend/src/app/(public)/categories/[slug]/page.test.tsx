@@ -178,7 +178,8 @@ describe('Trang danh mục /categories/[slug]', () => {
       searchParams: Promise.resolve({}),
     });
 
-    expect(metadata.title).toBe(category.name);
+    // title.absolute: root layout có template '%s | Culinary Blog', dùng absolute để hậu tố không lặp và áp dụng giới hạn 60 ký tự.
+    expect(metadata.title).toEqual({ absolute: `${category.name} | Culinary Blog` });
     expect(metadata.alternates?.canonical).toBe(`/categories/${category.slug}`);
   });
 });

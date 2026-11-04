@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import { IMAGE_UNOPTIMIZED } from '@/lib/images';
 import type { RecipeImage } from '@/types/recipe';
 
 const RecipeLightbox = dynamic(() => import('./RecipeLightbox'), { ssr: false });
@@ -43,11 +44,12 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
         <Image
           src={imageUrl(primary)}
           alt={primary.altText ?? title}
-          fill
+          width={800}
+          height={600}
           priority
-          unoptimized
+          unoptimized={IMAGE_UNOPTIMIZED}
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </button>
       {ordered.length > 1 && (
@@ -62,10 +64,11 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
                 <Image
                   src={image.thumbnailUrl ?? imageUrl(image)}
                   alt={image.altText ?? title}
-                  fill
-                  unoptimized
+                  width={64}
+                  height={64}
+                  unoptimized={IMAGE_UNOPTIMIZED}
                   sizes="64px"
-                  className="object-cover"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </button>
             </li>

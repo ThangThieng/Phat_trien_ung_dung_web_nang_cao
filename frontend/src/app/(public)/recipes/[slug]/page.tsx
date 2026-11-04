@@ -11,6 +11,10 @@ import RecipeGallery from '@/features/recipes/components/RecipeGallery';
 import RecipeHero from '@/features/recipes/components/RecipeHero';
 import RecipeSourceNote from '@/features/recipes/components/RecipeSourceNote';
 import StepChecklist from '@/features/recipes/components/StepChecklistLazy';
+import JsonLd from '@/components/seo/JsonLd';
+import { buildRecipeMetadata } from '@/lib/seo/metadata';
+import { buildBreadcrumbJsonLd, buildRecipeJsonLd } from '@/lib/seo/recipe-json-ld';
+import { SITE_URL } from '@/lib/seo/site';
 
 // CSP nonce của root layout khiến route này render theo request. Không khai báo
 // `revalidate`/`generateStaticParams`: Data Cache 300 giây nằm ở getRecipeBySlug.
@@ -30,11 +34,8 @@ const loadRecipe = cache(async (slug: string) => {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const recipe = await loadRecipe((await params).slug);
   if (!recipe) return { title: 'Không tìm thấy công thức', robots: { index: false } };
-  return {
-    title: recipe.title,
-    description: recipe.description.slice(0, 160),
-    alternates: { canonical: `/recipes/${recipe.slug}` },
-  };
+  // NFR-SEO-002 (Buổi 8 — Dev 3): title ≤ 60 ký tự cắt khi render (MT-37), description ≤ 160, canonical, Open Graph, Twitter.
+  return buildRecipeMetadata(recipe);
 }
 
 export default async function RecipeDetailPage({ params }: { params: Params }) {
@@ -43,6 +44,15 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-10">
+      {/* NFR-SEO-001: Schema.org Recipe + BreadcrumbList (Buổi 8 — Dev 3). */}
+      <JsonLd data={buildRecipeJsonLd(recipe, SITE_URL)} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: 'Trang chủ', path: '/' },
+          { name: recipe.category.name, path: `/categories/${recipe.category.slug}` },
+          { name: recipe.title, path: `/recipes/${recipe.slug}` },
+        ])}
+      />
       <nav aria-label="Breadcrumb" className="recipe-breadcrumb text-sm text-gray-500">
         <Link href="/recipes" className="hover:text-orange-700">
           Công thức

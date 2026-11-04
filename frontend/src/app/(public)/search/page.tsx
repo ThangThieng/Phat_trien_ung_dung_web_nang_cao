@@ -7,6 +7,7 @@ import { parseSearchState, type RawSearchParams } from '@/features/recipes/searc
 import SearchResults from '@/features/search/components/SearchResults';
 import { searchKeys } from '@/features/search/query-keys';
 import type { Category } from '@/types/category';
+import { buildSearchMetadata } from '@/lib/seo/metadata';
 import { MIN_SEARCH_LENGTH } from '@/types/search';
 
 // SRS §5.1: /search render SSR theo request (kết quả phụ thuộc query string).
@@ -20,7 +21,8 @@ export async function generateMetadata({
   searchParams: SearchParams;
 }): Promise<Metadata> {
   const { q } = parseSearchState(await searchParams);
-  return { title: q ? `Tìm kiếm: ${q}` : 'Tìm kiếm công thức' };
+  // NFR-SEO-002: trang kết quả (có q) noindex,follow; trang /search trống vẫn index được.
+  return buildSearchMetadata(q);
 }
 
 /**

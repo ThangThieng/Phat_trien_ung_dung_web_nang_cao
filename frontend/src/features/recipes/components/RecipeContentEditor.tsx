@@ -101,7 +101,7 @@ export default function RecipeContentEditor({ recipeId, accessToken, ingredients
           <input className={input} placeholder="Đơn vị" value={ingredient.unit ?? ''} onChange={(e) => setIngredient({ ...ingredient, unit: e.target.value || null })} />
           <input className={`${input} sm:col-span-2`} placeholder="Ghi chú (tùy chọn)" value={ingredient.notes ?? ''} onChange={(e) => setIngredient({ ...ingredient, notes: e.target.value || null })} />
           <div className="flex gap-2 sm:col-span-2">
-            <button type="button" disabled={busy || !ingredient.name.trim() || (!ingredient.quantity && !ingredient.quantityText?.trim())} onClick={() => saveIngredient()} className="inline-flex items-center gap-1 rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"><Plus className="h-4 w-4" />{editingIngredientId ? 'Lưu nguyên liệu' : 'Thêm nguyên liệu'}</button>
+            <button type="button" disabled={busy || !ingredient.name.trim() || (!ingredient.quantity && !ingredient.quantityText?.trim())} onClick={() => saveIngredient()} className="inline-flex items-center gap-1 rounded-md bg-orange-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"><Plus className="h-4 w-4" />{editingIngredientId ? 'Lưu nguyên liệu' : 'Thêm nguyên liệu'}</button>
             {editingIngredientId && <button type="button" onClick={() => { setEditingIngredientId(null); setIngredient(emptyIngredient); }} className="rounded-md px-3 py-2 text-sm">Hủy</button>}
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function RecipeContentEditor({ recipeId, accessToken, ingredients
           <input className={input} placeholder="Tên bước *" value={step.title} onChange={(e) => setStep({ ...step, title: e.target.value })} />
           <textarea className={input} rows={3} placeholder="Mô tả thực hiện *" value={step.description} onChange={(e) => setStep({ ...step, description: e.target.value })} />
           <input className={input} type="number" min="0" placeholder="Hẹn giờ (phút, tùy chọn)" value={step.timerMinutes ?? ''} onChange={(e) => setStep({ ...step, timerMinutes: e.target.value === '' ? null : Number(e.target.value) })} />
-          <div className="flex gap-2"><button type="button" disabled={busy || !step.title.trim() || !step.description.trim()} onClick={() => saveStep()} className="inline-flex items-center gap-1 rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"><Plus className="h-4 w-4" />{editingStepId ? 'Lưu bước' : 'Thêm bước'}</button>{editingStepId && <button type="button" onClick={() => { setEditingStepId(null); setStep(emptyStep); }} className="rounded-md px-3 py-2 text-sm">Hủy</button>}</div>
+          <div className="flex gap-2"><button type="button" disabled={busy || !step.title.trim() || !step.description.trim()} onClick={() => saveStep()} className="inline-flex items-center gap-1 rounded-md bg-orange-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"><Plus className="h-4 w-4" />{editingStepId ? 'Lưu bước' : 'Thêm bước'}</button>{editingStepId && <button type="button" onClick={() => { setEditingStepId(null); setStep(emptyStep); }} className="rounded-md px-3 py-2 text-sm">Hủy</button>}</div>
         </div>
       </section>
     </div>

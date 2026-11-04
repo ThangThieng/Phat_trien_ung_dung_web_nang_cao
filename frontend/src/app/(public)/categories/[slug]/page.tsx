@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { BookOpen } from 'lucide-react';
+import JsonLd from '@/components/seo/JsonLd';
 import CategoryChips from '@/components/layout/CategoryChips';
 import SidebarCategory from '@/components/layout/SidebarCategory';
 import EmptyState from '@/components/shared/EmptyState';
@@ -14,6 +15,8 @@ import { buildHref, parseCategoryState } from '@/features/recipes/search-params'
 import type { Category } from '@/types/category';
 import type { RecipeQueryState } from '@/types/search';
 import { ApiError } from '@/lib/api-client';
+import { buildCategoryMetadata } from '@/lib/seo/metadata';
+import { buildBreadcrumbJsonLd } from '@/lib/seo/recipe-json-ld';
 
 type Params = Promise<{ slug: string }>;
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -44,11 +47,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const detail = await loadCategory((await params).slug, stateKey(await searchParams));
   if (!detail) return { title: 'Không tìm thấy danh mục', robots: { index: false } };
-  return {
-    title: detail.category.name,
-    description: detail.category.description ?? `Công thức thuộc danh mục ${detail.category.name}.`,
-    alternates: { canonical: `/categories/${detail.category.slug}` },
-  };
+  return buildCategoryMetadata(detail.category);
 }
 
 export default async function CategoryDetailPage({
@@ -77,6 +76,13 @@ export default async function CategoryDetailPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: 'Trang chủ', path: '/' },
+          { name: 'Danh mục', path: '/categories' },
+          { name: category.name, path: pathname },
+        ])}
+      />
       <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
         <Link href="/categories" className="hover:text-orange-700">
           Danh mục
@@ -161,8 +167,9 @@ export default async function CategoryDetailPage({
             />
           ) : (
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {recipes.items.map((recipe) => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
+              <h2 className="sr-only">Danh sách công thức</h2>
+              {recipes.items.map((recipe, index) => (
+                <RecipeCard key={recipe.id} recipe={recipe} priority={index === 0} />
               ))}
             </div>
           )}

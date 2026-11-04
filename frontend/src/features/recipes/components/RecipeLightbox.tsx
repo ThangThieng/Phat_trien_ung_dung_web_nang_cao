@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { IMAGE_UNOPTIMIZED } from '@/lib/images';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import type { RecipeImage } from '@/types/recipe';
 
@@ -29,10 +30,11 @@ export default function RecipeLightbox({ image, title, opener, onOpenChange }: R
             <Image
               src={image.originalUrl}
               alt={image.altText ?? title}
-              fill
-              unoptimized
+              width={1200}
+              height={900}
+              unoptimized={IMAGE_UNOPTIMIZED}
               sizes="(max-width: 1024px) 100vw, 900px"
-              className="object-contain"
+              className="absolute inset-0 h-full w-full object-contain"
             />
           </div>
         )}

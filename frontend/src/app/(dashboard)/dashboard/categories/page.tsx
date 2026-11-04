@@ -94,7 +94,7 @@ export default function CategoriesDashboardPage() {
         <p className="mt-2 text-gray-600">Bạn cần đăng nhập bằng tài khoản quản trị để tiếp tục.</p>
         <Link
           href="/auth/login?callbackUrl=/dashboard/categories"
-          className="mt-6 inline-block rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white hover:bg-orange-700"
+          className="mt-6 inline-block rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white hover:bg-orange-800"
         >
           Đăng nhập
         </Link>
@@ -130,7 +130,7 @@ export default function CategoriesDashboardPage() {
         <button
           type="button"
           onClick={() => setDialog({ mode: 'create' })}
-          className="flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+          className="flex items-center gap-2 rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
         >
           <Plus aria-hidden className="h-4 w-4" /> Thêm danh mục
         </button>

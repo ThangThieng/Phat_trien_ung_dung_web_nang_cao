@@ -181,7 +181,7 @@ function FilterForm({
       <div className="flex gap-2">
         <button
           type="submit"
-          className="flex-1 rounded-lg bg-orange-600 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+          className="flex-1 rounded-lg bg-orange-700 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-800"
         >
           Áp dụng
         </button>
@@ -206,6 +206,9 @@ export default function FilterPanel(props: FilterPanelProps) {
   const { state } = props;
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const wasOpen = useRef(false);
   const active = countActiveFilters(state);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
@@ -214,11 +217,35 @@ export default function FilterPanel(props: FilterPanelProps) {
     if (isDesktop) setOpen(false);
   }, [isDesktop]);
 
+  // WCAG 2.4.3: đóng drawer thì trả focus về nút đã mở nó (không để focus rơi về <body>).
+  useEffect(() => {
+    if (!open && wasOpen.current) triggerRef.current?.focus();
+    wasOpen.current = open;
+  }, [open]);
+
   useEffect(() => {
     if (!open) return undefined;
     closeRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      // Bẫy focus trong dialog modal: Tab/Shift+Tab xoay vòng trong bảng bộ lọc (WCAG 2.1.2 / 2.4.3).
+      if (event.key !== 'Tab') return;
+      const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable || focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
@@ -227,6 +254,7 @@ export default function FilterPanel(props: FilterPanelProps) {
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
@@ -235,7 +263,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         <Filter aria-hidden className="h-4 w-4" />
         Bộ lọc
         {active > 0 && (
-          <span className="rounded-full bg-orange-600 px-1.5 text-xs text-white">{active}</span>
+          <span className="rounded-full bg-orange-700 px-1.5 text-xs text-white">{active}</span>
         )}
       </button>
 
@@ -250,6 +278,7 @@ export default function FilterPanel(props: FilterPanelProps) {
       )}
 
       <aside
+        ref={panelRef}
         role={open ? 'dialog' : undefined}
         aria-modal={open ? true : undefined}
         aria-label="Bộ lọc công thức"

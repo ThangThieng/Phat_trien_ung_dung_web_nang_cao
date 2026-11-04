@@ -25,7 +25,7 @@ export default function RecipePublishActions({ recipe, accessToken, onChanged }:
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4">
       <p className="flex-1 text-sm text-orange-900">{isDraft ? 'Cần ít nhất một nguyên liệu và một bước nấu để xuất bản.' : 'Công thức đang công khai. Bạn có thể đưa về nháp để tiếp tục hoàn thiện.'}</p>
-      <button type="button" disabled={busy || (isDraft && (!recipe.ingredients.length || !recipe.steps.length))} onClick={() => run()} className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+      <button type="button" disabled={busy || (isDraft && (!recipe.ingredients.length || !recipe.steps.length))} onClick={() => run()} className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
         {actionLabel}
       </button>
     </div>

@@ -209,7 +209,7 @@ export default function CategoryFormDialog({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-60"
+              className="flex items-center gap-2 rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800 disabled:opacity-60"
             >
               {isSubmitting && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
               {isEditing ? 'Lưu thay đổi' : 'Tạo danh mục'}
