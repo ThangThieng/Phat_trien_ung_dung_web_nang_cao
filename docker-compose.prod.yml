@@ -123,6 +123,7 @@ services:
       Seed__Enabled: ${SEED_ENABLED:-false}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
       Seed__AuthorPassword: ${SEED_AUTHOR_PASSWORD:-}
+      Seed__ImportImages: ${SEED_IMPORT_IMAGES:-false}
     volumes: *api-volumes
     depends_on:
       postgres: { condition: service_healthy }

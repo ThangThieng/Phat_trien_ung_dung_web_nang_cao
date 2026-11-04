@@ -6,6 +6,7 @@ using CulinaryBlog.Domain.Common;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
 using CulinaryBlog.Infrastructure.Identity;
+using CulinaryBlog.Infrastructure.Jobs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -26,13 +27,26 @@ public sealed class SeedOptions
 
     /// <summary>Mật khẩu chung cho 5 tác giả mẫu. Để trống → sinh ngẫu nhiên (tác giả mẫu không đăng nhập được).</summary>
     public string? AuthorPassword { get; set; }
+
+    /// <summary>
+    /// Bật thì lên lịch tải ảnh giấy phép mở về MinIO (CR-2026-07). Mặc định tắt: integration test và E2E không gọi mạng ngoài;
+    /// khi đó công thức Wikibooks giữ ở Draft vì chưa có ảnh.
+    /// </summary>
+    public bool ImportImages { get; set; }
+
+    /// <summary>Giây chờ trước mỗi lần tải ảnh. 10 giây: khi đo, Wikimedia trả 429 ở nhịp 5 giây và vẫn nhận khoảng 6 ảnh/phút khi đã bị giới hạn.</summary>
+    public int ImageImportPaceSeconds { get; set; } = 10;
+
+    /// <summary>Giây chờ khi nhận 429 không có header <c>Retry-After</c>.</summary>
+    public int ImageImportRateLimitWaitSeconds { get; set; } = 60;
 }
 
 /// <summary>
-/// Seed dữ liệu theo SRS §2.6.1 (CR-2026-03): roles Author/Admin (§2.3), 5 tác giả mẫu (Bogus),
+/// Seed dữ liệu theo SRS §2.6.1 (CR-2026-03, CR-2026-07): roles Author/Admin (§2.3), 5 tác giả mẫu (Bogus),
 /// ≥ 20 danh mục và ≥ 100 công thức lấy từ <see cref="RecipeSeedCatalog"/>, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước.
 /// Idempotent và tự bù: chỉ thêm phần còn thiếu; công thức mẫu cũ (chưa từng bị sửa, thiếu nguyên liệu/bước)
 /// được thay bằng nội dung đúng trong catalog. Không động vào dữ liệu người dùng tạo hoặc đã chỉnh sửa.
+/// Công thức Wikibooks tạo ở Draft; <see cref="SeedImageImportJob"/> chỉ xuất bản sau khi ảnh đã lưu.
 /// </summary>
 public sealed partial class DatabaseSeeder(
     CulinaryBlogDbContext db,
@@ -40,6 +54,7 @@ public sealed partial class DatabaseSeeder(
     RoleManager<IdentityRole> roleManager,
     IOptions<SeedOptions> options,
     ICacheService cache,
+    ISeedImageImportScheduler imageImports,
     TimeProvider timeProvider,
     ILogger<DatabaseSeeder> logger)
 {
@@ -58,20 +73,20 @@ public sealed partial class DatabaseSeeder(
         var authors = await SeedAuthorsAsync().ConfigureAwait(false);
 
         var strategy = db.Database.CreateExecutionStrategy();
-        var (categoriesAdded, recipesChanged) = await strategy.ExecuteAsync(
+        var (categoriesAdded, recipesChanged, publishDates) = await strategy.ExecuteAsync(
             async ct =>
             {
                 db.ChangeTracker.Clear();
                 await using var transaction = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
 
                 var (categories, added) = await SeedCategoriesAsync(ct).ConfigureAwait(false);
-                var (created, repaired) = authors.Count == 0
-                    ? (0, 0)
+                var (created, repaired, dates) = authors.Count == 0
+                    ? (0, 0, new Dictionary<string, DateTime>(StringComparer.Ordinal))
                     : await SeedRecipesAsync(categories, authors, ct).ConfigureAwait(false);
 
                 await transaction.CommitAsync(ct).ConfigureAwait(false);
                 LogSeeded(logger, categories.Count, authors.Count, created, repaired);
-                return (added > 0, created + repaired > 0);
+                return (added > 0, created + repaired > 0, dates);
             },
             cancellationToken).ConfigureAwait(false);
 
@@ -79,6 +94,12 @@ public sealed partial class DatabaseSeeder(
         if (categoriesAdded)
         {
             await cache.RemoveAsync(CategoryCacheKeys.All, cancellationToken).ConfigureAwait(false);
+        }
+
+        // Sau commit: job cần đọc được công thức. Lần khởi động sau tự bù phần ảnh còn thiếu.
+        if (options.Value.ImportImages && authors.Count > 0)
+        {
+            await ScheduleImageImportsAsync(authors, publishDates, cancellationToken).ConfigureAwait(false);
         }
 
         return categoriesAdded || recipesChanged;
@@ -174,29 +195,34 @@ public sealed partial class DatabaseSeeder(
         return authors;
     }
 
-    private async Task<(int Created, int Repaired)> SeedRecipesAsync(
+    private async Task<(int Created, int Repaired, Dictionary<string, DateTime> PublishDates)> SeedRecipesAsync(
         Dictionary<string, Category> categories,
         List<ApplicationUser> authors,
         CancellationToken cancellationToken)
     {
         var seedAuthorIds = authors.Select(a => a.Id).ToHashSet(StringComparer.Ordinal);
-        var existing = await db.Recipes.IgnoreQueryFilters()
-            .Select(r => new ExistingRecipe(r.Id, r.Slug, r.AuthorId, r.UpdatedAt, r.Ingredients.Count, r.Steps.Count))
-            .ToDictionaryAsync(r => r.Slug, StringComparer.Ordinal, cancellationToken)
-            .ConfigureAwait(false);
+
+        // Unique index chỉ áp dụng cho dòng chưa xóa (D-3): một slug có thể vừa có bản đã xóa mềm vừa có bản đang hoạt động.
+        // Ưu tiên bản đang hoạt động thay vì để ToDictionary ném lỗi lúc khởi động.
+        var existing = (await db.Recipes.IgnoreQueryFilters()
+            .Select(r => new ExistingRecipe(r.Id, r.Slug, r.AuthorId, r.UpdatedAt, r.Ingredients.Count, r.Steps.Count, r.IsDeleted))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false))
+            .GroupBy(r => r.Slug, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.OrderBy(r => r.IsDeleted).First(), StringComparer.Ordinal);
 
         // Bogus với seed cố định: mỗi món luôn rút cùng một chuỗi số ngẫu nhiên → dữ liệu ổn định giữa các lần chạy.
         var faker = new Faker("vi") { Random = new Randomizer(20260611) };
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var created = 0;
         var repaired = 0;
+        var publishDates = new Dictionary<string, DateTime>(StringComparer.Ordinal);
 
         foreach (var seed in RecipeSeedCatalog.Recipes)
         {
             var author = faker.PickRandom(authors);
             var publish = faker.Random.Bool(0.85f);
             var publishedAt = now.AddDays(-faker.Random.Int(0, 180)).AddMinutes(-faker.Random.Int(0, 1440));
-            var nutrition = NutritionFor(seed.Category, faker);
 
             if (!categories.TryGetValue(seed.Category, out var category))
             {
@@ -204,6 +230,11 @@ public sealed partial class DatabaseSeeder(
             }
 
             var slug = SlugHelper.Generate(seed.Title);
+            if (seed.Source is not null)
+            {
+                publishDates[slug] = publishedAt;
+            }
+
             if (!existing.TryGetValue(slug, out var current))
             {
                 var recipe = Recipe.Create(
@@ -216,12 +247,13 @@ public sealed partial class DatabaseSeeder(
                     seed.CookTimeMinutes,
                     seed.Servings,
                     seed.Difficulty,
-                    RecipeSeedCatalog.InstructionsSummary(seed));
+                    seed.Attribution ?? RecipeSeedCatalog.InstructionsSummary(seed));
                 AddContent(recipe, seed);
-                recipe.SetNutrition(nutrition);
+                recipe.SetNutrition(seed.Nutrition);
 
-                // ~85% Published, còn lại Draft để kiểm thử phân quyền xem Draft
-                if (publish)
+                // Công thức do nhóm biên soạn: ~85% Published, còn lại Draft để kiểm thử phân quyền xem Draft.
+                // Công thức Wikibooks giữ Draft; SeedImageImportJob xuất bản sau khi có ảnh (NFR-SEO-001).
+                if (publish && seed.Source is null)
                 {
                     recipe.Publish(publishedAt);
                 }
@@ -231,13 +263,44 @@ public sealed partial class DatabaseSeeder(
             }
             else if (NeedsRepair(current, seedAuthorIds))
             {
-                await RepairAsync(current.Id, seed, nutrition, cancellationToken).ConfigureAwait(false);
+                await RepairAsync(current.Id, seed, cancellationToken).ConfigureAwait(false);
                 repaired++;
             }
         }
 
         await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return (created, repaired);
+        return (created, repaired, publishDates);
+    }
+
+    /// <summary>Chỉ công thức của tác giả mẫu, chưa có ảnh (kể cả ảnh đã bị xóa mềm: người dùng đã chủ động bỏ thì không gắn lại).</summary>
+    private async Task ScheduleImageImportsAsync(
+        List<ApplicationUser> authors,
+        Dictionary<string, DateTime> publishDates,
+        CancellationToken cancellationToken)
+    {
+        var seedAuthorIds = authors.Select(a => a.Id).ToList();
+        var slugs = RecipeSeedCatalog.Recipes
+            .Where(r => r.Image is not null)
+            .Select(r => SlugHelper.Generate(r.Title))
+            .Concat(RecipeSeedCatalog.LegacyImages.Keys)
+            .ToList();
+
+        var pending = await db.Recipes.IgnoreQueryFilters().AsNoTracking()
+            .Where(r => !r.IsDeleted && slugs.Contains(r.Slug) && seedAuthorIds.Contains(r.AuthorId) && !r.Images.Any())
+            .OrderBy(r => r.Slug)
+            .Select(r => new { r.Id, r.Slug, r.Status, r.PublishedAt })
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        foreach (var recipe in pending)
+        {
+            DateTime? publishAt = recipe.Status == RecipeStatus.Draft && recipe.PublishedAt is null && publishDates.TryGetValue(recipe.Slug, out var date)
+                ? date
+                : null;
+            imageImports.Enqueue(recipe.Id, publishAt);
+        }
+
+        LogImagesScheduled(logger, pending.Count);
     }
 
     /// <summary>
@@ -249,7 +312,7 @@ public sealed partial class DatabaseSeeder(
         && recipe.UpdatedAt is null
         && (recipe.IngredientCount < RecipeSeedCatalog.MinIngredientsPerRecipe || recipe.StepCount < RecipeSeedCatalog.MinStepsPerRecipe);
 
-    private async Task RepairAsync(Guid recipeId, SeedRecipe seed, RecipeNutrition nutrition, CancellationToken cancellationToken)
+    private async Task RepairAsync(Guid recipeId, SeedRecipe seed, CancellationToken cancellationToken)
     {
         // Xóa nội dung sinh ngẫu nhiên cũ rồi nạp lại từ catalog; StepNumber đánh lại từ 1 (SRS FR-RCP-010).
         await db.Set<RecipeIngredient>().IgnoreQueryFilters().Where(i => i.RecipeId == recipeId)
@@ -265,7 +328,7 @@ public sealed partial class DatabaseSeeder(
         entry.Property(r => r.CookTimeMinutes).CurrentValue = seed.CookTimeMinutes;
         entry.Property(r => r.Servings).CurrentValue = seed.Servings;
         entry.Property(r => r.Difficulty).CurrentValue = seed.Difficulty;
-        recipe.SetNutrition(nutrition);
+        recipe.SetNutrition(seed.Nutrition);
 
         AddContent(recipe, seed);
     }
@@ -283,33 +346,11 @@ public sealed partial class DatabaseSeeder(
         }
     }
 
-    /// <summary>Dinh dưỡng ước lượng cho 1 khẩu phần, theo khoảng hợp lý của từng nhóm món (SRS §7.2.1).</summary>
-    private static RecipeNutrition NutritionFor(string category, Faker faker)
-    {
-        var (calories, protein, carbs, fat, fiber, sodium) = category switch
-        {
-            "Tráng miệng & Đồ uống" => ((120, 450), (2, 10), (20, 70), (3, 20), (0, 5), (20, 200)),
-            "Món chay" => ((150, 450), (8, 25), (15, 60), (5, 20), (3, 12), (300, 900)),
-            "Gỏi & Salad" => ((150, 400), (10, 30), (10, 35), (5, 20), (3, 10), (400, 1000)),
-            _ => ((250, 750), (15, 45), (10, 80), (8, 35), (1, 8), (500, 1500)),
-        };
-
-        return new RecipeNutrition
-        {
-            Calories = Pick(faker, calories),
-            Protein = Pick(faker, protein),
-            Carbohydrates = Pick(faker, carbs),
-            Fat = Pick(faker, fat),
-            Fiber = Pick(faker, fiber),
-            Sodium = Pick(faker, sodium),
-        };
-
-        static decimal Pick(Faker faker, (int Min, int Max) range) =>
-            Math.Round(faker.Random.Decimal(range.Min, range.Max), 1);
-    }
-
-    private sealed record ExistingRecipe(Guid Id, string Slug, string AuthorId, DateTime? UpdatedAt, int IngredientCount, int StepCount);
+    private sealed record ExistingRecipe(Guid Id, string Slug, string AuthorId, DateTime? UpdatedAt, int IngredientCount, int StepCount, bool IsDeleted);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Database seeded: {Categories} categories, {Authors} authors, {Created} recipes created, {Repaired} recipes repaired")]
     private static partial void LogSeeded(ILogger logger, int categories, int authors, int created, int repaired);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seed images scheduled: {Count} recipes")]
+    private static partial void LogImagesScheduled(ILogger logger, int count);
 }

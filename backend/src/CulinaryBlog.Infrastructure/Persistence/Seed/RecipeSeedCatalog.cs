@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
+using CulinaryBlog.Domain.Common;
+using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
 
 namespace CulinaryBlog.Infrastructure.Persistence.Seed;
@@ -15,6 +17,12 @@ public sealed record SeedIngredient(string Name, decimal? Quantity, string? Quan
 
 public sealed record SeedStep(string Title, string Description, int? TimerMinutes);
 
+/// <summary>Trang nguồn trên Wikibooks Cookbook, ghim theo revision để nội dung không trôi khi wiki đổi (CR-2026-07).</summary>
+public sealed record SeedSource(long PageId, long RevisionId, string PageTitle);
+
+/// <summary>Ảnh giấy phép mở: tải về MinIO bằng <c>SeedImageImportJob</c>, không hotlink.</summary>
+public sealed record SeedImage(string File, Uri Url, string Artist, string License, Uri DescriptionUrl);
+
 public sealed record SeedRecipe(
     string Title,
     string Category,
@@ -24,12 +32,18 @@ public sealed record SeedRecipe(
     int Servings,
     RecipeDifficulty Difficulty,
     IReadOnlyList<SeedIngredient> Ingredients,
-    IReadOnlyList<SeedStep> Steps);
+    IReadOnlyList<SeedStep> Steps,
+    SeedSource? Source = null,
+    SeedImage? Image = null,
+    RecipeNutrition? Nutrition = null,
+    string? Attribution = null);
 
 /// <summary>
-/// Bộ dữ liệu mẫu theo SRS §2.6.1 (CR-2026-03): ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước.
-/// Nội dung món ăn (nguyên liệu, định lượng, các bước) là công thức thật, viết tay trong <c>Seed/Data/*.json</c>;
-/// Bogus chỉ sinh phần ngẫu nhiên hợp lý (tác giả, trạng thái, ngày xuất bản, dinh dưỡng) trong <see cref="DatabaseSeeder"/>.
+/// Bộ dữ liệu mẫu theo SRS §2.6.1 (CR-2026-03, CR-2026-07): ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và
+/// ≥ 5 bước. Gồm 100 công thức do nhóm biên soạn (<c>recipes-0*.json</c>) và các công thức bổ sung từ Wikibooks Cookbook đã dịch
+/// (<c>recipes-wikibooks-*.json</c>, sinh bằng <c>tools/recipe-etl</c>, giấy phép CC BY-SA 4.0).
+/// Bogus chỉ sinh tác giả mẫu, phân công tác giả, trạng thái của công thức do nhóm biên soạn và ngày xuất bản
+/// trong <see cref="DatabaseSeeder"/>; dinh dưỡng không còn sinh ngẫu nhiên.
 /// </summary>
 public static class RecipeSeedCatalog
 {
@@ -38,12 +52,34 @@ public static class RecipeSeedCatalog
     public const int MinIngredientsPerRecipe = 10;
     public const int MinStepsPerRecipe = 5;
 
+    /// <summary>Tiền tố của chuỗi ghi công trong cột Instructions; Frontend chỉ hiển thị khối nguồn khi có tiền tố này.</summary>
+    public const string SourceNotePrefix = "Nguồn dữ liệu:";
+
     private const string ResourcePrefix = "SeedData/";
     private static readonly Lazy<(IReadOnlyList<SeedCategory> Categories, IReadOnlyList<SeedRecipe> Recipes)> Data = new(Load);
+    private static readonly Lazy<Dictionary<string, SeedImage>> LegacyImageData = new(LoadLegacyImages);
+    private static readonly Lazy<IReadOnlyDictionary<string, SeedRecipe>> RecipesBySlug = new(() =>
+        Data.Value.Recipes.ToDictionary(r => SlugHelper.Generate(r.Title), StringComparer.Ordinal));
 
     public static IReadOnlyList<SeedCategory> Categories => Data.Value.Categories;
 
     public static IReadOnlyList<SeedRecipe> Recipes => Data.Value.Recipes;
+
+    /// <summary>Ảnh đã xem bằng mắt là đúng món, cho công thức do nhóm biên soạn. Khóa là slug.</summary>
+    public static IReadOnlyDictionary<string, SeedImage> LegacyImages => LegacyImageData.Value;
+
+    public static SeedRecipe? FindBySlug(string slug) => RecipesBySlug.Value.GetValueOrDefault(slug);
+
+    /// <summary>Ảnh cần nhập cho một slug: ảnh của công thức Wikibooks, nếu không có thì ảnh đã duyệt của công thức cũ.</summary>
+    public static SeedImage? FindImage(string slug) =>
+        FindBySlug(slug)?.Image ?? LegacyImages.GetValueOrDefault(slug);
+
+    /// <summary>Ghi công ảnh cho công thức do nhóm biên soạn: nội dung của nhóm, chỉ ảnh là từ nguồn ngoài.</summary>
+    public static string LegacyImageCredit(SeedImage image)
+    {
+        ArgumentNullException.ThrowIfNull(image);
+        return string.Create(CultureInfo.InvariantCulture, $"{SourceNotePrefix} Ảnh: {image.Artist}, {image.License}, {image.DescriptionUrl.AbsoluteUri}.");
+    }
 
     /// <summary>Tóm tắt dùng làm cột Instructions (SRS §7.2) – nội dung chi tiết nằm trong RecipeSteps.</summary>
     public static string InstructionsSummary(SeedRecipe recipe)
@@ -117,6 +153,42 @@ public static class RecipeSeedCatalog
             item.GetProperty("servings").GetInt32(),
             Enum.Parse<RecipeDifficulty>(item.GetProperty("difficulty").GetString()!, ignoreCase: false),
             ingredients,
-            steps);
+            steps,
+            item.TryGetProperty("source", out var source) ? ParseSource(source) : null,
+            item.TryGetProperty("image", out var image) ? ParseImage(image) : null,
+            item.TryGetProperty("nutrition", out var nutrition) ? ParseNutrition(nutrition) : null,
+            item.TryGetProperty("attribution", out var attribution) ? attribution.GetString() : null);
+    }
+
+    private static SeedSource ParseSource(JsonElement item) =>
+        new(item.GetProperty("pageId").GetInt64(), item.GetProperty("revisionId").GetInt64(), item.GetProperty("title").GetString()!);
+
+    private static SeedImage ParseImage(JsonElement item) =>
+        new(
+            item.GetProperty("file").GetString()!,
+            new Uri(item.GetProperty("url").GetString()!),
+            item.GetProperty("artist").GetString()!,
+            item.GetProperty("license").GetString()!,
+            new Uri(item.GetProperty("descriptionUrl").GetString()!));
+
+    /// <summary>ETL chỉ ghi dinh dưỡng khi đủ 6 chỉ số và qua kiểm tra hợp lý; còn lại là null.</summary>
+    private static RecipeNutrition? ParseNutrition(JsonElement item) =>
+        item.ValueKind == JsonValueKind.Null
+            ? null
+            : new RecipeNutrition
+            {
+                Calories = item.GetProperty("calories").GetDecimal(),
+                Protein = item.GetProperty("protein").GetDecimal(),
+                Carbohydrates = item.GetProperty("carbohydrates").GetDecimal(),
+                Fat = item.GetProperty("fat").GetDecimal(),
+                Fiber = item.GetProperty("fiber").GetDecimal(),
+                Sodium = item.GetProperty("sodium").GetDecimal(),
+            };
+
+    private static Dictionary<string, SeedImage> LoadLegacyImages()
+    {
+        using var document = Read(typeof(RecipeSeedCatalog).Assembly, $"{ResourcePrefix}legacy-recipe-images.json");
+        return document.RootElement.EnumerateArray()
+            .ToDictionary(i => i.GetProperty("slug").GetString()!, ParseImage, StringComparer.Ordinal);
     }
 }
