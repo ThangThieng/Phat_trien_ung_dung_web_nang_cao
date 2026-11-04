@@ -17,6 +17,7 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
 
 ### Added
 
+- **Hoàn thiện Buổi 8 của Dev 2:** dialog 409 có xem khác biệt, nút trạng thái ở từng dòng `/dashboard/recipes`, sửa `altText`, E2E vòng đời và hai tab, test 10 `PUT` đồng thời và đếm truy vấn.
 - **Dữ liệu mẫu thật từ Wikibooks Cookbook (CR-2026-07, SRS v1.2.5, MT-70):** bổ sung 101 công thức dịch sang tiếng Việt
   (CC BY-SA 4.0, ghim theo revision, ghi công trên trang chi tiết); thêm 6 danh mục, tổng 26 danh mục và 201 công thức. Công cụ
   `tools/recipe-etl`. 100 công thức do nhóm biên soạn và ngưỡng 20/100/10/5 giữ nguyên.
@@ -93,6 +94,8 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
 
 ### Fixed
 
+- **Bản hợp nhất Buổi 8 (kế hoạch Phụ lục B §B.10):** `Button asChild` làm sập dialog xác nhận; mở tab thứ hai làm tab đầu kẹt ở màn hình kiểm tra phiên; lỗi tạm thời khi làm mới phiên đăng xuất người dùng;
+  wizard công thức không báo lỗi tại ô và không thêm được nguyên liệu chỉ có đơn vị; `reason` khóa tài khoản đúng SRS §8.1 là tùy chọn; CSP cho stylesheet Google; `aria-label` trên `span` của phân trang.
 - **CSP chặn thuộc tính `style` của `next/image`:** ảnh `fill` mất `position:absolute` và console báo lỗi trên mọi trang có ảnh. `style-src` production cho phép
   đúng 2 chuỗi cố định bằng `'unsafe-hashes'` kèm hash, vẫn không có `'unsafe-inline'`.
 - **`DatabaseSeeder` lỗi khi khởi động** nếu một slug có cả bản đã xóa mềm lẫn bản đang hoạt động (partial unique index D-3 cho phép điều này).

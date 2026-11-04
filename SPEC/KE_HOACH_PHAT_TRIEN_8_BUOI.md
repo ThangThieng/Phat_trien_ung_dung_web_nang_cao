@@ -3983,4 +3983,27 @@ Thực hiện trên nhánh `chore/wikibooks-seed`, cơ sở dữ liệu Docker t
 
 **Chưa làm:** bước 10 §B.7 (người trong nhóm duyệt bản dịch và ảnh); R-08, R-09 (giữ tới khi chấm, trưởng nhóm xác nhận 04/11/2026); R-10 và `Hangfire.Core` của R-11 (SRS ghi đích danh). Chưa merge, chưa gắn tag.
 
+## B.10. Hợp nhất Buổi 8 (05/11/2026)
+
+Trưởng nhóm yêu cầu hợp nhất cả 4 nhánh và tự hoàn thiện phần còn thiếu để có bản web hoàn chỉnh. Thứ tự: Dev 4 → dữ liệu Wikibooks → Dev 1 → Dev 3 → Dev 2; xung đột ghi trong từng commit merge. Nhánh của các thành viên không bị sửa.
+
+**Trưởng nhóm làm thay hoặc sửa sau khi hợp nhất:**
+
+| Thuộc phần | Việc | Lý do |
+|---|---|---|
+| Dev 1 | `reason` ở `PATCH /users/{id}/status` trở lại tùy chọn, tối đa 500 ký tự; giao diện vẫn bắt buộc 5–500 ký tự | SRS §8.1 ghi `reason?`, ví dụ FR-AUTH-008 là "Spam"; nhánh bắt buộc ở API làm 3 test thu hồi token đỏ |
+| Dev 1 | Tab khác xoay refresh token không còn làm tab này kẹt ở "Đang kiểm tra phiên đăng nhập"; tab khác đổi tài khoản thì tải lại | Mở tab thứ hai làm tab đầu mất phiên và phần đang nhập |
+| Dev 1 | 429, 408, 5xx khi làm mới phiên không đăng xuất, chờ theo `Retry-After` rồi thử lại | Lỗi tạm thời không được làm mất phiên |
+| Dev 2 | Viết lại giao diện `RecipeWizard`: hiện lỗi tại ô, dialog 409 có "Xem khác biệt" và "Tải lại", danh sách điều kiện xuất bản, lưu đúng phần thay đổi, Hoàn tất về danh sách | Nhánh chặn nhập liệu sai nhưng không báo lỗi; ô số lượng trống thành 0 nên không thêm được nguyên liệu chỉ có đơn vị; lưu xong bị về bước 1 |
+| Dev 2 | Nút trạng thái ở từng dòng `/dashboard/recipes`; sửa `altText` trong thư viện ảnh; test chống lệch đọc `RecipeStatusTransitions.cs` | Kế hoạch yêu cầu, nhánh chưa có |
+| Dev 2 | `recipe-lifecycle.spec.ts`, `recipe-concurrency.spec.ts`, `RecipeConcurrencyAndQueryTests` (10 `PUT` đồng thời, đếm truy vấn, `no-store`) | Kế hoạch yêu cầu, nhánh chưa có |
+| Chung | `Button asChild` làm sập mọi dialog xác nhận | Slot chỉ nhận một phần tử con |
+| Chung | Phân trang bỏ `aria-label` trên `span` (axe); CSP cho stylesheet Google Identity Services | Chỉ lộ khi có nhiều trang và Client ID thật |
+
+**Lệch kế hoạch có lý do:** "`GetRecipeBySlug` ≤ 2 truy vấn" không khớp `AsSplitQuery` đang dùng (4 câu cố định, gộp lại sẽ tạo tích Descartes). Test kiểm tra tính chất cần giữ: số câu không tăng theo số dòng con. Trang HTML công khai sau khi lưu trữ theo sau trong TTL Data Cache 300 giây, API trả 404 ngay (MT-67).
+
+**Kiểm chứng trên bản hợp nhất:** backend 729/729, frontend 447/447, ETL 64/64, không có thay đổi model chưa có migration, E2E 48/48 trên stack production với Edge (xác thực, vòng đời, hai tab, tìm kiếm, SEO, a11y, responsive, CSP).
+
+**Còn cần người làm:** duyệt bản dịch và ảnh (§B.2.7); Google Rich Results Test, Facebook/Zalo debugger, NVDA/VoiceOver; đo lại Lighthouse trên máy demo; gắn tag `v1.0.0` (chưa gắn, chờ duyệt bản dịch). Stress test và chịu lỗi chưa đo lại trên bản hợp nhất. Báo cáo Lab của từng thành viên không sửa, nên số liệu trong đó là số tại nhánh riêng.
+
 *— Hết Phụ lục B —*
