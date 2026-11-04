@@ -3,7 +3,7 @@
 Mọi thay đổi đáng kể của Culinary Blog được ghi ở đây. Định dạng theo [Keep a Changelog 1.1.0](https://keepachangelog.com/vi/1.1.0/), đánh số
 phiên bản theo [Semantic Versioning 2.0.0](https://semver.org/lang/vi/) (NFR-MAINT-003).
 
-Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.4). Trước `1.0.0` dự án chưa phát hành bản nào;
+Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.6). Trước `1.0.0` dự án chưa phát hành bản nào;
 mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` và lịch sử git.
 
 ## [Unreleased] — sẽ phát hành thành [1.0.0]
@@ -17,6 +17,13 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
 
 ### Added
 
+- **Dữ liệu mẫu thật từ Wikibooks Cookbook (CR-2026-07, SRS v1.2.5, MT-70):** bổ sung 101 công thức dịch sang tiếng Việt
+  (CC BY-SA 4.0, ghim theo revision, ghi công trên trang chi tiết); thêm 6 danh mục, tổng 26 danh mục và 201 công thức. Công cụ
+  `tools/recipe-etl`. 100 công thức do nhóm biên soạn và ngưỡng 20/100/10/5 giữ nguyên.
+- **`SeedImageImportJob` (CR-2026-07):** tải ảnh giấy phép mở về MinIO qua đúng các lớp kiểm tra của tải ảnh lên; công thức Wikibooks
+  chỉ được xuất bản sau khi ảnh đã lưu. Tải tuần tự trên hàng đợi một worker, tôn trọng `Retry-After` theo quy định của Wikimedia. Ảnh đã xem là đúng món cho 42/100 công thức cũ.
+- **Khối nguồn dữ liệu trên trang chi tiết** (`RecipeSourceNote`) và dòng ghi nguồn ở footer. Không đổi API hay schema.
+- **`tools/seed-nutrition-cleanup` (CR-2026-07):** script một lần bỏ dinh dưỡng ngẫu nhiên trên cơ sở dữ liệu đang có, có chạy thử và script khôi phục.
 - **Log có cấu trúc (B8 — FR-OBS-002, CONS-010):** Serilog cho cả container `api` và `hangfire` — Console (JSON `CompactJsonFormatter`), File
   (`logs/culinaryblog-YYYYMMDD.json`, xoay vòng theo ngày, giữ 14 file), Seq (development); mỗi request một dòng log có method, path, status, thời gian
   xử lý, `UserId`, IP thật, `CorrelationId`, phiên bản API; 5xx → Error, > 500 ms → Warning, `/health*` → Verbose.
@@ -61,6 +68,10 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
 
 ### Changed
 
+- **Tìm kiếm ưu tiên tiêu đề, bỏ khớp nhầm từ ghép (CR-2026-08, SRS v1.2.6, MT-71):** `SearchVector` có trọng số (`Title` A, `Description` B); `phô mai`, `phổ biến`, `thành phố`…
+  thành token riêng nên `pho` không còn khớp. Dữ liệu thật: `pho` từ 55 còn 14 kết quả, món Phở đứng đầu. Migration `B8_Search_TitleWeightCompoundTerms`; API không đổi.
+- **Bỏ dinh dưỡng sinh ngẫu nhiên (CR-2026-07):** dinh dưỡng chỉ lấy từ nguồn khi đủ 6 chỉ số và qua kiểm tra hợp lý, còn lại để `NULL`,
+  nên khối dinh dưỡng tự ẩn ở phần lớn công thức.
 - **Xóa cache theo tiền tố bằng `SCAN` (B8 — audit cache):** khóa kết thúc bằng `:` được xóa cả họ; danh sách công khai phản ánh thay đổi ngay thay vì chờ
   hết TTL 2 phút. Bộ khóa cần xóa khớp cột "Invalidate khi" của NFR-PERF-003: thêm `categories:detail:` khi nội dung công thức đổi, `categories:all` khi
   công thức đổi danh mục; bỏ `search:` (SRS: hết hạn tự nhiên).
@@ -75,10 +86,16 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
 
 ### Removed
 
+- **Dọn mã theo Phụ lục B (R-04 → R-07, R-11):** trang tạm `/dashboard/media`; alias `RecipeDetail`, `RecipeNutrition`, `AuthProvider`; 36 export thừa, 12 kiểu không dùng;
+  query key viết tay; `EFCore.Design` trùng ở Infrastructure.
+- **Font `Geist` không dùng** trong `layout.tsx`: `.font-sans` đã trỏ tới Inter. Bớt 1 file font preload 29,3 KB trên mọi trang; First Load JS không đổi.
 - Output Cache của .NET (B4 — D-6); gói `next-auth` không dùng (B5); mã lỗi `AUTH_USERNAME_EXISTS` (B3 — D-1).
 
 ### Fixed
 
+- **CSP chặn thuộc tính `style` của `next/image`:** ảnh `fill` mất `position:absolute` và console báo lỗi trên mọi trang có ảnh. `style-src` production cho phép
+  đúng 2 chuỗi cố định bằng `'unsafe-hashes'` kèm hash, vẫn không có `'unsafe-inline'`.
+- **`DatabaseSeeder` lỗi khi khởi động** nếu một slug có cả bản đã xóa mềm lẫn bản đang hoạt động (partial unique index D-3 cho phép điều này).
 - **Redis tắt làm mỗi request chậm ~5,6 giây (B8 — NFR-REL-002, đo dưới tải):** mỗi lệnh GET/SET tới Redis đã tắt chờ hết timeout 2 giây mới thành
   cache-miss. `RedisCacheService` nay ngắt mạch: bỏ qua Redis ngay khi mất kết nối và 10 giây sau một lần lỗi (lệnh xóa cache không bị ngắt theo thời
   gian). k6 100 người dùng, tắt Redis 60 giây: p99 5,73 s → 24 ms, 0 lỗi.

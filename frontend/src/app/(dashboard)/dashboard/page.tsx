@@ -4,13 +4,14 @@ import { useQueries } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getMyRecipes } from '@/features/recipes/my-recipes-api';
+import { recipeKeys } from '@/features/recipes/query-keys';
 import type { RecipeStatus } from '@/types/recipe';
 
 const statuses: RecipeStatus[] = ['Draft', 'Published', 'Archived'];
 
 /** Dashboard landing route. Authentication UX is provided by the route-group layout's AuthGuard. */
 export default function DashboardPage() {
-  const results = useQueries({ queries: statuses.map((status) => ({ queryKey: ['my-recipes', status, 1], queryFn: () => getMyRecipes({ status, pageSize: 1 }), staleTime: 0 })) });
+  const results = useQueries({ queries: statuses.map((status) => ({ queryKey: recipeKeys.mine({ status, pageSize: 1 }), queryFn: () => getMyRecipes({ status, pageSize: 1 }), staleTime: 0 })) });
   return (
     <section className="mx-auto max-w-5xl px-4 py-10">
       <h1 className="text-2xl font-bold text-gray-900">Bảng điều khiển</h1>

@@ -1,0 +1,867 @@
+[
+ {
+  "pageId": 66447,
+  "title": "Chicken Vindaloo (Gà sốt cay kiểu Goa)",
+  "description": "Vindaloo là món cay nồng đến từ vùng Goa của Ấn Độ. Việc dùng nhiều giấm và thịt heo theo truyền thống là do ảnh hưởng của người Bồ Đào Nha tại đây. Vindaloo là món thịnh hành ở các nhà hàng Ấn Độ, thường làm với thịt heo, bò, gà, cừu, tôm hoặc rau như nấm. Công thức vindaloo có nhiều biến thể; một số dùng thêm khoai tây, hoặc thay đổi lượng và loại gia vị. Người Goa không đồng tình với việc dùng nguyên liệu chính nào khác ngoài thịt heo nhiều mỡ, vì hương vị sẽ rất khác. Vindaloo Goa chính gốc không phải cà ri mà giống món sốt khô hơn, để càng lâu càng ngon. Hương vị đích thực đến từ sự kết hợp độc đáo giữa mỡ heo, tỏi, giấm, đường thốt nốt và ớt kashmiri (loại gia vị rất thơm nhưng không quá cay). Vindaloo thường dùng với cơm, bánh chappati, bánh naan hoặc kết hợp các món này, cũng có thể kèm các loại đồ muối như cà tím hoặc chanh muối. Vì món khá cay nên đặc biệt hợp với raita.",
+  "ingredients": [
+   {
+    "n": "phi lê ức gà",
+    "u": "miếng"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ"
+   },
+   {
+    "n": "ớt tươi (màu nào cũng được)",
+    "u": "quả"
+   },
+   {
+    "n": "tỏi",
+    "o": "hoặc 6 thìa cà phê tỏi băm"
+   },
+   {
+    "n": "gừng tươi",
+    "u": "cm",
+    "o": "khối vuông"
+   },
+   {
+    "n": "nghệ bột"
+   },
+   {
+    "n": "giấm rượu vang trắng"
+   },
+   {
+    "n": "bột hạt ngò"
+   },
+   {
+    "n": "garam masala"
+   },
+   {
+    "n": "bột quế"
+   },
+   {
+    "n": "hạt tiêu đen"
+   },
+   {
+    "n": "hạt mù tạt đen"
+   },
+   {
+    "n": "muối hột"
+   },
+   {
+    "n": "ngò rí tươi băm"
+   },
+   {
+    "n": "nước"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun dầu",
+    "d": "Dùng chảo đáy dày, đổ dầu thực vật đủ phủ đáy và dư một ít. Đun nóng trên bếp."
+   },
+   {
+    "t": "Cho hành vào",
+    "d": "Thái hành tây thành sợi khá mỏng. Khi dầu thật nóng, cho hành vào."
+   },
+   {
+    "t": "Xào nhỏ lửa",
+    "d": "Hạ nhỏ lửa để hành xào nhẹ. Sau khoảng 3 phút, hành bắt đầu chuyển màu caramel."
+   },
+   {
+    "t": "Phi hành nâu",
+    "d": "Tăng lửa dần và tiếp tục đảo hành. Mục tiêu là hành nâu đậm nhưng không cháy."
+   },
+   {
+    "t": "Thêm giấm",
+    "d": "Cho giấm rượu vang trắng vào, giấm sẽ xèo xèo rồi bay hơi. Tiếp tục đảo. Chiên thêm vài phút đến khi hành rất nâu nhưng không cháy."
+   },
+   {
+    "t": "Vớt hành",
+    "d": "Vớt hành ra tô, để dầu chảy về chảo càng nhiều càng tốt. Lúc này bạn có một tô hành phi giòn."
+   },
+   {
+    "t": "Xay sốt hành",
+    "d": "Cho hành vào máy xay, thêm khoảng 1 thìa canh dầu, xay khoảng một phút đến khi thành sốt nâu sẫm khá đặc. Đây là sốt hành cơ bản của vindaloo, cũng là phần tạo ra hầu hết vị cay nồng, tăng dần khi ăn."
+   },
+   {
+    "t": "Để riêng sốt",
+    "d": "Lấy sốt ra khỏi máy xay và để riêng."
+   },
+   {
+    "t": "Băm tỏi và ớt",
+    "d": "Băm thô tỏi (và gừng nếu dùng). Bỏ hạt ớt và băm tương tự. Cho tỏi và ớt vào máy xay."
+   },
+   {
+    "t": "Xay tỏi ớt",
+    "d": "Xay tỏi và ớt đến khi thành sốt hơi lợn cợn nhưng lỏng. Người viết công thức dùng phụ kiện xay cà phê của máy xay vì cối nhỏ, ít hao hụt."
+   },
+   {
+    "t": "Trộn gia vị",
+    "d": "Cho nghệ, bột ngò, garam masala và quế vào sốt. Khuấy đều và để riêng."
+   },
+   {
+    "t": "Giã tiêu",
+    "d": "Giã nhẹ hạt tiêu đen trong cối. Khi đã vỡ thô, cho hạt mù tạt và muối hột vào. Tiếp tục giã đến khi tất cả thành bột thô."
+   },
+   {
+    "t": "Phi sốt tỏi ớt",
+    "d": "Đổ một ít dầu vào nồi nhỏ. Cho sốt tỏi ớt đã trộn gia vị vào. Sốt cần nổi nhẹ trên lớp dầu, không chạm đáy nồi."
+   },
+   {
+    "t": "Xào thịt",
+    "d": "Khi sốt khá nóng và sủi bọt, cho thịt đã thái vào. Đảo liên tục để thịt ngấm gia vị, đến khi vàng và gần chín."
+   },
+   {
+    "t": "Thêm sốt hành",
+    "d": "Cho sốt hành vào nồi. Đảo 1 phút, thêm một ít nước và đảo thêm 2 phút, rồi hạ khá nhỏ lửa. Lúc này sốt khá lỏng, màu cam nâu. Nhớ rằng phần lớn sẽ bay hơi trong khi nấu."
+   },
+   {
+    "t": "Thêm rau nếu thích",
+    "d": "Có thể thêm rau ở bước này. Nửa cốc đậu Hà Lan đông lạnh rất hợp."
+   },
+   {
+    "t": "Nấu nhỏ lửa",
+    "d": "Đậy nắp, nấu khoảng 30-40 phút. Cứ 5 hoặc 10 phút kiểm tra và đảo để không dính hay cháy. Sốt sẽ sẫm màu dần trong khi nấu."
+   },
+   {
+    "t": "Nấu cơm",
+    "d": "Trong 15 phút cuối, nấu 2 cốc gạo pilau hoặc basmati trong nồi riêng."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Múc cà ri lên cơm, rắc ngò rí băm và dọn ngay."
+   }
+  ],
+  "sourceHash": "a9d74af26f51d97268e2f86717de07657199324589bdd2174c59ea9d487560f9"
+ },
+ {
+  "pageId": 237175,
+  "title": "Chimichurri (Sốt rau thơm Nam Mỹ)",
+  "description": "Chimichurri là loại sốt Nam Mỹ dùng cho các món thịt, gồm chủ yếu dầu, giấm, mùi tây, ớt đỏ và rau thơm. Sốt có rất nhiều biến thể và mỗi người nấu có công thức riêng. Chimichurri có thể dùng làm nước ướp hoặc sốt cho thịt nướng, thịt quay, hoặc nước chấm cho bánh empanada.",
+  "ingredients": [
+   {
+    "n": "dầu ô liu"
+   },
+   {
+    "n": "giấm rượu vang trắng"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "mùi tây lá dẹt",
+    "o": "băm"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm thật nhuyễn"
+   },
+   {
+    "n": "ớt đỏ khô mảnh"
+   },
+   {
+    "n": "lá oregano"
+   },
+   {
+    "n": "ớt bột paprika"
+   },
+   {
+    "n": "muối biển mảnh"
+   },
+   {
+    "n": "tiêu đen xay"
+   },
+   {
+    "n": "cỏ xạ hương",
+    "o": "băm nhuyễn, tùy chọn"
+   },
+   {
+    "n": "nước cốt chanh",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "lá nguyệt quế vụn",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "ngò rí",
+    "o": "băm nhuyễn, tùy chọn"
+   },
+   {
+    "n": "ớt chuông xanh",
+    "u": "quả",
+    "o": "bỏ hạt, băm nhuyễn, tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn nguyên liệu",
+    "d": "Trộn tất cả nguyên liệu, trừ dầu, giấm và nước, trong tô lớn. Trộn kỹ để rau thơm và gia vị (nhất là muối) phân bố đều."
+   },
+   {
+    "t": "Để yên",
+    "d": "Để yên 30 phút."
+   },
+   {
+    "t": "Thêm giấm nóng",
+    "d": "Đun sôi giấm và nước, đổ vào các nguyên liệu khác và trộn đều. Bước này giúp dịu vị hành và tỏi."
+   },
+   {
+    "t": "Để yên lần nữa",
+    "d": "Để yên 30 phút."
+   },
+   {
+    "t": "Thêm dầu",
+    "d": "Cho dầu vào và trộn đều. Nếu phần lỏng không ngập nguyên liệu, thêm dầu, nước và giấm theo tỉ lệ 2:1:1 cho ngập."
+   },
+   {
+    "t": "Ủ lạnh",
+    "d": "Chuyển sang hộp kín, để tủ lạnh ít nhất qua đêm, tốt hơn là vài ngày."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Khi cần dùng, lấy ra khỏi tủ lạnh trước khoảng 30 phút để dầu lỏng lại. Khuấy đều và dùng."
+   }
+  ],
+  "sourceHash": "0a4fee0fc5b3def8b78148e12c33f103648798917a1cca21d089bc301d42e490"
+ },
+ {
+  "pageId": 156848,
+  "title": "Chow Mein (Mì xào chay với seitan)",
+  "description": "Chow mein là tên gọi chung trong tiếng Trung cho món mì xào, với rất nhiều loại khác nhau. Chow mein chính gốc thường làm từ mì mềm, còn trong ẩm thực Trung Hoa kiểu phương Tây có thể làm từ mì sợi mỏng giòn. Phiên bản này dùng seitan thay cho gà, heo hoặc tôm truyền thống nên phù hợp với người ăn thuần chay. Ngoài ra, nấm đông cô được dùng trong nước ướp thay cho dầu hào để tạo độ đậm tương tự.",
+  "ingredients": [
+   {
+    "n": "giá đỗ xanh"
+   },
+   {
+    "n": "seitan"
+   },
+   {
+    "n": "mì hoành thánh khô"
+   },
+   {
+    "n": "cần tây",
+    "u": "cọng"
+   },
+   {
+    "n": "cải thìa hoặc bông cải xanh"
+   },
+   {
+    "n": "nấm tươi"
+   },
+   {
+    "n": "ớt chuông đỏ",
+    "u": "quả"
+   },
+   {
+    "n": "hành tím lớn",
+    "u": "củ"
+   },
+   {
+    "n": "hành lá",
+    "u": "cọng"
+   },
+   {
+    "n": "dầu thực vật để chiên"
+   },
+   {
+    "n": "mè rang"
+   },
+   {
+    "n": "nấm đông cô băm nhuyễn",
+    "o": "Nước ướp"
+   },
+   {
+    "n": "dầu mè",
+    "o": "Nước ướp"
+   },
+   {
+    "n": "nước tương (nước ướp)",
+    "o": "Nước ướp"
+   },
+   {
+    "n": "muối (nước ướp)",
+    "o": "Nước ướp"
+   },
+   {
+    "n": "tiêu (nước ướp)",
+    "o": "Nước ướp"
+   },
+   {
+    "n": "bột bắp (nước ướp)",
+    "o": "Nước ướp"
+   },
+   {
+    "n": "nước lọc hoặc nước dùng rau ít muối",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "nước tương (nước sốt)",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "muối (nước sốt)",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "tiêu (nước sốt)",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "bột bắp (nước sốt)",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "nước pha bột bắp",
+    "o": "Nước sốt"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Rửa giá",
+    "d": "Trước khi nấu 1–2 giờ, rửa giá để có thời gian ráo hẳn."
+   },
+   {
+    "t": "Ướp seitan",
+    "d": "Cắt seitan thành sợi mỏng. Cho các nguyên liệu nước ướp vào, bột bắp sau cùng. Ướp seitan 20 đến 25 phút."
+   },
+   {
+    "t": "Chuẩn bị song song",
+    "d": "Có thể làm 3 bước sau trong lúc ướp seitan:"
+   },
+   {
+    "t": "Pha nước sốt",
+    "d": "Trong tô nhỏ, hòa 1 thìa canh bột bắp với 4 thìa canh nước. Đánh đều nước lọc hoặc nước dùng rau với dầu hào, nước tương, muối, tiêu và hỗn hợp bột bắp, rồi để riêng."
+   },
+   {
+    "t": "Làm mềm mì",
+    "d": "Trụng mì trong nước muối sôi cho mềm. Ngâm vào nước lạnh để dừng chín rồi để thật ráo."
+   },
+   {
+    "t": "Sơ chế rau",
+    "d": "Rửa sạch các loại rau. Cắt chéo cần tây và cải thìa thành miếng ½ inch. Nếu thay cải thìa bằng bông cải xanh, gọt thân đến khi hết xơ và thái chéo mỏng. Lau sạch nấm bằng khăn ẩm rồi thái lát. Bổ đôi ớt chuông, bỏ hạt và cắt miếng. Bóc vỏ và băm hành tím. Thái nhỏ hành lá."
+   },
+   {
+    "t": "Chiên mì",
+    "d": "Đun nóng chảo sâu lòng hoặc chảo rán ở lửa vừa lớn đến lớn. Cho 2 thìa canh dầu. Khi dầu nóng, cho mì vào. Chiên từng mẻ đến khi vàng, rồi lấy mì ra."
+   },
+   {
+    "t": "Xào seitan",
+    "d": "Đun nóng 2 thìa canh dầu. Cho hành tím và seitan vào, giữ lại phần nước ướp còn dư. Để seitan vàng sơ, rồi xào đến khi hết màu đỏ và gần chín. Lấy seitan và hành ra."
+   },
+   {
+    "t": "Xào rau",
+    "d": "Xào riêng từng loại rau còn lại, trừ hành lá, có thể nêm chút muối khi xào. Khi nấu cải thìa hoặc bông cải, thêm ¼ cốc nước và đậy nắp. Xào xong loại nào lấy ra loại đó. Thêm dầu khi cần."
+   },
+   {
+    "t": "Hoàn thiện",
+    "d": "Khuấy nhanh lại nước sốt. Cho tất cả nguyên liệu trở lại chảo, chừa một khoảng trống ở giữa để đổ sốt. Đổ sốt và phần nước ướp còn dư vào, khuấy nhanh cho sánh. Trộn đều, khuấy hành lá vào. Đổ hỗn hợp rau và sốt lên mì. Rắc mè rang lên trên và dùng nóng."
+   }
+  ],
+  "sourceHash": "cda6e4600f953c300f42642a75dc0078551f7a226170142f4dcf4e5be9b55af1"
+ },
+ {
+  "pageId": 447935,
+  "title": "Pudding Giáng sinh (Christmas Pudding)",
+  "description": "Pudding Giáng sinh là món tráng miệng thường dùng trong dịp lễ Giáng sinh ở Vương quốc Anh và các nước Khối Thịnh vượng chung như Úc, New Zealand, Nam Phi và Canada. Ngoài dịp lễ, món này được gọi là plum pudding và có thêm nhiều biến thể công thức.",
+  "ingredients": [
+   {
+    "n": "bột mì tự nở",
+    "o": "3,5 oz / ¾ cốc"
+   },
+   {
+    "n": "nho khô",
+    "o": "8,8 oz / 2½ cốc"
+   },
+   {
+    "n": "nho khô nhỏ (currant)",
+    "o": "8,8 oz / 2½ cốc"
+   },
+   {
+    "n": "vỏ trái cây ngào đường",
+    "o": "0,88 oz / ¼ cốc"
+   },
+   {
+    "n": "táo nấu nhỏ",
+    "u": "quả",
+    "o": "băm"
+   },
+   {
+    "n": "cam",
+    "u": "quả",
+    "o": "bào vỏ và vắt lấy nước"
+   },
+   {
+    "n": "chanh vàng",
+    "u": "quả",
+    "o": "bào vỏ và vắt lấy nước"
+   },
+   {
+    "n": "bơ lạt",
+    "o": "2,6 oz / ⅓ cốc, thêm một ít để phết khuôn"
+   },
+   {
+    "n": "đường muscovado",
+    "o": "3,5 oz / ½ cốc"
+   },
+   {
+    "n": "trứng lớn",
+    "u": "quả"
+   },
+   {
+    "n": "gia vị trộn sẵn (mixed spice)"
+   },
+   {
+    "n": "vụn bánh mì",
+    "o": "1,4 oz / ½ cốc"
+   },
+   {
+    "n": "hạnh nhân",
+    "o": "băm thô, 1,4 oz / ½ cốc"
+   },
+   {
+    "n": "rượu brandy, rum hoặc sherry",
+    "o": "thêm một ít để đốt lửa"
+   },
+   {
+    "n": "bơ brandy",
+    "o": "12 oz / 1½ cốc, để ăn kèm"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ngâm trái cây",
+    "d": "Trong tô trộn, cho nho khô, currant, vỏ ngào đường và táo cùng vỏ bào và nước cốt chanh, cam. Khuấy đều và để trong một giờ cho ngấm vị."
+   },
+   {
+    "t": "Đánh bơ đường",
+    "d": "Trong tô khác, dùng thìa đánh bơ với đường. Khi bông nhẹ, cho từ từ trứng vào."
+   },
+   {
+    "t": "Trộn bột",
+    "d": "Rây bột mì và gia vị vào một tô khác. Cho dần vào hỗn hợp bơ đường, trộn nhẹ tay cùng vụn bánh mì và hạnh nhân. Sau đó trộn nhẹ tay hỗn hợp trái cây vào."
+   },
+   {
+    "t": "Chuẩn bị khuôn",
+    "d": "Phết thật nhiều bơ vào tô hấp và đặt một miếng giấy nến tròn nhỏ dưới đáy."
+   },
+   {
+    "t": "Đổ khuôn",
+    "d": "Từ từ cho hỗn hợp vào tô và san phẳng. Cắt một lớp giấy nến và giấy bạc để đậy, gấp một nếp ở giữa cho pudding có chỗ nở, đặt lên miệng tô và buộc chặt bằng dây."
+   },
+   {
+    "t": "Chọn cách nấu",
+    "d": "Nấu pudding theo một trong hai cách sau:"
+   },
+   {
+    "t": "Cách 1: Hấp",
+    "d": "Hấp trong 8 giờ: đặt pudding vào nồi hấp có nước sôi nhẹ. Đậy nắp và thêm nước khi cần trong suốt 8 giờ."
+   },
+   {
+    "t": "Cách 2: Luộc",
+    "d": "Luộc trong 7 giờ: đặt một nắp hũ kim loại hoặc vật kim loại tròn mỏng xuống đáy nồi lớn làm giá đỡ. Tạo 2 dải dây lớn hoặc giấy bạc đặt lên giá đỡ để dễ nhấc pudding khi chín, để dư đủ dài vắt qua thành nồi. Từ từ đặt pudding lên giá và đổ nước sôi đến giữa thành tô. Đậy nắp, giữ nước sôi nhẹ trong 8 giờ đến khi pudding có màu nâu sẫm, thêm nước khi cần."
+   },
+   {
+    "t": "Để nguội và bảo quản",
+    "d": "Lấy pudding ra và để nguội 1–2 giờ. Khi nguội, bỏ giấy cũ và thay giấy nến, giấy bạc mới. Bảo quản nơi khô mát. Pudding có thể đông lạnh đến 1 năm."
+   },
+   {
+    "t": "Hâm nóng",
+    "d": "Khi dùng, hấp hoặc luộc pudding hai giờ để hâm nóng. Sau đó úp ra đĩa."
+   },
+   {
+    "t": "Đốt lửa",
+    "d": "Để đốt lửa, hâm nóng một ít brandy trong chảo, rưới lên pudding nóng ngay tại bàn và châm lửa bằng diêm hoặc dụng cụ tạo lửa dễ dùng. Đặt bát bơ brandy lên bàn để mọi người ăn kèm."
+   }
+  ],
+  "sourceHash": "67b69dc47a11ec2869285e5a9ee28c0e32d08710565c3319f1256ddfd8a787b9"
+ },
+ {
+  "pageId": 38091,
+  "title": "Cioppino (Hải sản hầm kiểu Ý)",
+  "description": "Cioppino là món cá hầm bắt nguồn từ các món súp và món hầm cá của ẩm thực các vùng nước Ý. Món này do những ngư dân định cư ở khu North Beach của San Francisco sáng tạo. Ban đầu họ nấu ngay trên thuyền khi ra khơi, về sau món trở nên quen thuộc khi các nhà hàng Ý nở rộ trong thành phố. Tên món đến từ tiếng Ý ciuppin, từ chỉ món cá hầm địa phương trong phương ngữ của thành phố cảng Genoa. Theo thói quen, cioppino được dùng với bánh mì men chua San Francisco, nhưng loại bánh mì nào có vỏ dày, dai cũng được. Công thức dưới đây dựa theo công thức của Giada De Laurentiis. Hãy lưu ý các mẹo khi nấu vẹm.",
+  "ingredients": [
+   {
+    "n": "dầu ô liu"
+   },
+   {
+    "n": "củ thì là tây lớn",
+    "u": "củ",
+    "o": "thái lát mỏng"
+   },
+   {
+    "n": "hành tây",
+    "o": "băm"
+   },
+   {
+    "n": "cần tây",
+    "o": "băm"
+   },
+   {
+    "n": "hành tím lớn",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tỏi lớn",
+    "u": "tép",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "ớt đỏ khô mảnh",
+    "o": "thêm tùy khẩu vị"
+   },
+   {
+    "n": "cà chua cô đặc"
+   },
+   {
+    "n": "cà chua thái hạt lựu"
+   },
+   {
+    "n": "rượu vang trắng khô"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "cua (loại nào cũng được)",
+    "o": "cắt miếng"
+   },
+   {
+    "n": "vẹm",
+    "o": "cọ sạch, bỏ râu"
+   },
+   {
+    "n": "sò điệp"
+   },
+   {
+    "n": "cá rô phi (hoặc cá thịt trắng, chắc khác)",
+    "o": "cắt khúc 2 inch"
+   },
+   {
+    "n": "bánh mì men chua San Francisco hoặc bánh mì vỏ dai khác",
+    "u": "ổ"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun dầu",
+    "d": "Đun nóng dầu trong nồi thật lớn ở lửa vừa."
+   },
+   {
+    "t": "Xào rau thơm",
+    "d": "Cho thì là tây, hành tây, hành tím và muối vào xào đến khi hành trong."
+   },
+   {
+    "t": "Thêm tỏi và ớt",
+    "d": "Cho tỏi và ớt mảnh vào xào 2 phút."
+   },
+   {
+    "t": "Thêm cà chua cô đặc",
+    "d": "Khuấy cà chua cô đặc vào."
+   },
+   {
+    "t": "Nấu nước hầm",
+    "d": "Cho cà chua cùng nước của nó, rượu, nước, cua, cần tây và lá nguyệt quế vào. Đậy nắp và đun đến khi sôi nhẹ."
+   },
+   {
+    "t": "Ninh cho ngấm",
+    "d": "Hạ xuống lửa vừa nhỏ. Đậy nắp ninh khoảng 30 phút cho các vị hòa quyện."
+   },
+   {
+    "t": "Thêm vẹm",
+    "d": "Cho vẹm vào nước hầm. Đậy nắp và nấu đến khi vẹm bắt đầu mở, khoảng 5 phút."
+   },
+   {
+    "t": "Thêm sò điệp và cá",
+    "d": "Cho sò điệp và cá vào. Ninh nhẹ đến khi cá và sò vừa chín, tất cả vẹm đều mở hẳn, thỉnh thoảng khuấy nhẹ. Mất thêm khoảng 10 phút."
+   },
+   {
+    "t": "Kiểm tra vẹm",
+    "d": "Kiểm tra và bỏ những con vẹm không mở. Bỏ lá nguyệt quế."
+   },
+   {
+    "t": "Nêm lại",
+    "d": "Nêm lại bằng muối và ớt mảnh cho vừa ăn."
+   }
+  ],
+  "sourceHash": "4ba8acb7a3c5302120b52f78514253942151bff905d1e595e0f5f3787b3a685d"
+ },
+ {
+  "pageId": 96176,
+  "title": "Bánh mì ngô (Cornbread)",
+  "description": "Cornbread là loại bánh mì nhanh làm từ bột ngô, đôi khi có thêm bột mì. Một số biến thể có cả hạt ngô nguyên.",
+  "ingredients": [
+   {
+    "n": "bột ngô",
+    "o": "140 g / 4,9 oz"
+   },
+   {
+    "n": "bột mì đa dụng",
+    "o": "140 g / 4,9 oz"
+   },
+   {
+    "n": "bột nở"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "sữa",
+    "o": "250 ml / 8,5 fl oz"
+   },
+   {
+    "n": "trứng",
+    "u": "quả",
+    "o": "50 g"
+   },
+   {
+    "n": "mỡ trừu (shortening)",
+    "o": "đun chảy, 60 g / 2,1 oz"
+   },
+   {
+    "n": "đường cát trắng",
+    "o": "55 g / 1,9 oz, tùy chọn"
+   },
+   {
+    "n": "ngô hạt nguyên đóng hộp",
+    "u": "lon",
+    "o": "lon 15 oz, để ráo, tùy chọn"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "băm nhuyễn, tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Làm nóng lò",
+    "d": "Làm nóng lò trước ở 425 F (220 °C). Phết dầu khuôn nướng 8 inch."
+   },
+   {
+    "t": "Trộn phần khô",
+    "d": "Trộn bột ngô, bột mì, bột nở, muối và đường trong tô lớn."
+   },
+   {
+    "t": "Thêm phần ướt",
+    "d": "Cho trứng, sữa và mỡ trừu vào."
+   },
+   {
+    "t": "Đánh bột",
+    "d": "Đánh đến khi khá mịn (khoảng một phút)."
+   },
+   {
+    "t": "Thêm ngô, hành",
+    "d": "Nếu dùng ngô và/hoặc hành, trộn nhẹ tay vào lúc này."
+   },
+   {
+    "t": "Đổ khuôn",
+    "d": "Đổ hỗn hợp vào khuôn."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng 20–25 phút hoặc đến khi cắm tăm vào giữa rút ra sạch. Nếu có thêm ngô, tăng thời gian khoảng ~50%."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng nóng!"
+   }
+  ],
+  "sourceHash": "add4a692490c9147915422df8425385d64cf9c680d90d4c12b3c0f58206aa535"
+ },
+ {
+  "pageId": 176798,
+  "title": "Coronation Chicken (Gà sốt cà ri kem kiểu Anh)",
+  "description": "Món gà Coronation được cho là do Constance Spry, một người cắm hoa, và Rosemary Hume sáng tạo cho bữa tiệc đăng quang của Nữ hoàng Elizabeth II năm 1953. Dù các cách làm gần đây thường thêm nho khô, thứ mà nhiều người quen thuộc hơn, công thức dưới đây dựa trên công thức “chính thức” được công bố năm 1956:",
+  "ingredients": [
+   {
+    "n": "gà",
+    "u": "con",
+    "o": "2,3 kg / 5 lb, luộc chín (hoặc gà đã nấu chín khác)"
+   },
+   {
+    "n": "dầu thực vật"
+   },
+   {
+    "n": "hành tây nhỏ",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "sốt cà ri"
+   },
+   {
+    "n": "cà chua xay nhuyễn"
+   },
+   {
+    "n": "rượu vang đỏ"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "chanh vàng",
+    "u": "quả",
+    "o": "vắt lấy nước"
+   },
+   {
+    "n": "mơ bổ đôi",
+    "u": "nửa quả",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "sốt mayonnaise",
+    "o": "½ pint"
+   },
+   {
+    "n": "kem tươi đánh bông",
+    "o": "4 fl oz"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   },
+   {
+    "n": "cải xoong",
+    "t": "để trang trí"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Chuẩn bị gà",
+    "d": "Lột da gà nếu cần và cắt miếng nhỏ. Theo truyền thống gà được nấu nguyên con từ trước, nhưng cũng có thể dùng gà sống và nướng vỉ các miếng gà ở bước này."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Làm ấm một ít dầu thực vật trong nồi nhỏ."
+   },
+   {
+    "t": "Xào hành",
+    "d": "Cho hành tây vào nồi và nấu nhẹ đến khi mềm (khoảng 3 phút)."
+   },
+   {
+    "t": "Nấu sốt",
+    "d": "Cho sốt cà ri, cà chua xay, rượu, lá nguyệt quế và nước cốt chanh vào. Ninh không đậy nắp khoảng 10 phút đến khi cạn bớt. Lọc và để nguội."
+   },
+   {
+    "t": "Trộn sốt mayonnaise",
+    "d": "Xay nhuyễn mơ đã băm bằng máy xay. Đánh sốt đã nguội vào mayonnaise cùng mơ xay."
+   },
+   {
+    "t": "Thêm kem",
+    "d": "Đánh kem đến khi bông cứng, trộn nhẹ tay vào hỗn hợp."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nêm muối, tiêu và thêm chút nước cốt chanh nếu cần."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Trộn nhẹ tay các miếng gà vào, trang trí cải xoong và dọn ăn."
+   }
+  ],
+  "sourceHash": "91d7b4e20a474a4ae43b5f20bcf99ef63511335965c1a16641f64e84ae1457c9"
+ },
+ {
+  "pageId": 404205,
+  "title": "Mì sốt kem nấm",
+  "description": "Công thức mì sốt kem nấm này sẽ thỏa mãn cơn thèm món Ý với hương vị đậm đà và thêm dinh dưỡng. Tuyệt nhất là món chỉ mất hai mươi phút, rất hợp cho bữa tối ngày thường. Công thức do người dùng Sharon Chen đăng lần đầu trên Foodista; các công thức của Foodista được phát hành theo giấy phép CC-BY.",
+  "ingredients": [
+   {
+    "n": "mì ống khô (gợi ý: linguine nguyên cám)",
+    "u": "khẩu phần",
+    "o": "⅔ cốc / 75 g / 2,6 oz"
+   },
+   {
+    "n": "bơ lạt"
+   },
+   {
+    "n": "tỏi",
+    "u": "tép",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "nấm mỡ trắng",
+    "o": "bỏ chân, 230 g"
+   },
+   {
+    "n": "rượu vang trắng khô"
+   },
+   {
+    "n": "kem tươi béo",
+    "o": "60 ml / 2 oz"
+   },
+   {
+    "n": "nước hầm xương gà ít muối",
+    "o": "60 ml / 2 oz"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "phô mai Parmesan bào",
+    "o": "30 g / 1,1 oz"
+   },
+   {
+    "n": "tiêu đen xay"
+   },
+   {
+    "n": "mùi tây tươi băm",
+    "t": "để trang trí"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Luộc mì",
+    "d": "Trong nồi lớn, luộc mì trong nước muối sôi 8–9 phút hoặc theo hướng dẫn trên bao bì đến khi vừa chín tới (al dente). Để ráo."
+   },
+   {
+    "t": "Phi tỏi",
+    "d": "Trong lúc đó, đun chảy bơ trong chảo lớn ở lửa vừa lớn. Khuấy tỏi băm vào và để khoảng 30 giây đến khi thơm."
+   },
+   {
+    "t": "Áp chảo nấm",
+    "d": "Đặt nấm vào chảo, mặt mũ nấm ngửa lên. Nấu 3–5 phút hoặc đến khi nấm bắt đầu teo lại, thỉnh thoảng đảo bằng xẻng."
+   },
+   {
+    "t": "Thêm rượu",
+    "d": "Cho rượu vang trắng vào, tiếp tục nấu cho rượu và nước nấm bay hơi (khoảng 3 phút)."
+   },
+   {
+    "t": "Thêm kem và nước hầm",
+    "d": "Đổ kem tươi và nước hầm xương gà vào chảo, thêm một nhúm muối lớn. Chuyển sang lửa vừa, nấu đến khi nước hơi sánh, lật nấm vài lần."
+   },
+   {
+    "t": "Thêm phô mai",
+    "d": "Rắc Parmesan lên nấm và khuấy nhẹ đến khi phô mai tan. Nếm và thêm muối nếu muốn."
+   },
+   {
+    "t": "Trộn mì",
+    "d": "Cho mì đã luộc vào chảo. Trộn đều với hỗn hợp nấm rồi chuyển ra đĩa."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Rắc tiêu đen xay và trang trí mùi tây băm. Thêm Parmesan bào nếu muốn. Chúc ngon miệng!"
+   }
+  ],
+  "sourceHash": "9a3c861436f0e61c213f6d9ef9594e37baa5130ea0325bd3f26f4450da382d30"
+ }
+]

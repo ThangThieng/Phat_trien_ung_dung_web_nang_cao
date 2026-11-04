@@ -1,0 +1,808 @@
+[
+ {
+  "pageId": 446069,
+  "title": "Nkwobi (Móng bò sốt cay kiểu Nigeria)",
+  "description": "Nkwobi là món ngon của Nigeria, thường được gọi trong các nhà hàng sang trọng, sự kiện và cả bữa ăn gia đình. Món đơn giản là móng bò nấu chín trộn với sốt dầu cọ cay.",
+  "ingredients": [
+   {
+    "n": "móng bò"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "viên nêm"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "hạt ugba",
+    "t": "tùy chọn"
+   },
+   {
+    "n": "bồ tạt ăn được (potash)"
+   },
+   {
+    "n": "dầu cọ"
+   },
+   {
+    "n": "tôm khô xay"
+   },
+   {
+    "n": "tiêu Cameroon xay"
+   },
+   {
+    "n": "tỏi bột"
+   },
+   {
+    "n": "gừng bột"
+   },
+   {
+    "n": "lá utazi thái lát"
+   },
+   {
+    "n": "hành tây thái lát"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Sơ chế móng bò",
+    "d": "Cắt móng bò thành miếng nhỏ, bỏ hết xương lớn."
+   },
+   {
+    "t": "Cho vào nồi",
+    "d": "Cho móng bò vào nồi cùng muối, viên nêm và hành băm."
+   },
+   {
+    "t": "Ninh",
+    "d": "Thêm nước vừa ngập thịt. Ninh đến khi mềm. Thêm từng ít nước khi cần, nhưng khi thịt chín trong nồi nên còn rất ít hoặc không còn nước."
+   },
+   {
+    "t": "Luộc ugba",
+    "d": "Trong nồi riêng, luộc ugba chỉ 3 phút rồi để ráo."
+   },
+   {
+    "t": "Làm sốt dầu cọ",
+    "d": "Hòa tan bồ tạt trong một cốc nước, lọc vào nồi riêng. Cho dầu cọ vào nước bồ tạt và khuấy đều đến khi đặc và có màu vàng."
+   },
+   {
+    "t": "Nêm sốt",
+    "d": "Cho tôm khô, ugba đã luộc, tiêu Cameroon, viên nêm và muối vào hỗn hợp dầu cọ. Khuấy đều."
+   },
+   {
+    "t": "Trộn thịt",
+    "d": "Cho thịt đã nấu vào, khuấy để áo đều hỗn hợp dầu cọ."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng trong bát gỗ, phủ hành thái khoanh và lá utazi thái lát."
+   }
+  ],
+  "sourceHash": "5d428c4d4d5f5e90408c2483f9b38981a8f882a8224862312c29bc1a301f0c6e"
+ },
+ {
+  "pageId": 62682,
+  "title": "Bánh quy yến mạch",
+  "description": "Bánh quy yến mạch thơm ngon, đúng như hương vị bạn còn nhớ.",
+  "ingredients": [
+   {
+    "n": "mỡ trừu (shortening)",
+    "o": "180 g"
+   },
+   {
+    "n": "đường nâu",
+    "o": "240 g"
+   },
+   {
+    "n": "đường trắng",
+    "o": "120 g"
+   },
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "nước",
+    "o": "60 ml"
+   },
+   {
+    "n": "vani"
+   },
+   {
+    "n": "yến mạch cán",
+    "o": "700 g"
+   },
+   {
+    "n": "bột mì đa dụng",
+    "o": "240 g"
+   },
+   {
+    "n": "muối nở (baking soda)"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "nho khô",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đánh phần ướt",
+    "d": "Dùng máy đánh mỡ trừu, đường nâu, đường trắng, trứng, nước và vani đến khi nhẹ, bông (khoảng 10 phút ở tốc độ cao)."
+   },
+   {
+    "t": "Trộn phần khô",
+    "d": "Trong tô trộn, trộn yến mạch, bột mì, muối nở và muối."
+   },
+   {
+    "t": "Trộn đều",
+    "d": "Cho phần khô vào phần ướt, trộn đều bằng máy."
+   },
+   {
+    "t": "Thêm nho khô",
+    "d": "Khuấy nho khô vào nếu dùng."
+   },
+   {
+    "t": "Chia phần",
+    "d": "Múc từng phần bột. Công thức này làm được 20 bánh, nên chia 20 phần."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng ở 350°F (180°C) trong 8–10 phút."
+   }
+  ],
+  "sourceHash": "08d889b10b4e721f050f651e84058417324f80375cc0d83b39b92f0a8c0a3d75"
+ },
+ {
+  "pageId": 30544,
+  "title": "Ossobuco alla Milanese (Bắp bê hầm kiểu Milan)",
+  "description": "Ossobuco, dịch thoáng từ tiếng Ý là “xương rỗng”, ám chỉ phần tủy lớn ở giữa xương bắp bê. Đây là món đặc sản của Milan, gồm bắp bê nấu trong nước dùng thịt, thêm hương vị rượu vang trắng. Khi hầm chậm, phần thịt khá dai nhưng đậm vị này trở nên mềm tan, mô liên kết và tủy tan vào nước sốt, làm sốt béo mịn. Bắp bê là phần thịt khá rẻ, có sẵn ở hầu hết siêu thị và cửa hàng thịt tốt. Hãy chọn bắp sau nhiều thịt, cắt từ phần trên đùi với tỉ lệ thịt cao so với xương. Mỗi miếng rộng khoảng năm inch và dày từ một đến một inch rưỡi. Món có lẽ bắt nguồn từ một trang trại ở Milan cuối thế kỷ mười chín và ban đầu nhiều khả năng không có cà chua, loại rau đến từ Tân Thế giới. Ossobuco lần đầu trở nên thịnh hành ở các osterie của Milan, những quán ăn khu phố ở các thành phố lớn của Ý, phục vụ cư dân địa phương nhưng hiếm khi đón khách du lịch hay người nước ngoài. Ossobuco truyền thống nấu với quế, allspice, lá nguyệt quế và gremolata, ngày nay gọi là ossobuco in bianco (ossobuco sốt trắng). Phiên bản hiện đại phần lớn đã thay thế bản cũ, gồm cà chua và mirepoix (cà rốt, cần tây, hành tây), nêm rau thơm nhưng không có gremolata (dù cũng có bản kết hợp cả cà chua và gremolata). Theo truyền thống, ossobuco dùng với risotto alla milanese, nhưng cũng rất hợp với polenta hoặc khoai tây nghiền.",
+  "ingredients": [
+   {
+    "n": "bắp sau bê",
+    "o": "dày khoảng 2,5–4 cm (1–1½ inch)"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "cần tây cả lá",
+    "u": "cọng",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "cà rốt cỡ vừa",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "bơ"
+   },
+   {
+    "n": "dầu thực vật"
+   },
+   {
+    "n": "rượu vang trắng khô hoặc vermouth trắng",
+    "o": "1 cốc"
+   },
+   {
+    "n": "nước dùng thịt",
+    "t": "khoảng 480 ml",
+    "o": "2 cốc"
+   },
+   {
+    "n": "cà chua cô đặc"
+   },
+   {
+    "n": "phi lê cá cơm",
+    "u": "miếng",
+    "o": "nghiền"
+   },
+   {
+    "n": "cỏ xạ hương khô"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "vỏ chanh",
+    "u": "dải"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu xay"
+   },
+   {
+    "n": "bột mì"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Làm nóng lò",
+    "d": "Làm nóng lò trước ở 350 °F (175 °C)."
+   },
+   {
+    "t": "Buộc thịt",
+    "d": "Nếu người bán chưa làm, hãy buộc dây bếp quanh giữa các miếng bắp để thịt không bị rời khi nấu."
+   },
+   {
+    "t": "Xào rau",
+    "d": "Chọn nồi quay nặng có nắp hoặc nồi gang vừa đủ xếp bắp bê thành một lớp. Cho bơ, hai thìa canh dầu, hành, cần tây và cà rốt vào, xào ở lửa vừa đến khi rau héo, khoảng 8 phút. Thêm tỏi và vỏ chanh, xào đến khi thơm, khoảng 2 phút nữa. Nhấc khỏi bếp."
+   },
+   {
+    "t": "Áp chảo thịt",
+    "d": "Trong lúc đó, đun phần dầu còn lại trong chảo đến gần bốc khói. Áo nhẹ bột cho bắp bê rồi cho vào dầu. Áp chảo thật vàng hai mặt cắt, rồi đặt vào nồi, lên trên lớp rau."
+   },
+   {
+    "t": "Thêm rượu",
+    "d": "Cho rượu vào chảo, đun sôi đến khi cạn một nửa, vét sạch đáy chảo. Đổ lên bắp bê."
+   },
+   {
+    "t": "Thêm nước dùng",
+    "d": "Đun sôi nước dùng trong chảo, đánh cà chua cô đặc và cá cơm vào. Đổ vào bắp bê cùng rau thơm, xay vài vòng tiêu và một nhúm muối lớn. Nước nên ngập ba phần tư miếng thịt; nếu chưa đủ, thêm nước."
+   },
+   {
+    "t": "Hầm trong lò",
+    "d": "Đun nồi đến khi sôi nhẹ, đậy nắp và đặt vào lò. Nấu khoảng 2 giờ, cứ nửa giờ lật và rưới nước lên thịt. Nếu nước gần cạn, thêm nước nóng, mỗi lần khoảng nửa cốc. Thịt chín khi xiên nĩa mềm và rời khỏi xương."
+   },
+   {
+    "t": "Hoàn thiện sốt",
+    "d": "Chuyển bắp bê ra đĩa, bỏ dây và đậy để giữ ấm. Nếu sốt còn loãng, như thường gặp, đặt nồi lên bếp ở lửa lớn và cô đến khi sốt sánh mịn. Rưới sốt lên thịt và dọn ăn."
+   }
+  ],
+  "sourceHash": "9058e16a93dd9d599ef0d0f7a08b891b19a9b31649bc4bd2da8314a6afb95678"
+ },
+ {
+  "pageId": 446410,
+  "title": "Súp Owo (Súp cà chua dầu cọ miền nam Nigeria)",
+  "description": "Súp Owo, còn gọi là oghwo ofigbo hoặc ogwofibo, là món súp truyền thống của miền nam Nigeria.",
+  "ingredients": [
+   {
+    "n": "cà chua tươi"
+   },
+   {
+    "n": "ớt tươi"
+   },
+   {
+    "n": "thịt dê, thịt rừng hoặc thịt thập cẩm",
+    "o": "rửa sạch"
+   },
+   {
+    "n": "hành tây nhỏ",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "viên nêm"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "cá khô",
+    "o": "rửa bằng nước nóng"
+   },
+   {
+    "n": "tôm khô xay"
+   },
+   {
+    "n": "bồ tạt ăn được (akaun)",
+    "o": "giã thành bột"
+   },
+   {
+    "n": "dầu cọ"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Xay cà chua và ớt",
+    "d": "Xay cà chua và ớt thành hỗn hợp nhuyễn."
+   },
+   {
+    "t": "Nấu thịt",
+    "d": "Cho thịt, hành, viên nêm và muối vào nồi. Nấu khoảng 3 phút với nước thịt tiết ra."
+   },
+   {
+    "t": "Ninh thịt",
+    "d": "Đổ nước ngập thịt và ninh đến khi mềm."
+   },
+   {
+    "t": "Thêm cá và sốt",
+    "d": "Cho cá khô, hỗn hợp cà chua ớt và tôm khô vào thịt. Thêm khoảng một cốc nước và khuấy. Ninh 10 phút, khuấy để khỏi cháy."
+   },
+   {
+    "t": "Thêm bồ tạt",
+    "d": "Hòa tan bột bồ tạt trong 4 thìa canh nước nóng. Lọc cẩn thận và trộn phần nước vào súp."
+   },
+   {
+    "t": "Để nguội",
+    "d": "Tắt bếp và để súp nguội khoảng 10 phút."
+   },
+   {
+    "t": "Thêm dầu cọ",
+    "d": "Đặt lại lên bếp, từ từ khuấy dầu cọ vào."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Nhấc khỏi bếp, dùng với chuối nấu, khoai mỡ hoặc món tinh bột tùy thích."
+   }
+  ],
+  "sourceHash": "e572a9f1fd31cc7290a77e707e733780b321877fab63653a841ab7463b3b592c"
+ },
+ {
+  "pageId": 17921,
+  "title": "Pad Thai (Phở xào kiểu Thái)",
+  "description": "Đây là công thức gia đình nên có thể không chuẩn truyền thống, nhưng vẫn rất ngon.",
+  "ingredients": [
+   {
+    "n": "bánh phở khô",
+    "o": "225 g"
+   },
+   {
+    "n": "nước mắm",
+    "o": "60 ml"
+   },
+   {
+    "n": "giấm trắng (hoặc giấm gạo)",
+    "u": "thìa canh",
+    "o": "từ 3 thìa trở lên, 50 ml"
+   },
+   {
+    "n": "nước cốt me",
+    "o": "thêm 1 thìa canh, 75 ml"
+   },
+   {
+    "n": "đường thốt nốt (hoặc đường cát)",
+    "o": "thêm 1 thìa canh, 75 ml"
+   },
+   {
+    "n": "dầu thực vật",
+    "o": "60 ml"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm"
+   },
+   {
+    "n": "ớt đỏ khô mảnh",
+    "o": "30 ml, hoặc tùy khẩu vị"
+   },
+   {
+    "n": "tôm, đậu phụ, gà, mực hoặc bò (hoặc kết hợp)",
+    "o": "225 g"
+   },
+   {
+    "n": "rau củ thập cẩm (cà rốt bào, hành tây trắng, ớt đỏ hoặc xanh)"
+   },
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "hành lá băm",
+    "u": "cọng"
+   },
+   {
+    "n": "giá đỗ",
+    "o": "340 g"
+   },
+   {
+    "n": "lạc sống băm",
+    "o": "175 ml"
+   },
+   {
+    "n": "múi chanh (trang trí)",
+    "t": "tùy chọn"
+   },
+   {
+    "n": "ngò rí (trang trí)",
+    "t": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ngâm bánh phở",
+    "d": "Ngâm bánh phở trong nước ấm khoảng 20 phút rồi vớt ra. Hoặc đổ nước sôi lên bánh phở và để 7 phút."
+   },
+   {
+    "t": "Pha nước sốt",
+    "d": "Trộn nước mắm với giấm, đường và nước cốt me trong tô nhỏ."
+   },
+   {
+    "t": "Phi tỏi và ớt",
+    "d": "Đun nóng dầu trong chảo sâu lòng ở lửa lớn, phi tỏi băm và ớt trong một phút."
+   },
+   {
+    "t": "Xào thịt",
+    "d": "Xào thịt hoặc đậu phụ trong dầu đến khi vàng (6–8 phút)."
+   },
+   {
+    "t": "Xào rau",
+    "d": "Cho rau củ thập cẩm vào, nấu đến khi mềm."
+   },
+   {
+    "t": "Thêm bánh phở và trứng",
+    "d": "Cho bánh phở vào. Đập trứng lên bánh phở, để trứng chín rồi trộn đều."
+   },
+   {
+    "t": "Thêm sốt",
+    "d": "Cho hỗn hợp nước mắm vào chảo, trộn đều và hạ lửa vừa."
+   },
+   {
+    "t": "Thêm giá và hành",
+    "d": "Cho hành lá băm và giá đỗ vào, xào thêm 2 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dọn ra đĩa lớn hoặc tô. Rắc lạc băm và tùy thích thêm ngò rí băm cùng một múi chanh."
+   }
+  ],
+  "sourceHash": "47c2584107d2fae331570070fe0eaf6b3bb73461970648b115c8a26cea58dd17"
+ },
+ {
+  "pageId": 208846,
+  "title": "Paella de Marisco (Cơm hải sản Tây Ban Nha)",
+  "description": "Paella de marisco (paella hải sản) là công thức paella thịnh hành nhất thế giới. Phiên bản hiện đại xuất hiện ở vùng ven biển Valencia, Tây Ban Nha vào đầu những năm 1800. Trước thế kỷ 19, nguyên liệu của paella hải sản rất đa dạng, lạ nhất là lươn. Người Valencia xem paella hải sản và paella valenciana là chính gốc, còn mọi biến thể khác đều là hàng nhái. Dưới đây là phiên bản có sửa đổi nhẹ từ công thức truyền thống của đầu bếp Juanry Seguí, một đầu bếp nổi tiếng ở Valencia. Hãy đọc kỹ thuật nấu paella trên trang nguồn trước khi thử.",
+  "ingredients": [
+   {
+    "n": "cua",
+    "o": "11 oz, nước dùng"
+   },
+   {
+    "n": "đầu tôm",
+    "o": "11 oz, nước dùng"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "tỏi nguyên tép",
+    "u": "tép",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "hành tây vàng",
+    "o": "cắt tư, nước dùng"
+   },
+   {
+    "n": "nước",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "vẹm sống đã bỏ râu",
+    "u": "con",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "cà chua bào",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "thân mực thái hạt lựu",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "tôm bóc vỏ, bỏ chỉ",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "gạo Valencia",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "tôm hùm Na Uy (hoặc tôm càng, tôm rất lớn nếu không có)",
+    "u": "con",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "dầu ô liu",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "tỏi băm",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "ớt bột paprika ngọt",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "nhụy nghệ tây (hoặc 1½ thìa cà phê phẩm màu)",
+    "u": "sợi",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "muối",
+    "o": "Phần cơm"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nấu nước dùng",
+    "d": "Đun sôi nguyên liệu nước dùng trong nước, cô đến khi còn 2 lít. Thỉnh thoảng dùng muôi hoặc dụng cụ nghiền khoai ép nguyên liệu xuống đáy nồi để lấy vị."
+   },
+   {
+    "t": "Lọc",
+    "d": "Lọc nước dùng và để riêng."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Đun nóng dầu trong chảo paella ở lửa vừa."
+   },
+   {
+    "t": "Nấu vẹm",
+    "d": "Cho vẹm vào và đậy bằng nắp nồi; nắp chỉ che vẹm chứ không che cả chảo. Nấu đến khi vẹm mở, vớt ra để riêng."
+   },
+   {
+    "t": "Nêm tôm hùm",
+    "d": "Cho tôm hùm Na Uy vào, rắc mỗi con một nhúm muối."
+   },
+   {
+    "t": "Áp chảo tôm hùm",
+    "d": "Áp chảo tôm hùm rồi vớt ra."
+   },
+   {
+    "t": "Xào mực",
+    "d": "Cho mực thái hạt lựu vào xào khoảng 2 phút."
+   },
+   {
+    "t": "Xào tôm",
+    "d": "Cho tôm vào xào khoảng 2 phút."
+   },
+   {
+    "t": "Phi tỏi",
+    "d": "Cho tỏi vào xào đến khi vàng nâu, khoảng một phút."
+   },
+   {
+    "t": "Làm sofrito",
+    "d": "Cho cà chua bào vào xào khoảng 4 phút để làm sofrito."
+   },
+   {
+    "t": "Áo gạo",
+    "d": "Cho gạo vào đảo đến khi áo đều sofrito."
+   },
+   {
+    "t": "Thêm paprika",
+    "d": "Cho paprika vào xào khoảng 2 phút."
+   },
+   {
+    "t": "Thêm nước dùng",
+    "d": "Đổ 2 lít nước dùng hải sản vào."
+   },
+   {
+    "t": "Thêm nghệ tây",
+    "d": "Cho nghệ tây (hoặc phẩm màu) vào. Trộn đều và ninh khoảng 3 phút."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nếm nước dùng và mời cả khách cùng nếm. Nếu nhạt, mỗi lần thêm một nhúm muối đến khi mọi người vừa miệng."
+   },
+   {
+    "t": "Xếp hải sản",
+    "d": "Xếp lại tôm hùm và vẹm vào, tiếp tục nấu."
+   },
+   {
+    "t": "Canh độ chín",
+    "d": "Bắt đầu nếm gạo sau khi ninh khoảng 20 phút và hạ lửa một chút. Đừng để gạo quá mềm. Cứ 10 phút nếm lại và hạ lửa nhẹ sau mỗi lần. Mục tiêu là hạt cơm còn hơi sượng ở giữa. Thời gian đạt mức này có thể từ 30 phút đến một giờ, tùy dụng cụ nấu."
+   },
+   {
+    "t": "Kiểm tra",
+    "d": "Paella hoàn thành khi hạt cơm hơi chắc khi cắn (al dente), cơm hơi ẩm nhưng không nhão, và dưới đáy chảo có một lớp cơm cháy nhẹ. Đây được xem là phần ngon nhất trong toàn thế giới nói tiếng Tây Ban Nha."
+   },
+   {
+    "t": "Ủ cơm",
+    "d": "Nhấc chảo khỏi bếp, đậy khăn trắng (không dùng giấy bạc). Để yên 5 phút trước khi dọn."
+   }
+  ],
+  "sourceHash": "8efe62ea59191e60bb48665f97bd63598c341d589ffb3297542a5200442cc3b7"
+ },
+ {
+  "pageId": 189865,
+  "title": "Paella Roja (Cơm đỏ thập cẩm Tây Ban Nha)",
+  "description": "Paella là món cơm Tây Ban Nha, tên gọi bắt nguồn từ dụng cụ nấu paellera, loại chảo tròn phẳng có hai quai. Paella roja là phiên bản paella thập cẩm cổ điển ở Tây Ban Nha (không kể vùng Valencia). Người mê paella gọi là thập cẩm vì kết hợp thịt động vật trên cạn với hải sản. Công thức dưới đây dựa trên công thức của Spain-recipes.com nhưng có nhiều nguyên liệu hơn. Món hơi mất thời gian nhưng rất đáng công. Hãy đọc kỹ thuật nấu paella trên trang nguồn trước khi thử.",
+  "ingredients": [
+   {
+    "n": "cánh gà",
+    "o": "½ pound, nước dùng"
+   },
+   {
+    "n": "hải sản đông lạnh, đầu cá, cua nguyên con, đầu tôm hoặc cá nhỏ (chọn một loại)",
+    "o": "½ pound, nước dùng"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "ớt chuông xanh",
+    "u": "quả",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "tỏi (nước dùng)",
+    "u": "tép",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "nước",
+    "o": "1 gallon, nước dùng"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá",
+    "o": "Nước dùng"
+   },
+   {
+    "n": "dầu ô liu",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "ớt chuông đỏ (cắt sợi)",
+    "u": "quả",
+    "o": "cắt sợi, phần cơm"
+   },
+   {
+    "n": "muối",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "ức gà hoặc thăn gà không xương",
+    "o": "12 oz, phần cơm"
+   },
+   {
+    "n": "tỏi lớn",
+    "u": "tép",
+    "o": "băm nhuyễn, phần cơm"
+   },
+   {
+    "n": "hành tây thái hạt lựu",
+    "o": "8 oz, phần cơm"
+   },
+   {
+    "n": "ớt chuông đỏ thái hạt lựu",
+    "o": "1 pound, phần cơm"
+   },
+   {
+    "n": "cà chua thái hạt lựu",
+    "o": "1 pound, phần cơm"
+   },
+   {
+    "n": "ớt bột paprika ngọt",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "đậu đóng hộp (đậu gà, đậu bơ, đậu great northern, đậu lima)",
+    "o": "tùy chọn, rửa kỹ và để ráo, 6 oz, phần cơm"
+   },
+   {
+    "n": "gạo Valencia",
+    "o": "2½ cốc, phần cơm"
+   },
+   {
+    "n": "phẩm màu vàng cho cơm",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "thân mực và tôm",
+    "o": "mực thái hạt lựu hoặc khoanh tròn, 12 oz, phần cơm"
+   },
+   {
+    "n": "sò điệp",
+    "o": "12 oz, phần cơm"
+   },
+   {
+    "n": "vẹm sống",
+    "u": "con",
+    "o": "làm sạch, bỏ râu, phần cơm"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Luộc vẹm",
+    "d": "Đổ nước cao khoảng 1 inch vào chảo. Đun sôi nhẹ, cho vẹm vào. Đậy nắp và đợi khoảng 2 phút."
+   },
+   {
+    "t": "Lấy vẹm",
+    "d": "Vớt những con vẹm đã mở. Tiếp tục kiểm tra khoảng mỗi phút một lần. Bỏ con không mở nhưng giữ lại nước."
+   },
+   {
+    "t": "Tách vỏ",
+    "d": "Vặn bỏ nửa vỏ không có thịt. Để nửa vỏ có thịt vào tủ lạnh cho đến khi đặt lên paella."
+   },
+   {
+    "t": "Chuẩn bị nước dùng",
+    "d": "Cắt tư hành tây và ớt chuông, cho vào nồi lớn cùng các nguyên liệu nước dùng còn lại, kể cả nước luộc vẹm."
+   },
+   {
+    "t": "Nấu nước dùng",
+    "d": "Cô đến khi còn khoảng ½ gallon nước dùng. Thỉnh thoảng dùng dụng cụ nghiền khoai ép nguyên liệu xuống đáy nồi để lấy vị."
+   },
+   {
+    "t": "Lọc",
+    "d": "Lọc nước dùng và để riêng. Bỏ phần hải sản và cánh gà đã luộc. Nếu không muốn bỏ, có thể ăn như món nhẹ nhưng đừng cho vào paella."
+   },
+   {
+    "t": "Nếm",
+    "d": "Nếm nước dùng. Nước dùng nên đậm vị hải sản và có vị gà vừa phải."
+   },
+   {
+    "t": "Cắt ớt",
+    "d": "Cắt ớt chuông đỏ thành sợi."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Đổ dầu thành vũng giữa chảo paella, cách mép chảo khoảng 2 inch mọi phía. Đun ở lửa lớn."
+   },
+   {
+    "t": "Áp chảo ớt",
+    "d": "Nấu ớt sợi vừa đủ để cháy xém. Vớt ra để riêng."
+   },
+   {
+    "t": "Xào gà",
+    "d": "Thêm ½ thìa canh muối vào gà và xào đến khi vàng nâu."
+   },
+   {
+    "t": "Phi tỏi",
+    "d": "Cho tỏi vào xào đến khi vàng nâu, cẩn thận đừng để cháy. Bước này chỉ mất khoảng một phút đến 90 giây."
+   },
+   {
+    "t": "Làm sofrito",
+    "d": "Cho cà chua, paprika, hành và ớt thái hạt lựu vào. Xào đến khi rau mềm để làm sofrito."
+   },
+   {
+    "t": "Thêm nước dùng",
+    "d": "Cho 960 ml (4 cốc) nước dùng cùng phẩm màu và thêm ½ thìa canh muối. Trộn đều."
+   },
+   {
+    "t": "Đun sôi",
+    "d": "Đun nước dùng sôi mạnh rồi hạ lửa một chút, ninh khoảng hai phút."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nếm nước dùng và mời cả khách cùng nếm, đây là phong tục ở Tây Ban Nha. Nước dùng nên có vị muối rất nhẹ."
+   },
+   {
+    "t": "Cho gạo",
+    "d": "Cho gạo vào và trộn đều. Lại đun sôi mạnh rồi hạ lửa để sôi vừa. Thường xuyên trộn để khỏi cháy."
+   },
+   {
+    "t": "Canh độ chín",
+    "d": "Bắt đầu nếm gạo sau khi ninh khoảng 20 phút và hạ lửa một chút. Đừng để gạo quá mềm. Cứ 10 phút nếm lại và hạ lửa nhẹ sau mỗi lần. Mục tiêu là hạt cơm còn hơi sượng ở giữa. Thời gian đạt mức này có thể từ 30 phút đến 1 giờ, tùy dụng cụ nấu."
+   },
+   {
+    "t": "Thêm hải sản",
+    "d": "Cho hải sản (trừ vẹm) cùng đậu vào, phủ cơm lên trên. Ninh thêm 10 phút. Không trộn trong giai đoạn cuối này. Paella hoàn thành khi hạt cơm hơi chắc khi cắn (al dente), cơm hơi ẩm nhưng không nhão, và dưới đáy có một lớp cơm cháy nhẹ, được xem là phần ngon nhất trong toàn thế giới nói tiếng Tây Ban Nha."
+   },
+   {
+    "t": "Ủ cơm",
+    "d": "Nhấc chảo khỏi bếp, đậy khăn trắng sạch. Để yên 5 phút cho cơm hút thêm nước."
+   },
+   {
+    "t": "Xếp vẹm",
+    "d": "Bỏ khăn, xếp vẹm quanh mép chảo, mặt tròn úp xuống và ấn vào cơm. Nếu vẹm quá lạnh do để trong tủ, hâm bằng lò vi sóng không quá 30 giây."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Xếp ớt sợi lên paella như nan bánh xe. Món đã sẵn sàng để dọn."
+   }
+  ],
+  "sourceHash": "43af7a42fbac7aac7a82869f28d31b53bcf3b07479a1d2e9b6e402dc4e6f5d2c"
+ }
+]

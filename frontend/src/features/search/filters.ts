@@ -14,11 +14,11 @@ export const SERVINGS_OPTIONS = [1, 2, 4, 6] as const;
 /** Radix Select không cho giá trị rỗng — "tất cả danh mục" dùng giá trị riêng, URL thì không có `categoryId`. */
 export const ALL_CATEGORIES = 'all';
 
-export type SearchFilterKey =
+type SearchFilterKey =
   'categoryId' | 'difficulty' | 'maxCookTime' | 'maxPrepTime' | 'minServings';
 
 /** Thứ tự cố định của nhãn bộ lọc đang bật — cùng thứ tự với bảng bộ lọc. */
-export const SEARCH_FILTER_KEYS: readonly SearchFilterKey[] = [
+const SEARCH_FILTER_KEYS: readonly SearchFilterKey[] = [
   'categoryId',
   'difficulty',
   'maxCookTime',
@@ -42,7 +42,7 @@ export const formatCookTimeLimit = (value: number) => `Nấu ≤ ${minutes(value
 export const formatPrepTimeLimit = (value: number) => `Chuẩn bị ≤ ${minutes(value)}`;
 export const formatServingsMin = (value: number) => `Từ ${value} khẩu phần`;
 
-export interface ActiveFilter {
+interface ActiveFilter {
   key: SearchFilterKey;
   /** Nhãn hiển thị trên chip, ví dụ "Độ khó: Dễ", "Nấu ≤ 30 phút". */
   label: string;

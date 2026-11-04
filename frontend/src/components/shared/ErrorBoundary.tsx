@@ -4,7 +4,7 @@ import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import ErrorFallback from './ErrorFallback';
 
-export interface ErrorBoundaryFallbackProps {
+interface ErrorBoundaryFallbackProps {
   error: unknown;
   /** Xóa lỗi của boundary VÀ cho TanStack Query gọi lại các truy vấn đã lỗi bên trong. */
   reset: () => void;

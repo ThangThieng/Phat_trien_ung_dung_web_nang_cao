@@ -11,7 +11,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { DIFFICULTY_LABEL } from '../format';
 import { buildHref, buildQueryString, countActiveFilters, toOptionalInt } from '../search-params';
 
-export type FilterField = 'category' | 'difficulty' | 'cookTime' | 'prepTime' | 'servings';
+type FilterField = 'category' | 'difficulty' | 'cookTime' | 'prepTime' | 'servings';
 
 interface FilterPanelProps {
   pathname: string;

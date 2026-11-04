@@ -1,10 +1,16 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { StrictMode } from 'react';
+import { StrictMode, type ReactNode } from 'react';
 import { apiFetch, configureAuthCallbacks } from '@/lib/api-client';
-import { AuthProvider, useAuth } from './auth-context';
+import { AuthStoreProvider } from '@/stores/auth-store-provider';
+import { AuthBootstrap } from './auth-bootstrap';
+import { useAuth } from './auth-context';
 
 jest.mock('@/lib/api-client', () => ({ apiFetch: jest.fn(), configureAuthCallbacks: jest.fn() }));
 jest.mock('@/lib/query-client', () => ({ getQueryClient: () => ({ clear: jest.fn() }) }));
+
+function AuthProvider({ children }: { children: ReactNode }) {
+  return <AuthStoreProvider><AuthBootstrap>{children}</AuthBootstrap></AuthStoreProvider>;
+}
 
 const session = {
   accessToken: 'memory-only-access-token',

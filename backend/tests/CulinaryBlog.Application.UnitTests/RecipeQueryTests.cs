@@ -97,6 +97,12 @@ public class RecipeQueryTests
     [InlineData("đậu (xanh) & !", "dau:* & xanh:*")]
     [InlineData("pho:* | bo", "pho:* & bo:*")]
     [InlineData("!!", "")]
+    [InlineData("phô mai", "qphomai:*")]
+    [InlineData("PHO MAI", "qphomai:*")]
+    [InlineData("phomai", "qphomai:*")]
+    [InlineData("bánh phô mai", "banh:* & qphomai:*")]
+    [InlineData("thành phố", "qthanhpho:*")]
+    [InlineData("phở mai", "qphomai:*")]
     public void SearchTermBuilder_UnaccentsAndSanitizes(string input, string expected) =>
         Assert.Equal(expected, SearchTermBuilder.Build(input));
 

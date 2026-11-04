@@ -1,7 +1,7 @@
 # KẾ HOẠCH PHÁT TRIỂN CHI TIẾT 8 BUỔI LÀM VIỆC – CULINARY BLOG
 ## (FEATURE-DRIVEN & ARCHITECTURAL RATIONALE)
 
-> **Nguồn chuẩn yêu cầu:** `SPEC/SRS_Culinary_Blog_v1.2.4.md` (v1.2.4, áp dụng 21/10/2026) = v1.1.0 (CR-2026, MT-01 → MT-41) + **CR-2026-02** (MT-42 → MT-57, v1.2.0) + **CR-2026-03** (yêu cầu dữ liệu mẫu, v1.2.1) + **CR-2026-04** (MT-59 → MT-63: 2 mã lỗi, 1 endpoint, 2 làm rõ, đính chính – errata E-9 — v1.2.2) + **CR-2026-05** (MT-64 → MT-68: 2 FR, 3 endpoint, 1 mã lỗi, mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7; errata CSP nonce ↔ render động và header CORS phát hiện khi thiết kế Lab 5–6 — v1.2.3) + **CR-2026-06** (MT-69: phạm vi xóa cache công khai chỉ còn thay đổi chạm tới tập Published — phát hiện khi đo tải Buổi 8 — v1.2.4). Các câu "SRS v1.1.0 (MT-xx) chốt…" hay "SRS v1.2.3…" trong tài liệu chỉ thời điểm quyết định được đưa ra; mọi quyết định đó vẫn còn nguyên hiệu lực trong v1.2.4.
+> **Nguồn chuẩn yêu cầu:** `SPEC/SRS_Culinary_Blog_v1.2.6.md` (v1.2.6, áp dụng 04/11/2026) = v1.1.0 (CR-2026, MT-01 → MT-41) + **CR-2026-02** (MT-42 → MT-57, v1.2.0) + **CR-2026-03** (yêu cầu dữ liệu mẫu, v1.2.1) + **CR-2026-04** (MT-59 → MT-63: 2 mã lỗi, 1 endpoint, 2 làm rõ, đính chính – errata E-9 — v1.2.2) + **CR-2026-05** (MT-64 → MT-68: 2 FR, 3 endpoint, 1 mã lỗi, mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7; errata CSP nonce ↔ render động và header CORS phát hiện khi thiết kế Lab 5–6 — v1.2.3) + **CR-2026-06** (MT-69: phạm vi xóa cache công khai chỉ còn thay đổi chạm tới tập Published — phát hiện khi đo tải Buổi 8 — v1.2.4) + **CR-2026-07** (MT-70: bổ sung dữ liệu mẫu từ Wikibooks Cookbook, dịch sang tiếng Việt, bỏ dinh dưỡng sinh ngẫu nhiên — v1.2.5, xem Phụ lục B) + **CR-2026-08** (MT-71: `SearchVector` có trọng số, gộp từ ghép khác nghĩa — v1.2.6, xem Phụ lục B §B.9). Các câu "SRS v1.1.0 (MT-xx) chốt…" hay "SRS v1.2.3…" trong tài liệu chỉ thời điểm quyết định được đưa ra; mọi quyết định đó vẫn còn nguyên hiệu lực trong v1.2.6.
 > **Yêu cầu của giảng viên:** Buổi 1 → 4 theo yêu cầu từng buổi (§0.1, §4.4, §4.5); **Buổi 5 → 8 theo yêu cầu tối thiểu Lab 5 → Lab 8 (12/10/2026)** — xem §0.3.
 > **Hồ sơ mâu thuẫn:** `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` — 69 mục MT (MT-01 → MT-69), cùng các bảng xung đột code ↔ SRS (§4), lộ trình và yêu cầu Lab ↔ SRS (§5) và đánh đổi còn mở (§6).
 > **Nguồn chuẩn hiện trạng:** code trên nhánh `main` (commit `f313e95`) + `SPEC/BAO_CAO_BUOI_2.md` — mọi hạng mục nợ kỹ thuật ở §4 đều đã được **kiểm chứng trực tiếp trong code**, kèm đường dẫn file. Từ Buổi 5: các nhánh `{mssv}_{HoTen}_buoiso5` của 4 dev, đối chiếu ngày 12/10/2026.
@@ -21,7 +21,7 @@ Giảng viên quy định lại **Buổi 1** là buổi **đọc đặc tả yê
 | Hạng mục | Quy ước sau khi đánh số lại |
 |---|---|
 | Số buổi trong tài liệu | "Buổi n" / "B{n}" luôn theo cách đánh số **8 buổi**. Các câu nhắc tới *kế hoạch 6 buổi cũ* ghi rõ là số của kế hoạch đó |
-| Tài liệu đổi tên | `KE_HOACH_PHAT_TRIEN_7_BUOI.md` → `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; `BAO_CAO_BUOI_1.md` → `BAO_CAO_BUOI_2.md`; `SRS_Culinary_Blog_v1.2.0.md` → `SRS_Culinary_Blog_v1.2.1.md` → `SRS_Culinary_Blog_v1.2.2.md` (CR-2026-04, 29/09/2026) → `SRS_Culinary_Blog_v1.2.3.md` (CR-2026-05, 12/10/2026) → `SRS_Culinary_Blog_v1.2.4.md` (CR-2026-06, 21/10/2026) |
+| Tài liệu đổi tên | `KE_HOACH_PHAT_TRIEN_7_BUOI.md` → `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; `BAO_CAO_BUOI_1.md` → `BAO_CAO_BUOI_2.md`; `SRS_Culinary_Blog_v1.2.0.md` → `SRS_Culinary_Blog_v1.2.1.md` → `SRS_Culinary_Blog_v1.2.2.md` (CR-2026-04, 29/09/2026) → `SRS_Culinary_Blog_v1.2.3.md` (CR-2026-05, 12/10/2026) → `SRS_Culinary_Blog_v1.2.6.md` (CR-2026-06, 21/10/2026) |
 | Migration đã tạo | `B1_InitialSchema` **giữ nguyên tên** — đã áp dụng vào mọi cơ sở dữ liệu, đổi tên sẽ làm EF chạy lại migration. Migration **mới** đặt tên theo số buổi mới (`B3_…` → `B8_…`) |
 | Nhánh Git đã có | Nhánh lịch sử `feature/b1-*` của 3 dev đã merge và xóa trên GitHub, giữ nguyên trong lịch sử commit. Nhánh của Dev 4 (`feature/b1-dev4-infra-file` + `fix/b1-runtime-hardening`) gộp thành **`2312755_NguyenThangThieng_buoiso2`** theo quy ước mới (§2.4) |
 | Ngày tháng | Không đổi — Buổi 2 vẫn là 11/09 – 14/09/2026 (rà soát 20/09, bổ sung dữ liệu mẫu 21/09) |
@@ -125,13 +125,13 @@ Buổi 5 → 8 được **viết lại** theo năm nguyên tắc:
 
 ---
 
-## 2. Quyết định kiến trúc chung (cả nhóm tuân thủ — theo SRS v1.2.4)
+## 2. Quyết định kiến trúc chung (cả nhóm tuân thủ — theo SRS v1.2.5)
 
 ### 2.1 Cấu trúc repository (monorepo — giữ nguyên từ Buổi 2)
 
 ```
 ptudwnc_nhom20/
-├─ SPEC/                          # SRS v1.2.4 (+ bản gốc v1.0.0 PDF để đối chiếu), hồ sơ mâu thuẫn, kế hoạch này
+├─ SPEC/                          # SRS v1.2.5 (+ bản gốc v1.0.0 PDF để đối chiếu), hồ sơ mâu thuẫn, kế hoạch này
 ├─ backend/
 │  ├─ CulinaryBlog.sln
 │  ├─ src/CulinaryBlog.Domain/          # Entities, VO (Slug, EmailAddress), Enums, Exceptions/{Auth,Recipes,Categories} + ErrorCodes – KHÔNG NuGet
@@ -3279,7 +3279,7 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 
 ---
 
-## 5. Ma trận truy vết FR → Buổi → Dev (39/39 FR — SRS v1.2.4)
+## 5. Ma trận truy vết FR → Buổi → Dev (39/39 FR — SRS v1.2.5)
 
 > Buổi 1 (đọc đặc tả) không hiện thực FR nào; số buổi dưới đây theo cách đánh số 8 buổi.
 >
@@ -3441,11 +3441,11 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 | B8 | **Lab 8:** Author gọi `GET /users` → 403; Admin tìm, lọc và khóa người dùng (lý do bắt buộc) → phiên của họ bị thu hồi; tạo công thức qua biểu mẫu nhiều bước bằng **một** `POST` có mảng nội tuyến; hai tab sửa cùng lúc → dialog 409; chỉ hiện nút chuyển trạng thái hợp lệ, khôi phục về Draft; Google Rich Results Test đạt; `/sitemap.xml` không có slug Draft/Archived; axe 0 vi phạm serious/critical; Lighthouse đạt CWV; log Seq có đủ `CorrelationId`, `RequestPath`, `UserId`, log của job nối được với request; `LogRedactionTests` xanh; k6 đạt p50 ≤ 150 ms / p95 ≤ 500 ms / p99 ≤ 1000 ms (hoặc báo cáo trung thực nếu chưa đạt); `npx playwright test` xanh; 8 service `healthy`; tag `v1.0.0` |
 
 **Danh sách kiểm tra nghiệm thu cuối dự án:**
-- [ ] **39/39 FR** (SRS v1.2.4) hoàn thành và truy vết được theo ma trận §5.
-- [ ] **48/48 endpoint** của SRS v1.2.4 Chương 8 hoạt động, có trong Scalar `/scalar/v1` và được `ApiSurfaceTests` khóa.
+- [ ] **39/39 FR** (SRS v1.2.5) hoàn thành và truy vết được theo ma trận §5.
+- [ ] **48/48 endpoint** của SRS v1.2.5 Chương 8 hoạt động, có trong Scalar `/scalar/v1` và được `ApiSurfaceTests` khóa.
 - [ ] **Yêu cầu tối thiểu Lab 5 → Lab 8** của 4 dev đều có bằng chứng trong báo cáo Lab tương ứng (kiểm thử, ảnh chụp, log).
 - [ ] **17/17 hạng mục nợ kỹ thuật cần sửa code** (§4.1) đã hoàn trả — đặc biệt **D-4, D-5 (lỗi bảo mật MT-34)** và **D-11 (422 → 400)**.
-- [ ] **30/30 mã lỗi** ở SRS v1.2.4 Phụ lục B đều có đường sinh ra và có kiểm thử tương ứng; `ERROR_CODES` (Frontend) khớp `ErrorCodes.cs`; mã `AUTH_USERNAME_EXISTS` đã bị xóa khỏi code.
+- [ ] **30/30 mã lỗi** ở SRS v1.2.5 Phụ lục B đều có đường sinh ra và có kiểm thử tương ứng; `ERROR_CODES` (Frontend) khớp `ErrorCodes.cs`; mã `AUTH_USERNAME_EXISTS` đã bị xóa khỏi code.
 - [ ] Dữ liệu mẫu đạt SRS v1.2.1 §2.6.1 (CR-2026-03): ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước.
 - [ ] **0 vị trí** dùng mã **422** trong toàn bộ code và kiểm thử.
 - [ ] Bảng TTL cache trong code khớp **100%** với SRS NFR-PERF-003, và `revalidate` của mọi `fetch` phía Frontend ≤ TTL tương ứng (kiểm thử Buổi 7).
@@ -3458,4 +3458,529 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 
 *— Hết kế hoạch —*
 
-> **Nguồn chuẩn:** mọi yêu cầu trong tài liệu này bám theo `SPEC/SRS_Culinary_Blog_v1.2.4.md` (21/10/2026) — gồm CR-2026 (41 quyết định, SRS Phụ lục D), CR-2026-02 (16 quyết định, SRS Phụ lục E), CR-2026-03 (yêu cầu dữ liệu mẫu, SRS §2.6.1), CR-2026-04 (5 quyết định, SRS Phụ lục G) CR-2026-05 (5 quyết định: 3 chức năng cho yêu cầu Lab 7 + 2 errata CSP/CORS, SRS Phụ lục H) và CR-2026-06 (1 quyết định: phạm vi xóa cache công khai — phát sinh từ đo tải Buổi 8, SRS Phụ lục I). Hiện trạng code được đối chiếu trực tiếp với các nhánh `buoiso5` của 4 dev (12/10/2026), nhánh `main` và các báo cáo buổi. Mọi xung đột và mâu thuẫn — trong SRS, giữa SRS và code, giữa SRS và lộ trình/yêu cầu Lab được giao — đều được ghi đầy đủ tại `SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Kế hoạch **không có điểm nào làm khác SRS v1.2.4**; khi phát hiện khác biệt, **SRS là nguồn đúng** và mọi thay đổi SRS phải qua Change Request.
+> **Nguồn chuẩn:** mọi yêu cầu trong tài liệu này bám theo `SPEC/SRS_Culinary_Blog_v1.2.6.md` (04/11/2026) — gồm CR-2026 (41 quyết định, SRS Phụ lục D), CR-2026-02 (16 quyết định, SRS Phụ lục E), CR-2026-03 (yêu cầu dữ liệu mẫu, SRS §2.6.1), CR-2026-04 (5 quyết định, SRS Phụ lục G) CR-2026-05 (5 quyết định: 3 chức năng cho yêu cầu Lab 7 + 2 errata CSP/CORS, SRS Phụ lục H), CR-2026-06 (1 quyết định: phạm vi xóa cache công khai — phát sinh từ đo tải Buổi 8, SRS Phụ lục I) , CR-2026-07 (1 quyết định: nguồn dữ liệu mẫu bổ sung từ Wikibooks, SRS Phụ lục J) và CR-2026-08 (1 quyết định: trọng số và từ ghép của `SearchVector`, SRS Phụ lục K). Hiện trạng code được đối chiếu trực tiếp với các nhánh `buoiso5` của 4 dev (12/10/2026), nhánh `main` và các báo cáo buổi. Mọi xung đột và mâu thuẫn — trong SRS, giữa SRS và code, giữa SRS và lộ trình/yêu cầu Lab được giao — đều được ghi đầy đủ tại `SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Kế hoạch **không có điểm nào làm khác SRS v1.2.6**; khi phát hiện khác biệt, **SRS là nguồn đúng** và mọi thay đổi SRS phải qua Change Request.
+
+---
+
+# PHỤ LỤC B: KẾ HOẠCH CHUYỂN ĐỔI DỮ LIỆU THẬT & TỐI ƯU MÃ NGUỒN DỰ ÁN
+
+> **Trạng thái: ĐÃ CHỐT ngày 04/11/2026.** Trưởng nhóm đã quyết định: **bổ sung** thay vì thay thế, **dịch** sang tiếng Việt, **duyệt** CR-2026-07. Số liệu trong phụ lục được đo bằng cách tải 3.801 trang Wikibooks và chạy thử quy tắc chuyển đổi cùng ngày. Hiện trạng code đối chiếu `develop` (`61fb450`) và cả 4 nhánh Buổi 8 trên remote. Mục nào chưa kiểm chứng trên hệ thống đang chạy được ghi rõ ở §B.8.
+
+## B.0. Quyết định đã chốt và trạng thái đích
+
+| # | Quyết định | Nội dung | Ai quyết |
+|---|---|---|---|
+| Q1 | **Bổ sung** | Giữ nguyên 100 công thức viết tay và 20 danh mục; thêm công thức từ Wikibooks Cookbook (CC BY-SA 4.0). Không xóa mềm dữ liệu nào | Trưởng nhóm |
+| Q2 | **Dịch** | Toàn bộ nội dung mới được dịch sang tiếng Việt; số lượng và đơn vị tính giữ nguyên giá trị | Trưởng nhóm |
+| Q3 | **Duyệt CR-2026-07** | §B.4; số SRS v1.2.5, MT-70 | Trưởng nhóm |
+| Q4 | Dinh dưỡng thật | Lấy từ nguồn khi đạt kiểm tra hợp lý, còn lại để `NULL`. **Bỏ số ngẫu nhiên**, gồm cả 100 công thức cũ | Thuộc CR đã duyệt |
+| Q5 | Chỉ nạp công thức có ảnh | Nạp 101 công thức có ảnh giấy phép mở đúng món, không nạp 138 công thức không ảnh | Hệ quả của Q1, Q2 (đổi được) |
+| Q6 | Người dịch | Claude thực hiện trong phiên làm việc, có glossary, kiểm tra tự động, và **người trong nhóm duyệt lại** | Hệ quả của Q2 (đổi được) |
+
+**Vì sao có Q5:** ngưỡng ≥ 100 công thức đã đạt nhờ dữ liệu cũ, nên 138 bản nháp không có người xem là 56% khối lượng dịch và duyệt mà không đem lại giá trị. Công thức không ảnh cũng không đạt NFR-SEO-001 (Rich Results cần `image`). Có thể thêm dần sau khi tìm được ảnh.
+
+| Chỉ tiêu | Hiện tại | Đích |
+|---|---|---|
+| Công thức mẫu | 100 | **201** |
+| Danh mục | 20 | **26** (20 cũ + 6 mới) |
+| Công thức có ảnh | 0 | **143** (101 mới + 42 cũ đã xem đúng món) |
+| Dinh dưỡng | 100 công thức, số ngẫu nhiên | Chỉ số liệu từ nguồn (tối đa 5 công thức), còn lại `NULL` |
+| Tìm không dấu `pho` → `Phở…` | Đạt | Đạt, vì công thức cũ còn nguyên |
+| Schema, endpoint, mã lỗi, máy trạng thái | | **Không đổi** trong CR-2026-07. CR-2026-08 đổi riêng biểu thức `SearchVector` (§B.9) |
+
+> **Hệ quả cần biết:** bỏ số ngẫu nhiên khiến khối "Thông tin dinh dưỡng" biến mất ở phần lớn công thức, vì Frontend tự ẩn khi `nutrition = null`. Đây là đánh đổi có chủ đích: thà không hiển thị còn hơn hiển thị số giả.
+
+**Nhánh làm việc:** `chore/wikibooks-seed`, tách từ `origin/2312755_NguyenThangThieng_buoiso8` vì nhánh này đã có SRS v1.2.4 và MT-69, nền bắt buộc của CR-2026-07. Merge vào `develop` **sau** nhánh Buổi 8 của Dev 4. Chưa nhánh Buổi 8 nào vào `develop` tại thời điểm chốt.
+
+## B.1. Kết quả đo
+
+**Phễu lọc** (mỗi dòng loại tiếp trên phần còn lại):
+
+| Bước | Loại | Còn lại | Lý do |
+|---|---:|---:|---|
+| Trang recipe trong namespace `Cookbook` | | 3.801 | `Category:Recipes` |
+| Trang con, sách cổ, trang chưa hoàn chỉnh | 129 | 3.672 | `/` trong tên; template `1881`, `decameron`, `beeton`…; `incomplete recipe` |
+| Nguyên liệu dạng bảng baker's percentage | 80 | 3.592 | Có dòng "Total" không phải nguyên liệu |
+| Dưới 10 nguyên liệu | 2.290 | 1.302 | SRS §2.6.1 |
+| Dưới 5 bước | 174 | **1.128** | SRS §2.6.1 |
+| Không có đoạn mô tả từ 40 ký tự | 341 | 787 | Không tự viết mô tả thay nguồn |
+| Khẩu phần không có hoặc không rõ | 443 | 344 | `Servings > 0` là bắt buộc |
+| Không có thời gian | 88 | 256 | `PrepTimeMinutes > 0` là bắt buộc |
+| Không có độ khó | 14 | **242** | Thang 1–5 của nguồn |
+| Không có ảnh giấy phép mở | 138 | 104 | Q5 |
+| Ảnh không đúng món khi xem bằng mắt | 2 | 102 | `8 Desserts in 1 Pan` (ảnh là sơ đồ chữ), `Acevichada Sauce` (ảnh là sushi) |
+| Trùng món đã có (`Bò bía`) | 1 | **101** | Giữ bản viết tay |
+
+| Chỉ số trên 101 công thức | Giá trị |
+|---|---|
+| Khối lượng dịch | **191.429 ký tự** |
+| Số dòng | 1.436 nguyên liệu, 1.022 bước |
+| Có dữ liệu dinh dưỡng | 5, đều đủ 6 chỉ số và qua kiểm tra hợp lý |
+| Bước có nhiệt độ °F | 34 |
+| Vượt giới hạn cột trên bộ 242 | 0 |
+
+**Giấy phép của 150 file ảnh đã kiểm tra:** CC BY-SA 4.0 (37), CC BY-SA 3.0 (33), Public domain (23), CC BY 2.0 (21), CC BY-SA 2.0 (11), CC0 (8), CC BY-SA 2.5 (5), CC BY 2.5 (4), CC BY 4.0 (3), CC BY 3.0 (3), CC BY-SA 1.0 (1), "Attribution" (1, bị loại vì không rõ phiên bản). JPEG 137, PNG 13; 12 ảnh gốc trên 5 MB nên lấy bản thu nhỏ.
+
+**Ảnh cho 100 công thức cũ:** tìm tự động trên Wikimedia Commons cho 60/100 công thức có ứng viên đúng giấy phép. Trong đó có nhiều kết quả sai rõ ràng (`Cơm gà Hội An` ra `Social Anxiety Disorder.png`, `Lẩu nấm chay` ra `Rainbow falls.JPG`). Sau khi xem từng ảnh, **42/100 công thức có ảnh đúng món**; 58 công thức còn lại giữ không ảnh.
+
+**Giới hạn của phép đo:** độ chính xác tách nguyên liệu mới xem trên mẫu 40 dòng ngẫu nhiên (2 dòng sai rõ, khoảng 5%), chưa phải số liệu thống kê; các lỗi phát hiện khi dịch đã được sửa trực tiếp trong file dịch. Ảnh được xem trên bản thu nhỏ.
+
+## B.2. ETL và dịch
+
+### B.2.1. Vì sao dùng script Python chạy ngoài ứng dụng
+
+| Phương án | Quyết định | Lý do |
+|---|---|---|
+| Python tạo JSON đã duyệt, commit vào repo, C# seeder chỉ đọc | **Chọn** | API khởi động không cần Internet; tái lập được; người duyệt xem được diff; giữ cơ chế Embedded Resource của `RecipeSeedCatalog` |
+| C# seeder gọi Wikibooks khi khởi động | Loại | Phụ thuộc mạng; nội dung trôi theo bản sửa mới của wiki; không duyệt được |
+| Dịch tự động khi seed | Loại | Không có người duyệt; kết quả đổi theo mỗi lần chạy |
+
+> **Ghi rõ phần bổ sung:** Python và `mwparserfromhell==0.6.6` chỉ nằm trong `tools/recipe-etl/` (repo đã có Python ở `tools/github_board/`), không vào image production. Đây là công cụ bổ sung, không thay thế công nghệ nào của SRS.
+
+### B.2.2. Cấu trúc file
+
+```text
+tools/recipe-etl/
+├── README.md               # Cách chạy lại, giấy phép, quy tắc lọc, quy ước dịch
+├── requirements.txt        # mwparserfromhell==0.6.6
+├── fetch_pages.py          # MediaWiki API → raw/pages.json (có điều tiết)
+├── fetch_images.py         # imageinfo + giấy phép → raw/images.json
+├── transform.py            # Lọc, ánh xạ, sinh out/recipes_en.json và báo cáo duyệt
+├── wikitext.py             # Làm sạch wikitext, tách section, template
+├── ingredients.py          # Tách định lượng, đơn vị, tên, ghi chú
+├── taxonomy.py             # Quy tắc danh mục
+├── build_seed.py           # Ghép cấu trúc + bản dịch + ảnh → Seed/Data, kiểm tra hợp lệ
+├── build_legacy_images.py  # Ảnh đã duyệt của công thức cũ → Seed/Data/legacy-recipe-images.json
+├── validate_translations.py
+├── glossary.md             # Thuật ngữ nấu ăn Anh–Việt
+├── pins.json               # pageId → revisionId đã chọn; giúp tải lại đúng nội dung
+├── exclusions.json         # Trang bị loại sau khi xem ảnh, kèm lý do
+├── legacy_image_picks.json # 42 ảnh đã xem là đúng món cho công thức cũ
+├── translations/batch-*.json
+├── category_overrides.csv  # Sửa danh mục khi duyệt: pageId, category, reason
+├── mediawiki.py            # Gọi API có điều tiết, tôn trọng Retry-After
+├── tests/test_etl.py       # pytest, không gọi mạng
+├── raw/, out/              # .gitignore
+
+tools/seed-nutrition-cleanup/  # Script một lần cho cơ sở dữ liệu đang có (§B.3.5)
+
+backend/src/CulinaryBlog.Infrastructure/Persistence/Seed/Data/
+├── categories.json                # SỬA: thêm 6 danh mục, thứ tự 20 danh mục cũ giữ nguyên
+├── recipes-01…05-*.json           # GIỮ NGUYÊN
+├── recipes-wikibooks-*.json       # MỚI
+├── legacy-recipe-images.json      # MỚI: ảnh đã duyệt cho công thức cũ
+└── LICENSE-wikibooks.md           # MỚI: thông báo CC BY-SA 4.0
+```
+
+Tên `recipes-wikibooks-*` khớp tiền tố `SeedData/recipes-` và xếp sau các file cũ theo thứ tự Ordinal; `*.json` đã được csproj nhúng sẵn.
+
+### B.2.3. Extract
+
+```bash
+cd tools/recipe-etl
+python fetch_pages.py   # list=categorymembers (cmnamespace=102), rồi prop=revisions theo lô 50 trang
+python fetch_images.py  # prop=imageinfo, iiprop=url|size|mime|extmetadata, iiurlwidth=1280 (cỡ chuẩn của Wikimedia)
+```
+
+- **Điều tiết:** nghỉ 3 giây giữa các request, `maxlag=5`, tôn trọng `Retry-After`. Khi đo, API trả 429 nếu gọi liên tục.
+- **User-Agent:** tên client mô tả được, không dùng email cá nhân.
+- **Ghim phiên bản:** `pins.json` lưu `revisionId` đã duyệt, chạy lại sẽ tải đúng revision đó. Ghi công trỏ tới đúng `oldid`.
+
+### B.2.4. Transform: ánh xạ vào schema
+
+Mọi cột dưới đây **đã có sẵn**.
+
+| Bảng.Cột | Nguồn | Quy tắc |
+|---|---|---|
+| `Recipes.Title` | Tên trang, đã dịch | Bỏ tiền tố `Cookbook:`; tên riêng của món giữ nguyên, phần giải nghĩa dịch: `Ají de Gallina (Gà sốt ớt kiểu Peru)` |
+| `Recipes.Slug` | `Title` tiếng Việt | `SlugHelper.Generate`; `build_seed.py` báo lỗi nếu trùng công thức cũ |
+| `Recipes.Description` | Đoạn mở đầu, đã dịch | Thay `{{PAGENAME}}`, bỏ `__NOTOC__`, template điều hướng, ảnh; 20–2.000 ký tự |
+| `Recipes.Instructions` | Sinh ra | **Chuỗi ghi công** (§B.3.3) |
+| `Recipes.PrepTimeMinutes`, `CookTimeMinutes` | `Time` và các bước | §B.2.5 |
+| `Recipes.Servings` | `Servings`, `Yield` | Khoảng "4–6" lấy cận dưới; chấp nhận sản lượng rõ như "8 ea." |
+| `Recipes.Difficulty` | `Difficulty` 1–5 | 1, 2 → Easy; 3 → Medium; 4 → Hard; 5 → Expert |
+| `Recipes.Status` | Job nhập ảnh | Draft khi tạo; job chuyển Published sau khi có ảnh (§B.3.2) |
+| `Recipes.CategoryId` | Bảng dưới | Tra theo tên |
+| `Recipes.AuthorId`, `PublishedAt` | Bogus (seed cố định) | Vẫn 5 tác giả mẫu theo §2.6.1. Không tạo tài khoản mang tên người đóng góp Wikibooks; họ được ghi công qua liên kết tới trang nguồn |
+| `Recipes.Nutrition_*` | Template dinh dưỡng | §B.2.5; không đạt thì `NULL` |
+| `RecipeIngredients.*` | `==Ingredients==` | §B.2.5 |
+| `RecipeSteps.StepNumber` | Thứ tự | **Không gán trong ETL**: `Recipe.AddStep` tự gán (FR-RCP-010) |
+| `RecipeSteps.Title` | Người dịch viết | Nguồn không có tiêu đề bước; viết ngắn theo kiểu dữ liệu cũ, ví dụ "Chần xương" |
+| `RecipeSteps.Description` | Dòng `#` trong `==Procedure==`, đã dịch | Gồm cả mục con `===...===`; tối đa 2.000 ký tự |
+| `RecipeSteps.TimerMinutes` | Nội dung bước | Chỉ gán khi bước có **đúng một** mốc thời gian |
+| `RecipeImages.*` | §B.3.2 | Tạo khi job chạy |
+| `RowVersion`, `IsDeleted`, `CreatedAt`, `UpdatedAt` | | Do `BaseEntity` và `AuditInterceptor` quản lý |
+
+**Danh mục** (số cuối cùng, sau khi rà soát lúc dịch):
+
+| Danh mục | Số món mới | | Danh mục | Số món mới |
+|---|---:|---|---|---:|
+| Món Âu | 12 | | Món hầm & Cà ri **(mới)** | 4 |
+| Bánh | 10 | | Món nướng | 4 |
+| Canh & Súp | 10 | | Ăn vặt | 4 |
+| Món châu Phi **(mới)** | 9 | | Món châu Á khác **(mới)** | 3 |
+| Hải sản | 7 | | Tráng miệng & Đồ uống | 3 |
+| Món Ấn Độ **(mới)** | 7 | | Gỏi & Salad | 3 |
+| Mì & Pasta **(mới)** | 6 | | Món hấp, Món chính | 2 |
+| Cơm & Xôi | 6 | | Món khai vị, Món chiên, Món Thái | 1 |
+| Món Mỹ **(mới)** | 6 | | Bún & Phở, Lẩu, Món Hàn Quốc, Món Nhật Bản, Món cuốn, Món chay | 0 |
+
+`Mì & Pasta` tách riêng vì xếp spaghetti vào `Bún & Phở` là sai. Quy tắc tự động còn nhầm (paella gà và thỏ từng rơi vào `Hải sản`, dolma nhồi thịt vào `Món chay`), nên 24 món được sửa trong `category_overrides.csv`, mỗi dòng có lý do.
+
+### B.2.5. Nguyên liệu, thời gian, dinh dưỡng
+
+**Nguyên liệu**, theo FR-RCP-009 "ưu tiên `QuantityText`, scale chỉ áp dụng khi có `Quantity`":
+
+| Dòng nguồn | `Name` | `Quantity` | `QuantityText` | `Unit` | `Notes` |
+|---|---|---:|---|---|---|
+| `2 cups (480 ml) milk` | sữa tươi | 2 | | cốc | 480 ml |
+| `½ cup light corn syrup` | siro ngô nhạt | 0,5 | | cốc | |
+| `1 1/2 tsp salt` | muối | 1,5 | | thìa cà phê | |
+| `2 eggs, beaten` | trứng | 2 | | quả | đánh tan |
+| `2–3 Tbsp miso paste` | tương miso | | 2–3 | thìa canh | |
+| `Salt and pepper to taste` | muối và tiêu | | vừa ăn | | |
+| `Freshly-ground black pepper` | tiêu đen xay | | vừa đủ | | |
+
+- Làm sạch trước khi tách: bỏ liên kết wiki; chuyển `{{convert|350|F|C}}` thành `350 F`, `{{fraction|1|2}}` thành `1/2`.
+- `Quantity` làm tròn 3 chữ số thập phân cho khớp `numeric(10,3)`.
+- Mục con `=== Broth ===` ghi vào `Notes`; tên trùng trong một công thức thì thêm nhóm vào `Name`, vì test yêu cầu `Name` không trùng.
+- `vừa đủ` là bắt buộc khi nguồn không ghi định lượng, vì `INGREDIENT_QUANTITY_REQUIRED` không cho rỗng cả ba cột. Đây cũng là từ dữ liệu cũ đang dùng.
+
+**Thời gian:** nguồn chỉ ghi tổng thời gian trong `Time`. Có đun nấu mà không có mốc trong bước thì ước lượng chia đôi; thời gian nấu 0 chỉ dành cho món không đun nấu.
+
+```text
+total = thời gian trong Time (cộng giờ, phút, ngày; "Prep: x Cooking: y" thì cộng cả hai)
+cook  = tổng các mốc thời gian trong bước có đúng một mốc; nếu cook >= total thì cook = total - 1
+prep  = total - cook (tối thiểu 1 để qua CK_Recipe_PrepTime)
+```
+
+**Đây là giá trị suy ra, không phải số nguồn công bố**, và được ghi rõ trong `tools/recipe-etl/README.md`.
+
+**Dinh dưỡng:** template `{{Nutrition Summary|Cals=…|TotalFat=…|Carbs=…|Protein=…|Fiber=…|Sodium=…}}` và dạng tham số theo vị trí được tách vào `Nutrition_*`. Chỉ nhận khi đủ 6 chỉ số và lệch không quá 35% so với `4×Protein + 4×Carbs + 9×Fat`. Ngưỡng này cần thiết vì đã gặp bản ghi không hợp lý (148 kcal nhưng chỉ 1,2 g chất béo). Tính dinh dưỡng từ nguyên liệu **nằm ngoài đợt này**: ghép tên nguyên liệu tự do với mã thực phẩm dễ sinh số sai.
+
+### B.2.6. Quy trình dịch
+
+CC BY-SA cho phép dịch, nhưng bản dịch là tác phẩm phái sinh: phải giữ cùng giấy phép và nói rõ đã chỉnh sửa (§B.3.3).
+
+**Quy ước dịch** (đầy đủ trong `glossary.md`):
+
+| Nội dung | Quy ước |
+|---|---|
+| Văn phong | Theo dữ liệu cũ: câu mệnh lệnh ngắn, tự nhiên, ví dụ "Chần xương 5 phút rồi đổ bỏ nước." |
+| Tên món | Tên riêng giữ nguyên, thêm giải nghĩa: `Paella` → `Paella (Cơm hải sản Tây Ban Nha)` |
+| Số trong bước | **Giữ nguyên mọi con số.** Nhiệt độ °F giữ và thêm °C: `350 °F (175 °C)` |
+| Đơn vị | Theo dữ liệu cũ, do `build_seed.py` ánh xạ để đồng nhất: `cup` → cốc, `tbsp` → thìa canh, `tsp` → thìa cà phê, `g` → gram, `clove` → tép, `pinch` → nhúm, `can` → lon, `bunch` → bó, `slice` → lát, `piece` → miếng, `stalk` → cọng, `stick` → thanh, `package` → gói, `leaf` → lá. Đơn vị đo Mỹ (`pound`, `oz`, `pint`, `quart`, `gallon`) giữ nguyên tên, **không quy đổi giá trị** |
+| Động từ nấu | Thống nhất theo glossary: `sauté` → xào, `simmer` → ninh nhỏ lửa, `preheat` → làm nóng trước, `whisk` → đánh, `fold` → trộn nhẹ tay |
+| Nguyên liệu khó tìm | Giữ tên gốc trong ngoặc: `sumac` → `bột sumac`, `urad dal` → `đậu đen tách vỏ (urad dal)` |
+
+**File dịch** chứa cả phần sửa lỗi tách dữ liệu phát hiện trong lúc đọc:
+
+```json
+{ "pageId": 12345, "sourceHash": "sha256…", "title": "…", "description": "…",
+  "ingredients": [{ "n": "sữa tươi", "o": "480 ml" }, { "n": "muối", "q": 1.5, "u": "thìa cà phê" }],
+  "steps": [{ "t": "Chần xương", "d": "…" }] }
+```
+
+**`validate_translations.py` chặn** khi có:
+
+- Số dòng nguyên liệu hoặc số bước khác bản gốc.
+- `sourceHash` lệch, nghĩa là bản gốc đã đổi sau khi dịch.
+- **Mất con số** so với bản gốc (chỉ cho phép thêm số trong ngoặc của °C).
+- Không có dấu tiếng Việt, hoặc còn từ tiếng Anh phổ biến ngoài ngoặc (`the`, `and`, `with`, `until`, `into`).
+- Vượt giới hạn cột, tên nguyên liệu trùng trong một công thức, slug trùng công thức cũ.
+
+### B.2.7. Duyệt tay
+
+Kiểm tra tự động không phát hiện được dịch sai nghĩa, nên **bắt buộc có người trong nhóm duyệt**. Công thức không đạt thì bỏ khỏi `pins.json`.
+
+| Mục | Người duyệt làm gì | Công cụ |
+|---|---|---|
+| Ảnh đúng món | Xem ảnh cạnh tiêu đề của từng công thức | `out/review_recipes.html` |
+| Bản dịch | Đọc đối chiếu Anh–Việt, ưu tiên định lượng và nhiệt độ | `out/review_recipes.html` |
+| Danh mục | Sửa vào `category_overrides.csv` | `out/review_categories.csv` |
+
+## B.3. Nạp dữ liệu vào hệ thống (Load)
+
+### B.3.1. Không có migration
+
+Schema không đổi. Lệnh bắt buộc để chứng minh:
+
+```bash
+dotnet ef migrations has-pending-model-changes \
+  --project backend/src/CulinaryBlog.Infrastructure --startup-project backend/src/CulinaryBlog.API
+```
+
+### B.3.2. Seeder và job nhập ảnh
+
+| File | Thay đổi |
+|---|---|
+| `RecipeSeedCatalog.cs` | `SeedRecipe` thêm `Source`, `Image`, `Nutrition`, `Attribution` (tùy chọn); nạp `legacy-recipe-images.json`; ngưỡng 20/100/10/5 giữ nguyên |
+| `DatabaseSeeder.cs` | Thêm công thức Wikibooks ở trạng thái Draft; lên lịch job; xóa `NutritionFor`, không còn sinh dinh dưỡng; sửa lỗi slug bên dưới |
+| `SeedOptions` | Thêm `ImportImages` (mặc định `false`), `ImageImportPaceSeconds` (10), `ImageImportRateLimitWaitSeconds` (60) |
+| `Jobs/SeedImageImportJob.cs` | **Mới** |
+| `DependencyInjection.cs` | `AddHttpClient("wikimedia")` (timeout 30 giây, User-Agent có đường dẫn repo để liên hệ), `AddScoped<SeedImageImportJob>()`, thêm một `AddHangfireServer` cho hàng đợi `seed_images` với `WorkerCount = 1` |
+| `docker-compose.yml`, `docker-compose.prod.yml`, `.env.production.example` | `Seed__ImportImages`: dev `"true"`, prod `${SEED_IMPORT_IMAGES:-false}` |
+
+**Seeder chỉ thêm, không ghi đè.** Công thức đã tồn tại thì bỏ qua, đúng cam kết §2.6.1.
+
+> **Lỗi có sẵn cần sửa:** `SeedRecipesAsync` dùng `ToDictionaryAsync(r => r.Slug)` kèm `IgnoreQueryFilters()` ([DatabaseSeeder.cs:185](../backend/src/CulinaryBlog.Infrastructure/Persistence/Seed/DatabaseSeeder.cs#L185)). Unique index chỉ áp dụng cho dòng chưa xóa (D-3), nên một slug có thể vừa có bản đã xóa mềm vừa có bản đang hoạt động, và khi đó seeder ném `ArgumentException` lúc khởi động. Phải ưu tiên dòng chưa xóa khi gom theo slug.
+
+**Vì sao nhập ảnh bằng job Hangfire:**
+
+| Phương án | Quyết định | Lý do |
+|---|---|---|
+| Job tải ảnh về MinIO | **Chọn** | Đi qua đúng `FR-RCP-008` + `FR-JOB-002`; ảnh do hệ thống tự phục vụ nên không đứt link; lỗi mạng không làm hỏng khởi động |
+| Hotlink tới Wikimedia | Loại | Trái CSP `img-src` và `remotePatterns`; lộ người xem cho bên thứ ba, đúng điều FR-AUTH-007 đang chặn |
+| Commit ảnh vào repo | Loại | Thêm hàng chục MB vào repo |
+| Seeder tải ảnh khi khởi động | Loại | Container `migrate` sẽ phụ thuộc mạng |
+
+```csharp
+public sealed partial class SeedImageImportJob(
+    CulinaryBlogDbContext db, IHttpClientFactory http, IFileStorageService storage,
+    IImageResizeScheduler imageResize, ICacheService cache, IOptions<SeedOptions> options, ILogger<SeedImageImportJob> logger)
+{
+    [Queue(QueueName)] // "seed_images": đúng một worker, không bao giờ tải song song
+    [AutomaticRetry(Attempts = 5, DelaysInSeconds = [300, 900, 1800, 3600, 7200])] // NFR-REL-002
+    public async Task ExecuteAsync(Guid recipeId, DateTime? publishAtUtc, CancellationToken cancellationToken)
+    {
+        // 1. Đã có ảnh → bỏ qua tải (idempotent), chỉ còn bước 6 nếu công thức chưa xuất bản.
+        // 2. Tìm ảnh theo slug trong RecipeSeedCatalog; URL chỉ đến từ dữ liệu nhúng, host phải là upload.wikimedia.org hoặc thumb.wikimedia.org.
+        // 3. ImageUploadInspector.InspectAsync: ≤ 5 MB + magic bytes (CONS-007), giống POST /recipes/{id}/images.
+        // 4. storage.UploadAsync(content, $"recipes/{recipeId}", ext, contentType).
+        // 5. recipe.AddImage(url, altText: recipe.Title, isPrimary: true); imageResize.ScheduleResize(imageId).
+        // 6. Có publishAtUtc và recipe còn Draft → recipe.Publish(publishAtUtc).
+    }
+}
+```
+
+- **Không có ảnh thì không xuất bản:** công thức Wikibooks tạo ở Draft, job chuyển Published **sau khi** ảnh đã lưu. Nhờ vậy NFR-SEO-001 đúng cho mọi công thức mới, và môi trường tắt `ImportImages` (integration test, E2E) không xuất hiện công thức thiếu ảnh.
+- **Xếp hàng:** `jobs.Enqueue<SeedImageImportJob>(…)` cho công thức chưa có ảnh, job chờ 10 giây trước mỗi lần tải; khoảng 24 phút cho toàn bộ 143 ảnh. Gặp 429 thì chờ theo `Retry-After`, cả hàng đợi dừng theo (§B.9). Khi thử tải cách nhau 1,5 giây đã gặp một lần 429, nên phải giãn cách. Lần khởi động sau tự bù phần còn thiếu.
+- **Đã kiểm tra về cấu hình:** `AddHangfire` chạy vô điều kiện nên container `migrate` lên lịch được; compose không khai báo mạng `internal` nên worker ra được Internet.
+- **Không đổi:** `img-src` của CSP, `remotePatterns`, Nginx `/media/`, endpoint ảnh. `style-src` có bổ sung hash cho `next/image` (§B.9).
+
+### B.3.3. Ghi công theo CC BY-SA 4.0 mà không đổi API hay schema
+
+| Vị trí | Nội dung |
+|---|---|
+| `Recipes.Instructions` | Chuỗi bắt đầu bằng `Nguồn dữ liệu:` (giới hạn 5.000 ký tự). Cột legacy theo SRS §7.2, API đã trả về sẵn, không thuộc `SearchVector` |
+| `RecipeSourceNote.tsx` (mới) | Server Component: chỉ hiển thị khi `instructions` bắt đầu bằng tiền tố đó, URL `https://` thành liên kết `rel="nofollow noopener noreferrer"`. React tự escape nên không có rủi ro XSS |
+| `recipes/[slug]/page.tsx` | Render `RecipeSourceNote` cuối trang |
+| `Footer.tsx` | Một dòng nêu nguồn Wikibooks và CC BY-SA 4.0 |
+| `Seed/Data/LICENSE-wikibooks.md` | Thông báo giấy phép của dữ liệu đã chuyển đổi |
+
+```text
+Nguồn dữ liệu: Wikibooks Cookbook, trang "Cookbook:Tên món" (https://en.wikibooks.org/w/index.php?curid=…&oldid=…),
+các tác giả Wikibooks, giấy phép CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+Đã dịch sang tiếng Việt (có hỗ trợ AI) và chuyển đổi định dạng. Ảnh: <tác giả>, <giấy phép>, <URL Commons>.
+```
+
+**Không ghi vào `Description`** vì cột này đi vào `SearchVector` và thẻ meta. **Không thêm cột hay trường API** vì ràng buộc của phụ lục. Việc nêu "có hỗ trợ AI" là để người đọc biết nguồn gốc bản dịch.
+
+### B.3.4. Ảnh cho 100 công thức cũ
+
+Nếu không có ảnh, 100 công thức cũ vẫn thiếu `image` trong JSON-LD như hiện tại. Tìm ứng viên trên Commons, **chỉ gắn khi đã xem và đúng món**, ghi vào `legacy-recipe-images.json`.
+
+- Job gắn ảnh chỉ khi công thức thuộc tác giả mẫu và `Instructions` vẫn đúng bản tóm tắt gốc (chưa ai sửa), rồi đổi `Instructions` thành `Nguồn dữ liệu: Ảnh: …`.
+- Không tìm được ảnh đúng món thì **giữ không ảnh**, không dùng ảnh gần đúng, và ghi vào báo cáo. Khoảng trống NFR-SEO-001 với các công thức này được ghi nhận, không che đi.
+
+### B.3.5. Bỏ dinh dưỡng ngẫu nhiên trên cơ sở dữ liệu đang có
+
+Seeder không ghi đè, nên volume hiện tại vẫn giữ số cũ. Dùng script một lần theo mẫu `tools/media-url-migration/`:
+
+```bash
+./tools/seed-nutrition-cleanup/clear-seed-nutrition.sh --dry-run   # chỉ in những dòng sẽ đổi
+./tools/seed-nutrition-cleanup/clear-seed-nutrition.sh             # sao lưu → UPDATE trong transaction → xóa cache Redis
+```
+
+- Chỉ đổi công thức của `author1..5@culinaryblog.local` có slug thuộc 100 công thức cũ **và** `Title`, `Description` còn đúng bản gốc.
+- Sinh script khôi phục vào `tools/seed-nutrition-cleanup/backups/` (gitignore).
+
+### B.3.6. Search index: không cần rebuild
+
+`SearchVector` là **generated column `STORED`** (MT-25), PostgreSQL tự tính khi ghi dòng. **Không cần trigger, lệnh rebuild hay `REINDEX`**. Chỉ chạy `ANALYZE "Recipes";` sau khi nạp. Nội dung mới là tiếng Việt nên tìm không dấu hoạt động y như dữ liệu cũ, và từ khóa của `tests/load/lib/traffic.js` vẫn đúng.
+
+### B.3.7. Kiểm chứng trên Docker
+
+Dùng đúng project `culinaryblog`, **không xóa volume, không tạo project khác**.
+
+```bash
+# Sao lưu trước khi đổi; file đặt trong thư mục gitignore
+docker compose exec -T postgres pg_dump -U culinary -d culinaryblog --format=custom > tools/seed-nutrition-cleanup/backups/before-wikibooks.dump
+docker compose --profile dev up -d --build
+./tools/seed-nutrition-cleanup/clear-seed-nutrition.sh --dry-run
+./tools/seed-nutrition-cleanup/clear-seed-nutrition.sh
+```
+
+```sql
+-- Công thức Wikibooks đã xuất bản thiếu ảnh chính: phải là 0.
+SELECT count(*) FROM "Recipes" r WHERE r."Status" = 1 AND NOT r."IsDeleted" AND r."Instructions" LIKE 'Nguồn dữ liệu: Wikibooks%'
+  AND NOT EXISTS (SELECT 1 FROM "RecipeImages" i WHERE i."RecipeId" = r."Id" AND i."IsPrimary" AND NOT i."IsDeleted");
+-- Ảnh chưa có biến thể: 0 sau khi job resize xong.
+SELECT count(*) FROM "RecipeImages" WHERE NOT "IsDeleted" AND ("MediumUrl" IS NULL OR "ThumbnailUrl" IS NULL);
+-- Danh mục đang hoạt động: 26 (hoặc hơn, nếu có danh mục người dùng tạo).
+SELECT count(*) FROM "Categories" WHERE NOT "IsDeleted";
+-- Công thức mẫu còn dinh dưỡng: chỉ các công thức Wikibooks đạt kiểm tra (tối đa 5).
+SELECT count(*) FROM "Recipes" WHERE "Nutrition_Calories" IS NOT NULL AND NOT "IsDeleted" AND "Slug" NOT LIKE 'perf-%';
+-- Tìm không dấu phải ra cả "Phở…" cũ.
+SELECT "Title" FROM "Recipes" WHERE "SearchVector" @@ plainto_tsquery('simple', unaccent_immutable('pho')) AND NOT "IsDeleted";
+```
+
+Kiểm tra thêm trên trình duyệt: `/`, `/search?q=pho`, một trang chi tiết có khối nguồn, `/categories`, ảnh tải qua `/media/`; khởi động lại lần hai phải log `0 recipes created`.
+
+## B.4. Change Request CR-2026-07 (đã duyệt ngày 04/11/2026)
+
+**Nội dung áp dụng cho SRS §2.6.1:**
+
+> Dữ liệu test (seed) có **ít nhất 20 danh mục và 100 công thức; mỗi công thức có ít nhất 10 nguyên liệu và ít nhất 5 bước chế biến**, cùng 5 tác giả mẫu. Nội dung món ăn (tên, mô tả, nguyên liệu, định lượng, các bước, thời gian) phải đúng với món, gồm 100 công thức do nhóm biên soạn và các công thức bổ sung từ **Wikibooks Cookbook (CC BY-SA 4.0)**, được dịch sang tiếng Việt, ghim theo revision và ghi công trên trang chi tiết. Công thức bổ sung chỉ được xuất bản khi có ảnh giấy phép mở. Dinh dưỡng lấy từ nguồn khi đạt kiểm tra hợp lý, nếu không thì để NULL; không sinh số ngẫu nhiên. Thư viện Bogus chỉ sinh tác giả mẫu, phân công tác giả, trạng thái của 100 công thức do nhóm biên soạn và ngày xuất bản, với seed cố định. Việc seed là idempotent: chạy lại chỉ bổ sung phần còn thiếu, không ghi đè dữ liệu do người dùng tạo hoặc đã chỉnh sửa.
+
+**Ngưỡng 20/100/10/5 của giảng viên (CR-2026-03) giữ nguyên.** Không đổi FR, endpoint, mã lỗi hay schema.
+
+**File cập nhật** (theo tiền lệ CR-2026-06): `SRS_Culinary_Blog_v1.2.4.md` → `v1.2.5.md` (bảng phiên bản, phạm vi CR, §2.6.1, Phụ lục J truy vết), `SRS_MAU_THUAN_VA_GIAI_PHAP.md` (MT-70), mục "Nguồn chuẩn" của kế hoạch, và các tham chiếu tới phiên bản hiện hành (`README.md`, `CHANGELOG.md`, `docs/cache-report.md`, `RecipeCacheKeys.cs`). Tham chiếu mang tính lịch sử giữ nguyên.
+
+## B.5. Kiểm thử và tài liệu phải đồng bộ
+
+| File | Việc phải làm |
+|---|---|
+| `tests/.../Seed/RecipeSeedCatalogTests.cs` | **Giữ nguyên 5 test** làm chốt chặn. Thêm: công thức Wikibooks có ghi công đúng định dạng, `revisionId` và ảnh giấy phép cho phép; 100 công thức cũ không bị đổi; không catalog nào có dinh dưỡng ngẫu nhiên |
+| `tests/.../Seed/DatabaseSeederTests.cs` (mới) | Chạy hai lần không tạo thêm; không ghi đè bản đã sửa; slug trùng bản đã xóa mềm không làm seeder lỗi |
+| `tests/.../Jobs/SeedImageImportJobTests.cs` (mới) | Ảnh hợp lệ → có ảnh và Published; lỗi mạng ném để Hangfire thử lại, công thức vẫn Draft; file không phải ảnh bị từ chối; chạy lại không tạo ảnh thứ hai; host lạ bị từ chối |
+| `tools/recipe-etl/tests/` (mới) | pytest cho nguyên liệu, thời gian, danh mục, kiểm tra bản dịch |
+| `RecipeSourceNote.test.tsx` (mới) | Chỉ hiện khi có tiền tố; URL thành liên kết; không tiêm được HTML |
+| `tests/load/` | Không đổi từ khóa. **Chạy lại `load.js`**, vì số công thức Published tăng gấp đôi; không dùng lại số đo cũ cho báo cáo mới |
+| `README.md` dòng 37, 159, 257–258, 287–290 | Cập nhật số liệu và ghi chú dữ liệu bổ sung, Phần kể lại Buổi 2 giữ nguyên |
+| `CHANGELOG.md`, `SPEC/CONG_NGHE_VA_PHIEN_BAN.md` | Mục `[Unreleased]`; ghi nhận công cụ Python trong `tools/recipe-etl` |
+
+**Không sửa:** báo cáo Lab và báo cáo buổi đã nộp; `docs/explain-analyze-b5.md`; `src/mocks/fixtures` (vẫn khớp 100 công thức cũ).
+
+## B.6. Rà soát mã thừa và lộ trình gỡ an toàn
+
+**Phương pháp:** `npx knip@5` (không sửa lockfile), đối chiếu từng endpoint, lệnh MediatR, DTO, gói NuGet và service với mã nguồn, sau đó **đối chiếu lại với cả 4 nhánh Buổi 8 và kế hoạch**.
+
+**Kết luận thẳng:** codebase **không có khối mã thừa lớn** và không có component giả trong luồng production. Phần lớn việc gỡ dưới đây chỉ làm gọn code, **không giảm bundle**, vì module không được import vốn không vào bundle. Mục duy nhất có khả năng ảnh hưởng hiệu năng là R-01.
+
+### B.6.1. Danh sách gỡ
+
+| ID | Thành phần | Bằng chứng | Hướng xử lý | Khi nào | Tác động |
+|---|---|---|---|---|---|
+| **R-01** | Font `Geist` trong `layout.tsx` | `globals.css` khai báo `--font-sans: var(--font-inter)` trong `@theme inline`, nên `.font-sans` ra Inter; ngoài `layout.tsx` không nơi nào dùng Geist (đúng cả 4 nhánh) | **Đã xóa** | **Đợt này** | **Đo được:** file font preload 3 → 2 (bớt 29,3 KB trên mọi trang), tổng file font 12 → 7 (294,8 → 218,9 KB). First Load JS không đổi (103 kB dùng chung, 196 kB trang chi tiết) |
+| **R-02** | `NutritionFor` trong `DatabaseSeeder` | Hết vai trò khi bỏ dinh dưỡng ngẫu nhiên | **Đã xóa** | **Đợt này** | Làm gọn seed |
+| **R-03** | `shared/interim-ui.tsx` và test | Nhánh Dev 4 đã xóa; 3 nhánh còn lại vẫn có | **Nhánh này đã sạch.** Kiểm tra lại sau khi merge | Khi merge Buổi 8 | Thấp |
+| **R-04** | `dashboard/media/page.tsx`, liên kết trong `UserMenu.tsx` | Chú thích ghi "xóa ở Buổi 8"; **cả 4 nhánh vẫn còn** dù Dev 2 đã có wizard | **Đã xóa** trang và liên kết; `ImageUploader` vẫn dùng ở danh mục, hồ sơ, thư viện ảnh công thức | **Đợt này** | Thấp |
+| **R-05** | Alias `@deprecated`: `RecipeNutrition`, `RecipeDetail`, `AuthProvider` | Chú thích ghi "giữ đến Buổi 8"; `RecipeDetail` còn ở 6–8 file tùy nhánh | **Đã xóa** cả ba, đổi tên nơi dùng trên nhánh này. Nhánh Dev 1, 2, 3 còn dùng `RecipeDetail` (6–8 file) nên khi merge phải đổi sang `Recipe` | **Đợt này** | Chỉ ở kiểu dữ liệu |
+| **R-06** | Export thừa theo knip (`kindFromStatus` re-export, `SITE_NAME`, …) và 21 kiểu | Knip trên `develop` | **Đã xử lý 36 tên** không file nào dùng trên cả 4 nhánh: bỏ `export`, xóa hẳn 12 kiểu không còn nơi dùng. Giữ 10 tên nhánh khác đang dùng và export của bộ shadcn/ui. Chạy lại knip sau merge | **Đợt này** | Rất thấp |
+| **R-07** | Query key viết tay `['my-recipes', status, 1]` | Không đi qua `recipeKeys` | **Đã chuyển** sang `recipeKeys.mine` | **Đợt này** | Nhất quán |
+| **R-08** | `ui/tabs.tsx`; `ui/{dropdown-menu,sonner}.tsx` và `next-themes` | Không nhánh nào import. `dropdown-menu`, `sonner` là **yêu cầu Lab 6**; `next-themes` chỉ được `ui/sonner.tsx` dùng | **Giữ tới khi chấm xong** | Sau chấm | Không đổi bundle |
+| **R-09** | `(dev)/mockups/**`, `src/mocks/fixtures/*` (25,7 KB) | Sản phẩm Lab 6 của Dev 3; production trả 404 | **Giữ tới khi chấm xong** | Sau chấm | Không ảnh hưởng production |
+| **R-10** | NuGet `System.IdentityModel.Tokens.Jwt` | Không có `using` trực tiếp; code dùng `JsonWebTokenHandler` | **Không làm:** SRS §6.2 ghi đích danh gói này; đổi gói phải có CR và không có lợi ích đo được | Cần CR nếu muốn đổi | Thấp |
+| **R-11** | `Hangfire.Core`; `EFCore.Design` ở Infrastructure | Trùng lặp theo gói | **Đã gỡ** `EFCore.Design` ở Infrastructure (API vẫn có, `dotnet ef` chạy đúng). **Giữ** `Hangfire.Core`: SRS §5.3 ghi đích danh | **Đợt này** | Thấp |
+
+### B.6.2. Đã kiểm tra và KHÔNG phải mã thừa
+
+| Thành phần | Lý do giữ |
+|---|---|
+| `GET /users`, `PATCH /users/{id}/status`, `archive`, `unarchive`, `GET /recipes/sitemap` | Có trong SRS và thuộc Lab 8 |
+| OpenTelemetry, `Serilog.Formatting.Compact`, `Serilog.Sinks.Seq` | Nhánh Dev 4 Buổi 8 đã dùng; thuộc FR-OBS |
+| `ui/alert-dialog`, `ui/textarea`, `ui/select`, `ui/sheet` | Nhánh Buổi 8 của Dev 1, Dev 2, Dev 4 đã dùng |
+| `System.Security.Cryptography.Pkcs` | Ghim để vá lỗ hổng MimeKit, có ghi chú trong csproj |
+| `Bogus` | §2.6.1 vẫn dùng cho tác giả, trạng thái, ngày; `PerformanceSeeder` dùng |
+| `@axe-core/playwright`, `@lhci/cli` | Nhánh Dev 3 có `a11y.spec.ts`, `lighthouserc.json` |
+| `tw-animate-css` | Import ở `globals.css` |
+| `@tanstack/react-query-devtools` | Bản production là hàm trả `null` |
+| `NeedsRepair`, `RepairAsync`, `InstructionsSummary` | Vẫn cần vì 100 công thức cũ được giữ lại |
+
+**Những nơi quét không thấy vấn đề:** mọi `*Command`, `*Query` đều được API dùng; không có DTO mồ côi; chuỗi middleware không trùng; mỗi service đăng ký một lần; Zustand chỉ một store xác thực; đăng xuất và đăng xuất từ tab khác đều xóa cache TanStack Query; polling `/health` chỉ chạy với Admin; `public/` trống; không có `href="#"`, "coming soon", lorem ipsum; `src/mocks` chỉ được `(dev)/mockups` dùng.
+
+### B.6.3. Lộ trình gỡ an toàn
+
+1. **Đo mốc trước khi gỡ:** `npm run build` (First Load JS từng route, số file font). Không có số trước/sau thì không được ghi là "tối ưu hiệu năng".
+2. **Mỗi ID một commit**, để `git revert` được riêng.
+3. **Sau mỗi commit:** `dotnet build && dotnet test`; `npm run typecheck && npm run lint && npm test && npm run build`; `npx knip@5 --no-progress`.
+4. **Gỡ gói npm không chạy `npm uninstall` trên Windows** vì sẽ viết lại lockfile. Sửa đúng mục rồi kiểm tra bằng `npm ci` trong `node:22.23.2-alpine`.
+5. **Không gỡ phần của Dev khác khi họ chưa merge.**
+
+## B.7. Thứ tự thực hiện và commit mẫu
+
+| # | Việc | Xong khi | Commit mẫu |
+|---|---|---|---|
+| 1 | Áp dụng CR-2026-07 | SRS v1.2.5, MT-70 | `docs(srs): CR-2026-07 (SRS v1.2.5, MT-70) supplement seed data from Wikibooks Cookbook` |
+| 2 | Công cụ ETL và test | pytest xanh, chạy lại ra cùng kết quả | `feat(tools): add recipe-etl pipeline for Wikibooks Cookbook with pinned revisions` |
+| 3 | Xem ảnh, dịch, kiểm tra tự động | `validate_translations.py` sạch | `feat(seed): add translated Wikibooks recipes under CC BY-SA 4.0` |
+| 4 | Seeder, sửa lỗi slug, R-02 | Test seed xanh, không có pending model change | `feat(seed): supplement catalog with Wikibooks recipes and drop random nutrition per CR-2026-07` |
+| 5 | `SeedImageImportJob`, ảnh công thức cũ | Test job xanh | `feat(jobs): import open-licensed seed images into MinIO via Hangfire` |
+| 6 | Script dinh dưỡng | Dry-run đúng, có script khôi phục | `feat(tools): add one-off cleanup for random seed nutrition with restore script` |
+| 7 | `RecipeSourceNote`, footer | Test xanh | `feat(recipes): show CC BY-SA source attribution on recipe detail` |
+| 8 | R-01 | Có số trước/sau | `chore(frontend): remove unused Geist font` |
+| 9 | Kiểm chứng Docker §B.3.7, load test, tài liệu §B.5 | SQL đạt, số đo mới | `docs: propagate CR-2026-07 to README, CHANGELOG and plan` |
+| 10 | **Người trong nhóm duyệt** §B.2.7 | Đã duyệt, sửa xong | |
+| 11 | R-03 → R-11 | Theo cột "Khi nào" | `chore: …` |
+
+**Quan hệ với tag `v1.0.0`:** làm xong bước 1–10 **trước khi** gắn tag, vì đây là thay đổi dữ liệu nhìn thấy được trên sản phẩm.
+
+## B.8. Definition of Done, rollback và rủi ro
+
+**Definition of Done:**
+
+- [x] `dotnet ef migrations has-pending-model-changes` báo không có thay đổi; `ApiSurfaceTests` Passed.
+- [x] 5 test cũ của `RecipeSeedCatalogTests` Passed mà không sửa assertion.
+- [x] SQL §B.3.7 đạt; 100 công thức cũ giữ nguyên nội dung; dữ liệu người dùng không đổi.
+- [x] Mọi công thức Wikibooks đã xuất bản có ảnh chính, đủ biến thể, có khối nguồn.
+- [x] E2E `search.spec.ts` Passed với `pho` (bản sao tạm, xem §B.9).
+- [ ] Người trong nhóm đã duyệt bản dịch và ảnh của công thức Published.
+- [x] SRS, kế hoạch, README, CHANGELOG đồng bộ; load test chạy lại với số đo thật.
+
+**Rollback:**
+
+- **Code:** `git revert` các commit trên nhánh.
+- **Dữ liệu mới:** xóa mềm công thức có `Instructions LIKE 'Nguồn dữ liệu: Wikibooks%'`; `PermanentPurgeJob` tự dọn sau 30 ngày, kể cả tệp ảnh.
+- **Dinh dưỡng cũ:** chạy script khôi phục trong `tools/seed-nutrition-cleanup/backups/`, hoặc `pg_restore` từ `before-wikibooks.dump`.
+
+**Rủi ro:**
+
+| Rủi ro | Mức | Xử lý |
+|---|---|---|
+| Dịch sai nghĩa hoặc sai định lượng | **Cao** | Kiểm tra số tự động; người duyệt đối chiếu; ghi rõ "có hỗ trợ AI" trên trang |
+| Ảnh Commons không đúng món | Trung bình | Xem từng ảnh; không chắc thì bỏ |
+| Trang web mất khối dinh dưỡng ở phần lớn công thức | Trung bình | Đánh đổi đã duyệt; giải thích được khi báo cáo |
+| Lỗi tách nguyên liệu (khoảng 5% theo mẫu nhỏ) | Trung bình | Sửa khi dịch, người duyệt xem lại |
+| CC BY-SA đòi ghi công và giữ cùng giấy phép | Trung bình | §B.3.3; đây không phải tư vấn pháp lý |
+| Xung đột khi merge với nhánh Buổi 8 | Thấp | `DependencyInjection.cs` (Dev 1, Dev 4), `docker-compose.yml` (Dev 3, Dev 4), `recipes/[slug]/page.tsx` (Dev 3): đều chỉ thêm vài dòng |
+| Wikimedia lỗi hoặc giới hạn tần suất | Thấp | Một worker, nhịp 10 giây, tôn trọng `Retry-After`, thử lại tới 2 giờ, lần khởi động sau tự bù |
+
+## B.9. Kết quả thực hiện (04/11/2026)
+
+Thực hiện trên nhánh `chore/wikibooks-seed`, cơ sở dữ liệu Docker thật của project `culinaryblog`, không xóa volume, có bản sao lưu trước khi đổi.
+
+| Hạng mục | Kết quả |
+|---|---|
+| Dữ liệu | 101 công thức mới, tổng 201; 26 danh mục; 143 ảnh trong MinIO, đủ biến thể |
+| SQL §B.3.7 | Công thức Wikibooks đã xuất bản thiếu ảnh: 0. Ảnh thiếu biến thể: 0. Dinh dưỡng còn 5 công thức, đều từ nguồn |
+| Tính idempotent | Khởi động lại: `Created 0, Repaired 0`, 0 ảnh được lên lịch; script dinh dưỡng chạy lần hai: 0 dòng |
+| Test | Backend 669/669, Frontend 393/393, ETL 64/64; `has-pending-model-changes`: không có thay đổi; TypeScript sạch; ESLint 0 lỗi |
+| E2E `search.spec.ts` | Spec chỉ có trên nhánh Dev 3, chạy bằng bản sao tạm trên stack dev. Đạt 7/7, 3 lượt liên tiếp **sau khi** thêm `networkidle` vào `goto('/recipes')` ở bản tạm; bản gốc không chờ hydrate nên thỉnh thoảng đỏ, Dev 3 nên sửa khi merge |
+| Vi phạm CSP | 0 trên `/`, `/recipes`, `/search?q=pho`, `/categories/mon-chau-phi`, trang chi tiết |
+| Load test 100 người dùng, sau CR-2026-08 | Không lỗi trên 34.359 request; p50 2,4 ms, p95 20,0 ms, p99 29,3 ms; hit rate 96,0%. Tìm kiếm không chậm đi, nhóm ghi p95 25,5 → 31,7 ms (`docs/load-test-report.md` §8) |
+
+**Bốn lỗi chỉ lộ ra khi chạy thật, test tự động không bắt được:**
+
+| Lỗi | Hậu quả | Cách sửa |
+|---|---|---|
+| Job vi phạm quy định của Wikimedia | Từ khoảng ảnh thứ 50 nhận 429; lần đầu 44/143 job thất bại vì dùng hết lượt thử trong khoảng vài phút | Hàng đợi `seed_images` một worker, nhịp 10 giây trong job, tôn trọng `Retry-After`, thử lại sau 5 phút đến 2 giờ, User-Agent có liên hệ, thumbnail cỡ chuẩn 1280px. Sau khi sửa: 44/44 ảnh, 0 lần 429 |
+| CSP chặn thuộc tính `style` của `next/image` (có từ trước, cơ sở dữ liệu chưa từng có ảnh nên chưa lộ) | Ảnh `fill` mất `position:absolute`; console báo lỗi trên mọi trang có ảnh | `'unsafe-hashes'` kèm hash của đúng 2 chuỗi cố định, không dùng `'unsafe-inline'`; `csp.test.ts` tính lại hash từ `getImageProps` |
+| Thời gian nấu bằng 0 ở 13 món | Trang hiện "Không cần nấu" cho cả bánh nướng | Đọc đúng mốc ghép "1 hour and 15 minutes"; món có đun nấu mà nguồn không ghi mốc thì **ước lượng** chia đôi tổng thời gian, tổng vẫn đúng nguồn |
+| Từ "phổ biến" trong 27 mô tả khớp từ khóa `pho` | Tìm `pho` ra 47 món, món Phở bị đẩy xuống | Đổi sang từ đồng nghĩa trong mô tả. Còn 24 kết quả, nhóm Phở có điểm cao gần nhất |
+
+**CR-2026-08 (SRS v1.2.6, MT-71), trưởng nhóm yêu cầu sửa triệt để:** `Title` trọng số A, `Description` trọng số B; hàm `search_normalize` gộp "phô mai", "phổ biến", "phổ thông", "thành phố", "đường phố", "khu phố", "phố cổ", "phố hội" thành token riêng khi còn dấu. Đo trên dữ liệu thật:
+
+| Từ khóa | Trước | Sau |
+|---|---|---|
+| `pho` | 55 kết quả lúc đầu; sau khi đổi "phổ biến" trong mô tả vẫn có "Welsh Rarebit" trên "Phở bò" | 14 kết quả, 4 món có "Phở" trong tiêu đề đứng đầu, không còn món phô mai |
+| `phô mai`, `pho mai` | Khớp `pho` và `mai` riêng lẻ | 13 món có phô mai |
+| `pho bo` | | "Phở bò Hà Nội" đứng đầu |
+
+**Giới hạn còn lại:** FR-SRCH-001 quy định prefix matching, nên `pho` vẫn trả 10 món khớp "phơi", "phộng", "phối"… ở nhóm điểm thấp. Từ ghép ngoài danh sách vẫn trùng khi bỏ dấu; đó là hệ quả của yêu cầu tìm không dấu. Từ khóa không dấu "pho mai" luôn hiểu là phô mai, kể cả khi người dùng định tìm "phở" và "mai".
+
+**Mốc bundle sau khi dọn mã:** First Load JS không đổi (103 kB dùng chung, 196 kB trang chi tiết), đúng kết luận §B.6: các mục R-03 → R-07 chỉ làm gọn code.
+
+**Chưa làm:** bước 10 §B.7 (người trong nhóm duyệt bản dịch và ảnh); R-08, R-09 (giữ tới khi chấm, trưởng nhóm xác nhận 04/11/2026); R-10 và `Hangfire.Core` của R-11 (SRS ghi đích danh). Chưa merge, chưa gắn tag.
+
+*— Hết Phụ lục B —*

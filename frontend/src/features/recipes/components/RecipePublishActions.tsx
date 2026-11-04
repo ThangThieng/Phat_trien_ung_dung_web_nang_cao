@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import type { RecipeDetail } from '@/types/recipe';
+import type { Recipe } from '@/types/recipe';
 import { getErrorMessage } from '@/lib/api-client';
 import { publishRecipe, unpublishRecipe } from '../write-api';
 
-export default function RecipePublishActions({ recipe, accessToken, onChanged }: { recipe: RecipeDetail; accessToken: string; onChanged: (recipe: RecipeDetail) => void }) {
+export default function RecipePublishActions({ recipe, accessToken, onChanged }: { recipe: Recipe; accessToken: string; onChanged: (recipe: Recipe) => void }) {
   const [busy, setBusy] = useState(false);
   const isDraft = recipe.status === 'Draft';
   const run = async () => {

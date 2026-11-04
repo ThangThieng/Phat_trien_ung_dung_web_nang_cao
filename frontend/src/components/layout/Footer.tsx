@@ -65,6 +65,27 @@ export default function Footer({ categories }: { categories: Category[] }) {
       </div>
       <div className="border-t border-orange-50 py-4 text-center text-sm text-gray-600">
         © {year} Culinary Blog – Nhóm 20
+        <p className="mt-1 text-xs">
+          Một phần công thức lấy từ{' '}
+          <a
+            href="https://en.wikibooks.org/wiki/Cookbook:Table_of_Contents"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-orange-700"
+          >
+            Wikibooks Cookbook
+          </a>{' '}
+          theo giấy phép{' '}
+          <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-orange-700"
+          >
+            CC BY-SA 4.0
+          </a>
+          .
+        </p>
       </div>
     </footer>
   );

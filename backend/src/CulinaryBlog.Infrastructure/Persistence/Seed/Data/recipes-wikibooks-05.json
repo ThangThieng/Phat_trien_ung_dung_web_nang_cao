@@ -1,0 +1,40 @@
+[
+  {
+    "title": "Zwiebelrostbraten (Bò áp chảo sốt hành rượu vang kiểu Áo)",
+    "category": "Món Âu",
+    "description": "Zwiebelrostbraten là món chính đặc trưng của Áo và được yêu thích từ lâu tại đây. Thịt dùng theo truyền thống là phần sườn bò, tiếng Đức gọi là “Rostbraten”. Món có nhiều biến thể và rất nhiều công thức. Công thức này dùng sốt hành rượu vang đỏ, phỏng theo một công thức đăng trên tạp chí nấu ăn, ít calo hơn bản gốc nhưng vẫn đậm vị. Nước thịt cũng được dùng trong khi nấu để không phí hương vị đậm đà. Món kèm tiêu chuẩn là “Bratkartoffeln” (khoai tây áp chảo), nhưng có thể chọn bánh bao bột mì, rau hoặc khoai tây nghiền. Món kèm tùy sở thích nên không có trong công thức này. Dù công thức khá dễ, nên dành ít nhất 45 phút vì sốt cần thời gian để cô lại. Hãy chuẩn bị rửa khá nhiều bát đĩa sau khi nấu xong, nhưng rất đáng công.",
+    "prep": 21,
+    "cook": 29,
+    "servings": 2,
+    "difficulty": "Easy",
+    "ingredients": [
+      ["hành tây (nước sốt)", 1.0, "củ", "băm nhuyễn, nước sốt"],
+      ["tỏi", 2.0, "tép", "băm nhuyễn, nước sốt"],
+      ["dầu thực vật (nước sốt)", "vừa đủ", null, "Nước sốt"],
+      ["cà chua cô đặc", 2.0, "thìa cà phê", "Nước sốt"],
+      ["đường nâu", 1.0, "thìa cà phê", "Nước sốt"],
+      ["ớt bột paprika Hungary", 1.0, "thìa cà phê", "Nước sốt"],
+      ["rượu vang đỏ", 125.0, "ml", "Nước sốt"],
+      ["nước dùng bò", 500.0, "ml", "Nước sốt"],
+      ["thịt sườn bò", 2.0, "lát", "mỗi lát 200 g, phần thịt"],
+      ["mù tạt Dijon", 1.0, "thìa canh", "Phần thịt"],
+      ["muối", "vừa đủ", null, "Phần thịt"],
+      ["tiêu", "vừa đủ", null, "Phần thịt"],
+      ["dầu thực vật (phần thịt)", "vừa đủ", null, "Phần thịt"],
+      ["hành tây (khoanh)", 0.5, "củ", "thái khoanh mỏng, phần thịt"]
+    ],
+    "steps": [
+      ["Xào hành tỏi", "Xào hành và tỏi trong dầu.", null],
+      ["Thêm gia vị", "Cho cà chua cô đặc, đường và paprika Hungary vào, xào nhẹ rồi khử chảo bằng rượu vang đỏ.", null],
+      ["Cô sốt", "Cho nước dùng vào và cô đến độ sánh mong muốn, mất khoảng 25 phút. Nhớ thỉnh thoảng khuấy sốt.", 25],
+      ["Chuẩn bị thịt", "Trong lúc cô sốt, dùng búa dần nhẹ thịt để thịt mềm. Sau đó xoa mù tạt, thêm muối và tiêu.", null],
+      ["Áp chảo thịt", "Áp chảo thịt hai mặt rồi nấu thêm 4–5 phút ở lửa vừa.", 4],
+      ["Nấu hành khoanh", "Cho hành khoanh vào phần nước thịt còn lại để ngấm vị. Tùy lượng dầu và nước thịt còn trong chảo, có thể thêm dầu hoặc nước để hành ngấm đều.", null],
+      ["Dọn món", "Phủ hành khoanh lên thịt, rưới sốt và dùng với món kèm tùy thích. Chúc ngon miệng!", null]
+    ],
+    "nutrition": null,
+    "source": {"pageId": 178938, "revisionId": 4613397, "title": "Cookbook:Zwiebelrostbraten with Red Wine Onion Gravy"},
+    "image": {"file": "ZwiebelrostbratenEnd.jpg", "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/ZwiebelrostbratenEnd.jpg/1280px-ZwiebelrostbratenEnd.jpg?utm_source=en.wikibooks.org&utm_campaign=imageinfo&utm_content=thumbnail", "artist": "Mayjoh at en.wikibooks", "license": "CC BY-SA 3.0", "descriptionUrl": "https://commons.wikimedia.org/wiki/File:ZwiebelrostbratenEnd.jpg"},
+    "attribution": "Nguồn dữ liệu: Wikibooks Cookbook, trang \"Cookbook:Zwiebelrostbraten with Red Wine Onion Gravy\" (https://en.wikibooks.org/w/index.php?curid=178938&oldid=4613397), các tác giả Wikibooks, giấy phép CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/). Đã dịch sang tiếng Việt (có hỗ trợ AI) và chuyển đổi định dạng. Ảnh: Mayjoh at en.wikibooks, CC BY-SA 3.0, https://commons.wikimedia.org/wiki/File:ZwiebelrostbratenEnd.jpg."
+  }
+]

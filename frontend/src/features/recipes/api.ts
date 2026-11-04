@@ -1,6 +1,6 @@
 import { apiFetch } from '@/lib/api-client';
 import type { PagedResult } from '@/types/api';
-import type { RecipeDetail, RecipeSummary } from '@/types/recipe';
+import type { Recipe, RecipeSummary } from '@/types/recipe';
 import type {
   RecipeListParams,
   RecipeQueryState,
@@ -95,7 +95,7 @@ export function searchRecipes(params: RecipeSearchParams, signal?: AbortSignal) 
  * còn riêng dữ liệu được Next Data Cache trong tối đa 5 phút (MT-67).
  */
 export function getRecipeBySlug(slug: string) {
-  return apiFetch<RecipeDetail>(`/recipes/${encodeURIComponent(slug)}`, {
+  return apiFetch<Recipe>(`/recipes/${encodeURIComponent(slug)}`, {
     next: { revalidate: 300, tags: [`recipe:${slug}`] },
   });
 }

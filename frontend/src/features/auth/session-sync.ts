@@ -4,7 +4,7 @@ import type { AuthSession, AuthStore } from '@/stores/auth-store';
 
 export const REFRESH_LOCK_NAME = 'culinaryblog-auth-refresh';
 
-export interface RefreshResponse {
+interface RefreshResponse {
   accessToken: string;
   refreshToken: string;
   user: AuthSession['user'];

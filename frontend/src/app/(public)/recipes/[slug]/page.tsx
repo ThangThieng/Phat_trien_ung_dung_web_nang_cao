@@ -9,6 +9,7 @@ import NutritionTable from '@/features/recipes/components/NutritionTable';
 import RecipeActions from '@/features/recipes/components/RecipeActionsLazy';
 import RecipeGallery from '@/features/recipes/components/RecipeGallery';
 import RecipeHero from '@/features/recipes/components/RecipeHero';
+import RecipeSourceNote from '@/features/recipes/components/RecipeSourceNote';
 import StepChecklist from '@/features/recipes/components/StepChecklistLazy';
 
 // CSP nonce của root layout khiến route này render theo request. Không khai báo
@@ -82,6 +83,7 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
           <StepChecklist steps={recipe.steps} />
         </section>
       </div>
+      <RecipeSourceNote instructions={recipe.instructions} />
     </article>
   );
 }

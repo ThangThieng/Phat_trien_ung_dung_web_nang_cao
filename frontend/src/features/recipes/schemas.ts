@@ -4,7 +4,7 @@ import { RECIPE_DIFFICULTIES, type CreateRecipeRequest } from '@/types/recipe';
 export const DIFFICULTIES = RECIPE_DIFFICULTIES;
 
 /** Cột Nutrition_* là numeric(8,2) – mirror NutritionInputValidator (backend). */
-export const NUTRITION_MAX = 999_999.99;
+const NUTRITION_MAX = 999_999.99;
 
 export const NUTRITION_FIELDS = [
   { key: 'calories', label: 'Năng lượng (kcal)' },

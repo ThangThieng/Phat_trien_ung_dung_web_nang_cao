@@ -51,6 +51,7 @@ public static class DependencyInjection
 
         services.AddOptions<SeedOptions>().Bind(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseSeeder>();
+        services.AddScoped<ISeedImageImportScheduler, HangfireSeedImageImportScheduler>();
         services.AddOptions<PerformanceSeedOptions>().Bind(configuration.GetSection(PerformanceSeedOptions.SectionName));
         services.AddScoped<PerformanceSeeder>();
 
@@ -197,6 +198,12 @@ public static class DependencyInjection
 
         // Buổi 4 — Dev 4: FR-JOB-002 đổi kích thước ảnh, FR-JOB-003 dọn dữ liệu vĩnh viễn (+ khóa phân tán RedLock, NFR-SCALE-001).
         services.AddScoped<ImageResizeJob>();
+        services.AddScoped<SeedImageImportJob>();
+        services.AddHttpClient(SeedImageImportJob.HttpClientName, client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "CulinaryBlog-SeedImportBot/1.0 (https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao)"); // Chính sách User-Agent của Wikimedia: tên, phiên bản, cách liên hệ, có chữ "bot".
+        });
         services.AddScoped<IImageResizeScheduler, HangfireImageResizeScheduler>();
         services.AddScoped<PermanentPurgeJob>();
         services.AddSingleton<IDistributedLockFactory>(_ =>
@@ -239,6 +246,15 @@ public static class DependencyInjection
             services.AddHangfireServer(o =>
             {
                 o.ServerName = $"culinaryblog-{Environment.MachineName}";
+                o.SchedulePollingInterval = pollInterval;
+            });
+
+            // Hàng đợi một worker để tải ảnh tuần tự, không chiếm worker của email và đổi kích thước ảnh (CR-2026-07).
+            services.AddHangfireServer(o =>
+            {
+                o.ServerName = $"culinaryblog-seed-images-{Environment.MachineName}";
+                o.Queues = [SeedImageImportJob.QueueName];
+                o.WorkerCount = 1;
                 o.SchedulePollingInterval = pollInterval;
             });
         }

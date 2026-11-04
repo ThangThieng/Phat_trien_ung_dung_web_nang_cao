@@ -138,3 +138,19 @@ Trivy 0.76.1, `--scanners vuln`, 30/10/2026. Sau khi vá (`105b9e5`):
 **Rủi ro được chấp nhận** (trưởng nhóm duyệt 30/10/2026): PostgreSQL (`gosu`) và MinIO — chưa có bản vá, đường khai thác không mở ra ngoài; Seq và
 MailHog — chỉ chạy ở máy phát triển/E2E. **Việc tiếp theo:** quét lại khi có `postgres:16.x` mới; cân nhắc thay MinIO bằng một bản build còn được bảo trì
 (phải qua Change Request vì SRS chỉ định MinIO); ImageSharp 3.2.0 cần kiểm tra điều khoản license trước khi nâng (CONG_NGHE_VA_PHIEN_BAN.md §6.2).
+
+## 8. Đo lại sau khi bổ sung dữ liệu (CR-2026-07, 04/11/2026)
+
+Số công thức Published tăng từ 89 lên 190 và có ảnh, nên đo lại `load.js` trên cùng môi trường §2, nhánh `chore/wikibooks-seed`. Chỉ đo lại lượt 100 người dùng; stress và chịu lỗi chưa đo lại.
+
+| Chỉ số | 30/10/2026 | 04/11/2026 | Mục tiêu |
+|---|---:|---:|---|
+| p50 | 2,1 ms | 2,4 ms | ≤ 150 ms |
+| p95 | 13,4 ms | 15,3 ms | ≤ 500 ms |
+| p99 | 21,5 ms | 22,3 ms | ≤ 1000 ms |
+| Lỗi | 0 / 34.403 | 0 / 34.455 | < 1 % |
+| Hit rate Redis cả lượt | 96,8 % | 96,0 % | ≥ 80 % |
+
+Tất cả vẫn đạt. Tăng nhẹ ở độ trễ và giảm nhẹ ở hit rate phù hợp với việc có nhiều khóa cache hơn. Bản nháp do k6 tạo (2.149 công thức) đã dọn bằng `tests/load/cleanup.sql`.
+
+**Đo lại sau CR-2026-08** (`SearchVector` có trọng số và hàm `search_normalize`, cùng ngày, cùng môi trường): 0 lỗi trên 34.359 request; p50 2,4 ms, p95 20,0 ms, p99 29,3 ms; hit rate 96,0 %. Nhóm tìm kiếm không chậm đi (p95 9,0 → 8,8 ms). Nhóm ghi chậm hơn (p95 25,5 → 31,7 ms, p99 36,3 → 52,8 ms), phù hợp với việc cột generated chạy thêm các biểu thức chính quy khi ghi; hai lượt đo một lần nên chưa đủ để kết luận mức tăng chính xác. Vẫn trong mục tiêu.

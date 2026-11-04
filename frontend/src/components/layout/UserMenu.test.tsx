@@ -56,10 +56,7 @@ describe('<UserMenu />', () => {
       'href',
       '/dashboard/users',
     );
-    expect(screen.getByRole('menuitem', { name: 'Thư viện ảnh' })).toHaveAttribute(
-      'href',
-      '/dashboard/media',
-    );
+    expect(screen.queryByRole('menuitem', { name: 'Thư viện ảnh' })).not.toBeInTheDocument();
   });
 
   it('bàn phím: mũi tên xuống/lên di chuyển, Escape đóng và trả focus về nút', () => {

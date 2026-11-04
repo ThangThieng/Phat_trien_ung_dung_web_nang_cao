@@ -3,9 +3,9 @@
  * `Infrastructure/Persistence/Seed/Data/recipes-*.json` — tên món, mô tả, nguyên liệu có định lượng, các bước, thời gian.
  * Chọn đúng các ca khó cho bố cục: tên dài nhất ("Cá hồi áp chảo sốt bơ chanh"), nhiều nguyên liệu nhất ("Cơm tấm sườn bì chả" —
  * 14 nguyên liệu), định lượng dạng chữ ("vừa đủ"). Ngày tháng và tác giả là giá trị cố định (Bogus sinh ngẫu nhiên khi seed).
- * `satisfies RecipeDetail[]`: đổi kiểu `RecipeDetail` mà quên cập nhật dữ liệu mẫu là lỗi biên dịch.
+ * `satisfies Recipe[]`: đổi kiểu `Recipe` mà quên cập nhật dữ liệu mẫu là lỗi biên dịch.
  */
-import type { RecipeDetail, RecipeSummary } from '@/types/recipe';
+import type { Recipe, RecipeSummary } from '@/types/recipe';
 import { mockCategories } from './categories';
 
 const author = {
@@ -775,7 +775,7 @@ export const mockRecipes = [
       },
     ],
   },
-] satisfies RecipeDetail[];
+] satisfies Recipe[];
 
 /** Bản tóm tắt cho lưới/thẻ công thức — cùng hình dạng `GET /recipes` trả về. */
 export const mockRecipeSummaries: RecipeSummary[] = mockRecipes.map((recipe) => ({

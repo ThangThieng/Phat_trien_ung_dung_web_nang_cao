@@ -10,7 +10,7 @@ export type { ErrorKind } from './error-messages';
 
 type SetFieldError<TField extends string> = (field: TField, error: { message: string }) => void;
 
-export interface HandleApiErrorOptions<TField extends string> {
+interface HandleApiErrorOptions<TField extends string> {
   /** Có biểu mẫu → lỗi 400 kèm `errors{}` hiện dưới đúng ô (D-11); ô không khớp thì mới toast. */
   form?: { fields: readonly TField[]; setError: SetFieldError<TField> };
   /** Chỉ chuẩn hóa, không hiển thị gì — nơi gọi tự quyết định giao diện. */

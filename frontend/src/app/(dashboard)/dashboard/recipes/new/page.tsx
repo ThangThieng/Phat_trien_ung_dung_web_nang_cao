@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/features/auth/auth-context';
 import RecipeBasicsForm from '@/features/recipes/components/RecipeBasicsForm';
 import RecipeImageGallery from '@/features/recipes/components/RecipeImageGallery';
-import type { RecipeDetail } from '@/types/recipe';
+import type { Recipe } from '@/types/recipe';
 
 const STEPS = ['Thông tin & dinh dưỡng', 'Ảnh món ăn', 'Nguyên liệu & bước nấu', 'Xuất bản'] as const;
 
@@ -16,7 +16,7 @@ const STEPS = ['Thông tin & dinh dưỡng', 'Ảnh món ăn', 'Nguyên liệu &
  */
 export default function NewRecipePage() {
   const { accessToken, isAuthenticated, isReady } = useAuth();
-  const [draft, setDraft] = useState<RecipeDetail | null>(null);
+  const [draft, setDraft] = useState<Recipe | null>(null);
   const step = draft ? 1 : 0;
 
   if (isReady && !isAuthenticated) {
@@ -34,7 +34,7 @@ export default function NewRecipePage() {
     );
   }
 
-  const handleCreated = (recipe: RecipeDetail) => {
+  const handleCreated = (recipe: Recipe) => {
     setDraft(recipe);
     toast.success(`Đã lưu nháp "${recipe.title}". Tiếp theo: thêm ảnh món ăn.`);
   };

@@ -1,0 +1,867 @@
+[
+ {
+  "pageId": 190227,
+  "title": "Spaghetti alla Puttanesca (Mì Ý sốt ô liu cá cơm)",
+  "description": "Spaghetti alla puttanesca (tiếng Ý: “spaghetti của gái làng chơi”) là món mì Ý cay, chua và hơi mặn. Theo Annarita Cuomo, cây bút của Il Golfo, tờ báo phục vụ hai đảo Ischia và Procida của Ý, sốt alla puttanesca được Sandro Petti, đồng sở hữu Rancio Fellone, một nhà hàng và tụ điểm đêm nổi tiếng ở Ischia, sáng tạo vào những năm 1950. Chuyện kể rằng một tối gần giờ đóng cửa, Petti thấy một nhóm bạn đói đang ngồi ở bàn. Ông sắp hết nguyên liệu và nói không đủ để nấu cho họ một bữa. Họ than đã muộn và đang đói. “Facci una puttanata qualsiasi” (“làm đại món gì cũng được”), họ nài nỉ. Petti chỉ còn bốn quả cà chua, hai quả ô liu và ít nụ bạch hoa, chính là nguyên liệu cơ bản của sốt. “Thế là tôi dùng chúng làm sốt cho mì spaghetti”, Petti kể với Cuomo. Sau đó, ông đưa món vào thực đơn với tên spaghetti alla puttanesca. Nguyên liệu thay đổi đôi chút tùy đầu bếp và khẩu vị. Tuy nhiên, phiên bản này (của vùng Lazio) luôn có cá cơm, còn phiên bản Napoli thì không. Cũng có phiên bản Ý–Mỹ bỏ bơ và oregano nhưng thêm hành tây, cá cơm và ớt. Tôm và sò điệp xào dầu ô liu rất hợp với món này. Nếu không ăn được động vật có vỏ, hãy thêm cá ngừ đóng hộp hoặc cá hồi nướng vào mì trước khi trộn sốt.",
+  "ingredients": [
+   {
+    "n": "mì spaghetti khô",
+    "o": "21 oz"
+   },
+   {
+    "n": "dầu ô liu nguyên chất"
+   },
+   {
+    "n": "phi lê cá cơm không muối",
+    "o": "giã nhuyễn (bỏ cá cơm nếu làm kiểu Napoli), 4 oz"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "ô liu đen",
+    "o": "bỏ hạt, băm, 7 oz"
+   },
+   {
+    "n": "nụ bạch hoa muối",
+    "o": "rửa kỹ, băm thô"
+   },
+   {
+    "n": "ớt khô nhỏ",
+    "u": "quả",
+    "o": "băm, tùy chọn"
+   },
+   {
+    "n": "cà chua trứng",
+    "o": "lột vỏ, xay nhuyễn, khoảng 2 pound"
+   },
+   {
+    "n": "mùi tây băm"
+   },
+   {
+    "n": "muối"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Phi tỏi và cá cơm",
+    "d": "Cho dầu ô liu, tỏi và cá cơm giã vào chảo ở lửa vừa."
+   },
+   {
+    "t": "Thêm nguyên liệu sốt",
+    "d": "Trước khi tỏi vàng, cho ô liu, nụ bạch hoa, cà chua xay và ớt vào."
+   },
+   {
+    "t": "Nấu sốt",
+    "d": "Thêm 2–3 nhúm muối, trộn ở lửa lớn. Sau đó hạ lửa và ninh 15 đến 20 phút."
+   },
+   {
+    "t": "Luộc mì",
+    "d": "Trong lúc đó, luộc spaghetti trong nước muối (ít nhất 4 quart nước cho mỗi pound mì). Vớt ra khi vừa chín tới (al dente)."
+   },
+   {
+    "t": "Trộn sốt",
+    "d": "Cho mì vào tô lớn, trộn với sốt rồi rắc mùi tây băm."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Trộn đều và dùng nóng."
+   }
+  ],
+  "sourceHash": "fa22be6c2d2476c8fb2f578c50f9aec01634f6618119026f4952482c4282bf75"
+ },
+ {
+  "pageId": 69125,
+  "title": "Mì spaghetti thịt viên",
+  "description": "Phần lớn các nhà sử học ẩm thực đồng ý rằng spaghetti kết hợp thịt viên là phát minh ẩm thực của Mỹ có gốc Ý. Trong hầu hết trường hợp, ẩm thực Ý truyền thống trộn sốt thịt đậm với fettuccine và tagliatelle chứ không phải spaghetti.",
+  "ingredients": [
+   {
+    "n": "muối (luộc mì)",
+    "o": "Phần mì"
+   },
+   {
+    "n": "nước",
+    "o": "5,76 lít, phần mì"
+   },
+   {
+    "n": "mì spaghetti khô",
+    "o": "454 g, phần mì"
+   },
+   {
+    "n": "thịt bò nạc vai xay",
+    "o": "907 g, phần thịt viên"
+   },
+   {
+    "n": "thịt vai heo xay",
+    "o": "907 g, phần thịt viên"
+   },
+   {
+    "n": "vụn bánh mì tẩm gia vị",
+    "o": "340 g, phần thịt viên"
+   },
+   {
+    "n": "phô mai Parmesan hoặc Romano bào",
+    "o": "240 ml, phần thịt viên"
+   },
+   {
+    "n": "mùi tây tươi",
+    "o": "băm nhuyễn, 180 ml, phần thịt viên"
+   },
+   {
+    "n": "trứng",
+    "u": "quả",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "tỏi băm thật nhuyễn",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "tỏi bột",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "hành bột",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "tiêu đen",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "muối (thịt viên)",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "dầu ô liu",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "tỏi nguyên tép",
+    "u": "tép",
+    "o": "Phần thịt viên"
+   },
+   {
+    "n": "ớt đỏ khô mảnh",
+    "o": "Phần sốt"
+   },
+   {
+    "n": "tỏi (phần sốt)",
+    "o": "đập dập hoặc băm, phần sốt"
+   },
+   {
+    "n": "hành tây nhỏ",
+    "u": "củ",
+    "o": "băm nhuyễn, phần sốt"
+   },
+   {
+    "n": "nước dùng bò",
+    "o": "240 ml, phần sốt"
+   },
+   {
+    "n": "cà chua nghiền",
+    "o": "794 g, phần sốt"
+   },
+   {
+    "n": "mùi tây lá dẹt băm",
+    "o": "Phần sốt"
+   },
+   {
+    "n": "húng quế tươi",
+    "u": "lá",
+    "o": "xé hoặc thái mỏng, phần sốt"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun nước",
+    "d": "Đổ 1½ gallon nước cùng 3 thìa canh muối vào nồi lớn nhất. Đặt lên bếp ở lửa lớn."
+   },
+   {
+    "t": "Trộn thịt",
+    "d": "Trộn thịt xay, vụn bánh mì, phô mai bào, mùi tây băm và trứng đánh nhẹ (cho từng quả trứng vào trong khi trộn). Rắc tỏi băm, 2 thìa canh dầu ô liu và gia vị. Trộn đều đến khi hòa quyện."
+   },
+   {
+    "t": "Viên thịt",
+    "d": "Viên hỗn hợp thành từng viên bằng dụng cụ múc kem hoặc bằng tay, ấn nhẹ vừa đủ để thịt kết dính; đừng nén quá chặt, thịt viên sẽ dai và khô."
+   },
+   {
+    "t": "Phi tỏi",
+    "d": "Trong chảo nặng, đun nóng dầu ô liu ở lửa vừa nhỏ. Cho tỏi nguyên tép vào. Lật cho tỏi vàng đều, khi vàng nhẹ thì ấn tỏi vào dầu; khi tỏi nâu thì vớt ra."
+   },
+   {
+    "t": "Chiên thịt viên",
+    "d": "Khi dầu nóng, cho thịt viên vào chảo, cách nhau khoảng 1½ inch để dễ lật. Lật thường xuyên bằng xẻng hoặc thìa lớn để không dính. Đảm bảo đủ dầu trong chảo (khoảng ½ inch). Không cần dầu ô liu nguyên chất, loại dầu ô liu Ý tốt nào cũng được."
+   },
+   {
+    "t": "Để ráo thịt viên",
+    "d": "Khi thịt viên vàng đều, vớt ra để ráo trên giấy thấm. Cho mẻ tiếp theo vào và tiếp tục đến khi hết."
+   },
+   {
+    "t": "Luộc mì",
+    "d": "Cho mì vào nồi nước đang sôi, luộc đến khi vừa chín tới (al dente), khoảng 12 phút."
+   },
+   {
+    "t": "Nấu sốt",
+    "d": "Cho ớt mảnh, tỏi và hành băm vào chính phần dầu vừa chiên thịt viên. Xào 5–7 phút đến khi hành mềm. Thêm nước dùng bò, cà chua nghiền và rau thơm. Đun sôi nhẹ và nấu khoảng 10 phút."
+   },
+   {
+    "t": "Trộn mì",
+    "d": "Trộn mì nóng đã để ráo với vài muôi sốt. Lăn thịt viên trong phần sốt còn lại."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Xếp mì ra đĩa. Phủ thịt viên, sốt và thêm phô mai bào."
+   }
+  ],
+  "sourceHash": "412a5fb14136d5e5d7897c7c0bc20923b86c317aa6933039cacb2f953b9c979b"
+ },
+ {
+  "pageId": 129526,
+  "title": "Mì spaghetti sốt thịt Bolognese",
+  "description": "Sốt thịt miền bắc nước Ý này, hay Ragu Bolognese, rất tuyệt khi ăn với mì cùng phô mai Parmesan bào tươi, hoặc làm nhân cho lasagne.",
+  "ingredients": [
+   {
+    "n": "giăm bông hoặc thịt xông khói",
+    "o": "cắt khối, 125 g"
+   },
+   {
+    "n": "thịt bò xay nạc vừa",
+    "o": "450 g"
+   },
+   {
+    "n": "dầu ô liu",
+    "o": "15 ml"
+   },
+   {
+    "n": "hành tây băm thô",
+    "o": "225 ml"
+   },
+   {
+    "n": "cần tây băm thô",
+    "o": "50 ml"
+   },
+   {
+    "n": "cà rốt băm thô",
+    "o": "50 ml"
+   },
+   {
+    "n": "củ thì là tây băm thô",
+    "o": "nếu có, 50 ml"
+   },
+   {
+    "n": "bơ",
+    "o": "50 ml"
+   },
+   {
+    "n": "cà chua trứng đóng hộp",
+    "o": "225 ml"
+   },
+   {
+    "n": "rượu vang đỏ",
+    "o": "125 ml"
+   },
+   {
+    "n": "nước dùng bò (tốt nhất là tươi, đóng hộp cũng được)",
+    "o": "500 ml"
+   },
+   {
+    "n": "cà chua cô đặc",
+    "o": "50 ml"
+   },
+   {
+    "n": "vỏ chanh",
+    "u": "dải"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "mì spaghetti",
+    "o": "tốt nhất làm từ lúa mì cứng, 450 g"
+   },
+   {
+    "n": "phô mai Parmesan để trang trí",
+    "o": "tốt nhất là Reggiano bào tươi"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu xay"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Băm rau",
+    "d": "Trộn hành tây, cà rốt, cần tây và thì là tây (tùy chọn) rồi băm nhuyễn (tiếng Ý gọi là battuto, hỗn hợp rau và rau thơm băm nhuyễn để tạo vị)."
+   },
+   {
+    "t": "Xào thịt nguội",
+    "d": "Cắt giăm bông hoặc thịt xông khói thành khối nhỏ và xào trong nồi nặng."
+   },
+   {
+    "t": "Thêm bơ và battuto",
+    "d": "Cho bơ vào để tan, rồi cho battuto vào."
+   },
+   {
+    "t": "Xào battuto",
+    "d": "Nấu, thỉnh thoảng khuấy đến khi hơi vàng nhẹ. Chuyển hỗn hợp vào nồi nặng."
+   },
+   {
+    "t": "Áp chảo thịt bò",
+    "d": "Đun nóng dầu ô liu trong chảo vừa xào battuto; khi dầu nóng, cho thịt bò vào, đảo cho tơi và nấu đến khi vàng kỹ."
+   },
+   {
+    "t": "Cho vào nồi",
+    "d": "Cho thịt vào nồi cùng battuto."
+   },
+   {
+    "t": "Khử chảo",
+    "d": "Cho rượu vào chảo vừa nấu thịt, đảo ở lửa lớn và vét sạch phần cháy dính đáy."
+   },
+   {
+    "t": "Thêm cà chua cô đặc",
+    "d": "Cho cà chua cô đặc và nước dùng vào, khuấy đều rồi đổ vào nồi."
+   },
+   {
+    "t": "Thêm cà chua",
+    "d": "Để ráo và băm thô cà chua trứng, cho vào nồi."
+   },
+   {
+    "t": "Đun sôi nhẹ",
+    "d": "Cho lá nguyệt quế và vỏ chanh vào. Đun sôi rồi hạ lửa nhỏ để chỉ sủi bọt lăn tăn."
+   },
+   {
+    "t": "Ninh sốt",
+    "d": "Ninh, thỉnh thoảng khuấy, trong một giờ (hoặc hơn) đến khi sốt đặc."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nêm tiêu và muối vừa ăn."
+   },
+   {
+    "t": "Đun nước luộc",
+    "d": "Khi sốt đã sẵn sàng, đun sôi mạnh một gallon (4 lít) nước trong nồi lớn."
+   },
+   {
+    "t": "Luộc mì",
+    "d": "Cho mì vào, khuấy nhanh để mì ngập nước và không dính. Luộc khoảng 10–12 phút hoặc đến khi vừa chín tới (al dente: chắc nhưng không cứng, còn độ dai khi nhai, không nhão)."
+   },
+   {
+    "t": "Để ráo",
+    "d": "Để thật ráo mì và dọn ngay."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Bỏ lá nguyệt quế và vỏ chanh, múc sốt Bolognese lên mì và mời khách rắc phô mai Parmesan bào."
+   }
+  ],
+  "sourceHash": "53bec1b497c01bcafdeded56342ddbea76f7bf08c38b29c6b693b39c44574d39"
+ },
+ {
+  "pageId": 125631,
+  "title": "Spaghetti alle Vongole (Mì Ý sốt nghêu)",
+  "description": "Spaghetti alle vongole (spaghetti với nghêu) có nguồn gốc từ Napoli, rất thịnh hành khắp vùng Campania xung quanh và cả ở Roma. Người Ý nấu món này theo hai cách: có cà chua (in rosso) và không có cà chua (in bianco). Công thức dưới đây dựa theo sách của La Accademia Italiana della Cucina (Học viện Ẩm thực Ý). Khác biệt duy nhất so với công thức của Học viện là có thêm nước nghêu và nghêu đóng hộp ngoài các nguyên liệu truyền thống. Phiên bản kiểu Mỹ có rượu vang trắng được liệt kê ở một công thức khác trên trang nguồn.",
+  "ingredients": [
+   {
+    "n": "nước",
+    "o": "1 gallon"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "mì spaghetti khô",
+    "o": "1 lb"
+   },
+   {
+    "n": "dầu ô liu"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn, ¾ oz"
+   },
+   {
+    "n": "nghêu sống",
+    "o": "2 lb"
+   },
+   {
+    "n": "cà chua trứng thái hạt lựu",
+    "o": "8 oz"
+   },
+   {
+    "n": "nghêu đóng hộp đã bóc vỏ",
+    "o": "rửa kỹ, tùy chọn, 8 oz"
+   },
+   {
+    "n": "nước nghêu đóng chai",
+    "o": "tùy chọn, 4 oz"
+   },
+   {
+    "n": "mùi tây",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "ớt peperoncino (hoặc ít gặp hơn là tiêu đen)"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun nước",
+    "d": "Đun sôi nước trong nồi lớn với một thìa canh muối."
+   },
+   {
+    "t": "Luộc mì",
+    "d": "Cho spaghetti vào khi nước bắt đầu sôi. Luộc đến khi vừa chín tới (al dente), mất 7–8 phút."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Đổ dầu ô liu vừa phủ đáy chảo lớn rộng và đun nóng."
+   },
+   {
+    "t": "Phi tỏi",
+    "d": "Cho tỏi cùng peperoncino vào xào đến khi vàng nâu, khoảng một phút. Cẩn thận đừng để tỏi cháy."
+   },
+   {
+    "t": "Thêm nghêu",
+    "d": "Cho nghêu sống và cà chua thái hạt lựu vào."
+   },
+   {
+    "t": "Nấu nghêu",
+    "d": "Đậy nắp, nấu khoảng tám phút. Lắc chảo khoảng mỗi phút để nghêu dễ mở. Bỏ những con không mở."
+   },
+   {
+    "t": "Thêm mì",
+    "d": "Để ráo mì và cho vào chảo cùng nghêu và cà chua. Hạ lửa nhỏ."
+   },
+   {
+    "t": "Thêm nghêu hộp",
+    "d": "Cho nghêu hộp và nước nghêu vào chảo."
+   },
+   {
+    "t": "Nêm và trộn",
+    "d": "Nêm muối (và tiêu nếu không dùng peperoncino) vừa ăn, đảo đến khi mì áo đều cà chua và dầu. Có thể thêm một thìa canh dầu ô liu nếu thích."
+   },
+   {
+    "t": "Rắc mùi tây",
+    "d": "Rắc mùi tây băm."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng nóng."
+   }
+  ],
+  "sourceHash": "4386d2574293f2fd30ba66497fcff39d0e1f23d7bd496d3875538443cf0abd55"
+ },
+ {
+  "pageId": 480517,
+  "title": "Bánh pie thịt bò rượu vang",
+  "description": "Bánh pie thịt bò rượu vang này là biến thể của công thức bánh pie bò và bia (Steak and Ale Pie), có sốt đậm và nhiều vị trái cây hơn, cùng lớp vỏ xốp giòn và cứng hơn.",
+  "ingredients": [
+   {
+    "n": "bơ hoặc bơ thực vật (vỏ bánh)",
+    "o": "cắt khối nhỏ, vỏ bánh"
+   },
+   {
+    "n": "bột mì đa dụng",
+    "o": "Vỏ bánh"
+   },
+   {
+    "n": "gia vị Ý khô",
+    "o": "Vỏ bánh"
+   },
+   {
+    "n": "muối (vỏ bánh)",
+    "o": "Vỏ bánh"
+   },
+   {
+    "n": "dầu ô liu",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "rượu vang đỏ hoặc nước cốt chanh (ướp thịt)",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "nước tương",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "thịt sườn bò",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "bơ hoặc bơ thực vật (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "cỏ xạ hương (tươi hoặc khô)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "húng quế (tốt nhất là khô)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "cần tây",
+    "o": "thái lát dày ⅛ inch, phần nhân"
+   },
+   {
+    "n": "cà rốt",
+    "u": "củ",
+    "o": "thái lát dày ⅛ inch rồi cắt nửa khoanh, phần nhân"
+   },
+   {
+    "n": "hành tây nhỏ",
+    "u": "củ",
+    "o": "thái hạt lựu, phần nhân"
+   },
+   {
+    "n": "rượu vang đỏ (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "sốt Worcestershire",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "bột nước sốt thịt (gravy)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "tương cà",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "muối (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "tiêu",
+    "o": "Phần nhân"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn vỏ bánh",
+    "d": "Trộn bột mì, muối và gia vị Ý trong tô nông cho đều. Trộn bơ vào đến khi tạo thành các cục bột chắc. Nếu trộn bằng tay, bóp và ép lại cho đến khi vo được thành khối."
+   },
+   {
+    "t": "Cán bột",
+    "d": "Rắc ít bột lên mặt bàn và khối bột để không dính. Dùng cây cán dàn mỏng thành đĩa đủ lớn để phủ khuôn hoặc bát."
+   },
+   {
+    "t": "Đông lạnh bột",
+    "d": "Để bột vào ngăn đông 20 phút, hoặc trong suốt thời gian chuẩn bị và nấu nhân."
+   },
+   {
+    "t": "Ướp thịt",
+    "d": "Trộn dầu, rượu và nước tương làm nước ướp. Ngâm thịt bò trong nước ướp và để tủ lạnh 24 giờ."
+   },
+   {
+    "t": "Thái thịt",
+    "d": "Lấy thịt ra khỏi nước ướp, thái dày ¼ inch."
+   },
+   {
+    "t": "Đun bơ",
+    "d": "Đun nóng nồi ở lửa lớn, cho bơ vào để tan."
+   },
+   {
+    "t": "Xào thịt",
+    "d": "Cho thịt đã thái vào nồi. Xào đến khi vàng đều."
+   },
+   {
+    "t": "Thêm rau",
+    "d": "Cho lá nguyệt quế, cỏ xạ hương, húng quế, cần tây, hành và cà rốt vào. Xào, thỉnh thoảng đảo đến khi hành và cần tây mềm."
+   },
+   {
+    "t": "Thêm rượu",
+    "d": "Nếu được, vét phần cháy dính ở đáy nồi nhưng không lấy ra. Khuấy rượu, sốt Worcestershire và bột sốt trong 1 phút."
+   },
+   {
+    "t": "Hầm",
+    "d": "Hạ nhỏ lửa, khuấy tương cà vào và đậy nắp. Nấu đến khi lượng hầm giảm một phần ba đến một nửa và nước bắt đầu sánh."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nêm muối và tiêu vừa ăn."
+   },
+   {
+    "t": "Nhấc khỏi bếp",
+    "d": "Nhấc khỏi bếp, bỏ lá nguyệt quế."
+   },
+   {
+    "t": "Đổ nhân",
+    "d": "Đổ nhân vào khuôn hoặc bát."
+   },
+   {
+    "t": "Phủ vỏ",
+    "d": "Phủ đĩa bột lên và ấn quanh viền để kín. Bột có vỡ một chút cũng được, miễn là vẫn giòn hoặc xốp."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng ở 445 °F (230 °C / lò ga mức 8) trong 10 đến 15 phút hoặc đến khi mặt vỏ nâu vừa. Cầm nắm cẩn thận."
+   }
+  ],
+  "sourceHash": "b1c050ea82192e9744024fd10cac638059cc4898c7d17e8602ce14f5e5c9d2a3"
+ },
+ {
+  "pageId": 263046,
+  "title": "Stroopwafel (Bánh quế kẹp caramel kiểu Hà Lan)",
+  "description": "Stroopwafel là một loại bánh quy có nguồn gốc từ Hà Lan, thường là món ăn nhẹ buổi sáng hoặc tối dùng cùng trà hoặc cà phê. Bánh hơi dẻo, có nhiều loại nhân và hương vị. Công thức sau được chuyển thể từ công thức của Diana Dessert.",
+  "ingredients": [
+   {
+    "n": "men khô",
+    "o": "¼ oz, phần bánh"
+   },
+   {
+    "n": "nước ấm",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "bột mì đa dụng",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "bơ lạt (phần bánh)",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "quế xay (phần bánh)",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "đường trắng",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "trứng lớn",
+    "u": "quả",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "đường nâu nén chặt",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "bơ lạt (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "quế xay (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "siro ngô sẫm",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "hạt phỉ xay mịn",
+    "o": "tùy chọn, phần nhân"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Làm nóng khuôn",
+    "d": "Làm nóng khuôn Pizzelle."
+   },
+   {
+    "t": "Hòa men",
+    "d": "Hòa tan men trong nước ấm."
+   },
+   {
+    "t": "Trộn bột",
+    "d": "Cho bơ vào bột mì, rồi trộn đường, quế, trứng và hỗn hợp men."
+   },
+   {
+    "t": "Ủ bột",
+    "d": "Trộn đều và để nở 30–60 phút."
+   },
+   {
+    "t": "Nướng bánh",
+    "d": "Vo bột thành 12 viên nhỏ, ép từng viên trong khuôn pizzelle đã nóng và nướng khoảng 30 giây."
+   },
+   {
+    "t": "Nấu nhân",
+    "d": "Trong nồi, nấu đường nâu, bơ, quế và siro ngô đến giai đoạn viên mềm (234–240°F hoặc 112–115°C)."
+   },
+   {
+    "t": "Thêm hạt phỉ",
+    "d": "Khuấy hạt phỉ xay vào lúc này nếu dùng."
+   },
+   {
+    "t": "Kẹp nhân",
+    "d": "Cắt mỗi bánh thành hai lớp mỏng và kẹp một ít nhân."
+   },
+   {
+    "t": "Lặp lại",
+    "d": "Lặp lại đến khi hết nhân và bánh."
+   }
+  ],
+  "sourceHash": "3b286a4bffc22f820e6b4cb1696993190fe0645829ec8d1def46ef1218651bb5"
+ },
+ {
+  "pageId": 180182,
+  "title": "Szegedin Goulash (Thịt heo hầm dưa cải chua kiểu Hungary)",
+  "description": "Szegedin goulash là một loại goulash có thêm dưa cải chua và kem chua vào các nguyên liệu truyền thống. Nhiều người tin rằng cái tên bắt nguồn từ Szeged, một thị trấn ở Hungary. Nhưng thực ra, tên Hungary “Székély goulash” đến từ Jozsef Székély, nhà báo và nhà thơ Hungary sống từ năm 1825 đến 1895. Công thức này đến từ mẹ vợ của người đóng góp, có sửa đổi nhỏ. Người đóng góp kể lại: “Mẹ vợ tôi là người nấu ăn tận tâm và rất giỏi, cả bạn bè (bà rất hiếu khách) lẫn gia đình đều khen các món ngon của bà. Mệt vì thường xuyên bị hỏi công thức, một ngày bà quyết định làm cuốn sách nấu ăn gia đình tặng bốn người con. Bà gom những công thức thành công nhất trong suốt quãng đời nội trợ và nấu nướng lâu năm, và có rất nhiều công thức như vậy! Một số bà lấy từ tạp chí, chỉ chép lại và thêm vào bộ sưu tập. Nhưng phần lớn bà phải viết lại từ trí nhớ hoặc nấu lại. Việc này khá khó, vì bà vốn nấu theo cảm tính. Lần đầu tiên trong đời, bà phải chú ý cân đo và đếm chính xác mọi nguyên liệu cho một món ăn. Kết quả là một cuốn sách tuyệt vời và rất riêng, phần lớn viết tay. Với “Mamis Schmankerln”, như cách bà gọi cuốn sách, bà đã để lại di sản độc đáo và khó quên cho các con cùng dâu rể.”",
+  "ingredients": [
+   {
+    "n": "mỡ heo"
+   },
+   {
+    "n": "thịt vai heo",
+    "o": "cắt khối vừa ăn"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "cà chua cô đặc"
+   },
+   {
+    "n": "ớt bột paprika"
+   },
+   {
+    "n": "nước hoặc nước dùng bò"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "tỏi",
+    "u": "tép",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu xay"
+   },
+   {
+    "n": "dưa cải chua"
+   },
+   {
+    "n": "kem chua"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Xào thịt",
+    "d": "Đun nóng mỡ trong nồi, cho thịt heo vào xào khoảng 3 phút. Vớt thịt ra để riêng trên đĩa."
+   },
+   {
+    "t": "Phi hành",
+    "d": "Cho hành băm vào nồi, chiên đến khi vàng nâu."
+   },
+   {
+    "t": "Nấu goulash",
+    "d": "Khuấy cà chua cô đặc và paprika vào, thêm ít nước hoặc nước dùng. Cho thịt, lá nguyệt quế và tỏi vào; đổ thêm nước hoặc nước dùng, nêm muối và tiêu. Hạ lửa, nấu khoảng 30 phút."
+   },
+   {
+    "t": "Thêm dưa cải",
+    "d": "Cho dưa cải chua vào, nấu thêm 40 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Cho kem chua vào, trộn kỹ với goulash và dọn trên đĩa ấm."
+   }
+  ],
+  "sourceHash": "b50e355e5e7d892ebad836aecfebc7cc53829d9326cc2c450236ea4492efa267"
+ },
+ {
+  "pageId": 9695,
+  "title": "Salad Tarbes (Xà lách cam, óc chó và phô mai xanh)",
+  "description": "Salad Tarbes là món salad chua ngọt vừa ngon vừa dễ làm.",
+  "ingredients": [
+   {
+    "n": "hành tây trắng hoặc vàng",
+    "u": "củ",
+    "o": "Phần salad"
+   },
+   {
+    "n": "dầu ô liu",
+    "o": "Phần salad"
+   },
+   {
+    "n": "xà lách tùy thích",
+    "u": "cây",
+    "o": "Phần salad"
+   },
+   {
+    "n": "óc chó",
+    "t": "khoảng 5 quả",
+    "o": "bẻ nhỏ, phần salad"
+   },
+   {
+    "n": "cam chín",
+    "u": "quả",
+    "o": "cắt miếng nhỏ, phần salad"
+   },
+   {
+    "n": "phô mai xanh cứng hoặc Roquefort",
+    "t": "1 miếng nhỏ",
+    "o": "thái hạt lựu, phần salad"
+   },
+   {
+    "n": "dầu ô liu nguyên chất",
+    "o": "Nước trộn"
+   },
+   {
+    "n": "giấm balsamic",
+    "o": "Nước trộn"
+   },
+   {
+    "n": "mù tạt hạt",
+    "o": "Nước trộn"
+   },
+   {
+    "n": "nước cốt chanh",
+    "u": "lần vắt",
+    "o": "Nước trộn"
+   },
+   {
+    "n": "muối",
+    "o": "Nước trộn"
+   },
+   {
+    "n": "tiêu",
+    "o": "Nước trộn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Phi hành",
+    "d": "Cắt hành thành hình bán nguyệt, áp chảo với ít dầu ô liu đến khi vàng giòn. Xong thì cho ra tô riêng và vắt ít nước cốt chanh lên."
+   },
+   {
+    "t": "Rửa xà lách",
+    "d": "Trong lúc phi hành, rửa kỹ xà lách. Ngâm nhiều lần, vì không gì tệ hơn xà lách còn sạn. Xé xà lách thành miếng vừa ăn, cho vào rổ quay và xả dưới vòi nước. Rửa xong thì quay cho khô. Xà lách ướt sẽ làm loãng nước trộn."
+   },
+   {
+    "t": "Cho vào tô",
+    "d": "Khi xà lách đã khô, cho vào tô. Thêm hành, óc chó, cam và phô mai."
+   },
+   {
+    "t": "Pha nước trộn",
+    "d": "Để pha nước trộn, chỉ cần cho nguyên liệu vào hũ và lắc mạnh."
+   },
+   {
+    "t": "Trộn và dọn",
+    "d": "Trộn tất cả trong tô lớn và dọn ăn."
+   }
+  ],
+  "sourceHash": "f72fd1e8da95f857e26b72b4caba594001528f5e3f30412703343af85796bfcb"
+ }
+]

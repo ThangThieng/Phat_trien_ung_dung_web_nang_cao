@@ -9,13 +9,13 @@ export { ApiError, isAbortError } from './api-error';
 
 /** FR-OBS-002 – mỗi request một mã, Backend ghi vào log (Buổi 8 trả lại trên response). */
 export const CORRELATION_ID_HEADER = 'X-Correlation-ID';
-export const REQUEST_TIMEOUT_MS = 15_000;
+const REQUEST_TIMEOUT_MS = 15_000;
 /** 429/503 có `Retry-After` dài hơn mức này thì không chờ — trả lỗi để giao diện báo người dùng. */
-export const MAX_RETRY_AFTER_MS = 5_000;
+const MAX_RETRY_AFTER_MS = 5_000;
 /** Chỉ lỗi tạm thời. 500 là lỗi code phía server — gửi lại cũng ra kết quả như cũ. */
 const RETRY_STATUS_CODES = [408, 429, 502, 503, 504];
 
-export interface ApiRequestOptions {
+interface ApiRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   /** Object → gửi JSON; `FormData`/`Blob`/`URLSearchParams` → gửi nguyên (trình duyệt tự đặt Content-Type). */
   body?: unknown;
@@ -43,7 +43,7 @@ export function configureAuthCallbacks(callbacks: AuthCallbacks | null) {
 }
 
 /** Thông tin của request trình duyệt mà server đang render — chỉ có ở phía server (xem `lib/server-request-context.ts`). */
-export interface ServerRequestContext {
+interface ServerRequestContext {
   /** Giá trị `X-Forwarded-For` Nginx gắn cho request của trình duyệt (`null` khi không có, ví dụ gọi thẳng cổng 3000). */
   forwardedFor: () => Promise<string | null>;
 }
