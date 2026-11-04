@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Category } from '@/types/category';
 
-/** Biểu tượng khi danh mục chưa có ảnh — khóa là slug của 20 danh mục mẫu (seed `categories.json`). */
+/** Biểu tượng khi danh mục chưa có ảnh — khóa là slug của các danh mục mẫu (seed `categories.json`). */
 export const CATEGORY_EMOJI: Record<string, string> = {
   'mon-khai-vi': '🥗',
   'mon-chinh': '🍛',
@@ -25,6 +25,13 @@ export const CATEGORY_EMOJI: Record<string, string> = {
   'mon-nhat-ban': '🍣',
   'mon-thai': '🌶️',
   'mon-au': '🍝',
+  // 6 danh mục cho công thức bổ sung từ Wikibooks (CR-2026-07).
+  'mi-pasta': '🍝',
+  'mon-ham-ca-ri': '🍛',
+  'mon-an-do': '🫓',
+  'mon-my': '🍔',
+  'mon-chau-a-khac': '🥡',
+  'mon-chau-phi': '🫘',
 };
 
 /**
