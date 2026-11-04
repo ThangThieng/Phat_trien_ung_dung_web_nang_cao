@@ -1,6 +1,7 @@
+import { getImageProps } from 'next/image';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { buildContentSecurityPolicy, getCspMode, LIBRARY_STYLE_HASHES } from './csp';
+import { buildContentSecurityPolicy, getCspMode, IMAGE_STYLE_ATTRIBUTE_HASHES, LIBRARY_STYLE_HASHES } from './csp';
 
 const findDirective = (policy: string, name: string) =>
   policy
@@ -46,7 +47,7 @@ describe('content security policy', () => {
       'style-src',
     );
     expect(styleSource).toBe(
-      `style-src 'self' 'nonce-request-nonce' ${LIBRARY_STYLE_HASHES.join(' ')}`,
+      `style-src 'self' 'nonce-request-nonce' ${[...LIBRARY_STYLE_HASHES, ...IMAGE_STYLE_ATTRIBUTE_HASHES].join(' ')}`,
     );
     expect(styleSource).not.toContain("'unsafe-inline'");
   });
@@ -55,6 +56,21 @@ describe('content security policy', () => {
     const css = sonnerInjectedCss();
     expect(css).toContain('[data-sonner-toaster]');
     expect(LIBRARY_STYLE_HASHES).toEqual([sha256(''), sha256(css)]);
+  });
+
+  it('allows exactly the style attributes next/image renders, by hash', () => {
+    const css = (style: object) =>
+      Object.entries(style)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => `${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}:${value}`)
+        .join(';');
+    const hash = (text: string) => `'sha256-${createHash('sha256').update(text).digest('base64')}'`;
+    const fill = getImageProps({ src: '/a.jpg', alt: '', fill: true, unoptimized: true }).props.style;
+    const sized = getImageProps({ src: '/a.jpg', alt: '', width: 1, height: 1, unoptimized: true }).props.style;
+
+    expect(IMAGE_STYLE_ATTRIBUTE_HASHES).toContain(hash(css(fill!)));
+    expect(IMAGE_STYLE_ATTRIBUTE_HASHES).toContain(hash(css(sized!)));
+    expect(buildContentSecurityPolicy('nonce', false)).not.toContain("'unsafe-inline'");
   });
 
   it('development style-src stays unsafe-inline without a nonce (a nonce would make browsers ignore unsafe-inline)', () => {

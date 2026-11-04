@@ -1,4 +1,4 @@
-export type CspMode = 'enforce' | 'report-only';
+type CspMode = 'enforce' | 'report-only';
 
 export function getCspMode(value = process.env.NEXT_PUBLIC_CSP_MODE): CspMode {
   return value === 'report-only' ? 'report-only' : 'enforce';
@@ -15,13 +15,24 @@ export const LIBRARY_STYLE_HASHES = [
   "'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='", // CSS của sonner@2.0.8
 ] as const;
 
+/**
+ * Thuộc tính `style` do `next/image` render ở server. Nonce không áp dụng cho thuộc tính, nên cần `'unsafe-hashes'` kèm hash: chỉ đúng
+ * hai chuỗi cố định này được qua, khác hẳn `'unsafe-inline'`. Thiếu chúng thì ảnh `fill` mất `position:absolute` và lệch khung.
+ * `csp.test.ts` tính lại từ chính `getImageProps` và đỏ khi nâng Next.js làm đổi chuỗi.
+ */
+export const IMAGE_STYLE_ATTRIBUTE_HASHES = [
+  "'unsafe-hashes'",
+  "'sha256-ZDrxqUOB4m/L0JWL/+gS52g1CRH0l/qwMhjTw5Z/Fsc='", // next/image có fill
+  "'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk='", // next/image không fill: color:transparent
+] as const;
+
 export function buildContentSecurityPolicy(nonce: string, development = process.env.NODE_ENV !== 'production'): string {
   const scriptSources = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", 'https://accounts.google.com/gsi/client'];
   if (development) scriptSources.push("'unsafe-eval'");
   // Có nonce/hash thì trình duyệt bỏ qua 'unsafe-inline' — nên dev (Fast Refresh chèn style không nonce) chỉ dùng 'unsafe-inline'.
   const styleSources = development
     ? ["'self'", "'unsafe-inline'"]
-    : ["'self'", `'nonce-${nonce}'`, ...LIBRARY_STYLE_HASHES];
+    : ["'self'", `'nonce-${nonce}'`, ...LIBRARY_STYLE_HASHES, ...IMAGE_STYLE_ATTRIBUTE_HASHES];
   return [
     "default-src 'self'",
     `script-src ${scriptSources.join(' ')}`,
