@@ -88,9 +88,10 @@ public sealed class AuthApplicationCoverageTests
 
     [Theory]
     [InlineData(true, "valid reason", true)]
+    [InlineData(false, "Spam", true)]
+    [InlineData(false, null, true)]
     [InlineData(null, "valid reason", false)]
-    [InlineData(false, "bad", false)]
-    public void User_status_validator_requires_explicit_status_and_reason(bool? active, string reason, bool valid) =>
+    public void User_status_validator_requires_explicit_status_only(bool? active, string? reason, bool valid) =>
         Assert.Equal(valid, new SetUserStatusCommandValidator().Validate(new SetUserStatusCommand("target", active, reason)).IsValid);
 
     [Fact]

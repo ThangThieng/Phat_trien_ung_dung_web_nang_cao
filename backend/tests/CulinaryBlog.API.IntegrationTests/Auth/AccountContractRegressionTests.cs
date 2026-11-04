@@ -212,18 +212,17 @@ public sealed class AccountApiTests(CulinaryBlogApiFactory factory) : IAsyncLife
         await AssertProblemAsync(invalid, HttpStatusCode.BadRequest, "VALIDATION_ERROR").ConfigureAwait(true);
     }
 
+    /// <summary>SRS §8.1: reason tùy chọn; ví dụ của FR-AUTH-008 là "Spam".</summary>
     [Theory]
     [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData(" abc ")]
-    public async Task AdminStatusRejectsInvalidReason(string? reason)
+    [InlineData("Spam")]
+    public async Task AdminStatusAcceptsOptionalReason(string? reason)
     {
         using var client = factory.CreateClient();
         var target = await RegisterAsync(client).ConfigureAwait(true);
         await RegisterAsync(client, admin: true).ConfigureAwait(true);
         using var response = await client.PatchAsJsonAsync($"/api/v1/users/{target.User.Id}/status", new { isActive = false, reason }).ConfigureAwait(true);
-        await AssertProblemAsync(response, HttpStatusCode.BadRequest, "VALIDATION_ERROR").ConfigureAwait(true);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
