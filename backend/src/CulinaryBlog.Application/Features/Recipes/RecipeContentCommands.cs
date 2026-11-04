@@ -243,7 +243,7 @@ public sealed class RecipeContent(IUnitOfWork unitOfWork, IAuthorizationService 
         var result = change(recipe);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        command.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug));
+        command.InvalidateOnSuccess(RecipeCacheKeys.ForContentChange(recipe.Slug, recipe.Status));
         return result;
     }
 }

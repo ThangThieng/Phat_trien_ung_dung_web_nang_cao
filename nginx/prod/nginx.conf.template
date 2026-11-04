@@ -17,6 +17,9 @@ http {
         listen 80 default_server;
         server_name _;
 
+        # Healthcheck của container (curl http://127.0.0.1/nginx-health) — không cần chứng chỉ, không bị chuyển hướng.
+        include /etc/nginx/snippets/health.conf;
+
         location / {
             return 301 https://$host$request_uri;
         }

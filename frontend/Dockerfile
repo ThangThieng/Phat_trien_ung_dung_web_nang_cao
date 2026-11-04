@@ -1,13 +1,13 @@
 # CONS-009: multi-stage build – Next.js standalone output
 # ---------- deps ----------
-FROM node:22-alpine AS deps
+FROM node:22.23.2-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json ./
 RUN npm ci
 
 # ---------- build ----------
-FROM node:22-alpine AS build
+FROM node:22.23.2-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -27,13 +27,17 @@ ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL \
 RUN npm run build
 
 # ---------- runtime ----------
-FROM node:22-alpine AS runtime
+FROM node:22.23.2-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
     HOSTNAME=0.0.0.0
-RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs
+# Server standalone chỉ cần `node`: gỡ npm/npx/corepack của image nền — không dùng lúc chạy, và mang theo lỗ hổng của các gói
+# đi kèm (Trivy 30/10/2026: CVE-2026-59873 Critical ở node-tar của npm).
+RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+        /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static

@@ -1,3 +1,4 @@
+using CulinaryBlog.Application.Common.Diagnostics;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Domain.Entities;
@@ -25,7 +26,8 @@ public sealed record DeleteRecipeCommand(Guid RecipeId) : RecipeWriteCommand, IR
 /// Luồng chung của mọi command vòng đời (Buổi 4 — Dev 4): nạp công thức KÈM Steps + Ingredients + Images (dùng
 /// GetByIdAsync thì hai collection rỗng và công thức đủ điều kiện vẫn bị từ chối xuất bản) → 404 nếu không có →
 /// 403 RECIPE_FORBIDDEN nếu không phải chủ/Admin → áp hành động của Domain → lưu → khai báo khóa cache cần xóa.
-/// Công thức vào/ra tập Published nên xóa cả danh sách, tìm kiếm, sitemap và danh mục (ForVisibilityChange).
+/// Công thức vào/ra tập Published thì xóa cả danh sách, sitemap và danh mục; không chạm tập Published thì chỉ xóa chi tiết
+/// (ForVisibilityChange — CR-2026-06).
 /// </summary>
 public sealed class RecipeLifecycle(
     IUnitOfWork unitOfWork,
@@ -45,10 +47,11 @@ public sealed class RecipeLifecycle(
             .LoadWithDetailsForWriteAsync(currentUser, unitOfWork, recipeId, cancellationToken)
             .ConfigureAwait(false);
 
+        var statusBefore = recipe.Status;
         action(recipe);
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        command.InvalidateOnSuccess(RecipeCacheKeys.ForVisibilityChange(recipe.Slug));
+        command.InvalidateOnSuccess(RecipeCacheKeys.ForVisibilityChange(recipe.Slug, statusBefore, recipe.Status));
         return recipe;
     }
 }
@@ -62,6 +65,7 @@ public sealed class PublishRecipeCommandHandler(RecipeLifecycle lifecycle, IReci
         var recipe = await lifecycle
             .ApplyAsync(request, request.RecipeId, r => r.Publish(timeProvider.GetUtcNow().UtcDateTime), cancellationToken)
             .ConfigureAwait(false);
+        CulinaryBlogMetrics.RecipesPublished.Add(1);
         return await RecipeLifecycleResult.ReadAsync(reader, recipe.Id, cancellationToken).ConfigureAwait(false);
     }
 }

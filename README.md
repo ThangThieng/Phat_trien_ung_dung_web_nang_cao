@@ -2,7 +2,7 @@
 
 Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (nguyên liệu, các bước, ảnh), xuất bản, tìm kiếm tiếng Việt không dấu; Admin quản trị danh mục và tài khoản.
 **Công nghệ:** .NET 10 Minimal API (Clean Architecture + CQRS/MediatR) · Next.js 15 App Router · PostgreSQL 16 · Redis 7 · MinIO · Hangfire · Nginx · Docker Compose.
-**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.3.md`](SPEC/SRS_Culinary_Blog_v1.2.3.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (68 mâu thuẫn đã giải quyết).
+**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.4.md`](SPEC/SRS_Culinary_Blog_v1.2.4.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (69 mâu thuẫn đã giải quyết).
 
 ## Thành viên
 
@@ -33,7 +33,7 @@ Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (ng
 | Ràng buộc thiết kế (CONS) | **10** | Kiến trúc, pattern, framework, bảo mật, API, DB, tải lên, kiểm tra hợp lệ (validation), container, logging |
 | Endpoint REST | **48** | SRS Chương 8: 45 endpoint **hoàn thành ở Buổi 4**; v1.2.3 thêm `change-password`, `forgot-password`, `reset-password` (CR-2026-05) — làm ở **Buổi 7** |
 | Mã lỗi ứng dụng | **30** | SRS Phụ lục B – mỗi mã phải có ít nhất 1 kiểm thử (v1.2.2 thêm `AUTH_USER_NOT_FOUND`, `CONCURRENCY_CONFLICT`; v1.2.3 thêm `AUTH_PASSWORD_RESET_TOKEN_INVALID`) |
-| Mâu thuẫn trong SRS đã giải quyết | **68** | MT-01 → MT-68 (CR-2026, CR-2026-02, CR-2026-03, CR-2026-04 và CR-2026-05) |
+| Mâu thuẫn trong SRS đã giải quyết | **69** | MT-01 → MT-69 (CR-2026, CR-2026-02 → CR-2026-06) |
 | Dữ liệu mẫu (SRS §2.6.1, CR-2026-03) | **≥ 20 / ≥ 100** | ≥ 20 danh mục, ≥ 100 công thức; mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước chế biến |
 
 Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = có thì tốt.
@@ -110,7 +110,7 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 |---|---|---|
 | **Hiệu năng** | PERF-001 | GET có cache: p50 ≤ 150ms · p95 ≤ 500ms · p99 ≤ 1000ms |
 | | PERF-002 | ≥ 100 người dùng đồng thời; thêm instance thì thông lượng tăng tuyến tính |
-| | PERF-003 | Redis cache-aside là cơ chế cache duy nhất; hit rate ≥ 80%; theo bảng TTL chuẩn |
+| | PERF-003 | Redis cache-aside là cơ chế cache duy nhất; hit rate ≥ 80%; theo bảng TTL chuẩn — từ v1.2.4 chỉ xóa cache công khai khi thay đổi chạm tới tập Published (CR-2026-06) |
 | | PERF-004 | Không N+1; cảnh báo query > 100ms; index chứng minh bằng `EXPLAIN ANALYZE` |
 | | PERF-005 | LCP ≤ 2.5s · CLS ≤ 0.1 · INP ≤ 200ms · First Load JS ≤ 200KB |
 | **Bảo mật** | SEC-001 | Mật khẩu PBKDF2 qua Identity; ≥ 8 ký tự hoa/thường/số/đặc biệt; khóa sau 5 lần sai |
@@ -197,7 +197,8 @@ Mức ưu tiên (MoSCoW): **M** = bắt buộc · **S** = nên có · **C** = c�
 > - phần Buổi 5 đã làm trước ngày 12/10 được **giữ nguyên** và bổ sung việc Lab 5;
 > - Lab 7/8 giao lại tính năng đã có thì **nâng cấp**, không làm lại;
 > - giao diện `/search` ở Buổi 7 do Thiêng làm (theo Lab 7); kiểu TypeScript chia theo Lab 5;
-> - đổi/quên mật khẩu và lọc thời gian trên `/search` đi qua **CR-2026-05** (SRS v1.2.3).
+> - đổi/quên mật khẩu và lọc thời gian trên `/search` đi qua **CR-2026-05** (SRS v1.2.3);
+> - đo tải Buổi 8 cho thấy hai dòng của NFR-PERF-003 mâu thuẫn nhau (hit rate 75,4 % khi xóa cache công khai ở cả thay đổi bản nháp) → **CR-2026-06** (SRS v1.2.4, MT-69).
 
 **Bảng theo dõi trên GitHub:** [Project "Culinary Blog – Nhóm 20"](https://github.com/users/ThangThieng/projects/9) — mỗi thành viên một issue cha "Họ tên - MSSV", mỗi phần việc từng buổi ở Phần 3 là một sub-issue (Todo / In Progress / Done). Bảng được sinh từ chính README này bằng `python tools/github_board/sync_board.py` (xem trước: `--dry-run`); sửa README rồi chạy lại tool, không sửa tay issue. Khi mở PR, ghi `Closes #<số issue>` để PR tự gắn vào issue.
 
@@ -1220,24 +1221,27 @@ Không đưa dữ liệu server vào Zustand.
      - job Hangfire mang theo CorrelationId.
   3. **Audit trong `LoggingBehavior`** (giữ đúng 4 behavior của SRS); `SlowQueryInterceptor` > 100 ms; **che dữ liệu nhạy cảm** + `LogRedactionTests`.
   4. **OpenTelemetry** (mức C — cắt được nếu thiếu thời gian).
-  5. **Audit cache** (`SCAN`, không `KEYS`) + đo hit rate.
-  6. **k6** smoke/load (100 người dùng)/stress, tỉ lệ 70/20/10:
-     - môi trường đo **nâng hạn mức rate limit** (k6 chạy từ một IP);
+  5. **Audit cache** (`SCAN`, không `KEYS`) + đo hit rate → [`docs/cache-report.md`](docs/cache-report.md):
+     - xóa theo tiền tố trước đây không có tác dụng — nay xóa bằng `SCAN`;
+     - đo được hit rate 75,4 % do sửa bản nháp vẫn xóa cache công khai → **CR-2026-06 (SRS v1.2.4, MT-69)**: chỉ xóa khi thay đổi chạm tới tập Published → 97,3 %.
+  6. **k6** smoke/load (100 người dùng)/stress, tỉ lệ 70/20/10 → [`docs/load-test-report.md`](docs/load-test-report.md):
+     - môi trường đo **nâng hạn mức rate limit** (k6 chạy từ một IP) — `docker-compose.loadtest.yml`;
      - chịu lỗi khi đang tải (tắt Redis, tắt MinIO).
-  7. **Đóng gói:**
-     - 8 service healthy; ghim tag image; quét Trivy;
-     - README < 5 phút, CHANGELOG;
-     - **10 ADR** (6 cũ + phân vai state Frontend, `ky`, versioning & rate limit, CSP nonce ↔ render);
-     - tag `v1.0.0`.
+  7. **Đầu buổi — môi trường E2E giống production** cho cả nhóm: `docker-compose.e2e.yml` (MailHog, token 1 phút, dữ liệu mẫu, rate limit thật).
+  8. **Đóng gói:**
+     - 8 service healthy (thêm healthcheck `nginx`, `hangfire`, `seq`); ghim tag image; quét Trivy;
+     - README < 5 phút (`tools/dev-setup.sh --up`), CHANGELOG;
+     - **10 ADR** (6 cũ + phân vai state Frontend, `ky`, versioning & rate limit, CSP nonce ↔ render) — [`docs/adr/`](docs/adr/);
+     - tag `v1.0.0` **chuẩn bị sẵn**, gắn trên `main` khi cả 4 nhánh Buổi 8 đã vào (quyết định 21/10/2026).
 - **Vì sao:**
   - CorrelationId hiện trên màn hình lỗi giúp tra đúng chuỗi log trong Seq.
   - Lọc bí mật khỏi log là mắt xích cuối của chuỗi bảo vệ token.
-  - Kịch bản tải phải giống thực tế; báo cáo hit rate trung thực, không nới TTL cho đẹp số.
+  - Kịch bản tải phải giống thực tế; báo cáo hit rate trung thực, không nới TTL cho đẹp số — số đo ngược chỉ tiêu thì sửa SRS qua Change Request.
 - **Xong khi:**
   - log có `CorrelationId`/`RequestPath`/`UserId`, không có bí mật;
   - k6 đạt (hoặc báo cáo trung thực);
   - 8 service healthy;
-  - đủ tài liệu, tag `v1.0.0`.
+  - đủ tài liệu; tag `v1.0.0` gắn khi cả nhóm xong Buổi 8.
 - **Commit:** `feat(obs,release): serilog structured logging with validated correlation id, request timing, audit and secret redaction; opentelemetry; cache audit, k6 load and resilience tests; docker compose packaging, adrs and v1.0.0`
 
 **Danh sách kiểm tra nghiệm thu cuối dự án:**
@@ -1254,24 +1258,40 @@ Không đưa dữ liệu server vào Zustand.
 
 # Phụ lục – Cài đặt & chạy dự án
 
-**Yêu cầu:** .NET SDK 10.0.x · Node.js 20+ · Docker Desktop 4.x (Compose v2) · `dotnet tool install --global dotnet-ef`.
+**Chỉ để chạy hệ thống:** Docker Desktop 4.x (Compose v2) + Git Bash (Windows) hoặc shell bất kỳ (Linux/macOS).
+**Để phát triển:** thêm .NET SDK 10.0.x · Node.js 20+ (container dùng 22 LTS) · `dotnet tool install --global dotnet-ef`.
 
 ```bash
-cp .env.example .env                  # điền JWT_SIGNING_KEY, AUTH_SECRET... (openssl rand -base64 64)
-git config core.hooksPath .githooks   # bật pre-commit gitleaks
-docker compose --profile dev up -d --build
+git clone https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao.git culinary-blog && cd culinary-blog
+./tools/dev-setup.sh --up     # .env + bí mật ngẫu nhiên, nginx/.htpasswd, hook gitleaks, rồi dựng 8 service và chờ healthy
 ```
+
+`tools/dev-setup.sh` không ghi đè `.env` đã có — chỉ điền các khóa bí mật còn trống — và in mật khẩu tài khoản mẫu một lần. Làm tay vẫn được:
+`cp .env.example .env` (điền `JWT_SIGNING_KEY`, `AUTH_SECRET`, `HANGFIRE_*`, `SEED_*`), `./nginx/generate-htpasswd.sh`,
+`git config core.hooksPath .githooks`, `docker compose --profile dev up -d --build`.
 
 | Service | URL |
 |---|---|
-| Nginx | http://localhost |
+| Nginx (cửa vào chính) | http://localhost |
 | Frontend | http://localhost:3000 |
-| API + Scalar | http://localhost:5000/scalar |
+| API + Scalar | http://localhost:5000/scalar/v1 |
+| Hangfire Dashboard | http://localhost/hangfire (Basic Auth `HANGFIRE_DASHBOARD_USER`/`…PASSWORD`) |
 | MinIO Console | http://localhost:9001 |
-| Seq | http://localhost:5341 |
+| Seq (log, trace, metric) | http://localhost:5341 |
 | Mailhog | http://localhost:8025 |
 
 Tài khoản mẫu: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWORD`), `author1..5@culinaryblog.local` (`SEED_AUTHOR_PASSWORD`). Dữ liệu mẫu: 20 danh mục, 100 công thức (~85% đã xuất bản) — API tự seed/bù khi khởi động, không cần xóa volume. Máy đã có PostgreSQL chiếm cổng 5432 → đặt `POSTGRES_HOST_PORT=5434`.
+
+**Môi trường khác (Buổi 7 – 8)** — cùng project `culinaryblog`, dừng bản dev trước (`docker compose --profile dev down`):
+
+| Mục đích | Lệnh | Ghi chú |
+|---|---|---|
+| Production (HTTPS, 3 bản sao API) | `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build` | chuẩn bị một lần: `.env.production`, `./nginx/generate-ssl-cert.sh` |
+| E2E giống production (Playwright) | `docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml --env-file .env.production up -d --build` | + MailHog, access token 1 phút, dữ liệu mẫu; rate limit thật |
+| Đo tải (k6) | `docker compose -f docker-compose.prod.yml -f docker-compose.loadtest.yml --env-file .env.production up -d --build` | nâng hạn mức rate limit — [`tests/load/README.md`](tests/load/README.md) |
+
+**Tra log theo mã lỗi:** màn hình lỗi hiện "Mã tra cứu" = header `X-Correlation-ID` → dán vào Seq: `CorrelationId = '<mã>'` ra mọi log của
+request đó ở mọi tầng, kể cả job Hangfire nó sinh ra. Production không có Seq: `docker compose … logs api | grep '<mã>'` (log JSON).
 
 **Definition of Done mỗi commit:**
 ```bash

@@ -1,9 +1,9 @@
 # KẾ HOẠCH PHÁT TRIỂN CHI TIẾT 8 BUỔI LÀM VIỆC – CULINARY BLOG
 ## (FEATURE-DRIVEN & ARCHITECTURAL RATIONALE)
 
-> **Nguồn chuẩn yêu cầu:** `SPEC/SRS_Culinary_Blog_v1.2.3.md` (v1.2.3, áp dụng 12/10/2026) = v1.1.0 (CR-2026, MT-01 → MT-41) + **CR-2026-02** (MT-42 → MT-57, v1.2.0) + **CR-2026-03** (yêu cầu dữ liệu mẫu, v1.2.1) + **CR-2026-04** (MT-59 → MT-63: 2 mã lỗi, 1 endpoint, 2 làm rõ, đính chính – errata E-9 — v1.2.2) + **CR-2026-05** (MT-64 → MT-68: 2 FR, 3 endpoint, 1 mã lỗi, mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7; errata CSP nonce ↔ render động và header CORS phát hiện khi thiết kế Lab 5–6 — v1.2.3). Các câu "SRS v1.1.0 (MT-xx) chốt…" hay "SRS v1.2.0…" trong tài liệu chỉ thời điểm quyết định được đưa ra; mọi quyết định đó vẫn còn nguyên hiệu lực trong v1.2.3.
+> **Nguồn chuẩn yêu cầu:** `SPEC/SRS_Culinary_Blog_v1.2.4.md` (v1.2.4, áp dụng 21/10/2026) = v1.1.0 (CR-2026, MT-01 → MT-41) + **CR-2026-02** (MT-42 → MT-57, v1.2.0) + **CR-2026-03** (yêu cầu dữ liệu mẫu, v1.2.1) + **CR-2026-04** (MT-59 → MT-63: 2 mã lỗi, 1 endpoint, 2 làm rõ, đính chính – errata E-9 — v1.2.2) + **CR-2026-05** (MT-64 → MT-68: 2 FR, 3 endpoint, 1 mã lỗi, mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7; errata CSP nonce ↔ render động và header CORS phát hiện khi thiết kế Lab 5–6 — v1.2.3) + **CR-2026-06** (MT-69: phạm vi xóa cache công khai chỉ còn thay đổi chạm tới tập Published — phát hiện khi đo tải Buổi 8 — v1.2.4). Các câu "SRS v1.1.0 (MT-xx) chốt…" hay "SRS v1.2.3…" trong tài liệu chỉ thời điểm quyết định được đưa ra; mọi quyết định đó vẫn còn nguyên hiệu lực trong v1.2.4.
 > **Yêu cầu của giảng viên:** Buổi 1 → 4 theo yêu cầu từng buổi (§0.1, §4.4, §4.5); **Buổi 5 → 8 theo yêu cầu tối thiểu Lab 5 → Lab 8 (12/10/2026)** — xem §0.3.
-> **Hồ sơ mâu thuẫn:** `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` — 68 mục MT (MT-01 → MT-68), cùng các bảng xung đột code ↔ SRS (§4), lộ trình và yêu cầu Lab ↔ SRS (§5) và đánh đổi còn mở (§6).
+> **Hồ sơ mâu thuẫn:** `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md` — 69 mục MT (MT-01 → MT-69), cùng các bảng xung đột code ↔ SRS (§4), lộ trình và yêu cầu Lab ↔ SRS (§5) và đánh đổi còn mở (§6).
 > **Nguồn chuẩn hiện trạng:** code trên nhánh `main` (commit `f313e95`) + `SPEC/BAO_CAO_BUOI_2.md` — mọi hạng mục nợ kỹ thuật ở §4 đều đã được **kiểm chứng trực tiếp trong code**, kèm đường dẫn file. Từ Buổi 5: các nhánh `{mssv}_{HoTen}_buoiso5` của 4 dev, đối chiếu ngày 12/10/2026.
 > **File:** `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`
 > **Thay thế:** `SPEC/KE_HOACH_PHAT_TRIEN_7_BUOI.md` (cùng nội dung, trước khi đánh số lại 8 buổi — xem §0.1) và `SPEC/KE_HOACH_PHAT_TRIEN_6_BUOI.md` (lập theo SRS v1.0.0 — đã lỗi thời); cả hai bản gốc lưu trong lịch sử git.
@@ -21,7 +21,7 @@ Giảng viên quy định lại **Buổi 1** là buổi **đọc đặc tả yê
 | Hạng mục | Quy ước sau khi đánh số lại |
 |---|---|
 | Số buổi trong tài liệu | "Buổi n" / "B{n}" luôn theo cách đánh số **8 buổi**. Các câu nhắc tới *kế hoạch 6 buổi cũ* ghi rõ là số của kế hoạch đó |
-| Tài liệu đổi tên | `KE_HOACH_PHAT_TRIEN_7_BUOI.md` → `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; `BAO_CAO_BUOI_1.md` → `BAO_CAO_BUOI_2.md`; `SRS_Culinary_Blog_v1.2.0.md` → `SRS_Culinary_Blog_v1.2.1.md` → `SRS_Culinary_Blog_v1.2.2.md` (CR-2026-04, 29/09/2026) → `SRS_Culinary_Blog_v1.2.3.md` (CR-2026-05, 12/10/2026) |
+| Tài liệu đổi tên | `KE_HOACH_PHAT_TRIEN_7_BUOI.md` → `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; `BAO_CAO_BUOI_1.md` → `BAO_CAO_BUOI_2.md`; `SRS_Culinary_Blog_v1.2.0.md` → `SRS_Culinary_Blog_v1.2.1.md` → `SRS_Culinary_Blog_v1.2.2.md` (CR-2026-04, 29/09/2026) → `SRS_Culinary_Blog_v1.2.3.md` (CR-2026-05, 12/10/2026) → `SRS_Culinary_Blog_v1.2.4.md` (CR-2026-06, 21/10/2026) |
 | Migration đã tạo | `B1_InitialSchema` **giữ nguyên tên** — đã áp dụng vào mọi cơ sở dữ liệu, đổi tên sẽ làm EF chạy lại migration. Migration **mới** đặt tên theo số buổi mới (`B3_…` → `B8_…`) |
 | Nhánh Git đã có | Nhánh lịch sử `feature/b1-*` của 3 dev đã merge và xóa trên GitHub, giữ nguyên trong lịch sử commit. Nhánh của Dev 4 (`feature/b1-dev4-infra-file` + `fix/b1-runtime-hardening`) gộp thành **`2312755_NguyenThangThieng_buoiso2`** theo quy ước mới (§2.4) |
 | Ngày tháng | Không đổi — Buổi 2 vẫn là 11/09 – 14/09/2026 (rà soát 20/09, bổ sung dữ liệu mẫu 21/09) |
@@ -125,13 +125,13 @@ Buổi 5 → 8 được **viết lại** theo năm nguyên tắc:
 
 ---
 
-## 2. Quyết định kiến trúc chung (cả nhóm tuân thủ — theo SRS v1.2.3)
+## 2. Quyết định kiến trúc chung (cả nhóm tuân thủ — theo SRS v1.2.4)
 
 ### 2.1 Cấu trúc repository (monorepo — giữ nguyên từ Buổi 2)
 
 ```
 ptudwnc_nhom20/
-├─ SPEC/                          # SRS v1.2.3 (+ bản gốc v1.0.0 PDF để đối chiếu), hồ sơ mâu thuẫn, kế hoạch này
+├─ SPEC/                          # SRS v1.2.4 (+ bản gốc v1.0.0 PDF để đối chiếu), hồ sơ mâu thuẫn, kế hoạch này
 ├─ backend/
 │  ├─ CulinaryBlog.sln
 │  ├─ src/CulinaryBlog.Domain/          # Entities, VO (Slug, EmailAddress), Enums, Exceptions/{Auth,Recipes,Categories} + ErrorCodes – KHÔNG NuGet
@@ -179,8 +179,8 @@ ptudwnc_nhom20/
 | Khóa cache | TTL | Invalidate khi | `revalidate` tương ứng ở FE (Data Cache của `fetch`; trước MT-67 là ISR) |
 |---|---|---|---|
 | `categories:all` | 30 phút | Create/Update/Delete category | `/categories` → data `revalidate: 1800` |
-| `categories:detail:{slug}:{queryHash}` | 2 phút | Thay đổi category đó hoặc recipe thuộc nó | `/categories/[slug]` → data `revalidate: 120` *(trang render động vì đọc `?page=` — xem `BAO_CAO_BUOI_2.md` §4.5)* |
-| `recipes:list:{queryHash}` | 2 phút | Bất kỳ thay đổi recipe nào (xóa theo tiền tố – prefix) | `/` → `revalidate=120` |
+| `categories:detail:{slug}:{queryHash}` | 2 phút | Thay đổi category đó, hoặc thay đổi **chạm tới tập Published** của recipe thuộc nó (CR-2026-06) | `/categories/[slug]` → data `revalidate: 120` *(trang render động vì đọc `?page=` — xem `BAO_CAO_BUOI_2.md` §4.5)* |
+| `recipes:list:{queryHash}` | 2 phút | Thay đổi **chạm tới tập Published** — recipe Published đổi nội dung, hoặc vào/ra trạng thái Published (xóa theo tiền tố – prefix); bản nháp/lưu trữ đổi thì không (CR-2026-06, §4.7) | `/` → `revalidate=120` |
 | `recipe:{slug}` | 5 phút | Update/Publish/Unpublish/Archive/Unarchive/Delete recipe đó | `/recipes/[slug]` → `revalidate=300` |
 | `search:{queryHash}` | 1 phút | Không xóa cache (invalidate) — hết hạn tự nhiên. Từ B6 khóa băm cả `maxCookTime`/`maxPrepTime`/`minServings` (MT-66) | — (SSR lần đầu; từ B7 client `staleTime` 60 giây) |
 | **`GET /recipes/mine`** | **CẤM CACHE** | — | — (CSR, `Cache-Control: no-store`) |
@@ -389,6 +389,24 @@ Chọn **B**: đúng chữ NFR-SEC-005, và yêu cầu thật sự của ISR (d�
 - **Tại sao không đưa "đổi vai trò người dùng" vào CR:** Lab 8 ghi "phân quyền" cho trang quản lý người dùng. Trưởng nhóm quyết định (12/10/2026) hiểu là trang chỉ Admin vào được + hiển thị vai trò + khóa/mở khóa — đúng FR-AUTH-008 hiện có. Đổi vai trò có rủi ro riêng (Admin tự hạ quyền, hệ thống mất Admin cuối cùng) và cần một FR riêng.
 - **Tại sao mở rộng `/recipes/search` thay vì cho trang `/search` gọi `GET /recipes`:** `GET /recipes` không có tìm kiếm toàn văn. Ghép kết quả hai endpoint ở client thì không phân trang đúng được. Thêm tham số tùy chọn vào endpoint có sẵn là thay đổi tương thích ngược nhỏ nhất.
 - **Vì sao sửa MT-67, MT-68 ngay trong CR này thay vì để "thử ở Buổi 6":** cả hai quyết định ảnh hưởng tới cách ba dev dựng trang ở Buổi 6 – 7 (trang có `export const revalidate` hay không, header nào Frontend đọc được). Để mở tới Buổi 6 nghĩa là Buổi 7 có thể phải làm lại. Thực nghiệm chỉ tốn một app tối giản, nên làm ngay và ghi kết quả là đúng quy tắc đã rút ra ở §4.3: *thay đổi chạm tới cấu hình hạ tầng hoặc API của framework phải được kiểm chứng trên môi trường thật trước khi duyệt*.
+
+### 4.7 Đo tải Buổi 8 (21/10/2026) — CR-2026-06 (đã áp dụng trong SRS v1.2.4)
+
+Lượt audit cache + load test của Buổi 8 (Dev 4) là lần đầu một yêu cầu SRS được **đo trên hệ thống đang chạy** thay vì đọc trên giấy. Hai
+dòng của cùng NFR-PERF-003 không thể cùng đúng:
+
+| # | Nội dung | Thay đổi trong SRS v1.2.4 | Hiện thực |
+|---|---|---|---|
+| **MT-69** | Bảng TTL xóa `recipes:list:` ở *"bất kỳ thay đổi recipe nào"* và `categories:detail:` ở *"bất kỳ recipe nào thuộc nó"* — kể cả bản nháp không bao giờ xuất hiện ở endpoint công khai (MT-34). Đo k6 100 người dùng, 10 % ghi lên bản nháp: hit rate **75,4 %** < 80 % (đối chứng không ghi: 97,9 %). FR-RCP-003 → 007 còn tự ghi lại danh sách khóa và lệch bảng (xóa `search:`; xóa `categories:` khi tạo bản nháp) | Hai họ khóa công khai chỉ bị xóa khi thay đổi **chạm tới tập Published**; `recipe:{slug}` vẫn xóa ở mọi thay đổi; `search:` không bao giờ bị xóa chủ động; FR chỉ tham chiếu bảng TTL | Buổi 8 — Dev 4: `RecipeCacheKeys` nhận trạng thái, `CreateRecipeCommand` bỏ `ICacheInvalidator`, `ImageResizeJob` theo cùng quy tắc. Đo lại: **97,3 %** |
+
+**Tổng sau CR-2026-06:** FR, endpoint, mã lỗi không đổi (**39 / 48 / 30**) · **69 mục MT**.
+
+- **Vì sao không nới TTL cho đạt 80 %:** TTL dài hơn không chữa gốc rễ — họ khóa vẫn bị xóa ~9 lần mỗi giây — mà còn làm trang chủ chậm cập
+  nhật khi có công thức mới xuất bản. Kế hoạch đã cấm "nới TTL cho đạt chỉ tiêu" ngay từ đầu (Buổi 8 — Dev 4, mục 3).
+- **Vì sao vẫn xóa `recipe:{slug}` khi sửa bản nháp:** một khóa, chi phí không đáng kể; giữ quy tắc "mọi thay đổi của chính recipe đó" đơn giản
+  và an toàn khi trạng thái vừa đổi trong cùng phiên làm việc (hủy xuất bản rồi sửa ngay).
+- **Vì sao đi qua Change Request thay vì sửa thẳng code:** làm khác chữ của bảng TTL là làm khác SRS — đúng điều §7 cấm. Số đo trước/sau và lượt
+  đối chứng nằm ở `docs/load-test-report.md`, `docs/cache-report.md`.
 
 ---
 
@@ -2824,7 +2842,7 @@ feat(home,categories): homepage with latest recipes and category sidebar, catego
   - `AuthGuard`/`GuestOnly` dùng `LoadingSkeleton` thay `InterimPageLoading` mà Dev 3 đã gỡ; `components/layout/interim-shell.tsx` bị xóa vì hết chỗ dùng.
 
   Buổi 6 của Dev 2 (PR #52) chưa đạt (6/16 component shadcn, 7 file xung đột) nên chờ.
-- **Bản tạm cho shadcn/ui của Dev 2** — gom trong **một** file `components/shared/interim-ui.tsx`: `Sheet*`, `Select*`, `Badge` cùng tên và props với shadcn. Dev 2 đổi một dòng import ở `features/search/components/SearchResults.tsx` và `SearchFilterPanel.tsx` rồi xóa file. `Sheet` tạm giữ đúng hành vi Radix (focus trap, Escape, trả focus, khóa cuộn — có kiểm thử); `Select` tạm là `<select>` gốc có `name` để gửi được trong form GET khi chưa có JavaScript.
+- **Bản tạm cho shadcn/ui của Dev 2** — gom trong **một** file `components/shared/interim-ui.tsx`: `Sheet*`, `Select*`, `Badge` cùng tên và props với shadcn. Dev 2 đổi một dòng import ở `features/search/components/SearchResults.tsx` và `SearchFilterPanel.tsx` rồi xóa file. `Sheet` tạm giữ đúng hành vi Radix (focus trap, Escape, trả focus, khóa cuộn — có kiểm thử); `Select` tạm là `<select>` gốc có `name` để gửi được trong form GET khi chưa có JavaScript. **Đã gỡ ở Buổi 8 (Dev 4, 30/10/2026)** sau khi nhánh Dev 2 vào `develop`: không chỉ đổi import — Radix Select không thao tác được khi tắt JavaScript, nên HTML do server render giữ `<select>` gốc và `Select` của shadcn thay vào sau khi hydrate (nạp muộn để `/search` không vượt 200 kB First Load JS); nút "Bộ lọc" thành `SheetTrigger` để Radix trả focus.
 - **`/search`:** bảng bộ lọc mới `features/search/components/SearchFilterPanel.tsx`; `FilterPanel` cũ (Buổi 5) ở lại cho `/recipes`.
   - Mọi lựa chọn bộ lọc, nhãn gỡ bộ lọc và link phân trang là **link thật** — chạy khi chưa có JavaScript. Có JavaScript thì một bộ xử lý `onClickCapture` ở gốc `SearchResults` đổi URL bằng `history.pushState`, kể cả `next/link` của `Pagination` (Next.js bỏ qua cú bấm đã `preventDefault`).
   - `SearchBar` trên header dùng `history.replaceState` khi đang ở `/search`; `RecipeCard` thêm prop `prefetch`, tắt ở lưới kết quả — mỗi lần lọc có thể sinh tới 12 request RSC tải trước trang chi tiết.
@@ -3227,7 +3245,18 @@ feat(seo,a11y): recipe json-ld and open graph metadata with og image, nextjs sit
      - **ADR** trong `docs/adr/`:
        - 6 quyết định của kế hoạch cũ: MT-05 xóa mềm, MT-08/09 mã lỗi, MT-16 Redis, MT-34 cách ly cache, MT-47 Hangfire worker riêng, MT-50 Nginx resolver động;
        - **4 quyết định của Buổi 5 – 8:** chia state (Zustand cho phiên phía client, TanStack Query cho dữ liệu server, refresh token là thứ duy nhất lưu bền); `ky` thay vì `axios` để giữ Data Cache; `Asp.Versioning` + thuật toán rate limit theo SRS; **CSP có nonce ↔ mọi trang render theo request, độ tươi đặt ở Data Cache** (MT-67, kèm bảng kết quả thực nghiệm).
-   - Gắn tag **`v1.0.0`** — phiên bản **phần mềm** phát hành lần đầu, độc lập với số phiên bản SRS (v1.2.3).
+   - Gắn tag **`v1.0.0`** — phiên bản **phần mềm** phát hành lần đầu, độc lập với số phiên bản SRS (v1.2.4).
+
+**Ghi chú khi thực hiện (30/10/2026 — nhánh `2312755_NguyenThangThieng_buoiso8`, sau khi Buổi 7 của cả nhóm vào `develop` `61fb450`):**
+
+- **Buổi 7 của cả nhóm vào `develop`** (trưởng nhóm chọn 30/10/2026): thứ tự Dev 4 → Dev 1 → Dev 3 → Dev 2. Xung đột của Dev 3 (5 file) và Dev 2 (1 file) được giải trong merge commit khi đã xác nhận không đổi chức năng so với kế hoạch; nhánh của hai bạn giữ nguyên. `develop` sau đó được merge vào `buoiso8`.
+- **`LogRedactionTests`** thêm đổi mật khẩu (sai và đúng), quên mật khẩu (chạy cả `PasswordResetEmailJob`) và đặt lại mật khẩu (thật và dùng lại): mật khẩu, token và nguyên link đặt lại mật khẩu đều là bí mật. Thử ngược: cho job ghi link vào log → test đỏ.
+- **Gỡ bản tạm `interim-ui.tsx`** — xem ghi chú Buổi 7 — Dev 4 (bộ lọc danh mục vẫn chạy khi tắt JavaScript; `/search` 186 kB First Load JS).
+- **CSP `style-src` (trưởng nhóm chọn nonce + hash):** production chặn `<style>` do Sonner và Radix chèn (2 vi phạm trên mọi trang, 8 khi mở `Select`). Nay `style-src` có nonce của request + hash cố định cho CSS của Sonner, Radix nhận nonce qua `get-nonce`; vẫn không có `'unsafe-inline'`. Đo trên Edge: 0 vi phạm.
+- **Đo tải trên code cuối** — `docs/load-test-report.md`: load 100 người dùng p50 2,1 ms / p95 13,4 ms / p99 21,5 ms, 0 lỗi, hit rate ổn định 97,3 %; stress tới 1.000 người dùng 536.622 request, 0 lỗi, p95 20 ms — không có ngưỡng gãy trong khả năng máy phát tải.
+- **Chịu lỗi:** tắt Redis giữa lúc tải không lỗi nhưng mỗi request chờ timeout ~5,6 s → `RedisCacheService` ngắt mạch GET/SET (10 giây sau lỗi, hoặc khi mất kết nối); lệnh xóa cache chỉ bỏ qua khi mất kết nối. Đo lại: đọc 21 – 33 ms khi Redis tắt, p99 cả lượt 24 ms. Tắt MinIO: tải ảnh 503, đọc công thức vẫn 200.
+- **CorrelationId với 3 bản sao:** 30/30 mã nằm trong log, chia 7 / 8 / 15 cho ba container.
+- **Trivy (trưởng nhóm chọn vá + ghi nhận):** vá `next` 15.5.25 → 15.5.28 (RCE qua Image Optimization API với SVG), gỡ npm khỏi image chạy của frontend, `nginx` 1.31.6 + `brotli-libs` 1.2.1 (`nginx/image/Dockerfile`) — image của dự án 0 Critical. Ghi nhận rủi ro: `gosu` trong PostgreSQL, MinIO (chưa có bản vá), Seq/MailHog (chỉ dev/E2E).
 
 **3. Định hướng & lý do kiến trúc:**
 
@@ -3250,7 +3279,7 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 
 ---
 
-## 5. Ma trận truy vết FR → Buổi → Dev (39/39 FR — SRS v1.2.3)
+## 5. Ma trận truy vết FR → Buổi → Dev (39/39 FR — SRS v1.2.4)
 
 > Buổi 1 (đọc đặc tả) không hiện thực FR nào; số buổi dưới đây theo cách đánh số 8 buổi.
 >
@@ -3374,7 +3403,7 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 | **B7** | `PasswordResetEmailJob` (Dev 1) chạy ở container `hangfire` cần cùng khóa DataProtection với `api` | Đã có volume `dpkeys` dùng chung từ Buổi 2; D-17 (Dev 4, cùng buổi) bảo vệ khóa bằng chứng chỉ — Dev 1 kiểm lại luồng đặt lại mật khẩu sau khi Dev 4 merge |
 | **B7** | Giao diện `/search` (Dev 4) dựa trên API của Dev 3 (Buổi 4 + MT-66 ở Buổi 6) | Hợp đồng là SRS v1.2.3 §8.3 + integration test của Dev 3; Dev 4 không sửa handler |
 | **B7** | Trang chủ và trang danh mục (Dev 3) dùng `RecipeCard`, `SidebarCategory`; trang chi tiết (Dev 2) dùng `ImageUploader`/ảnh qua `/media/` | Ảnh vẫn chạy `unoptimized` tới khi Dev 4 dựng `/media/` (cùng buổi); gỡ `unoptimized` để sang Buổi 8 — Dev 3 |
-| **B7** | `/search` (Dev 4) dùng `Sheet`, `Select`, `Badge` của shadcn/ui — phần khởi tạo của Dev 2 (Buổi 6, PR #52) chưa vào `develop` | Bản tạm cùng tên, cùng props trong **một** file `components/shared/interim-ui.tsx`; Dev 2 merge xong thì đổi một dòng import ở `SearchResults.tsx`, `SearchFilterPanel.tsx` rồi xóa file |
+| **B7** | `/search` (Dev 4) dùng `Sheet`, `Select`, `Badge` của shadcn/ui — phần khởi tạo của Dev 2 (Buổi 6, PR #52) chưa vào `develop` | Bản tạm cùng tên, cùng props trong **một** file `components/shared/interim-ui.tsx`; Dev 2 merge xong thì đổi một dòng import ở `SearchResults.tsx`, `SearchFilterPanel.tsx` rồi xóa file — **đã gỡ ở Buổi 8** (xem ghi chú Buổi 7 — Dev 4) |
 | **B7** | URL ảnh đổi sang `<site>/media` (D-14) — mọi dev chạy Docker | Biến mới `MEDIA_PUBLIC_URL` có mặc định `http://localhost/media` nên `.env` cũ vẫn chạy; ảnh đã lưu với `localhost:9000` đổi bằng `tools/media-url-migration/migrate-media-urls.sh` |
 | **B7** | Nginx chặn thêm 10/phút cho `/api/v*/auth/*` và 5/phút cho upload, đếm cho cả cụm (Dev 4) | Ba endpoint mật khẩu mới của Dev 1 nằm dưới `/auth/` nên tự được tính; 429 từ Nginx cùng hợp đồng `RATE_LIMIT_EXCEEDED` + `Retry-After` nhưng **không** có `X-RateLimit-Remaining` (chỉ API gửi) |
 | **B7** | Migration `B7_Search_UnaccentSchemaQualified` (Dev 4) sửa hàm `unaccent_immutable` của migration FTS (Dev 3) | Kết quả hàm không đổi (kiểm 6 từ khóa trước/sau); Dev 3 rà soát; migration của Dev 1/2/3 trong buổi xếp sau theo thứ tự Dev 4 → Dev 1 → Dev 3 → Dev 2 |
@@ -3412,21 +3441,21 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 | B8 | **Lab 8:** Author gọi `GET /users` → 403; Admin tìm, lọc và khóa người dùng (lý do bắt buộc) → phiên của họ bị thu hồi; tạo công thức qua biểu mẫu nhiều bước bằng **một** `POST` có mảng nội tuyến; hai tab sửa cùng lúc → dialog 409; chỉ hiện nút chuyển trạng thái hợp lệ, khôi phục về Draft; Google Rich Results Test đạt; `/sitemap.xml` không có slug Draft/Archived; axe 0 vi phạm serious/critical; Lighthouse đạt CWV; log Seq có đủ `CorrelationId`, `RequestPath`, `UserId`, log của job nối được với request; `LogRedactionTests` xanh; k6 đạt p50 ≤ 150 ms / p95 ≤ 500 ms / p99 ≤ 1000 ms (hoặc báo cáo trung thực nếu chưa đạt); `npx playwright test` xanh; 8 service `healthy`; tag `v1.0.0` |
 
 **Danh sách kiểm tra nghiệm thu cuối dự án:**
-- [ ] **39/39 FR** (SRS v1.2.3) hoàn thành và truy vết được theo ma trận §5.
-- [ ] **48/48 endpoint** của SRS v1.2.3 Chương 8 hoạt động, có trong Scalar `/scalar/v1` và được `ApiSurfaceTests` khóa.
+- [ ] **39/39 FR** (SRS v1.2.4) hoàn thành và truy vết được theo ma trận §5.
+- [ ] **48/48 endpoint** của SRS v1.2.4 Chương 8 hoạt động, có trong Scalar `/scalar/v1` và được `ApiSurfaceTests` khóa.
 - [ ] **Yêu cầu tối thiểu Lab 5 → Lab 8** của 4 dev đều có bằng chứng trong báo cáo Lab tương ứng (kiểm thử, ảnh chụp, log).
 - [ ] **17/17 hạng mục nợ kỹ thuật cần sửa code** (§4.1) đã hoàn trả — đặc biệt **D-4, D-5 (lỗi bảo mật MT-34)** và **D-11 (422 → 400)**.
-- [ ] **30/30 mã lỗi** ở SRS v1.2.3 Phụ lục B đều có đường sinh ra và có kiểm thử tương ứng; `ERROR_CODES` (Frontend) khớp `ErrorCodes.cs`; mã `AUTH_USERNAME_EXISTS` đã bị xóa khỏi code.
+- [ ] **30/30 mã lỗi** ở SRS v1.2.4 Phụ lục B đều có đường sinh ra và có kiểm thử tương ứng; `ERROR_CODES` (Frontend) khớp `ErrorCodes.cs`; mã `AUTH_USERNAME_EXISTS` đã bị xóa khỏi code.
 - [ ] Dữ liệu mẫu đạt SRS v1.2.1 §2.6.1 (CR-2026-03): ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước.
 - [ ] **0 vị trí** dùng mã **422** trong toàn bộ code và kiểm thử.
 - [ ] Bảng TTL cache trong code khớp **100%** với SRS NFR-PERF-003, và `revalidate` của mọi `fetch` phía Frontend ≤ TTL tương ứng (kiểm thử Buổi 7).
 - [ ] Cấu hình Nginx và lệnh healthcheck trong repo khớp SRS §6.5 (resolver động, không khối `upstream`; không lệnh healthcheck nào gọi công cụ không có trong image).
 - [ ] **10 ADR** đã viết (MT-05, MT-08/09, MT-16, MT-34, MT-47, MT-50 + phân vai state Frontend, `ky`, versioning & rate limit, CSP nonce ↔ render — MT-67).
 - [ ] Tag `v1.0.0` (phiên bản phần mềm), `CHANGELOG.md` cập nhật, `README.md` setup được trong < 5 phút.
-- [ ] Nếu trong quá trình làm phát hiện thêm điểm SRS sai hoặc thiếu: ghi vào `SRS_MAU_THUAN_VA_GIAI_PHAP.md` (**MT-69** trở đi — MT-64 → MT-68 đã dùng cho CR-2026-05) và đi qua Change Request — **không** tự làm khác SRS trong code.
+- [ ] Nếu trong quá trình làm phát hiện thêm điểm SRS sai hoặc thiếu: ghi vào `SRS_MAU_THUAN_VA_GIAI_PHAP.md` (**MT-70** trở đi — MT-64 → MT-68 đã dùng cho CR-2026-05, MT-69 cho CR-2026-06) và đi qua Change Request — **không** tự làm khác SRS trong code.
 
 ---
 
 *— Hết kế hoạch —*
 
-> **Nguồn chuẩn:** mọi yêu cầu trong tài liệu này bám theo `SPEC/SRS_Culinary_Blog_v1.2.3.md` (12/10/2026) — gồm CR-2026 (41 quyết định, SRS Phụ lục D), CR-2026-02 (16 quyết định, SRS Phụ lục E), CR-2026-03 (yêu cầu dữ liệu mẫu, SRS §2.6.1), CR-2026-04 (5 quyết định, SRS Phụ lục G) và CR-2026-05 (5 quyết định: 3 chức năng cho yêu cầu Lab 7 + 2 errata CSP/CORS, SRS Phụ lục H). Hiện trạng code được đối chiếu trực tiếp với các nhánh `buoiso5` của 4 dev (12/10/2026), nhánh `main` và các báo cáo buổi. Mọi xung đột và mâu thuẫn — trong SRS, giữa SRS và code, giữa SRS và lộ trình/yêu cầu Lab được giao — đều được ghi đầy đủ tại `SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Kế hoạch **không có điểm nào làm khác SRS v1.2.3**; khi phát hiện khác biệt, **SRS là nguồn đúng** và mọi thay đổi SRS phải qua Change Request.
+> **Nguồn chuẩn:** mọi yêu cầu trong tài liệu này bám theo `SPEC/SRS_Culinary_Blog_v1.2.4.md` (21/10/2026) — gồm CR-2026 (41 quyết định, SRS Phụ lục D), CR-2026-02 (16 quyết định, SRS Phụ lục E), CR-2026-03 (yêu cầu dữ liệu mẫu, SRS §2.6.1), CR-2026-04 (5 quyết định, SRS Phụ lục G) CR-2026-05 (5 quyết định: 3 chức năng cho yêu cầu Lab 7 + 2 errata CSP/CORS, SRS Phụ lục H) và CR-2026-06 (1 quyết định: phạm vi xóa cache công khai — phát sinh từ đo tải Buổi 8, SRS Phụ lục I). Hiện trạng code được đối chiếu trực tiếp với các nhánh `buoiso5` của 4 dev (12/10/2026), nhánh `main` và các báo cáo buổi. Mọi xung đột và mâu thuẫn — trong SRS, giữa SRS và code, giữa SRS và lộ trình/yêu cầu Lab được giao — đều được ghi đầy đủ tại `SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Kế hoạch **không có điểm nào làm khác SRS v1.2.4**; khi phát hiện khác biệt, **SRS là nguồn đúng** và mọi thay đổi SRS phải qua Change Request.

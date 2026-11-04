@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { setNonce } from 'get-nonce';
 import { AuthBootstrap } from '@/features/auth/auth-bootstrap';
 import { getQueryClient } from '@/lib/query-client';
 import { AuthStoreProvider } from '@/stores/auth-store-provider';
@@ -15,6 +16,9 @@ const Toaster = dynamic(() => import('sonner').then(({ Toaster: SonnerToaster })
 });
 
 export default function Providers({ children, nonce }: { children: ReactNode; nonce?: string }) {
+  // CSP style-src có nonce ở production: Radix UI (khóa cuộn của Dialog/Sheet/Select, ẩn thanh cuộn của Select) gắn nonce này
+  // vào các thẻ <style> nó chèn lúc chạy, đọc qua get-nonce. Đặt trước khi cây con render.
+  if (nonce) setNonce(nonce);
   const queryClient = getQueryClient();
   const content = (
     <QueryClientProvider client={queryClient}>

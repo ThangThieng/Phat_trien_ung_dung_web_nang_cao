@@ -8,8 +8,8 @@
 
 | Thuộc tính | Giá trị |
 | --- | --- |
-| Phiên bản tài liệu | 1.2.3 |
-| Ngày phát hành | 12/10/2026 |
+| Phiên bản tài liệu | 1.2.4 |
+| Ngày phát hành | 21/10/2026 |
 | Trạng thái | Đã duyệt (Approved) |
 | Công nghệ Backend | .NET 10 Minimal APIs, C# |
 | Công nghệ Frontend | Next.js App Router, TypeScript |
@@ -25,6 +25,7 @@
 
 | Phiên bản | Ngày | Tác giả / Vai trò | Nội dung thay đổi | Trạng thái |
 | --- | --- | --- | --- | --- |
+| 1.2.4 | 21/10/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-06** (MT-69), phát sinh khi **đo tải** cho yêu cầu Lab 8 (Buổi 8 — k6, 100 người dùng đồng thời, tỉ lệ 70 % đọc / 20 % tìm kiếm / 10 % ghi): cột "Invalidate khi" của bảng TTL chuẩn (NFR-PERF-003) xóa `recipes:list:` và `categories:detail:` ở **mọi** thay đổi công thức, kể cả bản nháp không bao giờ xuất hiện ở endpoint công khai — hit rate đo được **75,4 %**, trái chính chỉ tiêu ≥ 80 % của NFR-PERF-003 (lượt đối chứng không ghi: 97,9 %). Sửa: (1) hai họ khóa công khai chỉ bị xóa khi thay đổi **chạm tới tập Published** (công thức Published đổi nội dung, hoặc vào/ra trạng thái Published); `recipe:{slug}` vẫn xóa ở mọi thay đổi của công thức đó; (2) các bước "invalidate" trong FR-RCP-003 → FR-RCP-007 chỉ còn tham chiếu bảng TTL (trước đây ghi lại riêng và lệch bảng: xóa `search:` dù bảng ghi "không invalidate", xóa `categories:` khi tạo bản nháp dù `recipeCount` chỉ đếm Published). Đo lại sau khi sửa: **97,3 %**. Không đổi FR, endpoint, mã lỗi, schema. | Đã duyệt (Approved) |
 | 1.2.3 | 12/10/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-05** (MT-64 → MT-68), phát sinh khi lập kế hoạch cho **yêu cầu tối thiểu Lab 5 → Lab 8** của giảng viên: (1) bổ sung **FR-AUTH-010** Đổi mật khẩu và **FR-AUTH-011** Quên & đặt lại mật khẩu qua email — tổng FR 37 → **39**; (2) bổ sung **3 endpoint** `POST /auth/change-password`, `POST /auth/forgot-password`, `POST /auth/reset-password` — Chương 8: 45 → **48 endpoint**; (3) bổ sung **1 mã lỗi** `AUTH_PASSWORD_RESET_TOKEN_INVALID` (400) — Phụ lục B 29 → **30 mã**, và mã HTTP 202 ở Phụ lục A; (4) `GET /recipes/search` nhận thêm `maxCookTime`, `maxPrepTime`, `minServings` (tùy chọn, tương thích ngược); (5) NFR-SEC-007 cấm ghi log token đặt lại mật khẩu; §5.1 thêm hai route `/auth/forgot-password`, `/auth/reset-password`; (6) **CSP dùng nonce (NFR-SEC-005) buộc mọi trang HTML render động** — §5.1 đổi `/`, `/recipes/[slug]`, `/categories` từ ISR sang **SSR + Data Cache** với cùng giá trị `revalidate` (MT-67, đã kiểm chứng thực nghiệm trên Next.js 15.5.25); (7) §5.2 bổ sung `If-Match` vào `Access-Control-Allow-Headers` và danh sách `Access-Control-Expose-Headers` (MT-68). Không đổi schema. | Đã duyệt (Approved) |
 | 1.2.2 | 29/09/2026 | Principal Systems Architect (trưởng nhóm) | Change Request **CR-2026-04** (MT-59 → MT-63), phát sinh khi lập kế hoạch cho hai yêu cầu của giảng viên — Buổi 3 *"cài đặt domain exceptions, repository & Unit of Work, middleware Problem Details"* và Buổi 4 *"hoàn thành việc cài đặt tất cả API endpoints"*: (1) bổ sung **2 mã lỗi** `AUTH_USER_NOT_FOUND` (404) và `CONCURRENCY_CONFLICT` (409) — Phụ lục B 27 → **29 mã**; (2) bổ sung **1 endpoint** `GET /recipes/mine/{id}` để trang sửa công thức đọc được bản nháp — Chương 8: 44 → **45 endpoint**; (3) làm rõ 2 chỗ tự mâu thuẫn (`AUTH_GOOGLE_TOKEN_INVALID` 400/401; `categoryId` không tồn tại → 400); (4) errata §6.2: interface truy cập dữ liệu thuộc tầng Application, `ApplicationUser` thuộc Infrastructure. Không thay đổi FR, schema hay hành vi của endpoint đang chạy. | Đã duyệt (Approved) |
 | 1.2.1 | 21/09/2026 | Principal Systems Architect | Change Request **CR-2026-03** (MT-58): cập nhật §2.6.1 theo yêu cầu của giảng viên cho Buổi 2 — dữ liệu mẫu có **ít nhất 20 danh mục, 100 công thức; mỗi công thức ít nhất 10 nguyên liệu và 5 bước chế biến** (trước đây: 50 công thức, 5 tác giả). Không thay đổi FR, endpoint, mã lỗi hay schema. | Đã duyệt (Approved) |
@@ -35,7 +36,7 @@
 | 0.8.0 | 05/05/2026 | Senior BA | Hoàn thiện Chương 3 (FR), bổ sung FR-FILE, FR-JOB, FR-OBS. | Draft |
 | 0.5.0 | 15/04/2026 | Senior BA | Phác thảo ban đầu: Chương 1–4 (skeleton). | Draft |
 
-**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.3 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-05**, kế thừa toàn bộ quyết định của **CR-2026-04** (v1.2.2), **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G).
+**Phê duyệt tài liệu:** Tài liệu phiên bản 1.2.4 đã được xem xét và phê duyệt bởi Kiến trúc sư Hệ thống Trưởng (Principal Systems Architect — trưởng nhóm) thông qua Change Request **CR-2026-06**, kế thừa toàn bộ quyết định của **CR-2026-05** (v1.2.3), **CR-2026-04** (v1.2.2), **CR-2026-03** (v1.2.1), **CR-2026-02** (v1.2.0) và **CR-2026** (v1.1.0). Mọi thay đổi từ phiên bản 1.2.0 trở đi đều phải thông qua quy trình Change Request (CR) và được cập nhật vào bảng này. Bản 1.1.0 và 1.2.0 không còn lưu thành tệp riêng: toàn bộ nội dung của chúng đã nằm trong bản này; mọi chỗ thay đổi ở v1.2.0 được đánh dấu `[CR-2026-02 / MT-xx]` (Phụ lục E), ở v1.2.1 được đánh dấu `[CR-2026-03 / MT-58]` (Phụ lục F), ở v1.2.2 được đánh dấu `[CR-2026-04 / MT-xx]` (Phụ lục G), ở v1.2.3 được đánh dấu `[CR-2026-05 / MT-xx]` (Phụ lục H), ở v1.2.4 được đánh dấu `[CR-2026-06 / MT-69]` (Phụ lục I).
 
 **Phạm vi CR-2026 (v1.1.0):** xử lý toàn bộ 41 điểm mâu thuẫn/bất nhất (MT-01 → MT-41) được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi quyết định đều được chọn theo tiêu chí **kiến trúc dài hạn**: toàn vẹn dữ liệu (DDD/ràng buộc DB), cách ly bảo mật cache, giảm gánh nặng cho client, và chuẩn hóa RESTful API. Bảng truy vết đầy đủ 41 quyết định nằm tại **Phụ lục D**.
 
@@ -57,6 +58,8 @@ Bảng truy vết nằm tại **Phụ lục G**.
 - **hai lỗi kỹ thuật của chính SRS** lộ ra khi thiết kế phần bảo mật API (Lab 5) và Zustand store + CSP (Lab 6) — MT-67, MT-68: CSP dùng nonce không thể đi cùng ISR, và danh sách header CORS thiếu những header mà §8.3, §5.2 tự dùng.
 
 Bảng truy vết nằm tại **Phụ lục H**.
+
+**Phạm vi CR-2026-06 (v1.2.4):** lần đầu một Change Request phát sinh từ **số đo của hệ thống đang chạy** chứ không từ đọc tài liệu. Khi đo tải cho Lab 8 (Buổi 8), hai yêu cầu của chính NFR-PERF-003 mâu thuẫn nhau: chỉ tiêu hit rate ≥ 80 % và cột "Invalidate khi" của bảng TTL (MT-69). Đồng thời các bước "invalidate" mà FR-RCP-003 → FR-RCP-007 tự ghi lại lệch khỏi bảng — trái nguyên tắc "bảng TTL là nguồn sự thật duy nhất". Bảng truy vết nằm tại **Phụ lục I**.
 
 ---
 
@@ -1071,7 +1074,7 @@ Ba quy tắc thực thi kèm theo:
 | **Mô tả** | Author hoặc Admin tạo mới một công thức nấu ăn. Trạng thái ban đầu luôn là Draft (chưa công khai). Slug được tự động sinh từ Title. Steps và Ingredients có thể được tạo cùng lúc (trong cùng request) hoặc thêm riêng lẻ sau qua FR-RCP-009/010. **`nutrition` là Owned Entity** — chỉ tạo/sửa **cùng recipe** qua `POST /recipes` và `PUT /recipes/{id}`; hệ thống **không có endpoint riêng cho nutrition**. |
 | **Điều kiện tiên quyết** | 1. Người dùng đang đăng nhập với role Author hoặc Admin. 2. CategoryId tham chiếu đến danh mục đã tồn tại và chưa bị soft delete. |
 | **HTTP Method & Endpoint** | `POST /api/v1/recipes` |
-| **Kết quả mong đợi** | Recipe mới được tạo với `Status = Draft`, `PublishedAt = NULL`, Slug được sinh tự động. Các khóa cache `recipes:list:*` bị invalidate. |
+| **Kết quả mong đợi** | Recipe mới được tạo với `Status = Draft`, `PublishedAt = NULL`, Slug được sinh tự động. Không khóa cache công khai nào bị xóa — recipe mới là bản nháp, chưa thuộc tập Published (bảng TTL NFR-PERF-003, CR-2026-06). |
 | **HTTP Status Code trả về** | `201 Created` – Tạo thành công. `400 Bad Request` – Dữ liệu không hợp lệ (bao gồm CategoryId không tồn tại). `401`/`403` – Chưa đăng nhập / Không có quyền. `409 Conflict` – Slug đã tồn tại sau khi hết phương án sinh suffix (`RECIPE_SLUG_EXISTS`). |
 
 **Luồng chính (Happy Path):**
@@ -1086,7 +1089,7 @@ Ba quy tắc thực thi kèm theo:
 8. Nếu có ingredients: thêm từng `RecipeIngredient.Create()` vào `recipe.Ingredients`; `OrderIndex` mặc định theo thứ tự mảng nếu client không gửi.
 9. Nếu có nutrition: `recipe.SetNutrition(calories, protein, carbohydrates, fat, fiber, sodium)` — ghi vào các cột `Nutrition_*` ngay trong bảng `Recipes`, cùng một transaction.
 10. `_unitOfWork.Recipes.AddAsync(recipe)`, `SaveChangesAsync()`.
-11. `CacheInvalidationBehavior` xóa các khóa Redis theo prefix `recipes:list:` và `categories:` (vì `recipeCount` thay đổi).
+11. Không xóa cache công khai: recipe mới là bản nháp, `recipeCount` chỉ đếm Published *(v1.2.4 — CR-2026-06 / MT-69; v1.2.3 ghi xóa prefix `recipes:list:` và `categories:`)*.
 12. Trả về HTTP 201 Created với `RecipeDto` và Location header `/api/v1/recipes/{slug}`.
 
 **Luồng thay thế / Ngoại lệ:**
@@ -1126,7 +1129,7 @@ Ba quy tắc thực thi kèm theo:
 7. Update các field của recipe entity qua domain method `recipe.Update(...)`.
 8. Cập nhật Nutrition nếu body có `nutrition` (ghi đè các cột `Nutrition_*`).
 9. `SaveChangesAsync()` – nếu RowVersion mismatch tại đây, EF Core ném `DbUpdateConcurrencyException` → `ConcurrencyException` → HTTP **409**.
-10. Invalidate cache Redis: xóa khóa `recipe:{slug}` (cả slug cũ lẫn slug mới nếu vừa đổi) và xóa theo prefix `recipes:list:`.
+10. Invalidate cache Redis theo bảng TTL (NFR-PERF-003): luôn xóa `recipe:{slug}` (cả slug cũ lẫn slug mới nếu vừa đổi); recipe đang Published thì xóa thêm prefix `recipes:list:`, `categories:detail:` và — khi đổi danh mục — `categories:all` *(v1.2.4 — CR-2026-06)*.
 11. Trả về HTTP 200 OK với `RecipeDto` đã cập nhật (kèm `rowVersion` mới để client dùng cho lần sửa kế tiếp).
 
 **Luồng thay thế / Ngoại lệ:**
@@ -1164,7 +1167,7 @@ Ba quy tắc thực thi kèm theo:
 4. Gọi domain method: `recipe.Publish()` hoặc `recipe.Unpublish()`.
 5. `recipe.Publish()` kiểm tra bất biến nghiệp vụ: `Steps.Count == 0 || Ingredients.Count == 0` → Throw `DomainException` với code `RECIPE_PUBLISH_INCOMPLETE`; `Status == Archived` → Throw `InvalidStateTransitionException`.
 6. Set `Status = Published/Draft`, `UpdatedAt = DateTime.UtcNow`; **nếu `PublishedAt == null` thì gán `PublishedAt = DateTime.UtcNow`** (chỉ lần đầu).
-7. `SaveChangesAsync()`, invalidate khóa Redis `recipe:{slug}` và prefix `recipes:list:`, `search:`.
+7. `SaveChangesAsync()`, invalidate cache theo bảng TTL (NFR-PERF-003) — recipe vào/ra tập Published: `recipe:{slug}`, prefix `recipes:list:`, `categories:detail:` và `categories:all`; `search:` để hết hạn tự nhiên *(v1.2.4 — CR-2026-06)*.
 8. Trả về HTTP 200 OK với `RecipeDto`.
 
 **Luồng thay thế / Ngoại lệ:**
@@ -1223,7 +1226,7 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 1. Author gửi `PATCH /api/v1/recipes/{id}/archive`.
 2. Kiểm tra resource-based authorization.
 3. `recipe.Archive()` — Domain kiểm tra `Status ∈ {Draft, Published}` → `Status = Archived`, `UpdatedAt = DateTime.UtcNow`.
-4. `SaveChangesAsync()`, invalidate khóa Redis `recipe:{slug}` và prefix `recipes:list:`, `search:`.
+4. `SaveChangesAsync()`, invalidate cache theo bảng TTL (NFR-PERF-003): lưu trữ một recipe Published (ra khỏi tập Published) xóa `recipe:{slug}`, prefix `recipes:list:`, `categories:detail:` và `categories:all`; lưu trữ bản nháp hoặc khôi phục về nháp chỉ xóa `recipe:{slug}` *(v1.2.4 — CR-2026-06)*.
 5. HTTP 200 OK với `RecipeDto`.
 
 *Unarchive:*
@@ -1260,7 +1263,7 @@ Mọi chuyển trạng thái nằm ngoài bảng trên đều bị Domain từ c
 2. Kiểm tra xác thực và resource-based authorization.
 3. `DeleteRecipeCommand` dispatch; lấy recipe theo ID.
 4. Gán `recipe.IsDeleted = true`, `recipe.UpdatedAt = DateTime.UtcNow` (`AuditInterceptor` xử lý), `SaveChangesAsync()`.
-5. Invalidate cache Redis: xóa khóa `recipe:{slug}`, xóa theo prefix `recipes:list:`, `search:` và khóa `categories:all` (vì `recipeCount` thay đổi).
+5. Invalidate cache theo bảng TTL (NFR-PERF-003): luôn xóa `recipe:{slug}`; recipe đang Published thì xóa thêm prefix `recipes:list:`, `categories:detail:` và khóa `categories:all` (vì `recipeCount` thay đổi); `search:` để hết hạn tự nhiên *(v1.2.4 — CR-2026-06)*.
 6. Trả về HTTP 204 No Content.
 
 **Luồng thay thế / Ngoại lệ:**
@@ -1618,14 +1621,16 @@ Toàn bộ các chỉ số hiệu năng được đo trong môi trường produc
 | Khóa cache | Đối tượng | TTL | Invalidate khi |
 | --- | --- | --- | --- |
 | `categories:all` | Danh sách danh mục | **30 phút** | Create / Update / Delete category |
-| `categories:detail:{slug}:{queryHash}` | Chi tiết danh mục + recipe thuộc danh mục | **2 phút** | Thay đổi category đó hoặc bất kỳ recipe nào thuộc nó |
-| `recipes:list:{queryHash}` | Danh sách công thức công khai | **2 phút** | Bất kỳ thay đổi recipe nào (xóa theo prefix `recipes:list:`) |
+| `categories:detail:{slug}:{queryHash}` | Chi tiết danh mục + recipe thuộc danh mục | **2 phút** | Thay đổi category đó, hoặc thay đổi **chạm tới tập Published** của bất kỳ recipe nào (xóa theo prefix `categories:detail:`) *(v1.2.4)* |
+| `recipes:list:{queryHash}` | Danh sách công thức công khai | **2 phút** | Thay đổi **chạm tới tập Published**: recipe đang Published đổi nội dung (thông tin, nguyên liệu, bước, ảnh), hoặc recipe vào/ra trạng thái Published (xuất bản, hủy xuất bản, lưu trữ hay xóa một recipe Published). Xóa theo prefix `recipes:list:`. Tạo/sửa/lưu trữ/xóa **bản nháp** không xóa *(v1.2.4)* |
 | `recipe:{slug}` | Chi tiết một công thức | **5 phút** | Update / Publish / Unpublish / Archive / Unarchive / Delete chính recipe đó |
 | `search:{queryHash}` | Kết quả tìm kiếm | **1 phút** | Không invalidate — để hết hạn tự nhiên |
 
 > **[CR-2026 / MT-16, MT-17, MT-26, MT-31, MT-34]** v1.0.0 mô tả **hai kiến trúc cache khác nhau cho cùng một endpoint**: Chương 3 dùng Output Cache (.NET 10) tag-based với TTL 15–60 phút, còn NFR-PERF-003 dùng cache-aside qua Redis với TTL 1–30 phút. v1.1.0 chốt **cache-aside qua Redis** làm cơ chế duy nhất, vì Output Cache mặc định lưu **in-memory** — khi chạy nhiều API instance sau Nginx (NFR-SCALE-003) thì mỗi instance giữ một bản khác nhau và không có cách invalidate xuyên instance. Quan trọng hơn, khóa mặc định của Output Cache chỉ gồm `{path}?{queryString}`, **không phân biệt danh tính người gọi** — chính là gốc rễ của lỗi rò rỉ dữ liệu ở MT-34.
 >
 > **Cấm tuyệt đối:** không endpoint nào phụ thuộc danh tính được phép xuất hiện trong bảng trên. `GET /recipes/mine` (FR-RCP-011) nằm ngoài bảng này và mang header `Cache-Control: no-store`.
+>
+> **[CR-2026-06 / MT-69]** v1.2.3 xóa `recipes:list:` ở *"bất kỳ thay đổi recipe nào"* và `categories:detail:` ở *"bất kỳ recipe nào thuộc nó"*. Nhưng bản nháp và bản lưu trữ **không bao giờ** xuất hiện ở hai họ khóa này (nguyên tắc cách ly Public/Private — MT-34), nên xóa chúng khi tác giả sửa bản nháp chỉ làm mất cache mà không làm dữ liệu công khai đúng hơn. Đo tải Buổi 8 (k6, 100 người dùng đồng thời trong 5 phút, 3 bản sao API, 70 % đọc / 20 % tìm kiếm / 10 % ghi lên bản nháp): hit rate giai đoạn ổn định **75,4 %** — dưới chỉ tiêu ≥ 80 % ở chính NFR này; cùng tải nhưng không ghi: **97,9 %**. Sau khi giới hạn phạm vi xóa vào "thay đổi chạm tới tập Published": **97,3 %**, p95 14,8 ms. Không nới TTL nào. `recipe:{slug}` vẫn xóa ở mọi thay đổi của chính recipe đó (một khóa, chi phí không đáng kể). Các FR-RCP-003 → FR-RCP-007 nay chỉ tham chiếu bảng này thay vì ghi lại danh sách khóa riêng.
 >
 > NFR-PERF-004 đổi từ tiêu chí *"mọi cột WHERE/ORDER BY đều có B-tree index"* sang tiêu chí **đo được bằng `EXPLAIN ANALYZE`**. Lý do dài hạn: yêu cầu cũ dẫn tới việc tạo một loạt index đơn cột làm chậm mọi lệnh ghi và tốn dung lượng, trong khi PostgreSQL thường chỉ chọn **một** index cho một truy vấn — phần lớn số index đó nằm không. Ba composite index được chọn theo hình dạng truy vấn thật (mọi truy vấn danh sách đều lọc `Status = Published` trước rồi mới sort), nên phủ đúng nhu cầu với số index ít hơn.
 | **NFR-PERF-005** Frontend Performance (Core Web Vitals) | Next.js frontend đạt chuẩn Google Core Web Vitals (đo bằng Lighthouse CI): • LCP (Largest Contentful Paint) ≤ 2.5s. • CLS (Cumulative Layout Shift) ≤ 0.1. • INP (Interaction to Next Paint) ≤ 200ms. • First Load JS Bundle ≤ 200KB (gzipped). Kỹ thuật: SSR kèm Data Cache của `fetch` (dữ liệu công khai không gọi lại API trong khoảng `revalidate`), Image Optimization (`next/image`), Code Splitting, Server Components (khung trang không gửi JavaScript). *(v1.2.3 — thay ISR, MT-67.)* |
@@ -2524,9 +2529,19 @@ Bảng dưới đây truy vết **16 điểm** (MT-42 → MT-57) phát hiện �
 
 ---
 
+## PHỤ LỤC I – BẢNG TRUY VẾT QUYẾT ĐỊNH CR-2026-06
+
+| MT | Vấn đề ở v1.2.3 | Quyết định trong v1.2.4 | Mục SRS thay đổi | Hiện thực |
+| --- | --- | --- | --- | --- |
+| MT-69 | NFR-PERF-003 tự mâu thuẫn: cột "Invalidate khi" xóa `recipes:list:`, `categories:detail:` ở mọi thay đổi công thức — kể cả bản nháp không thuộc endpoint công khai nào — nên đo tải Buổi 8 (10 % ghi lên bản nháp) chỉ đạt hit rate **75,4 %** < 80 %; đồng thời FR-RCP-003 → FR-RCP-007 tự ghi lại danh sách khóa cần xóa và lệch bảng (xóa `search:`, xóa `categories:` khi tạo bản nháp) | Hai họ khóa công khai chỉ bị xóa khi thay đổi **chạm tới tập Published**; `recipe:{slug}` vẫn xóa ở mọi thay đổi; `search:` không bao giờ bị xóa chủ động; FR chỉ tham chiếu bảng TTL. Đo lại: **97,3 %** | NFR-PERF-003 (bảng TTL + ghi chú), FR-RCP-003 (Kết quả mong đợi, bước 11), FR-RCP-004 bước 10, FR-RCP-005 bước 7, FR-RCP-006 bước 4, FR-RCP-007 bước 5 | Buổi 8 — Dev 4 (audit cache) |
+
+**Tổng kết:** 1/1 điểm đã xử lý. Số liệu sau v1.2.4 không đổi: **39 FR**, **48 endpoint**, **30 mã lỗi**. Toàn tài liệu: **69 mâu thuẫn/bất nhất** đã được ghi nhận và xử lý qua sáu Change Request.
+
+---
+
 *— Hết tài liệu —*
 
-> **Nguồn gốc:** bản 1.0.0 được chuyển đổi từ `SPEC/SRS_Culinary_Blog_v1.0.0.pdf` (71 trang) sang Markdown, giữ nguyên 100% nội dung gốc. Bản **1.1.0** áp dụng Change Request **CR-2026** lên bản đó: xử lý toàn bộ 41 điểm mâu thuẫn được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi thay đổi so với 1.0.0 đều được đánh dấu bằng chú thích `[CR-2026 / MT-xx]` tại chỗ và truy vết đầy đủ ở **Phụ lục D**. Bản **1.2.0** áp dụng Change Request **CR-2026-02**: đối chiếu với code đã chạy thật, xử lý thêm 16 điểm (MT-42 → MT-57) — đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ, truy vết ở **Phụ lục E**. Bản **1.2.1** áp dụng Change Request **CR-2026-03**: cập nhật yêu cầu dữ liệu mẫu ở §2.6.1 (MT-58) — đánh dấu `[CR-2026-03 / MT-58]` tại chỗ, truy vết ở **Phụ lục F**. Bản **1.2.2** áp dụng Change Request **CR-2026-04**: 2 mã lỗi, 1 endpoint, 2 điểm làm rõ và 1 errata kiến trúc (MT-59 → MT-63) — đánh dấu `[CR-2026-04 / MT-xx]` tại chỗ, truy vết ở **Phụ lục G**. Bản **1.2.3** áp dụng Change Request **CR-2026-05**: 2 FR, 3 endpoint, 1 mã lỗi và mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7, cùng 2 errata về CSP/render và header CORS (MT-64 → MT-68) — đánh dấu `[CR-2026-05 / MT-xx]` tại chỗ, truy vết ở **Phụ lục H**. Các bản 1.0.0 và 1.1.0 được giữ nguyên để đối chiếu.
+> **Nguồn gốc:** bản 1.0.0 được chuyển đổi từ `SPEC/SRS_Culinary_Blog_v1.0.0.pdf` (71 trang) sang Markdown, giữ nguyên 100% nội dung gốc. Bản **1.1.0** áp dụng Change Request **CR-2026** lên bản đó: xử lý toàn bộ 41 điểm mâu thuẫn được ghi nhận trong `SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`. Mọi thay đổi so với 1.0.0 đều được đánh dấu bằng chú thích `[CR-2026 / MT-xx]` tại chỗ và truy vết đầy đủ ở **Phụ lục D**. Bản **1.2.0** áp dụng Change Request **CR-2026-02**: đối chiếu với code đã chạy thật, xử lý thêm 16 điểm (MT-42 → MT-57) — đánh dấu `[CR-2026-02 / MT-xx]` tại chỗ, truy vết ở **Phụ lục E**. Bản **1.2.1** áp dụng Change Request **CR-2026-03**: cập nhật yêu cầu dữ liệu mẫu ở §2.6.1 (MT-58) — đánh dấu `[CR-2026-03 / MT-58]` tại chỗ, truy vết ở **Phụ lục F**. Bản **1.2.2** áp dụng Change Request **CR-2026-04**: 2 mã lỗi, 1 endpoint, 2 điểm làm rõ và 1 errata kiến trúc (MT-59 → MT-63) — đánh dấu `[CR-2026-04 / MT-xx]` tại chỗ, truy vết ở **Phụ lục G**. Bản **1.2.3** áp dụng Change Request **CR-2026-05**: 2 FR, 3 endpoint, 1 mã lỗi và mở rộng bộ lọc tìm kiếm cho yêu cầu Lab 7, cùng 2 errata về CSP/render và header CORS (MT-64 → MT-68) — đánh dấu `[CR-2026-05 / MT-xx]` tại chỗ, truy vết ở **Phụ lục H**. Bản **1.2.4** áp dụng Change Request **CR-2026-06**: phạm vi xóa cache công khai chỉ còn những thay đổi chạm tới tập Published, các FR tham chiếu bảng TTL thay vì ghi lại riêng (MT-69, phát sinh từ đo tải Buổi 8) — đánh dấu `[CR-2026-06 / MT-69]` hoặc *(v1.2.4 — CR-2026-06)* tại chỗ, truy vết ở **Phụ lục I**. Các bản 1.0.0 và 1.1.0 được giữ nguyên để đối chiếu.
 
 
 

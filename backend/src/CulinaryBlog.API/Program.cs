@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using CulinaryBlog.API.Endpoints;
 using CulinaryBlog.API.Extensions;
+using CulinaryBlog.API.Logging;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.API.OpenApi;
@@ -26,6 +27,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Container "hangfire" dùng cùng image nhưng chỉ chạy BackgroundJobServer (SRS §6.5)
 var workerOnly = builder.Configuration.GetValue<bool>("Hangfire:WorkerOnly");
 
+// FR-OBS-002 / FR-OBS-003 (Buổi 8): Serilog + OpenTelemetry cho CẢ hai container; thuộc tính "Application" tách log của từng loại.
+var applicationName = workerOnly ? "CulinaryBlog.Hangfire" : "CulinaryBlog.API";
+builder.Services.AddCulinarySerilog(builder.Configuration, applicationName);
+builder.Services.AddCulinaryOpenTelemetry(
+    builder.Configuration,
+    workerOnly ? "culinaryblog-hangfire" : builder.Configuration["OpenTelemetry:ServiceName"] ?? "culinaryblog-api");
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -41,6 +49,13 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddUrlSegmentVersioning();
 builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 {
+    // FR-OBS-002 (Buổi 8): mọi Problem Details (lỗi nghiệp vụ, 400, 429, 500…) mang mã tra cứu cùng giá trị header X-Correlation-ID.
+    var correlationId = CorrelationIdMiddleware.Get(ctx.HttpContext);
+    if (correlationId is not null)
+    {
+        ctx.ProblemDetails.Extensions["correlationId"] = correlationId;
+    }
+
     // Body vượt RequestSizeLimit (> 10MB) bị chặn trước khi tới handler → vẫn trả Application Error Code (Phụ lục B)
     if (ctx.ProblemDetails.Status == StatusCodes.Status413PayloadTooLarge)
     {
@@ -79,6 +94,11 @@ if (builder.Configuration.GetValue("Hangfire:RegisterRecurringJobs", true))
 if (workerOnly)
 {
     app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.Hangfire", mode = "worker" }));
+
+    // Buổi 8 — healthcheck của container hangfire (8 service healthy): worker không phục vụ được job khi mất PostgreSQL/Redis.
+    app.MapGet("/health/live", (HttpContext context, HealthCheckService healthChecks) => WriteLivenessResponseAsync(context, healthChecks));
+    app.MapGet("/health/ready", (HttpContext context, HealthCheckService healthChecks) =>
+        WriteHealthResponseAsync(context, healthChecks, check => check.Tags.Contains("ready")));
     await app.RunAsync().ConfigureAwait(false);
     return;
 }

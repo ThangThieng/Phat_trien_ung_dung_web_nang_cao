@@ -11,6 +11,9 @@ export const COOK_TIME_OPTIONS = [15, 30, 60, 120] as const;
 export const PREP_TIME_OPTIONS = [15, 30, 60] as const;
 export const SERVINGS_OPTIONS = [1, 2, 4, 6] as const;
 
+/** Radix Select không cho giá trị rỗng — "tất cả danh mục" dùng giá trị riêng, URL thì không có `categoryId`. */
+export const ALL_CATEGORIES = 'all';
+
 export type SearchFilterKey =
   'categoryId' | 'difficulty' | 'maxCookTime' | 'maxPrepTime' | 'minServings';
 

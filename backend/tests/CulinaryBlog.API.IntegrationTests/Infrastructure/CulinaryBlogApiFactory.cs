@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Respawn;
+using Serilog.Core;
 using Testcontainers.Minio;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
@@ -26,7 +27,7 @@ namespace CulinaryBlog.API.IntegrationTests.Infrastructure;
 /// <summary>
 /// NFR-MAINT-002 – hạ tầng integration test dùng chung cho cả nhóm (Buổi 3, Dev 4).
 ///
-/// Dựng ba dịch vụ thật bằng Testcontainers: <c>postgres:16-alpine</c>, <c>redis:7-alpine</c> và MinIO —
+/// Dựng ba dịch vụ thật bằng Testcontainers: <c>postgres:16.15-alpine</c>, <c>redis:7.4.11-alpine</c> và MinIO (cùng tag ghim với compose — Buổi 8) —
 /// đúng bộ phụ thuộc runtime trong docker-compose.yml (SRS §6.5). Không dùng EF Core In-Memory vì provider
 /// đó không có UNIQUE, FK cascade, partial index, tsvector hay concurrency token thật — tức là đúng những
 /// thứ cần kiểm chứng nhất (MT-03, MT-05, MT-09, MT-25) đều biến mất; test xanh trên In-Memory rồi vỡ trên
@@ -52,13 +53,13 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
     private const string MinioAccessKey = "minioadmin";
     private const string MinioSecretKey = "minioadmin";
 
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:16-alpine")
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:16.15-alpine")
         .WithDatabase("culinaryblog_tests")
         .WithUsername("culinary")
         .WithPassword("culinary_tests")
         .Build();
 
-    private readonly RedisContainer _redis = new RedisBuilder("redis:7-alpine")
+    private readonly RedisContainer _redis = new RedisBuilder("redis:7.4.11-alpine")
         .Build();
 
     private readonly MinioContainer _minio = new MinioBuilder(MinioImage)
@@ -72,6 +73,10 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
     /// <summary>Ghi lại mọi lời gọi Hangfire mà không cần BackgroundJobServer chạy.</summary>
     public FakeBackgroundJobClient BackgroundJobs { get; } = new();
 
+    /// <summary>Buổi 8: mọi log event của ứng dụng (sau bước che dữ liệu nhạy cảm) — LogRedactionTests, CorrelationIdTests.</summary>
+    public InMemoryLogSink Logs { get; } = new();
+
+    /// <summary>Buổi 7: email gửi đi (thay MailKit) — PasswordEndpointsTests lấy link đặt lại mật khẩu từ đây.</summary>
     public FakeEmailService Emails { get; } = new();
 
     /// <summary>Buổi 4: Google ID token giả cho FR-AUTH-003 (không gọi Google thật).</summary>
@@ -217,6 +222,10 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
         builder.UseSetting("Hangfire:DashboardGateSecret", TestDataSeeder.HangfireGateSecret);
         builder.UseSetting("RateLimiting:Enabled", "false");
 
+        // Buổi 8: appsettings.Development.json trỏ Seq/OTLP về localhost:5341 — test không gửi log/trace ra ngoài.
+        builder.UseSetting("Seq:ServerUrl", string.Empty);
+        builder.UseSetting("OpenTelemetry:OtlpEndpoint", string.Empty);
+
         builder.ConfigureServices(services =>
         {
             // IBackgroundJobClient thật ghi job vào storage rồi chờ worker; bản ghi lại đủ để khẳng định
@@ -233,6 +242,9 @@ public sealed class CulinaryBlogApiFactory : WebApplicationFactory<Program>, IAs
             services.AddTransient<IStartupFilter, SimulatedProxyStartupFilter>();
             services.RemoveAll<IGoogleIdTokenValidator>();
             services.AddSingleton<IGoogleIdTokenValidator>(GoogleTokens);
+
+            // Buổi 8: sink Serilog trong bộ nhớ (AddCulinarySerilog đọc ILogEventSink từ DI).
+            services.AddSingleton<ILogEventSink>(Logs);
         });
     }
 
