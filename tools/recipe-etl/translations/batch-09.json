@@ -1,0 +1,825 @@
+[
+ {
+  "pageId": 94944,
+  "title": "Bò quay kiểu Anh (Roast Beef)",
+  "description": "Bò quay, hay bữa tối quay, là bữa ăn truyền thống cổ điển ở Anh, các nước Khối Thịnh vượng chung và Ireland, tập trung vào một loại thịt quay, rau củ, nước sốt thịt và bánh Yorkshire pudding. Bữa tối quay thường dùng vào Chủ nhật nhưng cũng có thể ăn trong tuần. Công thức chính xác thay đổi nhiều tùy người, nên dưới đây là tổng quan các thành phần thịnh hành mà bạn có thể điều chỉnh theo ý mình. Vì bữa tối quay gồm nhiều thành phần, trang nguồn có liên kết đến các công thức sẵn có để kết hợp lại. Chúc ngon miệng!",
+  "ingredients": [
+   {
+    "n": "sườn bò nguyên tảng chất lượng tốt",
+    "u": "tảng",
+    "o": "khoảng 3 pound / 1,5 kg, phần bò quay"
+   },
+   {
+    "n": "xương bò thêm",
+    "t": "tùy chọn",
+    "o": "Phần bò quay"
+   },
+   {
+    "n": "bột mì đa dụng đã rây (phần bò)",
+    "o": "Phần bò quay"
+   },
+   {
+    "n": "muối (nên dùng muối hột)",
+    "o": "5 ml, phần bò quay"
+   },
+   {
+    "n": "tiêu đen xay",
+    "o": "lượng kẹp giữa ngón tay, phần bò quay"
+   },
+   {
+    "n": "dầu ô liu hoặc dầu ăn loại tốt khác",
+    "o": "Phần bò quay"
+   },
+   {
+    "n": "nước",
+    "o": "Phần bò quay"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "Phần bò quay"
+   },
+   {
+    "n": "rượu vang đỏ đậm (phần bò)",
+    "u": "ly",
+    "o": "Phần bò quay"
+   },
+   {
+    "n": "mứt đỏ (pha ít nước và lọc hạt nếu là mâm xôi hoặc mâm xôi đen)",
+    "o": "45 ml, nước sốt"
+   },
+   {
+    "n": "nhục đậu khấu",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "sốt Worcestershire Lea & Perrins và/hoặc viên nêm Maggi",
+    "o": "5 ml, nước sốt"
+   },
+   {
+    "n": "rượu vang đỏ (nước sốt)",
+    "u": "ly",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "khoai tây (tốt nhất là Maris Piper)",
+    "o": "1,5 kg, phần khoai quay"
+   },
+   {
+    "n": "bột mì đa dụng (phần khoai)",
+    "o": "15 ml, phần khoai quay"
+   },
+   {
+    "n": "mỡ ngỗng",
+    "o": "30 ml, phần khoai quay"
+   },
+   {
+    "n": "bánh Yorkshire pudding",
+    "o": "Món kèm gợi ý"
+   },
+   {
+    "n": "củ cải vàng quay",
+    "o": "Món kèm gợi ý"
+   },
+   {
+    "n": "đậu cô ve luộc hoặc hấp",
+    "o": "Món kèm gợi ý"
+   },
+   {
+    "n": "bắp cải với ít thịt xông khói",
+    "o": "Món kèm gợi ý"
+   },
+   {
+    "n": "sốt cải ngựa hoặc cải ngựa kem",
+    "o": "Gia vị dùng kèm"
+   },
+   {
+    "n": "mù tạt Anh (tốt nhất pha từ bột mù tạt, Colemans hộp vàng vẫn ngon nhất)",
+    "o": "Gia vị dùng kèm"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Rã thịt",
+    "d": "Sáng ngày nấu, lấy tảng thịt bò khỏi tủ lạnh, để về nhiệt độ phòng."
+   },
+   {
+    "t": "Làm nóng lò",
+    "d": "Làm nóng lò trước ở 200°C (400°F), đặt khay quay vào lò cho nóng. Nếu có dư, đặt thêm một củ hành vào khay khi đang nóng. Nên dùng khay gang vì dẫn nhiệt tốt hơn."
+   },
+   {
+    "t": "Áo bột",
+    "d": "Trộn ít bột mì thường, một ít muối hột và một nhúm tiêu xay. Rắc hỗn hợp lên viền mỡ của tảng thịt, trước đó lau mỡ bằng khăn ẩm để bột bám hơn."
+   },
+   {
+    "t": "Áp chảo thịt",
+    "d": "Trong chảo lớn, đun nóng ít dầu ô liu rồi áp chảo các viền mỡ đến khi nâu sẫm. Có thể cần dùng nĩa giữ thịt để vàng đều. Lúc này cũng nên làm vàng cả bề mặt thịt, tạo phản ứng Maillard (làm nâu đường và axit amin), giúp thịt có màu nâu và tăng hương vị rất nhiều. Đồng thời cho xương thêm vào chảo và làm vàng kỹ."
+   },
+   {
+    "t": "Khử chảo",
+    "d": "Lấy thịt và xương ra khỏi chảo. Hạ lửa, cho rượu vang đỏ vào, vét sạch đáy chảo. Cẩn thận vì rượu có thể bắt lửa!"
+   },
+   {
+    "t": "Lót xương",
+    "d": "Dùng xương bò thêm làm lớp lót cho thịt dưới đáy khay nóng, thêm hành tây băm thô. Mục đích là nâng thịt lên khỏi đáy khay, không cần ngập trong nước thịt. Thêm một cốc nước và đổ toàn bộ chảo đã khử, gồm cả hành, lên thịt."
+   },
+   {
+    "t": "Quay thịt",
+    "d": "Đặt thịt lên lớp lót hoặc vỉ, để gần ngăn trên cùng của lò. Quay không mở lò khoảng 15 phút ở 200°C (400°F)."
+   },
+   {
+    "t": "Giảm nhiệt",
+    "d": "Mở lò và rưới nước lên thịt. Giảm nhiệt độ lò xuống khoảng 180°C (350°F). Sau đó không cần rưới nước nữa."
+   },
+   {
+    "t": "Chọn độ chín",
+    "d": "Tùy cách bạn thích, để thịt trong lò theo thời gian sau:"
+   },
+   {
+    "t": "Tái",
+    "d": "Tái: 15 phút mỗi pound (~450g)"
+   },
+   {
+    "t": "Vừa",
+    "d": "Vừa: 20 phút mỗi pound (~450g)"
+   },
+   {
+    "t": "Chín kỹ",
+    "d": "Chín kỹ: 25 phút mỗi pound (~450g)"
+   },
+   {
+    "t": "Lấy thịt ra",
+    "d": "Khi xong, lấy thịt ra khỏi khay và đặt lên đĩa riêng."
+   },
+   {
+    "t": "Nghỉ thịt",
+    "d": "Phủ hờ nhiều giấy bạc, để thịt nghỉ khoảng 15 phút ở chỗ ấm trong bếp. Nếu thịt đứng được, rắc rất ít muối hột lên trên để tăng vị."
+   },
+   {
+    "t": "Khử khay",
+    "d": "Đặt khay quay lên bếp (nếu cần bật 2 bếp, mỗi đầu một bếp) và làm nóng nước thịt. Cho rượu vang đỏ vào, vét kỹ khay ở lửa lớn. Bước này cũng làm bay hơi cồn trong rượu."
+   },
+   {
+    "t": "Thêm nước",
+    "d": "Thêm ít nước (nếu đang luộc rau, thêm ít nước luộc) và sốt Worcestershire. Đun sôi nhẹ."
+   },
+   {
+    "t": "Nêm sốt",
+    "d": "Khuấy mứt đỏ, mù tạt và nhục đậu khấu vào. Nếu thật sự muốn nuông chiều bản thân, có thể thêm crème fraîche!"
+   },
+   {
+    "t": "Cô sốt",
+    "d": "Tiếp tục đun, thêm nước (hoặc kem, hoặc rượu vang đỏ) đến khi nước sốt hơi sánh. Lọc kỹ và giữ nước sốt trong bát."
+   },
+   {
+    "t": "Sơ chế khoai",
+    "d": "Gọt vỏ khoai, tỉa sao cho các củ gần bằng nhau. Giữ lại vỏ."
+   },
+   {
+    "t": "Luộc khoai",
+    "d": "Cho khoai vào nồi lớn nước muối sôi với ít dầu ô liu. Nếu được, cho vỏ khoai vào túi vải và thả vào nước sôi để khoai thêm vị (ý tưởng tuyệt vời của Heston Blumenthal)."
+   },
+   {
+    "t": "Đun mỡ ngỗng",
+    "d": "Trong lúc đó, đun nóng mỡ ngỗng trong chảo kim loại lớn chịu nhiệt."
+   },
+   {
+    "t": "Để ráo khoai",
+    "d": "Luộc khoai đúng 5 phút, không hơn. Nhấc khỏi bếp, để ráo và cho khoai trở lại nồi khô."
+   },
+   {
+    "t": "Lắc bột",
+    "d": "Cho ngay bột mì vào nồi và đậy nắp thật khít. Giữ chặt nắp và lắc mạnh nồi khoảng 15 giây. Động tác này giúp khoai áo bột và tạo bề mặt xù xì, nhờ đó quay ngon hơn và vỏ giòn. Dùng thìa kim loại lớn nhấc từng củ, đặt vào chảo mỡ ngỗng nóng. Lăn nhẹ cho khoai hơi vàng. Có thể mất 5–10 phút."
+   },
+   {
+    "t": "Chuẩn bị quay",
+    "d": "Khi tất cả khoai đã qua chảo, chắt dầu và tách các củ ra, hoặc cẩn thận chuyển lên vỉ đặt trên khay quay trong lò. Đừng đặt khoai trực tiếp lên khay vì sẽ dễ mềm nhũn. Giữa các củ nên cách khoảng 1 inch (2.5cm), điều này rất quan trọng để không khí lưu thông giúp khoai giòn."
+   },
+   {
+    "t": "Quay khoai",
+    "d": "Nướng khoai trong lò cùng thịt bò. Nhiệt độ lò tùy giai đoạn của thịt, khoảng 180°C (350°F). Khoai mất khoảng 30–40 phút và có lớp vỏ vàng nâu."
+   },
+   {
+    "t": "Lật khoai",
+    "d": "Khoảng hai lần trong khi quay, lấy khay khoai ra và dùng nĩa nhẹ nhàng xoay khoảng 90 độ để chín đều. Việc này không dễ như tưởng vì khoai có thể đã tạo vỏ, nên hãy cẩn thận. Khi xong, khoai giòn bên ngoài và xốp mềm bên trong."
+   },
+   {
+    "t": "Bày khoai",
+    "d": "Khoai sẽ tỏa hơi, nên khi dọn hãy chọn đĩa để xếp khoai cạnh nhau thay vì chồng lên nhau, tránh hơi làm khoai mềm. Đôi khi xếp quanh tảng bò cũng được."
+   },
+   {
+    "t": "Thái thịt",
+    "d": "Thái thịt thành lát mỏng. Dùng với khoai quay và từ 3 món rau trở lên như củ cải vàng quay, đậu cô ve và bắp cải với ít thịt xông khói."
+   },
+   {
+    "t": "Gia vị dùng kèm",
+    "d": "Đừng quên sốt cải ngựa kem chất lượng tốt (tốt hơn là tự làm) và mù tạt Coleman's. Bánh Yorkshire pudding cũng rất hợp với món này."
+   }
+  ],
+  "sourceHash": "9d990a0c72dd93ac160108dab4fa657b1905b19e9884007d2e829666dd04f6fc"
+ },
+ {
+  "pageId": 212336,
+  "title": "Gà tây quay nhồi nhân",
+  "description": "Gà tây quay thường là món trung tâm của Lễ Tạ ơn ở Mỹ. Có nhiều công thức và cách nấu gà tây nguyên con. Dưới đây là một trong những cách đơn giản nhất và vì thế cũng truyền thống nhất.",
+  "ingredients": [
+   {
+    "n": "bánh mì ngô bóp vụn",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "muối (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "tiêu đen xay (phần nhân)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "lá xô thơm khô",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "táo khô",
+    "o": "thái hạt lựu, phần nhân"
+   },
+   {
+    "n": "óc chó",
+    "o": "băm thô, phần nhân"
+   },
+   {
+    "n": "sữa bơ (buttermilk)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "anh đào khô",
+    "o": "bỏ cuống, băm nhuyễn, phần nhân"
+   },
+   {
+    "n": "lòng đỏ trứng",
+    "u": "lòng",
+    "o": "đánh tan, phần nhân"
+   },
+   {
+    "n": "bơ (phần nhân)",
+    "o": "làm mềm và đánh bông, phần nhân"
+   },
+   {
+    "n": "thịt gà hoặc gà tây đã nấu, xé sợi",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "gà tây nguyên con",
+    "u": "con",
+    "o": "18 pound"
+   },
+   {
+    "n": "bơ (phần gà tây)",
+    "o": "làm mềm"
+   },
+   {
+    "n": "nước dùng gà tây hoặc gà"
+   },
+   {
+    "n": "muối (phần gà tây)"
+   },
+   {
+    "n": "tiêu đen xay (phần gà tây)"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn nhân",
+    "d": "Trộn các nguyên liệu nhân trong tô."
+   },
+   {
+    "t": "Làm nóng lò",
+    "d": "Làm nóng lò trước ở 325°F (165 °C). Đặt vỉ ở vị trí thấp nhất của lò."
+   },
+   {
+    "t": "Bỏ nội tạng",
+    "d": "Bỏ cổ và nội tạng."
+   },
+   {
+    "t": "Rửa gà",
+    "d": "Rửa gà tây và thấm khô bằng giấy."
+   },
+   {
+    "t": "Phết bơ",
+    "d": "Đặt gà tây lên vỉ trong khay quay, ức hướng lên. Xoa bơ mềm lên da, nêm muối và tiêu."
+   },
+   {
+    "t": "Nhồi nhân",
+    "d": "Nhồi nhân vào khoang bụng."
+   },
+   {
+    "t": "Đặt nhiệt kế",
+    "d": "Cắm nhiệt kế thịt vào phần dày nhất của một bên đùi."
+   },
+   {
+    "t": "Che giấy nhôm",
+    "d": "Đặt một lớp giấy nhôm che hờ trên gà tây."
+   },
+   {
+    "t": "Cho vào lò",
+    "d": "Đặt gà tây vào lò, đổ 2 cốc nước dùng vào đáy khay."
+   },
+   {
+    "t": "Quay và rưới nước",
+    "d": "Quay gà tây 2½ giờ, cứ 30 phút rưới nước ở đáy khay lên khắp con gà. Khi đáy khay khô, thêm nước dùng, mỗi lần khoảng 1–2 cốc."
+   },
+   {
+    "t": "Bỏ giấy nhôm",
+    "d": "Bỏ lớp giấy nhôm."
+   },
+   {
+    "t": "Quay tiếp",
+    "d": "Quay đến khi thịt đạt 185°F và nhân đạt 165°F. Việc này mất khoảng 4 giờ. Nếu gà đã xong mà nhân chưa đạt, múc nhân ra và nướng riêng trong lò đến đúng nhiệt độ."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dọn ngay."
+   }
+  ],
+  "sourceHash": "091208c247f26dcda79c49a37c5680cfe8602dca1f414f211c9634f43b8ed6e1"
+ },
+ {
+  "pageId": 143472,
+  "title": "Salată de Boeuf (Salad bò kiểu Romania)",
+  "description": "Đây là món truyền thống của Romania, thường dọn trong các dịp lễ và sự kiện đặc biệt. Món gồm thịt bò và củ quả thái nhỏ, trộn mayonnaise và trang trí bằng rau muối. Tên món gợi ảnh hưởng ẩm thực Pháp, vì boeuf là từ tiếng Pháp cổ chỉ bò, và nhiều món Pháp nổi tiếng như bò Bourguignon vẫn dùng từ này. Món thường làm lượng lớn cho cả bữa tiệc, ăn như món phụ hoặc salad với các món thịt chiên, hoặc làm khai vị. Lượng nguyên liệu có khác biệt nhỏ tùy khẩu vị. Công thức dưới đây là của mẹ và bà tôi, cần mayonnaise tự làm, có kèm công thức.",
+  "ingredients": [
+   {
+    "n": "khoai tây (loại nào cũng được, một số người thích loại đỏ)",
+    "o": "2 lb 3 oz, phần salad"
+   },
+   {
+    "n": "cà rốt",
+    "o": "gọt vỏ, thái hạt lựu 1 cm, 12 oz, phần salad"
+   },
+   {
+    "n": "thịt bò luộc",
+    "o": "cắt khối 1 cm, phần salad"
+   },
+   {
+    "n": "đậu Hà Lan đóng hộp hoặc 300 g đậu tươi",
+    "o": "Phần salad"
+   },
+   {
+    "n": "dưa chuột bao tử muối thì là (không quá ngọt, thật giòn)",
+    "o": "thái hạt lựu 1 cm, phần salad"
+   },
+   {
+    "n": "trứng luộc chín",
+    "u": "quả",
+    "o": "lấy lòng đỏ, phần mayonnaise"
+   },
+   {
+    "n": "lòng đỏ trứng tươi",
+    "u": "lòng",
+    "o": "Phần mayonnaise"
+   },
+   {
+    "n": "dầu cải hoặc dầu thực vật",
+    "o": "8,5 oz, phần mayonnaise"
+   },
+   {
+    "n": "chanh",
+    "u": "quả",
+    "o": "vắt lấy nước, phần mayonnaise"
+   },
+   {
+    "n": "mù tạt Pháp",
+    "o": "5 ml, phần mayonnaise"
+   },
+   {
+    "n": "lòng trắng trứng luộc",
+    "o": "thái sợi dài mỏng, trang trí"
+   },
+   {
+    "n": "dưa chuột bao tử (trang trí)",
+    "o": "thái sợi dài mỏng, trang trí"
+   },
+   {
+    "n": "ớt đỏ muối",
+    "o": "thái sợi dài mỏng, trang trí"
+   },
+   {
+    "n": "ô liu đen thái lát",
+    "o": "Trang trí"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Luộc khoai",
+    "d": "Luộc nhẹ khoai còn vỏ đến khi mềm. Để nguội rồi bỏ vỏ."
+   },
+   {
+    "t": "Luộc cà rốt",
+    "d": "Luộc cà rốt đến khi mềm."
+   },
+   {
+    "t": "Luộc thịt",
+    "d": "Luộc nhẹ thịt bò trong 1 giờ."
+   },
+   {
+    "t": "Luộc đậu",
+    "d": "Nếu dùng đậu tươi, luộc hoặc hấp kỹ."
+   },
+   {
+    "t": "Cắt khối",
+    "d": "Cắt khoai, cà rốt và thịt bò thành khối khoảng 5 mm, sao cho tất cả cỡ bằng hạt đậu."
+   },
+   {
+    "t": "Thái dưa",
+    "d": "Thái dưa chuột thật nhỏ: thái lát dày 3 mm (⅛ inch), rồi cắt tiếp cách 3 mm theo cả chiều dài và chiều rộng."
+   },
+   {
+    "t": "Trộn nhẹ",
+    "d": "Trộn nhẹ tay tất cả. Không nêm."
+   },
+   {
+    "t": "Đánh lòng đỏ",
+    "d": "Đánh lòng đỏ chín với lòng đỏ sống đến khi đều."
+   },
+   {
+    "t": "Thêm dầu",
+    "d": "Vừa đánh vừa từ từ thêm dầu đến khi hỗn hợp đặc và thành mayonnaise."
+   },
+   {
+    "t": "Thêm chanh và mù tạt",
+    "d": "Thêm nước cốt chanh và mù tạt."
+   },
+   {
+    "t": "Để dành sốt",
+    "d": "Để dành một ít mayonnaise để trang trí."
+   },
+   {
+    "t": "Trộn sốt",
+    "d": "Trộn nhẹ tay phần mayonnaise còn lại với thịt và rau đã cắt, sao cho nguyên liệu được phủ đều nhưng không ngập trong sốt."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nêm muối và tiêu."
+   },
+   {
+    "t": "Cho vào bát",
+    "d": "Cho salata de boeuf vào một bát lớn hoặc vài bát nhỏ."
+   },
+   {
+    "t": "Trang trí",
+    "d": "Phết phần mayonnaise để dành lên mặt và trang trí bằng các nguyên liệu, xếp thành hình đẹp mắt."
+   }
+  ],
+  "sourceHash": "c3fc3e5484e6a800fedd86f26c1f2f779f6e5464414dfd5e013bcfe362e41bbf"
+ },
+ {
+  "pageId": 155618,
+  "title": "Smörgåstårta (Bánh sandwich nhiều lớp kiểu Thụy Điển)",
+  "description": "Smörgåstårta hay bánh sandwich là món tiệc đặc trưng của Thụy Điển, không nên nhầm với Smörgåsbord. Đây là một loại sandwich rất béo với nhiều nhân đến mức trông như bánh kem. Món rất hợp cho tiệc chiêu đãi vì dùng lạnh và có thể chuẩn bị trước. Có thể thay đổi nhân để hợp khẩu vị của hầu hết mọi người. Món có thể dọn nguyên chiếc hoặc cắt miếng nhỏ làm khai vị. Công thức này dùng nhân tôm và trứng, là một trong nhiều biến thể được liệt kê ở cuối trang nguồn.",
+  "ingredients": [
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "tôm còn vỏ",
+    "o": "~2,25 lb"
+   },
+   {
+    "n": "phô mai cottage",
+    "u": "dl",
+    "o": "450 ml / 1 pint"
+   },
+   {
+    "n": "sốt mayonnaise",
+    "u": "dl",
+    "o": "400 ml"
+   },
+   {
+    "n": "kem chua",
+    "u": "dl",
+    "o": "100 ml"
+   },
+   {
+    "n": "bánh mì sandwich trắng",
+    "u": "ổ"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu đen"
+   },
+   {
+    "n": "nhánh thì là hoặc lát chanh",
+    "t": "để trang trí"
+   },
+   {
+    "n": "thì là hoặc mùi tây băm",
+    "t": "để trang trí"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Chuẩn bị trứng và tôm",
+    "d": "Luộc trứng chín kỹ, bóc vỏ tôm."
+   },
+   {
+    "t": "Chia tôm",
+    "d": "Để riêng một ít tôm (khoảng ⅓) để trang trí. Băm phần tôm còn lại làm nhân."
+   },
+   {
+    "t": "Trộn sốt phủ",
+    "d": "Trộn 1 dl mayonnaise với 1 dl kem chua trong cốc hoặc tô, để vào tủ lạnh."
+   },
+   {
+    "t": "Trộn nhân",
+    "d": "Trộn phần mayonnaise còn lại với phô mai cottage trong tô khác cùng tôm băm; đây là phần nhân."
+   },
+   {
+    "t": "Thái bánh mì",
+    "d": "Cắt dọc bánh mì thành tám lát dày 1 cm. Bỏ lát trên và lát dưới cùng."
+   },
+   {
+    "t": "Xếp lớp",
+    "d": "Đặt hai lát cạnh nhau, tốt nhất trên thớt. Phết một phần ba lượng nhân lên bánh. Đặt thêm hai lát bánh lên trên. Phết một nửa lượng nhân còn lại và lặp lại với lớp cuối. Bánh lúc này có bốn lớp bánh mì và ba lớp nhân."
+   },
+   {
+    "t": "Tỉa cạnh",
+    "d": "Nếu cần, dùng dao sắc tỉa cho cạnh bánh bằng phẳng."
+   },
+   {
+    "t": "Phủ sốt",
+    "d": "Lấy hỗn hợp mayonnaise và kem chua ra khỏi tủ lạnh, phết mỏng và đều lên mặt và quanh bánh."
+   },
+   {
+    "t": "Trang trí",
+    "d": "Phủ mùi tây hoặc thì là băm quanh bánh. Trang trí bằng tôm, trứng thái lát và nhánh thì là hoặc lát chanh."
+   }
+  ],
+  "sourceHash": "fa7015483475b5e9e586e80db2249bcd39b50e722fc6c35be4502d7143b60242"
+ },
+ {
+  "pageId": 257781,
+  "title": "Risotto hải sản",
+  "description": "Risotto là món cơm Ý, thịnh hành nhất ở miền bắc nước Ý. Trong lịch sử, risotto là tên chung cho các công thức lấy gạo làm thành phần chính, được dọn như món đầu tiên trong bữa trưa hoặc tối truyền thống của Ý, giống như mì ống. Công thức này là một trong nhiều biến thể của risotto với hải sản.",
+  "ingredients": [
+   {
+    "n": "thân mực"
+   },
+   {
+    "n": "tôm sú bóc vỏ"
+   },
+   {
+    "n": "sò điệp"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "giấm balsamic"
+   },
+   {
+    "n": "lá oregano"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   },
+   {
+    "n": "nước dùng cá",
+    "t": "khoảng 1 lít"
+   },
+   {
+    "n": "gạo làm risotto",
+    "o": "14 oz"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "rượu vang trắng khô",
+    "u": "ly"
+   },
+   {
+    "n": "mùi tây",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "bơ",
+    "o": "cắt khối, 1 oz"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Cắt mực",
+    "d": "Cắt mực thành sợi hoặc khoanh tròn."
+   },
+   {
+    "t": "Ướp hải sản",
+    "d": "Trong tô, ướp mực, tôm và sò điệp với ít dầu, giấm balsamic, oregano, muối và tiêu. Ướp nửa giờ trong tủ lạnh trong lúc nấu cơm."
+   },
+   {
+    "t": "Đun nước dùng",
+    "d": "Đun nước dùng cá đến gần sôi nhưng không để sôi. Mặt nước chỉ hơi chuyển động."
+   },
+   {
+    "t": "Xào hành tỏi",
+    "d": "Trong nồi lớn đáy dày, đun nóng một lớp dầu ô liu mỏng. Cho hành và tỏi vào xào thật nhẹ như làm soffritto."
+   },
+   {
+    "t": "Xào gạo",
+    "d": "Khuấy gạo vào, nấu đến khi hạt trong, không quá 2 phút. Thêm ít muối, tiêu và rượu."
+   },
+   {
+    "t": "Thêm nước dùng",
+    "d": "Khi rượu cạn dần, phần nước còn lại sẽ sánh vì gạo tiết tinh bột. Khi gần hết, thêm nước dùng nóng. Đừng thêm quá nhiều một lần. Gạo không bao giờ được ngập trong nước dùng. Tiếp tục khuấy và thêm nước dùng khi cạn. Mất khoảng 15–20 phút."
+   },
+   {
+    "t": "Nếm",
+    "d": "Nếm trong khi nấu để xem gạo đã chín chưa. Cơm phải mềm nhưng vẫn còn độ chắc, cảm nhận được từng hạt."
+   },
+   {
+    "t": "Thêm hải sản",
+    "d": "Năm phút trước khi xong, cho mực, sò điệp và tôm đã ướp vào. Thêm mùi tây ngay trước khi tắt bếp."
+   },
+   {
+    "t": "Thêm bơ",
+    "d": "Khi xong, khuấy bơ vào từng miếng nhỏ, nếm để có lượng bơ vừa ý. Nêm thêm muối và tiêu vừa ăn."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Để nghỉ vài phút rồi dọn."
+   }
+  ],
+  "sourceHash": "3cfe52faa48a4f9a4774babd11c565c7cfea511401992c98004883de1c639906"
+ },
+ {
+  "pageId": 414032,
+  "title": "Pudding semolina nấu sữa",
+  "description": "Pudding semolina là món tráng miệng đơn giản mà ngon, làm nhanh chỉ với vài nguyên liệu.",
+  "ingredients": [
+   {
+    "n": "sữa"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "vỏ chanh bào"
+   },
+   {
+    "n": "quế xay"
+   },
+   {
+    "n": "bột semolina lúa mì mềm",
+    "o": "¼ lít"
+   },
+   {
+    "n": "đường cát trắng"
+   },
+   {
+    "n": "đường vani"
+   },
+   {
+    "n": "bơ hoặc 1 thìa canh dầu ép lạnh vị bùi (dầu hạt phỉ, óc chó, anh túc, cải)"
+   },
+   {
+    "n": "lòng đỏ trứng",
+    "u": "lòng"
+   },
+   {
+    "n": "lòng trắng trứng",
+    "u": "lòng",
+    "o": "đánh bông mềm"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun sữa",
+    "d": "Đun sôi sữa, muối, vỏ chanh và quế trong nồi lớn."
+   },
+   {
+    "t": "Thêm semolina",
+    "d": "Khuấy semolina vào. Nấu ở lửa nhỏ, khuấy liên tục đến khi nở (rất nhanh)."
+   },
+   {
+    "t": "Thêm đường và bơ",
+    "d": "Khuấy đường, đường vani và bơ vào."
+   },
+   {
+    "t": "Nhấc khỏi bếp",
+    "d": "Nhấc nồi khỏi bếp."
+   },
+   {
+    "t": "Thêm trứng",
+    "d": "Nếu muốn, khuấy lòng đỏ đã đánh và/hoặc trộn nhẹ tay lòng trắng đánh bông vào."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dọn ăn."
+   }
+  ],
+  "sourceHash": "2c698a0239fdac77eea05827c4d5e01c8dd123d2303172d787dff3b824cf533a"
+ },
+ {
+  "pageId": 96979,
+  "title": "Bánh quy quế Snickerdoodle",
+  "description": "Snickerdoodle là bánh quy đường phủ nhẹ quế, có bề mặt nứt đặc trưng, có thể giòn hoặc mềm tùy ý thích. Một số biến thể có nhục đậu khấu, nho khô hoặc các loại hạt. Đây là bánh Giáng sinh truyền thống ở Bắc Mỹ. Sách Joy of Cooking cho rằng bánh có lẽ có nguồn gốc từ Đức, và cái tên là biến âm của từ tiếng Đức nghĩa là “mì ốc sên” (schneckennudeln).",
+  "ingredients": [
+   {
+    "n": "bột mì đa dụng",
+    "o": "2 ¾ cốc hoặc 24 oz"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "muối nở (baking soda)"
+   },
+   {
+    "n": "bột cream of tartar"
+   },
+   {
+    "n": "đường siêu mịn",
+    "o": "1½ cốc hoặc 9 oz"
+   },
+   {
+    "n": "bơ",
+    "o": "½ cốc hoặc 4 oz"
+   },
+   {
+    "n": "mỡ trừu (shortening)",
+    "o": "½ cốc hoặc 4 oz"
+   },
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "tinh chất vani"
+   },
+   {
+    "n": "đường (phần áo)"
+   },
+   {
+    "n": "quế"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Làm nóng lò",
+    "d": "Làm nóng lò trước ở 350°F (175 °C)."
+   },
+   {
+    "t": "Trộn phần khô",
+    "d": "Trộn bột mì, muối, muối nở và cream of tartar. Để riêng."
+   },
+   {
+    "t": "Đánh bơ đường",
+    "d": "Đánh bơ, mỡ trừu và đường."
+   },
+   {
+    "t": "Thêm trứng",
+    "d": "Đánh trứng và vani vào."
+   },
+   {
+    "t": "Thêm phần khô",
+    "d": "Cho dần phần khô vào, trộn đều."
+   },
+   {
+    "t": "Viên bột",
+    "d": "Viên thành từng viên cỡ 1 thìa canh."
+   },
+   {
+    "t": "Trộn đường quế",
+    "d": "Trộn đường với quế."
+   },
+   {
+    "t": "Lăn đường",
+    "d": "Lăn viên bột qua hỗn hợp đường quế."
+   },
+   {
+    "t": "Ủ lạnh",
+    "d": "Để tủ lạnh 30 phút."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng 10 phút hoặc đến khi giòn và vàng nhạt."
+   },
+   {
+    "t": "Để nguội",
+    "d": "Để nguội hoàn toàn trước khi ăn."
+   }
+  ],
+  "sourceHash": "403c07869b450f5982020e57ef4c13905dc3d83f681779035b1471e3c1dedb39"
+ }
+]

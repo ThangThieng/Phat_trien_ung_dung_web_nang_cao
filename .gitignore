@@ -12,6 +12,10 @@ nginx/.htpasswd
 .htpasswd
 # Script khôi phục URL ảnh do tools/media-url-migration sinh (D-14) — dữ liệu của máy chạy, không commit
 tools/media-url-migration/backups/
+# Dữ liệu tải về và script khôi phục của công cụ dữ liệu mẫu (CR-2026-07)
+tools/recipe-etl/raw/
+tools/seed-nutrition-cleanup/backups/
+__pycache__/
 
 # .NET
 bin/
