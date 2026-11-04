@@ -1,7 +1,7 @@
 import ky, { isHTTPError, isNetworkError } from 'ky';
 import type { AfterResponseHook, BeforeErrorHook, BeforeRequestHook, NormalizedOptions } from 'ky';
 import type { ProblemDetails } from '@/types/api';
-import { ApiError, parseRetryAfter } from './api-error';
+import { ApiError, parseRetryAfter, isTransientAuthError } from './api-error';
 import { getApiBaseUrl } from './config';
 import { normalizeError } from './normalize-error';
 
@@ -72,7 +72,7 @@ function renewAccessToken(staleToken: string | null, callbacks: AuthCallbacks): 
   refreshPromise ??= Promise.resolve()
     .then(() => callbacks.refresh())
     .catch((refreshError: unknown) => {
-      callbacks.onRefreshFailure();
+      if (!isTransientAuthError(refreshError)) callbacks.onRefreshFailure();
       throw refreshError;
     })
     .finally(() => {

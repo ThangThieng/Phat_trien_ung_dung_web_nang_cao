@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import { AUTH_STORAGE_KEY, createAuthStore } from '@/stores/auth-store';
 import type { User } from '@/types/auth';
 import { refreshSession, subscribeToSessionStorage } from './session-sync';
@@ -72,5 +73,41 @@ describe('session sync', () => {
 
     expect(sent).toEqual(['R1', 'R2']);
     expect(second.getState()).toMatchObject({ accessToken: 'A3', refreshToken: 'R3' });
+  });
+});
+
+describe('subscribeToSessionStorage across tabs', () => {
+  const signal = (state: object) => {
+    const value = JSON.stringify({ state, version: 1 });
+    window.localStorage.setItem(AUTH_STORAGE_KEY, value);
+    window.dispatchEvent(new StorageEvent('storage', { key: AUTH_STORAGE_KEY, newValue: value }));
+  };
+
+  it('keeps this tab signed in when another tab rotates the refresh token of the same account', async () => {
+    const store = createAuthStore();
+    store.getState().setSession({ accessToken: 'memory', refreshToken: 'old', user });
+    const onChange = jest.fn();
+    const unsubscribe = subscribeToSessionStorage(store, undefined, onChange);
+
+    signal({ refreshToken: 'new', user });
+
+    await waitFor(() => expect(store.getState().refreshToken).toBe('new'));
+    expect(store.getState().status).toBe('authenticated');
+    expect(store.getState().accessToken).toBe('memory');
+    expect(onChange).not.toHaveBeenCalled();
+    unsubscribe();
+  });
+
+  it('asks for a reload when another tab signs in with a different account', async () => {
+    const store = createAuthStore();
+    store.getState().setSession({ accessToken: 'memory', refreshToken: 'old', user });
+    const onChange = jest.fn();
+    const unsubscribe = subscribeToSessionStorage(store, undefined, onChange);
+
+    signal({ refreshToken: 'other', user: { ...user, id: 'u2' } });
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(store.getState().accessToken).toBeNull();
+    unsubscribe();
   });
 });

@@ -99,7 +99,16 @@ export function createAuthStore(): AuthStore {
         merge: (persisted, current) => {
           const session = persisted as Partial<PersistedSession>;
           if (!session.refreshToken || !session.user) return { ...current, ...anonymousState() };
-          return { ...current, status: 'unknown', accessToken: null, refreshToken: session.refreshToken, user: session.user };
+          // Tab khác vừa xoay refresh token của CÙNG tài khoản: access token trong bộ nhớ của tab này vẫn dùng được, không được đưa về
+          // 'unknown' vì không còn ai làm mới lại, trang sẽ kẹt ở "Đang kiểm tra phiên đăng nhập".
+          const sameUser = current.status === 'authenticated' && current.accessToken && current.user?.id === session.user.id;
+          return {
+            ...current,
+            status: sameUser ? 'authenticated' : 'unknown',
+            accessToken: sameUser ? current.accessToken : null,
+            refreshToken: session.refreshToken,
+            user: session.user,
+          };
         },
       },
     ),

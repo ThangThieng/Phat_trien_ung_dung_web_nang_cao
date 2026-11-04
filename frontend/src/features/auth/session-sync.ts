@@ -46,7 +46,7 @@ export async function refreshSession(
 }
 
 /** Keeps a tab in sync with persisted session updates and logout from another tab. */
-export function subscribeToSessionStorage(store: AuthStore, onRemoteLogout?: () => void): () => void {
+export function subscribeToSessionStorage(store: AuthStore, onRemoteLogout?: () => void, onRemoteAccountChange?: () => void): () => void {
   if (typeof window === 'undefined') return () => undefined;
 
   const onStorage = (event: StorageEvent) => {
@@ -56,7 +56,11 @@ export function subscribeToSessionStorage(store: AuthStore, onRemoteLogout?: () 
       onRemoteLogout?.();
       return;
     }
-    Promise.resolve(store.persist.rehydrate()).catch(() => undefined);
+    Promise.resolve(store.persist.rehydrate())
+      .then(() => {
+        if (store.getState().status === 'unknown') onRemoteAccountChange?.();
+      })
+      .catch(() => undefined);
   };
 
   window.addEventListener('storage', onStorage);

@@ -64,3 +64,8 @@ export function isAbortError(error: unknown): boolean {
     (error as { name?: unknown }).name === 'AbortError'
   );
 }
+
+/** 429, 408, 5xx khi làm mới phiên là lỗi tạm thời: phiên vẫn hợp lệ, không được đăng xuất người dùng. */
+export function isTransientAuthError(error: unknown): boolean {
+  return error instanceof ApiError && (error.status === 408 || error.status === 429 || error.status >= 500);
+}
