@@ -68,7 +68,10 @@ public sealed class SetUserStatusCommandValidator : AbstractValidator<SetUserSta
     {
         RuleFor(x => x.UserId).NotEmpty().MaximumLength(450);
         RuleFor(x => x.IsActive).NotNull().WithMessage("isActive là bắt buộc (true = mở khóa, false = khóa).");
-        RuleFor(x => x.Reason).MaximumLength(500).WithMessage("reason tối đa 500 ký tự.");
+        RuleFor(x => x.Reason)
+            .NotNull()
+            .Must(reason => !string.IsNullOrWhiteSpace(reason) && reason.Trim().Length is >= 5 and <= 500)
+            .WithMessage("reason phải từ 5 đến 500 ký tự sau khi bỏ khoảng trắng.");
     }
 }
 

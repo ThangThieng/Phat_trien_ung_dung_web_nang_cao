@@ -7,6 +7,10 @@ import { useAuthStoreApi } from '@/stores/auth-store-provider';
 import type { AuthResponse } from '@/types/auth';
 import { refreshSession, subscribeToSessionStorage } from './session-sync';
 
+export const authNavigation = {
+  redirect: (url: string) => window.location.assign(url),
+};
+
 export function AuthBootstrap({ children }: { children: ReactNode }) {
   const store = useAuthStoreApi();
   const started = useRef(false);
@@ -15,6 +19,11 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
     store.getState().clear();
     getQueryClient().clear();
   }, [store]);
+
+  const redirectToLogin = useCallback(() => {
+    const callbackUrl = `${window.location.pathname}${window.location.search}`;
+    authNavigation.redirect(`/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+  }, []);
 
   const refresh = useCallback(() => refreshSession(store, async (refreshToken) => {
     const response = await apiFetch<AuthResponse>('/auth/refresh', {
@@ -29,11 +38,11 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       refresh,
       onRefreshFailure: () => {
         clearSession();
-        if (window.location.pathname.startsWith('/dashboard')) window.location.assign('/auth/login?callbackUrl=');
+        redirectToLogin();
       },
     });
     return () => configureAuthCallbacks(null);
-  }, [clearSession, refresh, store]);
+  }, [clearSession, redirectToLogin, refresh, store]);
 
   useEffect(() => {
     const unsubscribe = subscribeToSessionStorage(store, clearSession);
@@ -54,7 +63,7 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       } catch {
         if (!cancelled) {
           clearSession();
-          if (window.location.pathname.startsWith('/dashboard')) window.location.assign('/auth/login?callbackUrl=');
+          redirectToLogin();
         }
       }
     };
@@ -63,7 +72,7 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       cancelled = true;
       unsubscribe();
     };
-  }, [clearSession, refresh, store]);
+  }, [clearSession, redirectToLogin, refresh, store]);
 
   return children;
 }

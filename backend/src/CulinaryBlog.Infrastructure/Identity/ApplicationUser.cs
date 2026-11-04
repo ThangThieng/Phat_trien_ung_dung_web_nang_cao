@@ -27,6 +27,7 @@ public class ApplicationUser : IdentityUser
             Email = email,
             UserName = userName,
             IsActive = true,
+            LockoutEnabled = true,
             CreatedAt = createdAt,
         };
 }
