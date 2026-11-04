@@ -79,6 +79,21 @@ export default function RecipeImageGallery({
     }
   };
 
+  const saveAltText = async (imageId: string, altText: string) => {
+    const current = images.find((image) => image.imageId === imageId);
+    if (!altText.trim() || current?.altText === altText) return;
+    setBusyId(imageId);
+    try {
+      await updateRecipeImage(recipeId, imageId, { altText }, accessToken);
+      setImages((items) => items.map((image) => (image.imageId === imageId ? { ...image, altText } : image)));
+      onChanged?.();
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const remove = async (target: RecipeImageResult) => {
     setBusyId(target.imageId);
     try {
@@ -145,6 +160,19 @@ export default function RecipeImageGallery({
                   alt={image.altText ?? ''}
                   className="aspect-video w-full object-cover"
                 />
+                <label htmlFor={`alt-${image.imageId}`} className="block px-2 pt-2 text-xs font-medium text-gray-700">
+                  Mô tả ảnh (bắt buộc để xuất bản)
+                  <input
+                    id={`alt-${image.imageId}`}
+                    defaultValue={image.altText ?? ''}
+                    maxLength={200}
+                    disabled={busyId !== null}
+                    onBlur={(event) => {
+                      saveAltText(image.imageId, event.target.value).catch(() => undefined);
+                    }}
+                    className="mt-1 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                  />
+                </label>
                 <div className="flex items-center justify-between gap-2 p-2">
                   <label
                     htmlFor={`primary-${image.imageId}`}

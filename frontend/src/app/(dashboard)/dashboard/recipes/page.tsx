@@ -14,6 +14,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Pagination from '@/components/shared/Pagination';
+import { useAuth } from '@/features/auth/auth-context';
+import RecipeLifecycleActions from '@/features/recipes/components/RecipeLifecycleActions';
 import { getMyRecipes } from '@/features/recipes/my-recipes-api';
 import { RecipeStatusBadge } from '@/features/recipes/components/RecipeStatusBadge';
 import { recipeKeys } from '@/features/recipes/query-keys';
@@ -44,6 +46,7 @@ export default function MyRecipesPage() {
   const rawPage = Number(searchParams.get('page'));
   const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
   const params = { ...(status ? { status } : {}), page, pageSize: PAGE_SIZE };
+  const { accessToken } = useAuth();
   const recipes = useQuery({
     queryKey: recipeKeys.mine(params),
     queryFn: () => getMyRecipes(params),
@@ -136,7 +139,7 @@ export default function MyRecipesPage() {
                     </TableCell>
                     <TableCell>{recipe.category.name}</TableCell>
                     <TableCell>{formatDate(recipe.createdAt)}</TableCell>
-                    <TableCell>
+                    <TableCell className="space-y-1 text-right">
                       <Button asChild size="sm" variant="ghost">
                         <Link
                           href={`/dashboard/recipes/${recipe.id}/edit`}
@@ -146,6 +149,9 @@ export default function MyRecipesPage() {
                           Sửa
                         </Link>
                       </Button>
+                      {accessToken && (
+                        <RecipeLifecycleActions recipe={recipe} accessToken={accessToken} compact />
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
