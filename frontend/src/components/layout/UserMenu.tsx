@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation';
 import {
   ChevronDown,
   FolderTree,
-  ImageUp,
   LayoutDashboard,
   LogOut,
   UserRound,
@@ -32,8 +31,6 @@ const USER_LINKS: readonly MenuLink[] = [
 const ADMIN_LINKS: readonly MenuLink[] = [
   { href: '/dashboard/categories', label: 'Quản lý danh mục', icon: FolderTree },
   { href: '/dashboard/users', label: 'Người dùng', icon: Users },
-  // Có trong `SiteHeader` cũ (Buổi 2 – 6); trang tạm, xóa ở Buổi 8 khi uploader nằm trong biểu mẫu thật.
-  { href: '/dashboard/media', label: 'Thư viện ảnh', icon: ImageUp },
 ];
 
 /** Hai chữ cái đầu của tên hiển thị — "Nguyễn Văn Lan" → "NL". */

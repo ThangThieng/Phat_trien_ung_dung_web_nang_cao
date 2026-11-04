@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type LoadingSkeletonVariant = 'recipe-grid' | 'recipe-detail' | 'table' | 'form';
+type LoadingSkeletonVariant = 'recipe-grid' | 'recipe-detail' | 'table' | 'form';
 
 interface LoadingSkeletonProps {
   variant: LoadingSkeletonVariant;

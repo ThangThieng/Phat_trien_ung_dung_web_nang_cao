@@ -15,7 +15,7 @@ import GoogleSignIn from './GoogleSignIn';
 const LOGIN_FIELDS = ['email', 'password'] as const;
 
 /** Chỉ cho phép redirect nội bộ (chống open redirect). Dùng chung với `AuthCard`. */
-export const safeCallbackUrl = toSafeInternalPath;
+const safeCallbackUrl = toSafeInternalPath;
 
 export default function LoginForm() {
   const { login } = useAuth();

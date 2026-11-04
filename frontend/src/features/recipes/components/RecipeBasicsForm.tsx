@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import FormField from '@/components/shared/FormField';
 import { apiFetch, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
 import type { Category } from '@/types/category';
-import type { RecipeDetail } from '@/types/recipe';
+import type { Recipe } from '@/types/recipe';
 import { DIFFICULTY_LABEL } from '../format';
 import {
   DIFFICULTIES,
@@ -20,9 +20,9 @@ import { createRecipe, updateRecipe } from '../write-api';
 
 interface RecipeBasicsFormProps {
   accessToken: string;
-  onCreated?: (recipe: RecipeDetail) => void;
-  recipe?: RecipeDetail;
-  onUpdated?: (recipe: RecipeDetail) => void;
+  onCreated?: (recipe: Recipe) => void;
+  recipe?: Recipe;
+  onUpdated?: (recipe: Recipe) => void;
 }
 
 const selectClass =

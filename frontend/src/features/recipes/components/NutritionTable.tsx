@@ -1,6 +1,6 @@
-import type { RecipeNutrition } from '@/types/recipe';
+import type { Nutrition } from '@/types/recipe';
 
-const ROWS: { key: keyof RecipeNutrition; label: string; unit: string }[] = [
+const ROWS: { key: keyof Nutrition; label: string; unit: string }[] = [
   { key: 'calories', label: 'Năng lượng', unit: 'kcal' },
   { key: 'protein', label: 'Chất đạm', unit: 'g' },
   { key: 'carbohydrates', label: 'Tinh bột', unit: 'g' },
@@ -10,7 +10,7 @@ const ROWS: { key: keyof RecipeNutrition; label: string; unit: string }[] = [
 ];
 
 /** Bảng dinh dưỡng / khẩu phần (Owned Entity RecipeNutrition – SRS §7.2.1). */
-export default function NutritionTable({ nutrition }: { nutrition: RecipeNutrition }) {
+export default function NutritionTable({ nutrition }: { nutrition: Nutrition }) {
   const rows = ROWS.filter((row) => nutrition[row.key] !== null);
   if (rows.length === 0) return null;
 

@@ -18,7 +18,7 @@ import type { ProblemDetails, UploadedFile } from '@/types/api';
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-export interface ImageUploaderProps {
+interface ImageUploaderProps {
   /** Access token (Bearer) – endpoint upload yêu cầu đăng nhập. */
   accessToken: string | null;
   /** Ảnh hiện tại (controlled). */

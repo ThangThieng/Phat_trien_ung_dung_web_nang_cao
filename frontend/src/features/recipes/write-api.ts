@@ -4,7 +4,7 @@ import type { ProblemDetails } from '@/types/api';
 import type {
   CreateRecipeRequest,
   IngredientInput,
-  RecipeDetail,
+  Recipe,
   RecipeImageResult,
   RecipeIngredient,
   RecipeStep,
@@ -13,12 +13,12 @@ import type {
   UpdateRecipeRequest,
 } from '@/types/recipe';
 
-/** FR-RCP-003 – POST /recipes → 201 RecipeDetail ở trạng thái Draft. */
+/** FR-RCP-003 – POST /recipes → 201 Recipe ở trạng thái Draft. */
 export function createRecipe(body: CreateRecipeRequest, accessToken: string) {
-  return apiFetch<RecipeDetail>('/recipes', { method: 'POST', body, accessToken });
+  return apiFetch<Recipe>('/recipes', { method: 'POST', body, accessToken });
 }
 
-export interface UploadRecipeImageOptions {
+interface UploadRecipeImageOptions {
   altText?: string;
   isPrimary?: boolean;
 }
@@ -80,11 +80,11 @@ export function deleteRecipeImage(recipeId: string, imageId: string, accessToken
 }
 
 export function getMyRecipe(recipeId: string, accessToken: string) {
-  return apiFetch<RecipeDetail>(`/recipes/mine/${recipeId}`, { accessToken, cache: 'no-store' });
+  return apiFetch<Recipe>(`/recipes/mine/${recipeId}`, { accessToken, cache: 'no-store' });
 }
 
 export function updateRecipe(recipeId: string, body: UpdateRecipeRequest, accessToken: string) {
-  return apiFetch<RecipeDetail>(`/recipes/${recipeId}`, { method: 'PUT', body, accessToken });
+  return apiFetch<Recipe>(`/recipes/${recipeId}`, { method: 'PUT', body, accessToken });
 }
 
 export function addIngredient(recipeId: string, body: IngredientInput, accessToken: string) {
@@ -109,8 +109,8 @@ export function reorderSteps(recipeId: string, stepIds: string[], accessToken: s
   return apiFetch<RecipeStep[]>(`/recipes/${recipeId}/steps/reorder`, { method: 'PATCH', body: { stepIds }, accessToken });
 }
 export function publishRecipe(recipeId: string, accessToken: string) {
-  return apiFetch<RecipeDetail>(`/recipes/${recipeId}/publish`, { method: 'PATCH', accessToken });
+  return apiFetch<Recipe>(`/recipes/${recipeId}/publish`, { method: 'PATCH', accessToken });
 }
 export function unpublishRecipe(recipeId: string, accessToken: string) {
-  return apiFetch<RecipeDetail>(`/recipes/${recipeId}/unpublish`, { method: 'PATCH', accessToken });
+  return apiFetch<Recipe>(`/recipes/${recipeId}/unpublish`, { method: 'PATCH', accessToken });
 }

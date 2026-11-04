@@ -1,8 +1,5 @@
 /** Kiểu dùng chung cho mọi miền – khớp DTO của Backend (.NET), JSON camelCase. Chủ file: Dev 4. */
 
-/** SRS §5.2 – phiên bản API nằm trên URL (`/api/v1/...`). */
-export type ApiVersion = 'v1';
-
 /** MT-42 – `PagedResult<T>` của Backend (FR-RCP-001, FR-SRCH-004): phân trang offset. */
 export interface PagedResult<T> {
   items: T[];
@@ -83,9 +80,3 @@ export interface ProblemDetails {
   [key: string]: unknown;
 }
 
-/** D-11 / MT-08 – lỗi kiểm tra hợp lệ: 400 `VALIDATION_ERROR` kèm lỗi theo từng trường. */
-export interface ValidationProblemDetails extends ProblemDetails {
-  type: 'VALIDATION_ERROR';
-  status: 400;
-  errors: Record<string, string[]>;
-}

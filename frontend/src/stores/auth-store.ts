@@ -38,7 +38,7 @@ function isLegacySession(value: unknown): value is PersistedSession {
 }
 
 /** Converts the Buổi 4 raw session shape into Zustand's `{ state, version }` envelope and drops any old access token. */
-export const legacyAwareLocalStorage: StateStorage = {
+const legacyAwareLocalStorage: StateStorage = {
   getItem: (name) => {
     let raw: string | null;
     try {

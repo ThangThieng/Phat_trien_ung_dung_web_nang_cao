@@ -45,9 +45,6 @@ export interface Nutrition {
   sodium: number | null;
 }
 
-/** @deprecated Dùng `Nutrition`; alias được giữ đến Buổi 8 để không làm gãy màn hình cũ. */
-export type RecipeNutrition = Nutrition;
-
 /** SRS §8.5 - stepNumber do server cấp, không có trong StepInput. */
 export interface RecipeStep {
   id: string;
@@ -101,9 +98,6 @@ export interface Recipe extends Omit<RecipeSummary, 'primaryImageUrl'> {
   rowVersion: string;
 }
 
-/** @deprecated Dùng `Recipe`; alias được giữ đến Buổi 8 để không làm gãy màn hình cũ. */
-export type RecipeDetail = Recipe;
-
 export interface NutritionInput {
   calories: number | null;
   protein: number | null;
@@ -150,11 +144,6 @@ export interface CreateRecipeRequest {
 export type UpdateRecipeRequest = Partial<Omit<CreateRecipeRequest, 'ingredients' | 'steps'>> & {
   rowVersion: string;
 };
-
-/** FR-RCP-010 - thứ tự id đầy đủ sau khi người dùng sắp xếp. */
-export interface ReorderStepsRequest {
-  stepIds: string[];
-}
 
 /** FR-RCP-008 - metadata ảnh có thể cập nhật độc lập. */
 export interface UpdateRecipeImageRequest {

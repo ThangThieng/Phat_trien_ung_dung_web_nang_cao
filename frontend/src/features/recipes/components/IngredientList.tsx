@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { RecipeIngredient } from '@/types/recipe';
 
-export function scaleQuantity(
+function scaleQuantity(
   quantity: number,
   originalServings: number,
   targetServings: number,

@@ -14,7 +14,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import type { Role } from '@/types/auth';
 
-export interface DashboardNavItem {
+interface DashboardNavItem {
   href: string;
   label: string;
   icon: LucideIcon;

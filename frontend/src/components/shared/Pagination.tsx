@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export type PageItem = number | 'ellipsis-start' | 'ellipsis-end';
+type PageItem = number | 'ellipsis-start' | 'ellipsis-end';
 
 /** Tổng số ô số trang luôn hiển thị khi có nhiều trang: đầu + cuối + trang hiện tại ± 1 + 2 dấu `…`. */
 const SLOTS = 7;

@@ -2,7 +2,7 @@ import { MutationCache, QueryCache, QueryClient, isServer } from '@tanstack/reac
 import { handleApiError, normalizeError } from './error-handler';
 
 /** `meta` dùng chung cho truy vấn và mutation. */
-export interface AppRequestMeta extends Record<string, unknown> {
+interface AppRequestMeta extends Record<string, unknown> {
   /** Màn hình tự hiển thị lỗi (dialog xung đột, widget tự ẩn khi lỗi) → bộ xử lý toàn cục không toast. */
   suppressGlobalError?: boolean;
 }

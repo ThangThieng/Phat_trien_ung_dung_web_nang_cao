@@ -4,7 +4,7 @@
  * được "Phở" nhưng không có chữ nào được tô, trông như kết quả sai.
  */
 
-export interface TextSegment {
+interface TextSegment {
   text: string;
   match: boolean;
 }

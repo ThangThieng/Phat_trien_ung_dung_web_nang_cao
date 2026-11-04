@@ -1,7 +1,7 @@
 import type { ProblemDetails } from '@/types/api';
 
 /** Thông tin đọc từ response, không nằm trong body Problem Details. */
-export interface ApiErrorMeta {
+interface ApiErrorMeta {
   /**
    * `X-Correlation-ID` Backend trả lại (Buổi 8). Không đọc được header (ví dụ XHR không có quyền) thì lấy `correlationId` của
    * Problem Details — cùng giá trị — rồi mới tới `traceId`.

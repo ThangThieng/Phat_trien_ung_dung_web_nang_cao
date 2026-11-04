@@ -10,13 +10,13 @@ import RecipeContentEditor from '@/features/recipes/components/RecipeContentEdit
 import RecipePublishActions from '@/features/recipes/components/RecipePublishActions';
 import { getErrorMessage } from '@/lib/api-client';
 import { getMyRecipe } from '@/features/recipes/write-api';
-import type { RecipeDetail } from '@/types/recipe';
+import type { Recipe } from '@/types/recipe';
 
 /** FR-RCP-004/005/009/010 - màn hình riêng tư để soạn, quản lý nội dung và xuất bản công thức. */
 export default function EditRecipePage() {
   const params = useParams<{ id: string }>();
   const { accessToken, isAuthenticated, isReady } = useAuth();
-  const [recipe, setRecipe] = useState<RecipeDetail | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
