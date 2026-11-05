@@ -43,11 +43,11 @@ public sealed partial class GoogleIdTokenValidator(IOptions<GoogleAuthOptions> o
         }
         catch (HttpRequestException)
         {
-            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh Google ID token lúc này.");
+            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh mã xác thực Google lúc này.");
         }
         catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh Google ID token lúc này.");
+            throw new BadGatewayException(ErrorCodes.AuthGoogleUnavailable, "Không thể xác minh mã xác thực Google lúc này.");
         }
     }
 

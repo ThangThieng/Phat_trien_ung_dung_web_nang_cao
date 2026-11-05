@@ -25,7 +25,7 @@ public sealed class MinioHealthCheck(IAmazonS3 s3, IOptions<MinioOptions> option
         {
             var exists = await AmazonS3Util.DoesS3BucketExistV2Async(s3, bucket).WaitAsync(cancellationToken).ConfigureAwait(false);
             return exists
-                ? HealthCheckResult.Healthy($"Bucket '{bucket}' sẵn sàng.")
+                ? HealthCheckResult.Healthy($"Kho ảnh '{bucket}' sẵn sàng.")
                 : new HealthCheckResult(context.Registration.FailureStatus, $"Bucket '{bucket}' không tồn tại.");
         }
         catch (Exception ex) when (ex is AmazonServiceException or AmazonClientException or HttpRequestException or TimeoutException or OperationCanceledException)

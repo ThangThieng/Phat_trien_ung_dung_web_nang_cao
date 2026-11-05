@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import '@/lib/zod-locale';
 import { Loader2, X } from 'lucide-react';
 import FormField from '@/components/shared/FormField';
 import ImageUploader from '@/components/shared/ImageUploader';
@@ -136,7 +137,7 @@ export default function CategoryFormDialog({
         {isEditing && (
           <p className="mt-1 text-xs text-ink-soft">
             Đường dẫn <code className="rounded bg-gold-soft px-1">/{category.slug}</code> không đổi
-            khi sửa tên, để link đã chia sẻ không bị hỏng.
+            khi sửa tên, để liên kết đã chia sẻ không bị hỏng.
           </p>
         )}
 

@@ -44,7 +44,7 @@ describe('Admin users page', () => {
   it('renders the required user table fields, avatar and fallback', async () => {
     await loaded();
     expect(screen.getByText('admin@example.test')).toBeInTheDocument();
-    expect(screen.getAllByText('Author')).toHaveLength(2);
+    expect(screen.getAllByText('Tác giả')).toHaveLength(2);
     expect(screen.getAllByText('Đang hoạt động')).toHaveLength(3);
     expect(screen.getAllByText('Đã khóa')).toHaveLength(2);
     expect(screen.getAllByText('3')).toHaveLength(2);

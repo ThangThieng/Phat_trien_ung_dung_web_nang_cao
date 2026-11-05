@@ -47,7 +47,7 @@ function DashboardFrame({ children }: { children: ReactNode }) {
             className="rounded-md p-2 text-cream hover:bg-navy-2 md:hidden"
             aria-expanded={mobileNavOpen}
             aria-controls={MOBILE_NAV_ID}
-            aria-label={mobileNavOpen ? 'Đóng menu' : 'Mở menu'}
+            aria-label={mobileNavOpen ? 'Đóng trình đơn' : 'Mở trình đơn'}
             onClick={() => setMobileNavOpen((open) => !open)}
           >
             {mobileNavOpen ? (

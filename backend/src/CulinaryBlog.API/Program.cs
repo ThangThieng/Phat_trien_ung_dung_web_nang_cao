@@ -60,7 +60,7 @@ builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
     if (ctx.ProblemDetails.Status == StatusCodes.Status413PayloadTooLarge)
     {
         ctx.ProblemDetails.Type = ErrorCodes.FileSizeExceeded;
-        ctx.ProblemDetails.Detail = "Kích thước file vượt quá giới hạn 5MB.";
+        ctx.ProblemDetails.Detail = "Kích thước tệp vượt quá giới hạn 5MB.";
     }
 });
 builder.Services.AddJwtAuthentication(builder.Configuration);

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import '@/lib/zod-locale';
 import { RECIPE_DIFFICULTIES, type CreateRecipeRequest } from '@/types/recipe';
 import { RECIPE_LIMITS } from './limits';
 

@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import '@/lib/zod-locale';
 import { toast } from 'sonner';
 import FormField from '@/components/shared/FormField';
 import { apiFetch, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
@@ -18,8 +19,8 @@ import ImageUploader from '@/components/shared/ImageUploader';
 import type { UploadedFile } from '@/types/api';
 
 type Tab = 'Thông tin' | 'Bảo mật' | 'Phiên'; const tabs: Tab[] = ['Thông tin','Bảo mật','Phiên'];
-const profileSchema=z.object({displayName:z.string().trim().min(2).max(100),bio:z.string().max(1000)});
-const passwordSchema=z.object({currentPassword:z.string().min(1),newPassword:registerSchema.shape.password,confirmPassword:z.string()}).refine(v=>v.newPassword===v.confirmPassword,{path:['confirmPassword'],message:'Mật khẩu xác nhận không khớp.'});
+const profileSchema=z.object({displayName:z.string().trim().min(2,'Tên hiển thị cần ít nhất 2 ký tự.').max(100,'Tên hiển thị tối đa 100 ký tự.'),bio:z.string().max(1000,'Giới thiệu tối đa 1000 ký tự.')});
+const passwordSchema=z.object({currentPassword:z.string().min(1,'Nhập mật khẩu hiện tại.'),newPassword:registerSchema.shape.password,confirmPassword:z.string()}).refine(v=>v.newPassword===v.confirmPassword,{path:['confirmPassword'],message:'Mật khẩu xác nhận không khớp.'});
 const deleteFile=(file:UploadedFile)=>apiFetch(`/files/${file.key.split('/').map(encodeURIComponent).join('/')}`,{method:'DELETE'}).catch(()=>undefined);
 export function ProfilePage(){
  const router=useRouter(); const queryClient=useQueryClient(); const store=useAuthStoreApi(); const {logout,accessToken}=useAuth();

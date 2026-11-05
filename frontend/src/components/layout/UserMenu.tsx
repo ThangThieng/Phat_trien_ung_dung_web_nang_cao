@@ -24,7 +24,7 @@ interface MenuLink {
 
 const USER_LINKS: readonly MenuLink[] = [
   { href: '/profile', label: 'Hồ sơ', icon: UserRound },
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Bảng điều khiển', icon: LayoutDashboard },
 ];
 
 /** Chỉ Admin. Ẩn mục chỉ là trải nghiệm — Backend vẫn trả 403 cho Author (NFR-SEC-006). */

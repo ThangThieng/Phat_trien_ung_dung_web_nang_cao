@@ -36,7 +36,7 @@ function SystemHealthReport() {
         <div>
           <h1 className="text-2xl font-bold text-ink">Tình trạng hệ thống</h1>
           <p className="mt-1 text-sm text-ink-soft">
-            Kết quả health check của API, tự làm mới mỗi {HEALTH_POLL_INTERVAL_MS / 1_000} giây.
+            Kết quả kiểm tra tình trạng của API, tự làm mới mỗi {HEALTH_POLL_INTERVAL_MS / 1_000} giây.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -61,7 +61,7 @@ function SystemHealthReport() {
 
       {isError && !data && (
         <p role="alert" className="mt-8 rounded-lg bg-red-50 p-4 text-sm text-red-800">
-          Không gọi được máy chủ giao diện để lấy tình trạng hệ thống. Kiểm tra container frontend.
+          Không gọi được máy chủ giao diện để lấy tình trạng hệ thống. Kiểm tra dịch vụ giao diện.
         </p>
       )}
 
@@ -135,7 +135,7 @@ function SystemHealthReport() {
                     </td>
                     <td className="px-4 py-3 text-ink-soft">
                       {entry.tags.includes(READY_TAG)
-                        ? 'API ngừng nhận traffic (/health/ready trả 503)'
+                        ? 'API ngừng nhận yêu cầu (/health/ready trả 503)'
                         : 'Chỉ suy giảm — ảnh không tải lên/hiển thị được'}
                     </td>
                     <td className="max-w-xs px-4 py-3 break-words text-ink-soft">

@@ -217,7 +217,7 @@
       ["lòng đỏ trứng", 4.0, "lòng", "đánh tan, phần nhân"],
       ["nghệ bột", 0.125, "thìa cà phê", "Phần nhân"],
       ["lòng trắng trứng", 4.0, "lòng", "Phần meringue"],
-      ["bột cream of tartar", 0.25, "thìa cà phê", "Phần meringue"],
+      ["bột kem tartar (cream of tartar)", 0.25, "thìa cà phê", "Phần meringue"],
       ["đường cát trắng (phần meringue)", 6.0, "thìa canh", "Phần meringue"]
     ],
     "steps": [
@@ -231,7 +231,7 @@
       ["Nấu sánh", "Tiếp tục đun nhẹ khoảng 2 phút đến khi sánh, khuấy liên tục.", 2],
       ["Đổ nhân", "Đổ vào vỏ bánh đã nguội và để nguội trong lúc làm meringue.", null],
       ["Đánh lòng trắng", "Cho 4 lòng trắng vào máy đánh trứng, đánh tốc độ cao đến khi bắt đầu nổi bọt.", null],
-      ["Thêm đường", "Cho cream of tartar vào lòng trắng, vừa đánh vừa thêm đường, mỗi lần 1 thìa canh. Đánh khoảng 30 giây giữa mỗi lần thêm.", null],
+      ["Thêm đường", "Cho bột kem tartar vào lòng trắng, vừa đánh vừa thêm đường, mỗi lần 1 thìa canh. Đánh khoảng 30 giây giữa mỗi lần thêm.", null],
       ["Đánh cứng", "Tiếp tục đánh đến khi meringue tạo chóp cứng khi nhấc que đánh lên.", null],
       ["Phủ meringue", "Dùng xẻng cao su trải meringue lên bánh, bắt đầu từ phần nhân. Trải phủ qua viền vỏ, bịt kín hoàn toàn phần nhân.", null],
       ["Tạo chóp", "Để tạo chóp, chạm mặt phẳng của xẻng vào meringue rồi nhấc lên. Lặp lại trên toàn bộ mặt bánh.", null],
@@ -550,7 +550,7 @@
       ["bột mì đa dụng", 344.0, "gram", "2 ¾ cốc hoặc 24 oz"],
       ["muối", 0.25, "thìa cà phê"],
       ["muối nở (baking soda)", 1.0, "thìa cà phê"],
-      ["bột cream of tartar", 2.0, "thìa cà phê"],
+      ["bột kem tartar (cream of tartar)", 2.0, "thìa cà phê"],
       ["đường siêu mịn", 300.0, "gram", "1½ cốc hoặc 9 oz"],
       ["bơ", 110.0, "gram", "½ cốc hoặc 4 oz"],
       ["mỡ trừu (shortening)", 100.0, "gram", "½ cốc hoặc 4 oz"],
@@ -561,7 +561,7 @@
     ],
     "steps": [
       ["Làm nóng lò", "Làm nóng lò trước ở 350°F (175 °C).", null],
-      ["Trộn phần khô", "Trộn bột mì, muối, muối nở và cream of tartar. Để riêng.", null],
+      ["Trộn phần khô", "Trộn bột mì, muối, muối nở và bột kem tartar. Để riêng.", null],
       ["Đánh bơ đường", "Đánh bơ, mỡ trừu và đường.", null],
       ["Thêm trứng", "Đánh trứng và vani vào.", null],
       ["Thêm phần khô", "Cho dần phần khô vào, trộn đều.", null],

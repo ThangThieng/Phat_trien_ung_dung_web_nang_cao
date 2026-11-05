@@ -58,7 +58,7 @@ export default function MobileNav({ categories }: { categories: readonly Categor
         className="rounded-md p-2 text-cream hover:bg-navy-2 md:hidden"
         aria-expanded={open}
         aria-controls={PANEL_ID}
-        aria-label={open ? 'Đóng menu' : 'Mở menu'}
+        aria-label={open ? 'Đóng trình đơn' : 'Mở trình đơn'}
         onClick={() => {
           const header = buttonRef.current?.closest('header');
           if (header) setTop(Math.max(0, header.getBoundingClientRect().bottom));

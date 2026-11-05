@@ -50,7 +50,7 @@ function uploadWithProgress(
     rejectUpload = reject;
     withAuthRefresh((token) => new Promise<UploadedFile>((resolveAttempt, rejectAttempt) => {
       if (aborted) {
-        rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
+        rejectAttempt(new DOMException('Đã hủy tải lên', 'AbortError'));
         return;
       }
       const attempt = new XMLHttpRequest();
@@ -76,7 +76,7 @@ function uploadWithProgress(
       };
       // Cùng loại lỗi `fetch` ném khi mất mạng → `normalizeError` xếp vào nhóm `network`.
       attempt.onerror = () => rejectAttempt(new TypeError('Network request failed'));
-      attempt.onabort = () => rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
+      attempt.onabort = () => rejectAttempt(new DOMException('Đã hủy tải lên', 'AbortError'));
       const form = new FormData();
       form.append('file', file);
       attempt.send(form);
@@ -85,7 +85,7 @@ function uploadWithProgress(
   return { promise, abort: () => {
     aborted = true;
     xhr?.abort();
-    rejectUpload(new DOMException('Upload bị hủy', 'AbortError'));
+    rejectUpload(new DOMException('Đã hủy tải lên', 'AbortError'));
   } };
 }
 

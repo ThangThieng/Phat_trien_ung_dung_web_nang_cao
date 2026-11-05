@@ -3,6 +3,7 @@
 import { useQueries } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { RECIPE_STATUS_LABEL } from '@/features/recipes/format';
 import { getMyRecipes } from '@/features/recipes/my-recipes-api';
 import { recipeKeys } from '@/features/recipes/query-keys';
 import type { RecipeStatus } from '@/types/recipe';
@@ -17,7 +18,7 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold text-ink">Bảng điều khiển</h1>
       <p className="mt-2 text-ink-soft">Quản lý nội dung và phiên đăng nhập của bạn.</p>
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        {statuses.map((status, index) => <Card key={status}><CardHeader><CardTitle>{status}</CardTitle></CardHeader><CardContent>{results[index].isLoading ? <Skeleton className="h-8 w-16" /> : <p className="text-3xl font-bold">{results[index].data?.totalCount ?? 0}</p>}</CardContent></Card>)}
+        {statuses.map((status, index) => <Card key={status}><CardHeader><CardTitle>{RECIPE_STATUS_LABEL[status]}</CardTitle></CardHeader><CardContent>{results[index].isLoading ? <Skeleton className="h-8 w-16" /> : <p className="text-3xl font-bold">{results[index].data?.totalCount ?? 0}</p>}</CardContent></Card>)}
       </div>
     </section>
   );

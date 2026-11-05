@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import '@/lib/zod-locale';
 
 /** Mirror RegisterUserCommandValidator (backend) – NFR-SEC-001. */
 export const registerSchema = z

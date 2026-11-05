@@ -15,6 +15,12 @@ chứng cuối dự án xanh (39/39 FR, 48/48 endpoint, `dotnet test`, `npm test
 Các mục còn chờ trước khi phát hành: Lab 8 của Dev 1, Dev 2, Dev 3 (quản lý người dùng; biểu mẫu công thức + máy trạng thái; SEO + WCAG). Lab 7 của
 cả 4 dev đã vào `develop` ngày 30/10/2026.
 
+### Thay đổi: Việt hóa toàn bộ giao diện (06/11/2026)
+
+- Nhãn trạng thái, vai trò, trình đơn, `aria-label`, thông báo và hộp thoại chuyển sang tiếng Việt. Giá trị gửi API và mã lỗi không đổi.
+- Thông báo mặc định của `zod` dùng tiếng Việt, chỉ tải ở các trang có biểu mẫu.
+- Dữ liệu mẫu: thay `allspice`, `caraway`, `cream of tartar`, `topping` đứng một mình bằng từ tiếng Việt. Tên món và tiêu đề giữ nguyên vì slug sinh từ tiêu đề.
+
 ### Added
 
 - **Hoàn thiện Buổi 8 của Dev 2:** dialog 409 có xem khác biệt, nút trạng thái ở từng dòng `/dashboard/recipes`, sửa `altText`, E2E vòng đời và hai tab, test 10 `PUT` đồng thời và đếm truy vấn.

@@ -4062,3 +4062,15 @@ SRS không quy định màu và font nên không cần Change Request. NFR-USE-0
 **Giữ nguyên có chủ đích:** nhãn trạng thái tiếng Anh `Published` ở `/dashboard/recipes` vì đây là văn bản hiện có, không thuộc phạm vi đổi giao diện. Sản phẩm Lab 6 ở `(dev)/mockups` giữ màu cũ. Logo là bản xử lý từ ảnh, nên có file vector thì thay để nét hơn.
 
 *— Hết Phụ lục C —*
+
+## C.5. Việt hóa giao diện (06/11/2026)
+
+Quét bằng trình duyệt trên trang thật với khách, Author và Admin; quét thêm mã nguồn theo cấu tạo âm tiết tiếng Việt.
+
+- **Đã dịch:** trạng thái công thức, vai trò, `Dashboard`, `menu`, `Breadcrumb`, `Close`, `Notifications`, `health check`, `traffic`, `alt text`, `ID token`, `file`, `bucket`, độ khó trong hộp thoại xung đột và thông báo mặc định của `zod`.
+- **Giữ tiếng Anh vì bắt buộc:** giá trị API và mã lỗi, route, tên thương hiệu và công nghệ (Culinary Blog, Google, PostgreSQL, Redis, MinIO, API), định dạng và đơn vị (JPEG, MB, kcal), giấy phép và nguồn (CC BY-SA, Wikibooks Cookbook), tên riêng của món, địa danh và nguyên liệu.
+- **Giữ theo tập quán:** `Email`, `Blog`, `salad`, `pizza`, `pudding`.
+- **Chưa đổi:** tiêu đề món có chú thích tiếng Anh (ví dụ `Bánh mì ngô (Cornbread)`), vì slug sinh từ tiêu đề, đổi trong seed sẽ tạo món trùng trên cơ sở dữ liệu đang có. Muốn bỏ chú thích cần thêm trường slug cố định cho seed.
+- **Ngoài phạm vi:** giao diện công cụ bên thứ ba (Hangfire, Scalar, Seq, MinIO Console, MailHog) và tuyến `(dev)/mockups`.
+
+Kiểm thử: Jest 453/453, `dotnet test` 729/729, TypeScript sạch, ESLint 0 lỗi. Playwright trên stack dev: 41 đạt, 6 bỏ qua, 2 lỗi do môi trường (cần MailHog cổng 8125 và access token 1 phút của stack E2E); chưa chạy lại trên stack E2E production.

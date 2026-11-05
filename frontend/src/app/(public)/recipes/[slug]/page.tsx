@@ -53,7 +53,7 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
           { name: recipe.title, path: `/recipes/${recipe.slug}` },
         ])}
       />
-      <nav aria-label="Breadcrumb" className="recipe-breadcrumb text-sm text-ink-soft">
+      <nav aria-label="Đường dẫn trang" className="recipe-breadcrumb text-sm text-ink-soft">
         <Link href="/recipes" className="hover:text-gold-ink">
           Công thức
         </Link>

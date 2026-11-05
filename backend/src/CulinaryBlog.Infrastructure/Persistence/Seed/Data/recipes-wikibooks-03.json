@@ -280,7 +280,7 @@
       ["khoai tây", "vừa đủ", null],
       ["men chua", 100.0, "gram", "tốt nhất làm từ bột lúa mạch đen"],
       ["nấm porcini khô", 15.0, "gram", "tốt nhất là loại Trung Âu"],
-      ["hạt caraway", 1.0, "thìa canh"],
+      ["hạt thì là Ba Tư (caraway)", 1.0, "thìa canh"],
       ["nước", 1250.0, "ml"],
       ["hành tây", 1.0, "củ", "băm"],
       ["bơ", 20.0, "gram"],
@@ -292,7 +292,7 @@
     "steps": [
       ["Chuẩn bị khoai", "Luộc khoai tây nguyên vỏ, lột vỏ, thái nhỏ và rang trên chảo (không dùng dầu mỡ).", null],
       ["Pha men chua", "Cho 250 ml nước ấm vào tô, khuấy men chua vào. Đậy khăn sạch và để ở nhiệt độ phòng 30 phút đến 3 giờ.", null],
-      ["Nấu nước dùng", "Cho 1000 ml nước vào nồi lớn, thêm nấm khô và caraway, đun sôi ít nhất 15 phút để có nước dùng đậm.", 15],
+      ["Nấu nước dùng", "Cho 1000 ml nước vào nồi lớn, thêm nấm khô và hạt thì là Ba Tư, đun sôi ít nhất 15 phút để có nước dùng đậm.", 15],
       ["Thêm men chua", "Cẩn thận cho hỗn hợp men chua vào nước dùng, khuấy đều vì men chua có thể co lại thành viên nhỏ.", null],
       ["Nấu súp", "Đun sôi súp, vừa đun vừa khuấy đến khi men chua làm súp sánh lại, khoảng 10 phút.", 10],
       ["Xào hành", "Xào hành băm với bơ trong chảo, rồi khuấy vào súp.", null],
@@ -353,7 +353,7 @@
     "ingredients": [
       ["thăn bò", 0.5, "pound", "thái sợi mỏng, 250 g"],
       ["sốt tartar", "vừa đủ", null],
-      ["bột gia vị allspice", "vừa đủ", null],
+      ["bột tiêu Jamaica (allspice)", "vừa đủ", null],
       ["tiêu xay", "vừa đủ", null],
       ["muối", "vừa đủ", null],
       ["sốt Worcestershire", "vừa đủ", null],
@@ -363,7 +363,7 @@
       ["khoai tây chiên giòn nghiền", "vừa đủ", null]
     ],
     "steps": [
-      ["Chiên thịt", "Chiên thịt bò trong chảo vừa. Nêm allspice, tiêu, muối và sốt Worcestershire.", null],
+      ["Chiên thịt", "Chiên thịt bò trong chảo vừa. Nêm tiêu Jamaica, tiêu, muối và sốt Worcestershire.", null],
       ["Làm nóng ngô", "Làm nóng ngô trong nước ấm rồi để thật ráo.", null],
       ["Xếp xà lách", "Xếp xà lách vào đĩa.", null],
       ["Thêm ngô", "Đặt ngô lên xà lách.", null],

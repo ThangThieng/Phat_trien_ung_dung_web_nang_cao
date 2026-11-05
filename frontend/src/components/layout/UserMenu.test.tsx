@@ -31,7 +31,7 @@ describe('<UserMenu />', () => {
     expect(screen.getByRole('link', { name: 'Đăng ký' })).toHaveAttribute('href', '/auth/register');
   });
 
-  it('Author: menu có Hồ sơ, Dashboard, Đăng xuất — không có mục Admin', () => {
+  it('Author: menu có Hồ sơ, Bảng điều khiển, Đăng xuất — không có mục Admin', () => {
     mockAuth = { isReady: true, user: author, logout: jest.fn() };
     render(<UserMenu />);
     const trigger = screen.getByRole('button', { name: /Tài khoản: Nguyễn Văn Lan/ });
@@ -40,7 +40,7 @@ describe('<UserMenu />', () => {
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
     const names = screen.getAllByRole('menuitem').map((item) => item.textContent);
-    expect(names).toEqual(['Hồ sơ', 'Dashboard', 'Đăng xuất']);
+    expect(names).toEqual(['Hồ sơ', 'Bảng điều khiển', 'Đăng xuất']);
     expect(screen.getAllByRole('menuitem')[0]).toHaveFocus();
   });
 

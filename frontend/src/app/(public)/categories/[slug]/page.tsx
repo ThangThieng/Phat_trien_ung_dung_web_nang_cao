@@ -83,7 +83,7 @@ export default async function CategoryDetailPage({
           { name: category.name, path: pathname },
         ])}
       />
-      <nav aria-label="Breadcrumb" className="text-sm text-ink-soft">
+      <nav aria-label="Đường dẫn trang" className="text-sm text-ink-soft">
         <Link href="/categories" className="hover:text-gold-ink">
           Danh mục
         </Link>

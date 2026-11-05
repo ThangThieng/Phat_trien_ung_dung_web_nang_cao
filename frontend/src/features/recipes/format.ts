@@ -1,4 +1,11 @@
-import type { RecipeDifficulty } from '@/types/recipe';
+import type { RecipeDifficulty, RecipeStatus } from '@/types/recipe';
+
+/** Nhãn hiển thị của trạng thái; giá trị Draft/Published/Archived là hợp đồng API nên giữ nguyên khi gửi và lọc. */
+export const RECIPE_STATUS_LABEL: Record<RecipeStatus, string> = {
+  Draft: 'Bản nháp',
+  Published: 'Đã xuất bản',
+  Archived: 'Đã lưu trữ',
+};
 
 export const DIFFICULTY_LABEL: Record<RecipeDifficulty, string> = {
   Easy: 'Dễ',

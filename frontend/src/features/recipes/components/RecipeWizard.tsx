@@ -123,7 +123,7 @@ export function publishBlockers(recipe?: Recipe): string[] {
   const blockers: string[] = [];
   if (recipe.ingredients.length === 0) blockers.push('Cần ít nhất một nguyên liệu.');
   if (recipe.steps.length === 0) blockers.push('Cần ít nhất một bước chế biến.');
-  if (recipe.images.some((image) => !image.altText?.trim())) blockers.push('Mọi ảnh cần có mô tả ảnh (alt text).');
+  if (recipe.images.some((image) => !image.altText?.trim())) blockers.push('Mọi ảnh cần có mô tả ảnh.');
   return blockers;
 }
 
@@ -135,7 +135,7 @@ function describeDifferences(values: RecipeFormValues, fresh: Recipe): string[] 
     ['Thời gian chuẩn bị', values.prepTime, fresh.prepTimeMinutes],
     ['Thời gian nấu', values.cookTime, fresh.cookTimeMinutes],
     ['Khẩu phần', values.servings, fresh.servings],
-    ['Độ khó', values.difficulty, fresh.difficulty],
+    ['Độ khó', DIFFICULTY_LABELS[values.difficulty], DIFFICULTY_LABELS[fresh.difficulty]],
     ['Số nguyên liệu', values.ingredients.length, fresh.ingredients.length],
     ['Số bước', values.steps.length, fresh.steps.length],
   ];

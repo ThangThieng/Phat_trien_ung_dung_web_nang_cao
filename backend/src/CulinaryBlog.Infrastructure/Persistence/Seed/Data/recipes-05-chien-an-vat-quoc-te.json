@@ -129,7 +129,7 @@
       ["Chuẩn bị bánh tráng", "Cắt bánh tráng thành sợi nhỏ, nếu bánh quá khô thì phun sương chút nước cho mềm.", 5],
       ["Pha nước trộn", "Hòa nước mắm, đường, nước tắc và sa tế thành hỗn hợp chua cay ngọt.", 3],
       ["Trộn bánh tráng", "Rưới nước trộn vào bánh tráng, trộn đều cho sợi bánh mềm và thấm.", 3],
-      ["Thêm topping", "Cho xoài, khô bò, tôm khô, rau răm và muối tôm vào, trộn tiếp.", 3],
+      ["Thêm phần phủ", "Cho xoài, khô bò, tôm khô, rau răm và muối tôm vào, trộn tiếp.", 3],
       ["Trình bày", "Cho ra bát, xếp trứng cút cắt đôi, rắc đậu phộng và hành phi.", null]
     ]
   },

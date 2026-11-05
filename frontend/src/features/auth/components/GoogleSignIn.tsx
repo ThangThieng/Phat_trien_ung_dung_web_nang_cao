@@ -26,7 +26,7 @@ export default function GoogleSignIn({ onSuccess }: GoogleSignInProps) {
         <GoogleLogin
           onSuccess={async ({ credential }) => {
             if (!credential) {
-              toast.error('Google không trả về ID token. Vui lòng thử lại.');
+              toast.error('Google không trả về mã xác thực. Vui lòng thử lại.');
               return;
             }
             try {
