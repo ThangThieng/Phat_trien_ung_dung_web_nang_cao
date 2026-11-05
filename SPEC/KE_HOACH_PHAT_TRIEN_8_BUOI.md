@@ -4000,6 +4000,8 @@ Trưởng nhóm yêu cầu hợp nhất cả 4 nhánh và tự hoàn thiện ph�
 | Chung | `Button asChild` làm sập mọi dialog xác nhận | Slot chỉ nhận một phần tử con |
 | Chung | Phân trang bỏ `aria-label` trên `span` (axe); CSP cho stylesheet Google Identity Services | Chỉ lộ khi có nhiều trang và Client ID thật |
 
+**Lỗi phát hiện sau khi hợp nhất:** mọi ảnh vỡ khi chạy ở `localhost`: bộ tối ưu của `next/image` (retrofit D-14) chạy trong container nên `localhost` không tới Nginx, `/_next/image` trả 500. Địa chỉ ảnh là loopback thì tự bỏ qua bộ tối ưu (`lib/images.ts`); tên miền thật vẫn tối ưu. Thêm `e2e/images.spec.ts` kiểm ảnh tải được thật, vì 48 E2E trước chỉ kiểm khung ảnh.
+
 **Lệch kế hoạch có lý do:** "`GetRecipeBySlug` ≤ 2 truy vấn" không khớp `AsSplitQuery` đang dùng (4 câu cố định, gộp lại sẽ tạo tích Descartes). Test kiểm tra tính chất cần giữ: số câu không tăng theo số dòng con. Trang HTML công khai sau khi lưu trữ theo sau trong TTL Data Cache 300 giây, API trả 404 ngay (MT-67).
 
 **Kiểm chứng trên bản hợp nhất:** backend 729/729, frontend 447/447, ETL 64/64, không có thay đổi model chưa có migration, E2E 48/48 trên stack production với Edge (xác thực, vòng đời, hai tab, tìm kiếm, SEO, a11y, responsive, CSP).

@@ -4,7 +4,21 @@
  * Mặc định BẬT tối ưu. Đặt `NEXT_PUBLIC_IMAGE_UNOPTIMIZED=true` chỉ khi chạy dev mà container Next.js không với tới được
  * địa chỉ ảnh (ví dụ MinIO ở `localhost:9000`) — đúng lý do `unoptimized` từng được thêm ở Buổi 2.
  */
-export const IMAGE_UNOPTIMIZED = process.env.NEXT_PUBLIC_IMAGE_UNOPTIMIZED === 'true';
+const LOOPBACK_HOSTS = ['localhost', '127.0.0.1'];
+
+/**
+ * Bộ tối ưu chạy TRONG container Next.js nên `localhost` trỏ vào chính container, không tới Nginx: `/_next/image` trả 500 và mọi ảnh
+ * vỡ. Địa chỉ ảnh là loopback thì tự bỏ qua bộ tối ưu; ảnh vẫn đúng cỡ nhờ biến thể medium/thumbnail của FR-JOB-002.
+ */
+export function shouldSkipOptimizer(flag: string | undefined, mediaUrl: string | undefined): boolean {
+  if (flag === 'true') return true;
+  return LOOPBACK_HOSTS.includes(new URL(mediaUrl ?? 'http://localhost/media').hostname);
+}
+
+export const IMAGE_UNOPTIMIZED = shouldSkipOptimizer(
+  process.env.NEXT_PUBLIC_IMAGE_UNOPTIMIZED,
+  process.env.NEXT_PUBLIC_MINIO_PUBLIC_URL,
+);
 
 /** `sizes` cho lưới thẻ công thức: 4 cột ≥ 1200 px là 25vw, 2 cột ≥ 768 px là 50vw, còn lại 100vw. */
 export const GRID_IMAGE_SIZES = '(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw';
