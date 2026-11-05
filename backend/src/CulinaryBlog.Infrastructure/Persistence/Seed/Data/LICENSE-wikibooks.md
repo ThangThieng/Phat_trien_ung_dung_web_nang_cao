@@ -6,6 +6,6 @@ Các file `recipes-wikibooks-*.json` là tác phẩm phái sinh từ [Wikibooks 
 
 **Tác giả:** những người đóng góp cho Wikibooks. Mỗi công thức có trường `source` (`pageId`, `revisionId`) và `attribution` trỏ tới đúng phiên bản đã dùng; lịch sử tác giả xem ở trang đó.
 
-**Ảnh:** mỗi ảnh có giấy phép riêng, ghi trong trường `image` (hoặc `legacy-recipe-images.json`), gồm tác giả, giấy phép và liên kết tới trang mô tả trên Wikimedia Commons. Ảnh không nằm trong repo, được tải về MinIO khi chạy.
+**Ảnh:** mỗi ảnh có giấy phép riêng, ghi trong trường `image` (hoặc `legacy-recipe-images.json`), gồm tác giả, giấy phép và liên kết tới trang mô tả trên Wikimedia Commons hoặc Flickr. Bốn ảnh có giấy phép phi thương mại (CC BY-NC, CC BY-NC-SA): phở cuốn, lẩu riêu cua bắp bò, đậu hũ sốt cà chua, trứng cút lộn xào me. Ảnh không nằm trong repo, được tải về MinIO khi chạy.
 
 Thông báo này chỉ áp dụng cho dữ liệu nêu trên, không áp dụng cho mã nguồn của dự án và 100 công thức do nhóm biên soạn (`recipes-0*.json`).

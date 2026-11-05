@@ -22,7 +22,7 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
   (CC BY-SA 4.0, ghim theo revision, ghi công trên trang chi tiết); thêm 6 danh mục, tổng 26 danh mục và 201 công thức. Công cụ
   `tools/recipe-etl`. 100 công thức do nhóm biên soạn và ngưỡng 20/100/10/5 giữ nguyên.
 - **`SeedImageImportJob` (CR-2026-07):** tải ảnh giấy phép mở về MinIO qua đúng các lớp kiểm tra của tải ảnh lên; công thức Wikibooks
-  chỉ được xuất bản sau khi ảnh đã lưu. Tải tuần tự trên hàng đợi một worker, tôn trọng `Retry-After` theo quy định của Wikimedia. Ảnh cho 99/100 công thức cũ (73 đúng món, 26 gần đúng, ghi ở `tools/recipe-etl/legacy_image_notes.json`); riêng phở cuốn chưa có ảnh.
+  chỉ được xuất bản sau khi ảnh đã lưu. Tải tuần tự trên hàng đợi một worker, tôn trọng `Retry-After` theo quy định của Wikimedia. Ảnh cho cả 100 công thức cũ (21 ảnh gần đúng, ghi ở `tools/recipe-etl/legacy_image_notes.json`); 7 ảnh từ Flickr, trong đó 4 ảnh giấy phép phi thương mại (CC BY-NC, BY-NC-SA).
 - **Khối nguồn dữ liệu trên trang chi tiết** (`RecipeSourceNote`) và dòng ghi nguồn ở footer. Không đổi API hay schema.
 - **`tools/seed-nutrition-cleanup` (CR-2026-07):** script một lần bỏ dinh dưỡng ngẫu nhiên trên cơ sở dữ liệu đang có, có chạy thử và script khôi phục.
 - **Log có cấu trúc (B8 — FR-OBS-002, CONS-010):** Serilog cho cả container `api` và `hangfire` — Console (JSON `CompactJsonFormatter`), File

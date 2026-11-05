@@ -3483,7 +3483,7 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 |---|---|---|
 | Công thức mẫu | 100 | **201** |
 | Danh mục | 20 | **26** (20 cũ + 6 mới) |
-| Công thức có ảnh | 0 | **200** (101 mới + 99 cũ; 26 ảnh cũ chỉ gần đúng món, xem §B.10) |
+| Công thức có ảnh | 0 | **201** (101 mới + 100 cũ; 21 ảnh cũ chỉ gần đúng món, xem §B.10) |
 | Dinh dưỡng | 100 công thức, số ngẫu nhiên | Chỉ số liệu từ nguồn (tối đa 5 công thức), còn lại `NULL` |
 | Tìm không dấu `pho` → `Phở…` | Đạt | Đạt, vì công thức cũ còn nguyên |
 | Schema, endpoint, mã lỗi, máy trạng thái | | **Không đổi** trong CR-2026-07. CR-2026-08 đổi riêng biểu thức `SearchVector` (§B.9) |
@@ -3521,7 +3521,7 @@ feat(obs,release): serilog structured logging with validated correlation id, req
 
 **Giấy phép của 150 file ảnh đã kiểm tra:** CC BY-SA 4.0 (37), CC BY-SA 3.0 (33), Public domain (23), CC BY 2.0 (21), CC BY-SA 2.0 (11), CC0 (8), CC BY-SA 2.5 (5), CC BY 2.5 (4), CC BY 4.0 (3), CC BY 3.0 (3), CC BY-SA 1.0 (1), "Attribution" (1, bị loại vì không rõ phiên bản). JPEG 137, PNG 13; 12 ảnh gốc trên 5 MB nên lấy bản thu nhỏ.
 
-**Ảnh cho 100 công thức cũ:** tìm tự động trên Wikimedia Commons cho 60/100 công thức có ứng viên đúng giấy phép. Trong đó có nhiều kết quả sai rõ ràng (`Cơm gà Hội An` ra `Social Anxiety Disorder.png`, `Lẩu nấm chay` ra `Rainbow falls.JPG`). Sau khi xem từng ảnh, **42/100 công thức có ảnh đúng món** ở đợt đầu; đợt tìm thêm ngày 05/11/2026 nâng lên 99/100 (§B.10).
+**Ảnh cho 100 công thức cũ:** tìm tự động trên Wikimedia Commons cho 60/100 công thức có ứng viên đúng giấy phép. Trong đó có nhiều kết quả sai rõ ràng (`Cơm gà Hội An` ra `Social Anxiety Disorder.png`, `Lẩu nấm chay` ra `Rainbow falls.JPG`). Sau khi xem từng ảnh, **42/100 công thức có ảnh đúng món** ở đợt đầu; đợt tìm thêm ngày 05/11/2026 nâng lên 100/100 (§B.10).
 
 **Giới hạn của phép đo:** độ chính xác tách nguyên liệu mới xem trên mẫu 40 dòng ngẫu nhiên (2 dòng sai rõ, khoảng 5%), chưa phải số liệu thống kê; các lỗi phát hiện khi dịch đã được sửa trực tiếp trong file dịch. Ảnh được xem trên bản thu nhỏ.
 
@@ -3555,7 +3555,9 @@ tools/recipe-etl/
 ├── glossary.md             # Thuật ngữ nấu ăn Anh–Việt
 ├── pins.json               # pageId → revisionId đã chọn; giúp tải lại đúng nội dung
 ├── exclusions.json         # Trang bị loại sau khi xem ảnh, kèm lý do
-├── legacy_image_picks.json # 42 ảnh đã xem là đúng món cho công thức cũ
+├── legacy_image_picks.json # Ảnh Commons đã xem cho công thức cũ
+├── legacy_image_external.json # 7 ảnh Flickr, tải qua API Openverse
+├── legacy_image_notes.json # Ảnh chỉ gần đúng món, kèm lý do
 ├── translations/batch-*.json
 ├── category_overrides.csv  # Sửa danh mục khi duyệt: pageId, category, reason
 ├── mediawiki.py            # Gọi API có điều tiết, tôn trọng Retry-After
@@ -4009,5 +4011,9 @@ Trưởng nhóm yêu cầu hợp nhất cả 4 nhánh và tự hoàn thiện ph�
 **Còn cần người làm:** duyệt bản dịch và ảnh (§B.2.7); Google Rich Results Test, Facebook/Zalo debugger, NVDA/VoiceOver; đo lại Lighthouse trên máy demo; gắn tag `v1.0.0` (chưa gắn, chờ duyệt bản dịch). Stress test và chịu lỗi chưa đo lại trên bản hợp nhất. Báo cáo Lab của từng thành viên không sửa, nên số liệu trong đó là số tại nhánh riêng.
 
 **Bổ sung ảnh (05/11/2026), theo yêu cầu của trưởng nhóm:** tìm lại trên Wikimedia Commons cho 58 công thức cũ còn thiếu, xem từng ứng viên rồi chọn được 57; tổng 200/201 công thức có ảnh, đều giấy phép mở và đủ biến thể. **Phở cuốn** chưa có ảnh vì không tìm được ảnh giấy phép mở đúng món. Khác nguyên tắc ban đầu "không có ảnh đúng món thì không thêm": 26 ảnh chỉ gần đúng (ví dụ lẩu mắm dùng ảnh bún mắm, cua rang me dùng ảnh cua rang muối), ghi từng món và lý do ở `tools/recipe-etl/legacy_image_notes.json` để người duyệt thay khi có ảnh tốt hơn.
+
+**Thay 7 ảnh (05/11/2026), theo yêu cầu của trưởng nhóm:** phở cuốn và 6 ảnh khác món rõ (đậu hũ sốt cà chua, cua rang me, lẩu mắm miền Tây, lẩu riêu cua bắp bò, ốc hương xào bơ tỏi, trứng cút lộn xào me) lấy từ Flickr qua Openverse. Không dùng ảnh từ kết quả Google vì đó là ảnh có bản quyền của các trang nguồn. Host ảnh Flickr trả 403 cho client tự động nên job tải qua API `api.openverse.org`; giấy phép đã đối chiếu trên trang gốc của từng ảnh.
+
+**Lưu ý giấy phép:** phở cuốn, lẩu riêu (CC BY-NC 2.0), đậu hũ sốt cà chua, trứng cút lộn (CC BY-NC-SA 2.0) chỉ được dùng **phi thương mại**. Đồ án dùng được; nếu đưa web vào kinh doanh phải thay 4 ảnh này. Lẩu mắm vẫn chỉ là lẩu cá sông, chưa thấy rõ là lẩu mắm.
 
 *— Hết Phụ lục B —*

@@ -46,7 +46,7 @@ public sealed partial class SeedImageImportJob(
     private static readonly TimeSpan MaxRateLimitWait = TimeSpan.FromMinutes(10);
 
     /// <summary>Danh sách cho phép: URL chỉ đến từ dữ liệu nhúng, nhưng job không tải từ host nào khác dù dữ liệu có sai.</summary>
-    private static readonly string[] AllowedHosts = ["upload.wikimedia.org", "thumb.wikimedia.org"];
+    private static readonly string[] AllowedHosts = ["upload.wikimedia.org", "thumb.wikimedia.org", "api.openverse.org"];
 
     [Queue(QueueName)]
     [AutomaticRetry(Attempts = 5, DelaysInSeconds = [300, 900, 1800, 3600, 7200])] // NFR-REL-002; giới hạn tần suất kéo dài hàng phút

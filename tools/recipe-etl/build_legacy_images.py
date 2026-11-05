@@ -48,6 +48,9 @@ def main() -> None:
             rejected.append(f"{title}: {name}")
             continue
         rows.append({"slug": slugify(title), "file": name, "url": image["url"], "artist": image["artist"], "license": image["license"], "descriptionUrl": image["descriptionUrl"]})
+    # Ảnh Flickr tải qua API của Openverse (host ảnh Flickr chặn client tự động), giấy phép đã kiểm tra khi chọn; có thể là phi thương mại (CC BY-NC).
+    rows += json.loads((ROOT / "legacy_image_external.json").read_text(encoding="utf-8"))
+    rows.sort(key=lambda row: row["slug"])
     (SEED_DATA / "legacy-recipe-images.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"XONG: {len(rows)} ảnh; bị loại {len(rejected)}: {rejected}")
 
