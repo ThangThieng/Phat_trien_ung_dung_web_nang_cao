@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChefHat, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/features/auth/auth-context';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import HealthIndicator from '@/features/system/components/HealthIndicator';
@@ -34,16 +35,16 @@ function DashboardFrame({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-1">
-      <aside className="hidden w-60 shrink-0 border-r border-orange-100 bg-white md:block">
+      <aside className="hidden w-60 shrink-0 bg-navy text-cream md:block">
         <DashboardSidebar roles={roles} />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-orange-100 bg-white/90 px-4 backdrop-blur">
+        <header className="rule-gold sticky top-0 z-30 flex h-16 items-center gap-3 border-b-[3px] bg-navy px-4 text-cream">
           {/* Bản tạm: nút mở/đóng danh sách; Dev 2 có `Sheet` (shadcn) thì thay bằng ngăn kéo trượt. */}
           <button
             type="button"
-            className="rounded-md p-2 text-gray-700 hover:bg-orange-50 md:hidden"
+            className="rounded-md p-2 text-cream hover:bg-navy-2 md:hidden"
             aria-expanded={mobileNavOpen}
             aria-controls={MOBILE_NAV_ID}
             aria-label={mobileNavOpen ? 'Đóng menu' : 'Mở menu'}
@@ -55,9 +56,9 @@ function DashboardFrame({ children }: { children: ReactNode }) {
               <Menu aria-hidden className="h-5 w-5" />
             )}
           </button>
-          <Link href="/" className="flex items-center gap-2 font-bold text-orange-700">
-            <ChefHat aria-hidden className="h-5 w-5" />
-            Culinary Blog
+          <Link href="/" className="flex items-center gap-2 font-bold text-gold">
+            <Image src="/brand/logo-gold.png" alt="" width={52} height={52} unoptimized />
+            <span className="sr-only">Culinary Blog</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
             {/* FR-OBS-001: chỉ Admin thấy (và chỉ khi đó mới poll /api/health) */}
@@ -71,7 +72,7 @@ function DashboardFrame({ children }: { children: ReactNode }) {
         {mobileNavOpen && (
           <div
             id={MOBILE_NAV_ID}
-            className="fixed inset-x-0 top-14 bottom-0 z-40 overflow-y-auto border-t border-orange-100 bg-white md:hidden"
+            className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-paper md:hidden"
           >
             <DashboardSidebar roles={roles} onNavigate={() => setMobileNavOpen(false)} />
           </div>

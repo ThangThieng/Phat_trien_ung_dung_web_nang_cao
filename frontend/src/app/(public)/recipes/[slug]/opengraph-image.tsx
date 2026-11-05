@@ -48,8 +48,8 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
         height: '100%',
         display: 'flex',
         fontFamily: OG_FONT_FAMILY,
-        background: 'linear-gradient(135deg, #ffedd5, #fffbeb)',
-        color: '#111827',
+        background: '#0c1f38',
+        color: '#f3ebd6',
       }}
     >
       {photo && (
@@ -65,9 +65,9 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
           padding: 56,
         }}
       >
-        <div style={{ fontSize: 34, fontWeight: 700, color: '#c2410c' }}>{SITE_NAME}</div>
+        <div style={{ fontSize: 34, fontWeight: 700, color: '#d9ae5f' }}>{SITE_NAME}</div>
         <div style={{ fontSize: photo ? 56 : 72, fontWeight: 800, lineHeight: 1.15 }}>{title}</div>
-        <div style={{ fontSize: 28, color: '#4b5563' }}>
+        <div style={{ fontSize: 28, color: '#f3ebd6' }}>
           {recipe
             ? `${recipe.category.name} · ${recipe.totalTimeMinutes} phút`
             : 'Công thức nấu ăn từ bếp nhà Việt'}

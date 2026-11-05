@@ -13,7 +13,7 @@ interface LoadingSkeletonProps {
 /** Một khối xương. Màu nhạt + `animate-pulse` (tự tắt với `prefers-reduced-motion` qua `motion-reduce:`). */
 function Bone({ className }: { className: string }) {
   return (
-    <div className={`animate-pulse rounded bg-gray-200 motion-reduce:animate-none ${className}`} />
+    <div className={`animate-pulse rounded bg-line motion-reduce:animate-none ${className}`} />
   );
 }
 
@@ -51,14 +51,14 @@ export default function LoadingSkeleton({
         <Bone className="h-9 w-64" />
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: count ?? 6 }, (_, i) => (
-            <div key={i} className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+            <div key={i} className="overflow-hidden rounded-2xl border border-line bg-paper">
               <Bone className="aspect-[4/3] w-full rounded-none" />
               <div className="space-y-2 p-4">
                 <Bone className="h-3 w-20" />
                 <Bone className="h-5 w-3/4" />
-                <Bone className="h-4 w-full bg-gray-100" />
-                <Bone className="h-4 w-2/3 bg-gray-100" />
-                <Bone className="mt-3 h-3 w-1/2 bg-gray-100" />
+                <Bone className="h-4 w-full bg-gold-soft" />
+                <Bone className="h-4 w-2/3 bg-gold-soft" />
+                <Bone className="mt-3 h-3 w-1/2 bg-gold-soft" />
               </div>
             </div>
           ))}
@@ -72,20 +72,20 @@ export default function LoadingSkeleton({
       <Frame label={label} className="mx-auto max-w-5xl px-4 py-10">
         <Bone className="h-4 w-32" />
         <Bone className="mt-3 h-10 w-3/4" />
-        <Bone className="mt-4 h-4 w-full bg-gray-100" />
-        <Bone className="mt-2 h-4 w-5/6 bg-gray-100" />
+        <Bone className="mt-4 h-4 w-full bg-gold-soft" />
+        <Bone className="mt-2 h-4 w-5/6 bg-gold-soft" />
         <Bone className="mt-6 aspect-[4/3] w-full rounded-2xl md:aspect-[16/9]" />
         <div className="mt-8 grid gap-8 md:grid-cols-[1fr_2fr]">
           <div className="space-y-3">
             <Bone className="h-6 w-32" />
             {Array.from({ length: 8 }, (_, i) => (
-              <Bone key={i} className="h-4 w-full bg-gray-100" />
+              <Bone key={i} className="h-4 w-full bg-gold-soft" />
             ))}
           </div>
           <div className="space-y-4">
             <Bone className="h-6 w-40" />
             {Array.from({ length: 4 }, (_, i) => (
-              <Bone key={i} className="h-16 w-full bg-gray-100" />
+              <Bone key={i} className="h-16 w-full bg-gold-soft" />
             ))}
           </div>
         </div>
@@ -100,10 +100,10 @@ export default function LoadingSkeleton({
           <Bone className="h-8 w-56" />
           <Bone className="h-9 w-32 rounded-lg" />
         </div>
-        <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
-          <Bone className="h-11 w-full rounded-none bg-gray-100" />
+        <div className="mt-6 overflow-hidden rounded-xl border border-line bg-paper">
+          <Bone className="h-11 w-full rounded-none bg-gold-soft" />
           {Array.from({ length: count ?? 6 }, (_, i) => (
-            <div key={i} className="flex items-center gap-4 border-t border-gray-100 px-4 py-3">
+            <div key={i} className="flex items-center gap-4 border-t border-line px-4 py-3">
               <Bone className="h-10 w-10 shrink-0 rounded-lg" />
               <Bone className="h-4 flex-1" />
               <Bone className="hidden h-4 w-24 sm:block" />
@@ -120,13 +120,13 @@ export default function LoadingSkeleton({
     <Frame label={label} className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-12">
       <div className="flex flex-col items-center">
         <Bone className="h-8 w-48" />
-        <Bone className="mt-2 h-4 w-64 bg-gray-100" />
+        <Bone className="mt-2 h-4 w-64 bg-gold-soft" />
       </div>
-      <div className="space-y-5 rounded-2xl border border-gray-200 bg-white p-6">
+      <div className="space-y-5 rounded-2xl border border-line bg-paper p-6">
         {Array.from({ length: count ?? 3 }, (_, i) => (
           <div key={i} className="space-y-2">
             <Bone className="h-4 w-24" />
-            <Bone className="h-10 w-full rounded-lg bg-gray-100" />
+            <Bone className="h-10 w-full rounded-lg bg-gold-soft" />
           </div>
         ))}
         <Bone className="h-11 w-full rounded-lg" />

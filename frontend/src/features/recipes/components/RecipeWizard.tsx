@@ -51,7 +51,7 @@ const DIFFICULTY_LABELS: Record<RecipeDifficulty, string> = {
   Expert: 'Chuyên gia',
 };
 const INPUT =
-  'mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 aria-invalid:border-red-600';
+  'mt-1 w-full rounded border border-line-strong px-3 py-2 text-sm focus:ring-2 focus:ring-gold-ink aria-invalid:border-red-600';
 
 // RHF gọi setValueAs cả với null của defaultValues; Number(null) ra 0 thì ô trống thành 0 và không qua được validate.
 const isBlank = (value: string | number | null | undefined) => value === '' || value === null || value === undefined;
@@ -147,7 +147,7 @@ function describeDifferences(values: RecipeFormValues, fresh: Recipe): string[] 
 function Field({ label, error, className, children }: { label: string; error?: string; className?: string; children: ReactNode }) {
   return (
     // eslint-disable-next-line jsx-a11y/label-has-associated-control -- ô nhập được truyền qua children
-    <label className={`block text-sm font-medium text-gray-800 ${className ?? ''}`}>
+    <label className={`block text-sm font-medium text-ink ${className ?? ''}`}>
       {label}
       {children}
       {error && (
@@ -326,7 +326,7 @@ export default function RecipeWizard({
           <li
             key={label}
             aria-current={step === index ? 'step' : undefined}
-            className={`rounded-full px-3 py-1 text-sm ${step === index ? 'bg-orange-700 font-semibold text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`rounded-full px-3 py-1 text-sm ${step === index ? 'bg-navy font-semibold text-white' : 'bg-gold-soft text-ink'}`}
           >
             {index + 1}. {label}
           </li>
@@ -393,7 +393,7 @@ export default function RecipeWizard({
           </div>
           <div className="mt-4 space-y-3">
             {ingredients.fields.length === 0 && (
-              <p className="text-sm text-gray-600">Thêm ít nhất một nguyên liệu để có thể xuất bản.</p>
+              <p className="text-sm text-ink-soft">Thêm ít nhất một nguyên liệu để có thể xuất bản.</p>
             )}
             {ingredients.fields.map((field, index) => {
               const fieldErrors = errors.ingredients?.[index];
@@ -436,7 +436,7 @@ export default function RecipeWizard({
           </div>
           <div className="mt-4 space-y-3">
             {steps.fields.length === 0 && (
-              <p className="text-sm text-gray-600">Thêm ít nhất một bước để có thể xuất bản.</p>
+              <p className="text-sm text-ink-soft">Thêm ít nhất một bước để có thể xuất bản.</p>
             )}
             {steps.fields.map((field, index) => {
               const fieldErrors = errors.steps?.[index];
@@ -493,7 +493,7 @@ export default function RecipeWizard({
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Xem lại và xuất bản</h2>
           {blockers.length === 0 ? (
-            <p className="text-sm text-gray-600">Công thức đã đủ nguyên liệu, bước và mô tả ảnh để xuất bản.</p>
+            <p className="text-sm text-ink-soft">Công thức đã đủ nguyên liệu, bước và mô tả ảnh để xuất bản.</p>
           ) : (
             <ul className="list-disc pl-5 text-sm text-red-700">
               {blockers.map((blocker) => (
@@ -546,7 +546,7 @@ export default function RecipeWizard({
             </AlertDialogDescription>
           </AlertDialogHeader>
           {differences && (
-            <div className="max-h-48 overflow-auto text-sm text-gray-800">
+            <div className="max-h-48 overflow-auto text-sm text-ink">
               {differences.length === 0 ? (
                 <p>Các trường chính không khác nhau.</p>
               ) : (

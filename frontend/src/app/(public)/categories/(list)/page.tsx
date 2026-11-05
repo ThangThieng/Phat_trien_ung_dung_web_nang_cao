@@ -27,8 +27,8 @@ export default async function CategoriesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-3xl font-bold text-gray-900">Danh mục công thức</h1>
-      <p className="mt-1 text-gray-600">Chọn một danh mục để khám phá các món ngon.</p>
+      <h1 className="text-3xl font-bold text-ink">Danh mục công thức</h1>
+      <p className="mt-1 text-ink-soft">Chọn một danh mục để khám phá các món ngon.</p>
 
       {categories.length === 0 ? (
         <EmptyState

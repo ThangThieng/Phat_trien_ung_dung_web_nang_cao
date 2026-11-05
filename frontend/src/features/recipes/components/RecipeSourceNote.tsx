@@ -16,7 +16,7 @@ export default function RecipeSourceNote({ instructions }: { instructions: strin
   if (!instructions?.startsWith(SOURCE_NOTE_PREFIX)) return null;
 
   return (
-    <aside aria-label="Nguồn dữ liệu" className="mt-12 border-t border-gray-200 pt-4 text-xs text-gray-600">
+    <aside aria-label="Nguồn dữ liệu" className="mt-12 border-t border-line pt-4 text-xs text-ink-soft">
       <p className="break-words">
         {instructions.split(URL_PATTERN).map((part, index) =>
           // `split` với nhóm bắt: phần tử ở vị trí lẻ luôn là URL khớp mẫu.
@@ -26,7 +26,7 @@ export default function RecipeSourceNote({ instructions }: { instructions: strin
               href={part}
               target="_blank"
               rel="nofollow noopener noreferrer"
-              className="text-orange-700 underline hover:text-orange-900"
+              className="text-gold-ink underline hover:text-gold-ink"
             >
               {part}
             </a>

@@ -69,6 +69,7 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
 
 ### Changed
 
+- **Giao diện Navy Gold (kế hoạch Phụ lục C):** tông navy và vàng, font Playfair Display và Be Vietnam Pro, logo và favicon mới. Chỉ đổi trình bày, không đổi API, route hay logic.
 - **Tìm kiếm ưu tiên tiêu đề, bỏ khớp nhầm từ ghép (CR-2026-08, SRS v1.2.6, MT-71):** `SearchVector` có trọng số (`Title` A, `Description` B); `phô mai`, `phổ biến`, `thành phố`…
   thành token riêng nên `pho` không còn khớp. Dữ liệu thật: `pho` từ 55 còn 14 kết quả, món Phở đứng đầu. Migration `B8_Search_TitleWeightCompoundTerms`; API không đổi.
 - **Bỏ dinh dưỡng sinh ngẫu nhiên (CR-2026-07):** dinh dưỡng chỉ lấy từ nguồn khi đủ 6 chỉ số và qua kiểm tra hợp lý, còn lại để `NULL`,

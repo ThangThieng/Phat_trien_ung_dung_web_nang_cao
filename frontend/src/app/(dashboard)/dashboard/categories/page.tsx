@@ -80,7 +80,7 @@ export default function CategoriesDashboardPage() {
 
   if (!isReady) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-16 text-center text-gray-500">
+      <div className="mx-auto max-w-5xl px-4 py-16 text-center text-ink-soft">
         <Loader2 aria-hidden className="mx-auto h-6 w-6 animate-spin" />
         <p className="mt-2 text-sm">Đang kiểm tra phiên đăng nhập…</p>
       </div>
@@ -91,10 +91,10 @@ export default function CategoriesDashboardPage() {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
-        <p className="mt-2 text-gray-600">Bạn cần đăng nhập bằng tài khoản quản trị để tiếp tục.</p>
+        <p className="mt-2 text-ink-soft">Bạn cần đăng nhập bằng tài khoản quản trị để tiếp tục.</p>
         <Link
           href="/auth/login?callbackUrl=/dashboard/categories"
-          className="mt-6 inline-block rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white hover:bg-orange-800"
+          className="mt-6 inline-block rounded-lg bg-navy px-4 py-2 font-semibold text-white hover:bg-navy-2"
         >
           Đăng nhập
         </Link>
@@ -106,10 +106,10 @@ export default function CategoriesDashboardPage() {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Không có quyền truy cập</h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-ink-soft">
           Trang quản lý danh mục chỉ dành cho quản trị viên. Tài khoản của bạn không có quyền này.
         </p>
-        <Link href="/" className="mt-6 inline-block text-orange-700 underline">
+        <Link href="/" className="mt-6 inline-block text-gold-ink underline">
           Về trang chủ
         </Link>
       </div>
@@ -122,22 +122,22 @@ export default function CategoriesDashboardPage() {
     <div className="mx-auto max-w-5xl px-4 py-10">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý danh mục</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-ink">Quản lý danh mục</h1>
+          <p className="mt-1 text-sm text-ink-soft">
             Tạo, sửa và xóa danh mục công thức. Danh mục còn công thức sẽ không xóa được.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setDialog({ mode: 'create' })}
-          className="flex items-center gap-2 rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+          className="flex items-center gap-2 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
         >
           <Plus aria-hidden className="h-4 w-4" /> Thêm danh mục
         </button>
       </div>
 
       {categoriesQuery.isPending && (
-        <p className="mt-10 text-center text-sm text-gray-500">Đang tải danh sách…</p>
+        <p className="mt-10 text-center text-sm text-ink-soft">Đang tải danh sách…</p>
       )}
 
       {categoriesQuery.isError && (
@@ -147,14 +147,14 @@ export default function CategoriesDashboardPage() {
       )}
 
       {categoriesQuery.isSuccess && categories.length === 0 && (
-        <p className="mt-10 text-center text-sm text-gray-500">Chưa có danh mục nào.</p>
+        <p className="mt-10 text-center text-sm text-ink-soft">Chưa có danh mục nào.</p>
       )}
 
       {categories.length > 0 && (
-        <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 bg-white">
+        <div className="mt-6 overflow-x-auto rounded-xl border border-line bg-paper">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Danh sách danh mục công thức</caption>
-            <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+            <thead className="bg-paper text-xs text-ink-soft uppercase">
               <tr>
                 <th scope="col" className="px-4 py-3">
                   Tên
@@ -173,20 +173,20 @@ export default function CategoriesDashboardPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-line">
               {categories.map((category) => (
                 <tr key={category.id}>
-                  <td className="px-4 py-3 font-medium text-gray-900">{category.name}</td>
-                  <td className="px-4 py-3 text-gray-500">/{category.slug}</td>
-                  <td className="px-4 py-3 text-right text-gray-700">{category.orderIndex}</td>
-                  <td className="px-4 py-3 text-right text-gray-700">{category.recipeCount}</td>
+                  <td className="px-4 py-3 font-medium text-ink">{category.name}</td>
+                  <td className="px-4 py-3 text-ink-soft">/{category.slug}</td>
+                  <td className="px-4 py-3 text-right text-ink">{category.orderIndex}</td>
+                  <td className="px-4 py-3 text-right text-ink">{category.recipeCount}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
                       <button
                         type="button"
                         onClick={() => setDialog({ mode: 'edit', category })}
                         aria-label={`Sửa danh mục ${category.name}`}
-                        className="flex items-center gap-1 rounded-md px-2 py-1 text-orange-700 hover:bg-orange-50"
+                        className="flex items-center gap-1 rounded-md px-2 py-1 text-gold-ink hover:bg-gold-soft"
                       >
                         <Pencil aria-hidden className="h-4 w-4" /> Sửa
                       </button>
@@ -223,12 +223,12 @@ export default function CategoriesDashboardPage() {
             aria-modal="true"
             aria-labelledby="delete-dialog-title"
             aria-describedby="delete-dialog-description"
-            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+            className="w-full max-w-md rounded-2xl bg-paper p-6 shadow-xl"
           >
-            <h2 id="delete-dialog-title" className="text-lg font-bold text-gray-900">
+            <h2 id="delete-dialog-title" className="text-lg font-bold text-ink">
               Xóa danh mục?
             </h2>
-            <p id="delete-dialog-description" className="mt-2 text-sm text-gray-600">
+            <p id="delete-dialog-description" className="mt-2 text-sm text-ink-soft">
               Danh mục <strong>{pendingDelete.name}</strong> sẽ bị ẩn khỏi hệ thống. Nếu vẫn còn
               công thức thuộc danh mục này, thao tác sẽ bị từ chối.
             </p>
@@ -236,7 +236,7 @@ export default function CategoriesDashboardPage() {
               <button
                 type="button"
                 onClick={() => setPendingDelete(null)}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-line-strong px-4 py-2 text-sm font-semibold text-ink hover:bg-paper"
               >
                 Hủy
               </button>

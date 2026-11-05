@@ -264,8 +264,8 @@ của bộ integration test dùng cùng tag `postgres`/`redis`.
 - **Lý do:** Jest cần thêm gói thư viện `ts-node` mới đọc được `jest.config.ts`. Dùng `jest.config.mjs` thì không phải cài thêm phụ thuộc. Công cụ vẫn là Jest.
 - **Buổi 5 — biên dịch gói ESM thuần (`ky`):** `next/jest` luôn chèn mẫu `/node_modules/(?!.pnpm)(?!(geist)/)` vào `transformIgnorePatterns`. Jest bỏ qua file khớp **bất kỳ** mẫu nào, nên chỉ thêm `'/node_modules/(?!ky/)'` như hướng dẫn thường gặp là **không đủ** (đã thử: vẫn lỗi *"Must use import to load ES Module"*). `jest.config.mjs` vì vậy xuất một hàm async: dựng cấu hình bằng `next/jest` rồi **thay** mẫu `node_modules` của nó bằng `/node_modules/(?!(ky)/)` (danh sách `ESM_PACKAGES`). Không đổi `next.config.ts` (`transpilePackages`) vì đó là cấu hình build production, không phải của kiểm thử.
 
-### 6.7 Font Inter (subset `vietnamese`) thay font Geist mặc định
-- **Lý do:** font Geist do `create-next-app` sinh ra **không có subset tiếng Việt**, nên dấu hiển thị bằng font dự phòng, lệch và gây layout shift (ảnh hưởng CLS, NFR-PERF-005). Inter có subset `vietnamese`. SRS không chỉ định font. Phần khai báo Geist còn sót trong `layout.tsx` đã gỡ ngày 04/11/2026 (kế hoạch Phụ lục B, R-01).
+### 6.7 Font Be Vietnam Pro và Playfair Display (subset `vietnamese`) thay font Geist mặc định
+- **Lý do:** font Geist do `create-next-app` sinh ra **không có subset tiếng Việt**, nên dấu hiển thị bằng font dự phòng, lệch và gây layout shift (ảnh hưởng CLS, NFR-PERF-005). Inter có subset `vietnamese`. SRS không chỉ định font. Phần khai báo Geist còn sót trong `layout.tsx` đã gỡ ngày 04/11/2026 (kế hoạch Phụ lục B, R-01). Từ giao diện Navy Gold (05/11/2026, kế hoạch Phụ lục C), Be Vietnam Pro thay Inter cho nội dung và Playfair Display dùng cho tiêu đề, cả hai tự host qua `next/font`.
 
 ### 6.8 Cấu hình StyleCop – tắt một số quy tắc
 - **Quy tắc đã tắt** (trong `.editorconfig`): `SA1101` (bắt buộc `this.`), `SA1309` (cấm `_field`), `SA1200`, `SA1600–1602` (bắt buộc XML doc mọi element), `SA1633` (file header), `SA1402/SA1649` (1 type / file), `SA1413`, `SA1010`, `SA1000`.

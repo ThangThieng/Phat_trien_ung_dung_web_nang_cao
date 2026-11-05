@@ -43,15 +43,15 @@ export default function IngredientList({
   return (
     <section
       aria-labelledby="ingredients-heading"
-      className="rounded-2xl border border-gray-200 bg-white p-5"
+      className="rounded-2xl border border-line bg-paper p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="ingredients-heading" className="text-xl font-bold text-gray-900">
+        <h2 id="ingredients-heading" className="text-xl font-bold text-ink">
           Nguyên liệu
         </h2>
         <label
           htmlFor="recipe-servings"
-          className="flex items-center gap-2 text-sm font-medium text-gray-700"
+          className="flex items-center gap-2 text-sm font-medium text-ink"
         >
           Khẩu phần
           <input
@@ -62,11 +62,11 @@ export default function IngredientList({
             inputMode="numeric"
             value={servings}
             onChange={(event) => setServings(Math.max(1, Number(event.target.value) || 1))}
-            className="w-16 rounded-md border border-gray-300 px-2 py-1 text-center"
+            className="w-16 rounded-md border border-line-strong px-2 py-1 text-center"
           />
         </label>
       </div>
-      <ul className="mt-4 divide-y divide-gray-100">
+      <ul className="mt-4 divide-y divide-line">
         {ingredients.map((ingredient) => {
           const done = prepared.has(ingredient.id);
           const amount = formatAmount(ingredient);
@@ -77,15 +77,15 @@ export default function IngredientList({
                 type="checkbox"
                 checked={done}
                 onChange={() => togglePrepared(ingredient.id)}
-                className="mt-0.5 size-4 accent-orange-700"
+                className="mt-0.5 size-4 accent-navy"
               />
-              <span className={`flex-1 text-gray-900 ${done ? 'line-through opacity-60' : ''}`}>
+              <span className={`flex-1 text-ink ${done ? 'line-through opacity-60' : ''}`}>
                 {ingredient.name}
                 {ingredient.notes && (
-                  <span className="block text-xs text-gray-500">{ingredient.notes}</span>
+                  <span className="block text-xs text-ink-soft">{ingredient.notes}</span>
                 )}
               </span>
-              <span className="shrink-0 font-medium text-gray-700">{amount}</span>
+              <span className="shrink-0 font-medium text-ink">{amount}</span>
             </li>
           );
         })}

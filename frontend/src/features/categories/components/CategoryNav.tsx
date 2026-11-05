@@ -63,7 +63,7 @@ export default function CategoryNav({
         aria-controls="category-nav-menu"
         onClick={() => setOpen((value) => !value)}
         className={`flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap ${
-          active ? 'text-orange-700' : 'text-gray-700 hover:text-orange-700'
+          active ? 'text-gold' : 'text-cream hover:text-gold'
         }`}
       >
         Danh mục
@@ -74,13 +74,13 @@ export default function CategoryNav({
         <ul
           id="category-nav-menu"
           aria-label="Danh mục công thức"
-          className="absolute top-full left-0 z-50 mt-1 max-h-80 w-64 overflow-y-auto rounded-lg border border-orange-100 bg-white py-1 shadow-lg"
+          className="absolute top-full left-0 z-50 mt-1 max-h-80 w-64 overflow-y-auto rounded-lg border border-line bg-paper py-1 shadow-lg"
         >
           <li>
             <Link
               href="/categories"
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-50"
+              className="block px-4 py-2 text-sm font-semibold text-gold-ink hover:bg-gold-soft"
             >
               Tất cả danh mục
             </Link>
@@ -90,10 +90,10 @@ export default function CategoryNav({
               <Link
                 href={`/categories/${category.slug}`}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-700"
+                className="flex items-center justify-between gap-2 px-4 py-2 text-sm text-ink hover:bg-gold-soft hover:text-gold-ink"
               >
                 <span className="truncate">{category.name}</span>
-                <span className="shrink-0 text-xs text-gray-400">{category.recipeCount}</span>
+                <span className="shrink-0 text-xs text-ink-soft">{category.recipeCount}</span>
               </Link>
             </li>
           ))}

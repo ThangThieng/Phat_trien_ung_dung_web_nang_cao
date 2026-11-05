@@ -24,15 +24,15 @@ export default async function SiteOpenGraphImage() {
         justifyContent: 'center',
         padding: 80,
         fontFamily: OG_FONT_FAMILY,
-        background: 'linear-gradient(135deg, #ffedd5, #fffbeb)',
-        color: '#111827',
+        background: '#0c1f38',
+        color: '#f3ebd6',
       }}
     >
-      <div style={{ fontSize: 40, fontWeight: 700, color: '#c2410c' }}>{SITE_NAME}</div>
+      <div style={{ fontSize: 40, fontWeight: 700, color: '#d9ae5f' }}>{SITE_NAME}</div>
       <div style={{ marginTop: 24, fontSize: 76, fontWeight: 700, lineHeight: 1.1 }}>
         Công thức nấu ăn từ bếp nhà Việt
       </div>
-      <div style={{ marginTop: 32, fontSize: 32, color: '#4b5563' }}>
+      <div style={{ marginTop: 32, fontSize: 32, color: '#f3ebd6' }}>
         Đủ nguyên liệu, định lượng và từng bước — tìm không dấu cũng ra.
       </div>
     </div>,

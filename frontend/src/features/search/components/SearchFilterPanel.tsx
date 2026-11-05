@@ -42,7 +42,7 @@ function OptionGroup({
   const titleId = useId();
   return (
     <div role="group" aria-labelledby={titleId}>
-      <p id={titleId} className="text-sm font-medium text-gray-700">
+      <p id={titleId} className="text-sm font-medium text-ink">
         {title}
       </p>
       <ul className="mt-2 flex flex-wrap gap-2">
@@ -52,10 +52,10 @@ function OptionGroup({
               href={buildHref(SEARCH_PATHNAME, state, { ...option.overrides, page: 1 })}
               aria-current={option.selected ? 'true' : undefined}
               className={clsx(
-                'inline-flex h-8 items-center rounded-full border px-3 text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600',
+                'inline-flex h-8 items-center rounded-full border px-3 text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink',
                 option.selected
-                  ? 'border-orange-700 bg-orange-700 font-medium text-white'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-orange-400 hover:bg-orange-50',
+                  ? 'border-gold-ink bg-navy font-medium text-white'
+                  : 'border-line-strong bg-paper text-ink hover:border-gold-ink hover:bg-gold-soft',
               )}
             >
               {option.label}
@@ -114,7 +114,7 @@ function NativeCategorySelect({
       aria-labelledby={labelId}
       value={value === ALL_CATEGORIES ? '' : value}
       onChange={(event) => onChange(event.target.value || ALL_CATEGORIES)}
-      className="h-9 w-full rounded-lg border border-gray-300 bg-white px-2 text-sm text-gray-800"
+      className="h-9 w-full rounded-lg border border-line-strong bg-paper px-2 text-sm text-ink"
     >
       <option value="">Tất cả danh mục</option>
       {categories.map((category) => (
@@ -181,7 +181,7 @@ export default function SearchFilterPanel({
         {state.minServings !== undefined && (
           <input type="hidden" name="minServings" value={state.minServings} />
         )}
-        <span id={categoryLabelId} className="text-sm font-medium text-gray-700">
+        <span id={categoryLabelId} className="text-sm font-medium text-ink">
           Danh mục
         </span>
         <CategorySelect
@@ -201,7 +201,7 @@ export default function SearchFilterPanel({
         <noscript>
           <button
             type="submit"
-            className="mt-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700"
+            className="mt-1 rounded-lg border border-line-strong px-3 py-1.5 text-sm text-ink"
           >
             Lọc theo danh mục
           </button>

@@ -18,7 +18,7 @@ const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
 
     return (
       <div className="flex flex-col gap-1">
-        <label htmlFor={inputId} className="text-sm font-medium text-gray-800">
+        <label htmlFor={inputId} className="text-sm font-medium text-ink">
           {label}
         </label>
         <input
@@ -26,8 +26,8 @@ const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           id={inputId}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className={`rounded-lg border px-3 py-2 text-sm shadow-sm transition outline-none focus:ring-2 focus:ring-orange-500 ${
-            error ? 'border-red-500' : 'border-gray-300'
+          className={`rounded-lg border px-3 py-2 text-sm shadow-sm transition outline-none focus:ring-2 focus:ring-gold-ink ${
+            error ? 'border-red-500' : 'border-line-strong'
           } ${className ?? ''}`}
           {...props}
         />
@@ -37,7 +37,7 @@ const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           </p>
         )}
         {!error && hint && (
-          <p id={`${inputId}-hint`} className="text-xs text-gray-500">
+          <p id={`${inputId}-hint`} className="text-xs text-ink-soft">
             {hint}
           </p>
         )}

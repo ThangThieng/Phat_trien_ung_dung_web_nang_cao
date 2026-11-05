@@ -26,7 +26,7 @@ interface RecipeBasicsFormProps {
 }
 
 const selectClass =
-  'rounded-lg border px-3 py-2 text-sm shadow-sm outline-none focus:ring-2 focus:ring-orange-500';
+  'rounded-lg border px-3 py-2 text-sm shadow-sm outline-none focus:ring-2 focus:ring-gold-ink';
 
 /**
  * Wizard bước 1 (FR-RCP-003): thông tin cơ bản + dinh dưỡng, tạo công thức ở trạng thái Draft.
@@ -99,14 +99,14 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
       <div className="flex flex-col gap-1">
         <label
           htmlFor={ids.description}
-          className="flex flex-col gap-1 text-sm font-medium text-gray-800"
+          className="flex flex-col gap-1 text-sm font-medium text-ink"
         >
           <span>Mô tả</span>
           <textarea
             id={ids.description}
             rows={3}
             aria-invalid={errors.description ? true : undefined}
-            className={`${selectClass} ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
+            className={`${selectClass} ${errors.description ? 'border-red-500' : 'border-line-strong'}`}
             {...register('description')}
           />
         </label>
@@ -121,13 +121,13 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
         <div className="flex flex-col gap-1">
           <label
             htmlFor={ids.category}
-            className="flex flex-col gap-1 text-sm font-medium text-gray-800"
+            className="flex flex-col gap-1 text-sm font-medium text-ink"
           >
             <span>Danh mục</span>
             <select
               id={ids.category}
               aria-invalid={errors.categoryId ? true : undefined}
-              className={`${selectClass} ${errors.categoryId ? 'border-red-500' : 'border-gray-300'}`}
+              className={`${selectClass} ${errors.categoryId ? 'border-red-500' : 'border-line-strong'}`}
               {...register('categoryId')}
             >
               <option value="">— Chọn danh mục —</option>
@@ -147,12 +147,12 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
         <div className="flex flex-col gap-1">
           <label
             htmlFor={ids.difficulty}
-            className="flex flex-col gap-1 text-sm font-medium text-gray-800"
+            className="flex flex-col gap-1 text-sm font-medium text-ink"
           >
             <span>Độ khó</span>
             <select
               id={ids.difficulty}
-              className={`${selectClass} border-gray-300`}
+              className={`${selectClass} border-line-strong`}
               {...register('difficulty')}
             >
               {DIFFICULTIES.map((difficulty) => (
@@ -192,17 +192,17 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
       <div className="flex flex-col gap-1">
         <label
           htmlFor={ids.instructions}
-          className="flex flex-col gap-1 text-sm font-medium text-gray-800"
+          className="flex flex-col gap-1 text-sm font-medium text-ink"
         >
           <span>Ghi chú hướng dẫn chung (tùy chọn)</span>
           <textarea
             id={ids.instructions}
             rows={3}
-            className={`${selectClass} ${errors.instructions ? 'border-red-500' : 'border-gray-300'}`}
+            className={`${selectClass} ${errors.instructions ? 'border-red-500' : 'border-line-strong'}`}
             {...register('instructions')}
           />
         </label>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-ink-soft">
           Các bước nấu chi tiết được thêm riêng sau khi tạo nháp.
         </p>
         {errors.instructions && (
@@ -212,8 +212,8 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
         )}
       </div>
 
-      <fieldset className="rounded-xl border border-gray-200 p-4">
-        <legend className="px-1 text-sm font-semibold text-gray-800">
+      <fieldset className="rounded-xl border border-line p-4">
+        <legend className="px-1 text-sm font-semibold text-ink">
           Dinh dưỡng mỗi khẩu phần (tùy chọn)
         </legend>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -234,7 +234,7 @@ export default function RecipeBasicsForm({ accessToken, onCreated, recipe, onUpd
       <button
         type="submit"
         disabled={isSubmitting}
-        className="self-end rounded-lg bg-orange-700 px-5 py-2.5 font-semibold text-white transition hover:bg-orange-800 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
+        className="self-end rounded-lg bg-navy px-5 py-2.5 font-semibold text-white transition hover:bg-navy-2 focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-2 disabled:opacity-60"
       >
         {submitLabel}
       </button>

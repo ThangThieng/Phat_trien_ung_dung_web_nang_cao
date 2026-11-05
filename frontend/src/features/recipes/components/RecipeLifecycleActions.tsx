@@ -143,7 +143,7 @@ export default function RecipeLifecycleActions({
             value={confirmTitle}
             onChange={(event) => setConfirmTitle(event.target.value)}
             aria-label="Tên công thức để xác nhận xóa"
-            className="rounded border border-gray-300 px-3 py-2"
+            className="rounded border border-line-strong px-3 py-2"
           />
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
@@ -189,11 +189,11 @@ export default function RecipeLifecycleActions({
   }
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5" aria-labelledby="lifecycle-heading">
-      <h2 id="lifecycle-heading" className="font-semibold text-gray-900">
+    <section className="rounded-xl border border-line bg-paper p-5" aria-labelledby="lifecycle-heading">
+      <h2 id="lifecycle-heading" className="font-semibold text-ink">
         Trạng thái công thức
       </h2>
-      <p className="mt-1 text-sm text-gray-600">Chỉ các thao tác hợp lệ với trạng thái hiện tại được hiển thị.</p>
+      <p className="mt-1 text-sm text-ink-soft">Chỉ các thao tác hợp lệ với trạng thái hiện tại được hiển thị.</p>
       {buttons}
       {dialogs}
     </section>

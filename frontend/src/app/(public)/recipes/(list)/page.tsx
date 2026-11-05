@@ -46,8 +46,8 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Công thức nấu ăn</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-3xl font-bold text-ink">Công thức nấu ăn</h1>
+          <p className="mt-1 text-ink-soft">
             {filtered
               ? `${result.totalCount} công thức phù hợp bộ lọc.`
               : `${result.totalCount} công thức đang chờ bạn khám phá.`}
@@ -85,7 +85,7 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
                       minServings: undefined,
                       page: 1,
                     })}
-                    className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+                    className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
                   >
                     Xóa bộ lọc
                   </Link>

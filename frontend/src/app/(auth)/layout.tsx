@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { ChefHat } from 'lucide-react';
 import { GuestOnly } from '@/features/auth/components/GuestOnly';
 
 /**
@@ -10,9 +10,8 @@ import { GuestOnly } from '@/features/auth/components/GuestOnly';
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-1 flex-col items-center px-4 pt-10">
-      <Link href="/" className="flex items-center gap-2 text-lg font-bold text-orange-700">
-        <ChefHat aria-hidden className="h-6 w-6" />
-        Culinary Blog
+      <Link href="/" className="flex items-center gap-2 text-lg font-bold text-gold-ink">
+        <Image src="/brand/logo-ink.png" alt="Culinary Blog" width={96} height={96} priority unoptimized />
       </Link>
       <GuestOnly><main id="main-content" className="flex w-full flex-1 justify-center">{children}</main></GuestOnly>
     </div>

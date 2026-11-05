@@ -20,11 +20,11 @@ export default function NotFound() {
             <>
               <Link
                 href="/recipes"
-                className="rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white hover:bg-orange-800"
+                className="rounded-lg bg-navy px-4 py-2 font-semibold text-white hover:bg-navy-2"
               >
                 Xem công thức
               </Link>
-              <Link href="/search" className="font-medium text-orange-700 hover:underline">
+              <Link href="/search" className="font-medium text-gold-ink hover:underline">
                 Tìm kiếm
               </Link>
             </>

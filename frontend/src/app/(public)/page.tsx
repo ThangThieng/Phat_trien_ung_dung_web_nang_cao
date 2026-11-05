@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BookOpen, Search } from 'lucide-react';
@@ -42,12 +43,13 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={buildWebSiteJsonLd()} />
-      <section className="bg-gradient-to-br from-orange-100 via-amber-50 to-white">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
-          <h1 className="max-w-2xl text-3xl font-bold text-gray-900 sm:text-4xl">
+      <section className="bg-navy text-cream">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-8 px-4 py-12 sm:py-16">
+          <div className="min-w-0 flex-1">
+          <h1 className="max-w-2xl text-3xl font-bold text-cream sm:text-5xl">
             Nấu ngon mỗi ngày với công thức từ bếp nhà Việt
           </h1>
-          <p className="mt-3 max-w-xl text-gray-700">
+          <p className="mt-3 max-w-xl text-cream">
             Đủ nguyên liệu, định lượng và từng bước — tìm không dấu cũng ra.
           </p>
           {/* Form GET thuần tới /search: chạy cả khi JavaScript chưa tải xong. `minLength` khớp ngưỡng 2 ký tự của API. */}
@@ -62,17 +64,27 @@ export default async function HomePage() {
                 minLength={MIN_SEARCH_LENGTH}
                 autoComplete="off"
                 placeholder="Tìm món ăn, nguyên liệu…"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 placeholder:text-gray-500 focus:border-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300"
+                className="w-full rounded-lg border border-line-strong bg-paper px-4 py-2.5 text-ink placeholder:text-ink-soft focus:border-gold-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-line"
               />
             </label>
             <button
               type="submit"
-              className="flex shrink-0 items-center gap-2 rounded-lg bg-orange-700 px-4 py-2.5 font-semibold text-white hover:bg-orange-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+              className="flex shrink-0 items-center gap-2 rounded-lg bg-gold px-4 py-2.5 font-semibold text-navy hover:bg-gold-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
             >
               <Search aria-hidden className="h-4 w-4" />
               Tìm
             </button>
           </form>
+          </div>
+          <Image
+            src="/brand/logo-gold.png"
+            alt=""
+            width={256}
+            height={256}
+            priority
+            unoptimized
+            className="hidden shrink-0 lg:block"
+          />
         </div>
       </section>
 
@@ -85,12 +97,12 @@ export default async function HomePage() {
         >
           <section aria-labelledby="latest-heading" className="min-w-0">
             <div className="flex items-baseline justify-between gap-4">
-              <h2 id="latest-heading" className="text-2xl font-bold text-gray-900">
+              <h2 id="latest-heading" className="text-2xl font-bold text-ink">
                 Công thức mới xuất bản
               </h2>
               <Link
                 href="/recipes"
-                className="shrink-0 text-sm font-medium text-orange-700 hover:text-orange-900 hover:underline"
+                className="shrink-0 text-sm font-medium text-gold-ink hover:text-gold-ink hover:underline"
               >
                 Xem tất cả
                 <span className="sr-only"> công thức</span>
@@ -106,7 +118,7 @@ export default async function HomePage() {
                 action={
                   <Link
                     href="/categories"
-                    className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+                    className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
                   >
                     Xem danh mục
                   </Link>

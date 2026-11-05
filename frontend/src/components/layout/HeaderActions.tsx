@@ -20,7 +20,7 @@ export default function HeaderActions() {
       {signedIn && (
         <Link
           href="/dashboard/recipes/new"
-          className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700 lg:flex"
+          className="hidden items-center gap-1 rounded-md px-2 py-1 text-sm text-cream hover:text-gold lg:flex"
         >
           <PenSquare aria-hidden className="h-4 w-4" />
           Viết công thức

@@ -35,10 +35,10 @@ export default function CategoryChips({
               <Link
                 href={`/categories/${category.slug}`}
                 aria-current={active ? 'page' : undefined}
-                className={`block rounded-full border px-3.5 py-1.5 text-sm whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 ${
+                className={`block rounded-full border px-3.5 py-1.5 text-sm whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink ${
                   active
-                    ? 'border-orange-700 bg-orange-700 font-semibold text-white'
-                    : 'border-orange-200 bg-white text-gray-800 hover:bg-orange-50'
+                    ? 'border-gold-ink bg-navy font-semibold text-white'
+                    : 'border-line bg-paper text-ink hover:bg-gold-soft'
                 }`}
               >
                 {category.name}

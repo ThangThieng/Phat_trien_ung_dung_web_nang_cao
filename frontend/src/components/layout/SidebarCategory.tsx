@@ -26,10 +26,10 @@ export default function SidebarCategory({
   return (
     <aside
       aria-label="Danh mục công thức"
-      className={`rounded-2xl border border-orange-100 bg-white p-4 ${className}`}
+      className={`rounded-2xl border border-line bg-paper p-4 ${className}`}
     >
       <nav aria-label="Danh mục">
-        <h2 className="px-2 text-sm font-semibold tracking-wide text-gray-900 uppercase">
+        <h2 className="px-2 text-sm font-semibold tracking-wide text-ink uppercase">
           Danh mục
         </h2>
         <ul className="mt-3 space-y-0.5">
@@ -42,14 +42,14 @@ export default function SidebarCategory({
                   aria-current={active ? 'page' : undefined}
                   className={`flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-sm ${
                     active
-                      ? 'bg-orange-50 font-semibold text-orange-800'
-                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-800'
+                      ? 'bg-gold-soft font-semibold text-gold-ink'
+                      : 'text-ink hover:bg-gold-soft hover:text-gold-ink'
                   }`}
                 >
                   <span className="truncate">{category.name}</span>
                   <span
                     className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
-                      active ? 'bg-orange-700 text-white' : 'bg-gray-100 text-gray-700'
+                      active ? 'bg-navy text-white' : 'bg-gold-soft text-ink'
                     }`}
                   >
                     {category.recipeCount}
@@ -62,7 +62,7 @@ export default function SidebarCategory({
         </ul>
         <Link
           href="/categories"
-          className="mt-3 block rounded-lg px-2 py-2 text-sm font-medium text-orange-700 hover:bg-orange-50"
+          className="mt-3 block rounded-lg px-2 py-2 text-sm font-medium text-gold-ink hover:bg-gold-soft"
         >
           Xem tất cả danh mục →
         </Link>

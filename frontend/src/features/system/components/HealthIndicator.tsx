@@ -44,13 +44,13 @@ export default function HealthIndicator({ showLabel = false }: { showLabel?: boo
     <Link
       href="/dashboard/system"
       title={`Tình trạng hệ thống: ${label}`}
-      className="flex items-center gap-2 rounded-md px-2 py-1 text-sm text-gray-700 hover:text-orange-700"
+      className="flex items-center gap-2 rounded-md px-2 py-1 text-sm text-ink hover:text-gold-ink"
     >
       <span
         aria-hidden
         data-testid="health-dot"
         data-status={status ?? 'pending'}
-        className={`h-2.5 w-2.5 rounded-full ${status ? STATUS_DOT[status] : 'animate-pulse bg-gray-300'}`}
+        className={`h-2.5 w-2.5 rounded-full ${status ? STATUS_DOT[status] : 'animate-pulse bg-line'}`}
       />
       <span role="status" aria-live="polite" className={showLabel ? '' : 'sr-only'}>
         {`Tình trạng hệ thống: ${label}`}

@@ -39,13 +39,13 @@ const toDraft = (state: Partial<RecipeQueryState>): Draft => ({
 });
 
 const inputClass =
-  'mt-1 w-full rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-800 focus:border-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300';
+  'mt-1 w-full rounded-lg border border-line-strong bg-paper px-2 py-1.5 text-sm text-ink focus:border-gold-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-line';
 
 /** Nhãn + điều khiển lồng nhau và nối bằng htmlFor/id (airbnb jsx-a11y yêu cầu cả hai). */
 function Field({ label, children }: { label: string; children: (id: string) => ReactNode }) {
   const id = useId();
   return (
-    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+    <label htmlFor={id} className="block text-sm font-medium text-ink">
       {label}
       {children(id)}
     </label>
@@ -181,14 +181,14 @@ function FilterForm({
       <div className="flex gap-2">
         <button
           type="submit"
-          className="flex-1 rounded-lg bg-orange-700 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+          className="flex-1 rounded-lg bg-navy px-3 py-2 text-sm font-semibold text-white hover:bg-navy-2"
         >
           Áp dụng
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:border-orange-400"
+          className="rounded-lg border border-line-strong px-3 py-2 text-sm text-ink hover:border-gold-ink"
         >
           Xóa lọc
         </button>
@@ -258,12 +258,12 @@ export default function FilterPanel(props: FilterPanelProps) {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:border-orange-400 lg:hidden"
+        className="flex items-center gap-2 rounded-lg border border-line-strong bg-paper px-3 py-1.5 text-sm font-medium text-ink hover:border-gold-ink lg:hidden"
       >
         <Filter aria-hidden className="h-4 w-4" />
         Bộ lọc
         {active > 0 && (
-          <span className="rounded-full bg-orange-700 px-1.5 text-xs text-white">{active}</span>
+          <span className="rounded-full bg-navy px-1.5 text-xs text-white">{active}</span>
         )}
       </button>
 
@@ -286,16 +286,16 @@ export default function FilterPanel(props: FilterPanelProps) {
           open
             ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-full overflow-y-auto p-5 shadow-xl'
             : 'hidden'
-        } bg-white lg:static lg:z-auto lg:block lg:w-auto lg:overflow-visible lg:rounded-2xl lg:border lg:border-gray-200 lg:p-4 lg:shadow-none`}
+        } bg-paper lg:static lg:z-auto lg:block lg:w-auto lg:overflow-visible lg:rounded-2xl lg:border lg:border-line lg:p-4 lg:shadow-none`}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-gray-900">Bộ lọc</h2>
+          <h2 className="text-base font-semibold text-ink">Bộ lọc</h2>
           <button
             ref={closeRef}
             type="button"
             aria-label="Đóng bộ lọc"
             onClick={() => setOpen(false)}
-            className="rounded-md p-1 text-gray-600 hover:bg-orange-50 lg:hidden"
+            className="rounded-md p-1 text-ink-soft hover:bg-gold-soft lg:hidden"
           >
             <X aria-hidden className="h-5 w-5" />
           </button>

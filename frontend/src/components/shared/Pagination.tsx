@@ -39,8 +39,8 @@ interface PaginationProps {
 }
 
 const BASE = 'flex h-9 min-w-9 items-center justify-center rounded-lg border px-3 text-sm';
-const IDLE = `${BASE} border-gray-300 bg-white text-gray-800 hover:bg-orange-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600`;
-const DISABLED = `${BASE} border-gray-200 text-gray-400`;
+const IDLE = `${BASE} border-line-strong bg-paper text-ink hover:bg-gold-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink`;
+const DISABLED = `${BASE} border-line text-ink-soft`;
 
 /**
  * Phân trang offset (FR-SRCH-004) bằng LINK THẬT (`<Link href>`): chạy được khi JavaScript chưa tải xong, crawler đi theo
@@ -82,7 +82,7 @@ export default function Pagination({
                 aria-label={item === page ? `Trang ${item}, trang hiện tại` : `Trang ${item}`}
                 className={
                   item === page
-                    ? `${BASE} border-orange-700 bg-orange-700 font-semibold text-white`
+                    ? `${BASE} border-gold-ink bg-navy font-semibold text-white`
                     : IDLE
                 }
               >
@@ -93,7 +93,7 @@ export default function Pagination({
             <li
               key={item}
               aria-hidden
-              className="flex h-9 min-w-9 items-center justify-center text-gray-500"
+              className="flex h-9 min-w-9 items-center justify-center text-ink-soft"
             >
               …
             </li>

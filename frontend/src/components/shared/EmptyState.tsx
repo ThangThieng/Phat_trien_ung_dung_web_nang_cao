@@ -27,13 +27,13 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <div
-      className={`flex flex-col items-center rounded-2xl border border-dashed border-orange-200 bg-white px-6 py-12 text-center ${className}`}
+      className={`flex flex-col items-center rounded-2xl border border-dashed border-line bg-paper px-6 py-12 text-center ${className}`}
     >
-      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-50 text-orange-700">
+      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold-soft text-gold-ink">
         <Icon aria-hidden className="h-7 w-7" />
       </span>
-      <Heading className="mt-4 text-lg font-semibold text-gray-900">{title}</Heading>
-      {description && <div className="mt-2 max-w-md text-sm text-gray-600">{description}</div>}
+      <Heading className="mt-4 text-lg font-semibold text-ink">{title}</Heading>
+      {description && <div className="mt-2 max-w-md text-sm text-ink-soft">{description}</div>}
       {action && (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">{action}</div>
       )}

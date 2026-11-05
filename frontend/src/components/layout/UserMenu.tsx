@@ -43,7 +43,7 @@ export function initialsOf(displayName: string): string {
 }
 
 const ITEM =
-  'flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-gray-800 hover:bg-orange-50 hover:text-orange-800 focus:bg-orange-50 focus:text-orange-800 focus:outline-none';
+  'flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-ink hover:bg-gold-soft hover:text-gold-ink focus:bg-gold-soft focus:text-gold-ink focus:outline-none';
 
 /**
  * Menu tài khoản trên thanh trên cùng (header công khai + thanh trên của dashboard). Đọc `useAuth()` — chữ ký giữ nguyên khi
@@ -90,7 +90,7 @@ export default function UserMenu() {
   }, [open, items]);
 
   if (!isReady) {
-    return <span aria-hidden className="block h-9 w-24 animate-pulse rounded-full bg-gray-100" />;
+    return <span aria-hidden className="block h-9 w-24 animate-pulse rounded-full bg-gold-soft" />;
   }
 
   if (!user) {
@@ -98,14 +98,14 @@ export default function UserMenu() {
       <div className="flex items-center gap-1">
         <Link
           href="/auth/login"
-          className="rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap text-gray-700 hover:text-orange-700"
+          className="rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap text-cream hover:text-gold"
         >
           Đăng nhập
         </Link>
         <Link
           href="/auth/register"
           // 320 px: chỉ giữ "Đăng nhập" (trang đăng nhập có link đăng ký; menu điện thoại cũng có).
-          className="hidden rounded-md bg-orange-700 px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-white hover:bg-orange-800 sm:inline-block"
+          className="hidden rounded-md bg-gold px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-navy hover:bg-gold-soft sm:inline-block"
         >
           Đăng ký
         </Link>
@@ -170,11 +170,11 @@ export default function UserMenu() {
             setOpen(true);
           }
         }}
-        className="flex items-center gap-2 rounded-full py-1 pr-2 pl-1 text-sm font-medium text-gray-800 hover:bg-orange-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+        className="flex items-center gap-2 rounded-full py-1 pr-2 pl-1 text-sm font-medium text-cream hover:bg-navy-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
       >
         <span
           aria-hidden
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-700 text-xs font-semibold text-white"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-gold text-xs font-semibold text-navy"
         >
           {initialsOf(user.displayName)}
         </span>
@@ -189,11 +189,11 @@ export default function UserMenu() {
           role="menu"
           aria-label="Tài khoản"
           onKeyDown={onMenuKeyDown}
-          className="absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border border-orange-100 bg-white py-1 shadow-lg"
+          className="absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border border-line bg-paper py-1 shadow-lg"
         >
-          <li role="presentation" className="border-b border-gray-100 px-4 py-2">
-            <p className="truncate text-sm font-semibold text-gray-900">{user.displayName}</p>
-            <p className="truncate text-xs text-gray-600">{user.email}</p>
+          <li role="presentation" className="border-b border-line px-4 py-2">
+            <p className="truncate text-sm font-semibold text-ink">{user.displayName}</p>
+            <p className="truncate text-xs text-ink-soft">{user.email}</p>
           </li>
           {links.map(({ href, label, icon: Icon }) => (
             <li key={href} role="presentation">
@@ -209,7 +209,7 @@ export default function UserMenu() {
               </Link>
             </li>
           ))}
-          <li role="presentation" className="mt-1 border-t border-gray-100 pt-1">
+          <li role="presentation" className="mt-1 border-t border-line pt-1">
             <button
               type="button"
               role="menuitem"

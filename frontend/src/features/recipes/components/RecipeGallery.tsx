@@ -26,7 +26,7 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
     return (
       <div
         aria-label={`Ảnh ${title}`}
-        className="flex aspect-[4/3] items-center justify-center rounded-2xl bg-gradient-to-br from-orange-100 to-amber-50 text-8xl"
+        className="flex aspect-[4/3] items-center justify-center rounded-2xl bg-gradient-to-br from-gold-soft to-paper text-8xl"
       >
         🍲
       </div>
@@ -39,7 +39,7 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
       <button
         type="button"
         onClick={(event) => openLightbox(primary, event.currentTarget)}
-        className="relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-orange-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+        className="relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-gold-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
       >
         <Image
           src={imageUrl(primary)}
@@ -59,7 +59,7 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
               <button
                 type="button"
                 onClick={(event) => openLightbox(image, event.currentTarget)}
-                className="relative block size-16 overflow-hidden rounded-lg ring-offset-2 focus-visible:outline-2 focus-visible:outline-orange-700"
+                className="relative block size-16 overflow-hidden rounded-lg ring-offset-2 focus-visible:outline-2 focus-visible:outline-gold-ink"
               >
                 <Image
                   src={image.thumbnailUrl ?? imageUrl(image)}

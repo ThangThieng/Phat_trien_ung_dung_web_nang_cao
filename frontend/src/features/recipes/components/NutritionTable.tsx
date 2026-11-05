@@ -16,14 +16,14 @@ export default function NutritionTable({ nutrition }: { nutrition: Nutrition }) 
 
   return (
     <table className="w-full text-sm">
-      <caption className="mb-2 text-left text-xs text-gray-500">Giá trị trên 1 khẩu phần</caption>
-      <tbody className="divide-y divide-gray-100">
+      <caption className="mb-2 text-left text-xs text-ink-soft">Giá trị trên 1 khẩu phần</caption>
+      <tbody className="divide-y divide-line">
         {rows.map((row) => (
           <tr key={row.key}>
-            <th scope="row" className="py-2 text-left font-normal text-gray-600">
+            <th scope="row" className="py-2 text-left font-normal text-ink-soft">
               {row.label}
             </th>
-            <td className="py-2 text-right font-semibold text-gray-900">
+            <td className="py-2 text-right font-semibold text-ink">
               {Number(nutrition[row.key]).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}{' '}
               {row.unit}
             </td>

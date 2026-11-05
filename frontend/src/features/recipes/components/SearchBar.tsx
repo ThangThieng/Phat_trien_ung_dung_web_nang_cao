@@ -57,7 +57,7 @@ export default function SearchBar({ className = '' }: { className?: string }) {
       <div className="relative">
         <Search
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-gray-400"
+          className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-gold"
         />
         <input
           id="site-search"
@@ -67,7 +67,7 @@ export default function SearchBar({ className = '' }: { className?: string }) {
           onChange={(event) => setValue(event.target.value)}
           placeholder="Tìm công thức…"
           autoComplete="off"
-          className="w-48 rounded-full border border-gray-300 bg-white py-1.5 pr-3 pl-8 text-sm text-gray-800 focus:border-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 lg:w-64"
+          className="w-48 rounded-full border border-navy-line bg-navy-2 py-1.5 pr-3 pl-8 text-sm text-cream placeholder:text-cream/80 focus:border-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-line lg:w-64"
         />
       </div>
     </form>

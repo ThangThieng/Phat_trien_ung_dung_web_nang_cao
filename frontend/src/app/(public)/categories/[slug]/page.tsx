@@ -83,12 +83,12 @@ export default async function CategoryDetailPage({
           { name: category.name, path: pathname },
         ])}
       />
-      <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
-        <Link href="/categories" className="hover:text-orange-700">
+      <nav aria-label="Breadcrumb" className="text-sm text-ink-soft">
+        <Link href="/categories" className="hover:text-gold-ink">
           Danh mục
         </Link>
         <span aria-hidden> / </span>
-        <span className="text-gray-700">{category.name}</span>
+        <span className="text-ink">{category.name}</span>
       </nav>
 
       <div
@@ -110,12 +110,12 @@ export default async function CategoryDetailPage({
             className="mb-6 min-[1200px]:hidden"
           />
 
-          <header className="rounded-2xl bg-gradient-to-r from-orange-100 to-amber-50 p-8">
-            <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
+          <header className="rounded-2xl bg-gradient-to-r from-gold-soft to-paper p-8">
+            <h1 className="text-3xl font-bold text-ink">{category.name}</h1>
             {category.description && (
-              <p className="mt-2 max-w-2xl text-gray-700">{category.description}</p>
+              <p className="mt-2 max-w-2xl text-ink">{category.description}</p>
             )}
-            <p className="mt-3 text-sm font-medium text-orange-800">
+            <p className="mt-3 text-sm font-medium text-gold-ink">
               {recipes.totalCount} công thức
             </p>
           </header>
@@ -143,7 +143,7 @@ export default async function CategoryDetailPage({
                 pastLastPage ? (
                   <Link
                     href={buildHref(pathname, state, { page: 1 })}
-                    className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+                    className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
                   >
                     Về trang đầu
                   </Link>
@@ -151,13 +151,13 @@ export default async function CategoryDetailPage({
                   <>
                     <Link
                       href="/recipes"
-                      className="rounded-lg bg-orange-700 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-800"
+                      className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
                     >
                       Xem tất cả công thức
                     </Link>
                     <Link
                       href="/categories"
-                      className="rounded-lg border border-orange-300 px-4 py-2 text-sm font-semibold text-orange-800 hover:bg-orange-50"
+                      className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-gold-ink hover:bg-gold-soft"
                     >
                       Xem danh mục khác
                     </Link>

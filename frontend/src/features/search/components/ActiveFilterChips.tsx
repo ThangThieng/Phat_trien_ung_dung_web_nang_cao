@@ -26,7 +26,7 @@ export default function ActiveFilterChips({
           <a
             href={buildHref(SEARCH_PATHNAME, state, { [key]: undefined, page: 1 })}
             aria-label={`Gỡ bộ lọc ${label}`}
-            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 pr-2 pl-3 text-sm text-orange-900 hover:border-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
+            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-gold-soft pr-2 pl-3 text-sm text-gold-ink hover:border-gold-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
           >
             {label}
             <X aria-hidden className="h-3.5 w-3.5" />
@@ -36,7 +36,7 @@ export default function ActiveFilterChips({
       <li>
         <a
           href={buildHref(SEARCH_PATHNAME, state, CLEAR_ALL_FILTERS)}
-          className="text-sm font-medium text-orange-700 underline-offset-2 hover:underline"
+          className="text-sm font-medium text-gold-ink underline-offset-2 hover:underline"
         >
           Xóa bộ lọc
         </a>

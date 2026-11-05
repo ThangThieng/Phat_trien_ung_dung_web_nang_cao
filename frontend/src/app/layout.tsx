@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
-import { Inter } from 'next/font/google';
+import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google';
 import Providers from './providers';
 // Phía server: apiFetch chuyển tiếp X-Forwarded-For của trình duyệt cho API (rate limit theo IP thật — NFR-SEC-003).
 import '@/lib/server-request-context';
 import './globals.css';
 
 // Subset 'vietnamese' để hiển thị đầy đủ dấu tiếng Việt
-const inter = Inter({ subsets: ['latin', 'vietnamese'], variable: '--font-inter' });
+const body = Be_Vietnam_Pro({ subsets: ['latin', 'vietnamese'], weight: ['400', '500', '600', '700'], variable: '--font-body' });
+const display = Playfair_Display({ subsets: ['latin', 'vietnamese'], variable: '--font-display' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
@@ -21,12 +22,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="vi" className="font-sans">
       <body
-        className={`${inter.variable} flex min-h-screen flex-col bg-orange-50/30 font-sans antialiased`}
+        className={`${body.variable} ${display.variable} flex min-h-screen flex-col bg-cream font-sans text-ink antialiased`}
       >
         <Providers nonce={nonce}>
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-paper focus:px-3 focus:py-2"
           >
             Bỏ qua điều hướng
           </a>

@@ -4017,3 +4017,48 @@ Trưởng nhóm yêu cầu hợp nhất cả 4 nhánh và tự hoàn thiện ph�
 **Lưu ý giấy phép (CR-2026-09, SRS v1.2.7, MT-72):** phở cuốn, lẩu riêu (CC BY-NC 2.0), đậu hũ sốt cà chua, trứng cút lộn (CC BY-NC-SA 2.0) chỉ được dùng **phi thương mại**. Đồ án dùng được; nếu đưa web vào kinh doanh phải thay 4 ảnh này. Lẩu mắm vẫn chỉ là lẩu cá sông, chưa thấy rõ là lẩu mắm.
 
 *— Hết Phụ lục B —*
+
+---
+
+# PHỤ LỤC C: KẾ HOẠCH VÀ KẾT QUẢ ĐỔI GIAO DIỆN NAVY GOLD
+
+**Yêu cầu của trưởng nhóm (05/11/2026):** dựng lại giao diện theo tông navy và vàng, thay logo, **chỉ đổi giao diện, tuyệt đối không đổi chức năng**. Mockup và prototype đã được duyệt trước khi làm. Nhánh `feat/navy-gold-ui`, tách từ `develop`.
+
+## C.1. Phạm vi
+
+| Được đổi | Không được đổi |
+|---|---|
+| Class Tailwind, biến CSS, font, logo, favicon, màu ảnh chia sẻ, bố cục trình bày của header, footer, sidebar, hero | Backend, API, schema, route, logic gọi API, state, validate, nhãn truy cập (`aria-*`, `label`), văn bản nghiệp vụ, thứ tự luồng thao tác |
+
+SRS không quy định màu và font nên không cần Change Request. NFR-USE-002 (WCAG 2.1 AA) vẫn là ràng buộc.
+
+## C.2. Thiết kế đã duyệt
+
+| Hạng mục | Quyết định |
+|---|---|
+| Màu | Navy `#0c1f38`, `#16304f`; kem `#f3ebd6`; giấy `#fbf6e9`; vàng sáng `#d9ae5f` chỉ dùng trên nền navy và nút; vàng đậm `#7a5614` cho chữ trên nền kem; mực `#1a2432`; xám ấm `#5a5444` |
+| Font | Playfair Display cho tiêu đề, Be Vietnam Pro cho nội dung; đều có bộ ký tự tiếng Việt, tự host qua `next/font` nên CSP `font-src 'self'` giữ nguyên |
+| Logo | Từ ảnh do trưởng nhóm cung cấp: nắn thẳng, tách nền, tô vàng đều. `public/brand/logo-gold.png` trên nền navy, `logo-ink.png` trên nền kem |
+| Không làm theo ảnh mẫu | Đánh giá sao, Tin tức, Giới thiệu, Bình luận (SRS không có); biểu mẫu giữ 5 bước |
+
+## C.3. Các bước
+
+1. Thêm token màu và font vào `globals.css`, `layout.tsx`.
+2. Đổi token màu bằng script trên toàn bộ `src`, trừ `(dev)/mockups`, `mocks` (sản phẩm Lab 6, R-09) và file test. Màu ngữ nghĩa giữ nguyên: trạng thái hệ thống, lỗi, đánh dấu từ khóa.
+3. Sửa tay lớp trình bày trên nền navy: header, footer, menu điện thoại, sidebar, hero, nút tài khoản.
+4. Thay logo, favicon, màu ảnh Open Graph.
+5. Kiểm chứng: Jest, TypeScript, ESLint, toàn bộ E2E trên stack production gồm axe và CSP.
+
+## C.4. Kết quả (05/11/2026)
+
+| Kiểm tra | Kết quả |
+|---|---|
+| Đối chiếu từng dòng `frontend/src` đã đổi | Chỉ có class, biến màu, font và phần tử logo; không có dòng logic, API, route. `backend/` không đổi |
+| Jest, TypeScript, ESLint | 453/453; sạch; 0 lỗi |
+| E2E trên stack production | Lượt đầy đủ 45 đạt, 3 lỗi, 1 bỏ qua; cả 3 đạt khi chạy lại sau khi xử lý môi trường đo: 2 test ảnh và CSP cần URL ảnh HTTPS khớp stack, 1 test làm mới phiên chập chờn về thời gian. Gồm axe 0 vi phạm nghiêm trọng và CSP |
+
+**Phát hiện khi kiểm chứng:** `.env` cục bộ cũ trỏ `PUBLIC_API_BASE_URL=http://localhost:5000/api/v1`, làm CSP chặn đăng nhập trên stack dev. Đã đổi theo `.env.example` trên máy; ai có `.env` cũ cần đổi tương tự.
+
+**Giữ nguyên có chủ đích:** nhãn trạng thái tiếng Anh `Published` ở `/dashboard/recipes` vì đây là văn bản hiện có, không thuộc phạm vi đổi giao diện. Sản phẩm Lab 6 ở `(dev)/mockups` giữ màu cũ. Logo là bản xử lý từ ảnh, nên có file vector thì thay để nét hơn.
+
+*— Hết Phụ lục C —*

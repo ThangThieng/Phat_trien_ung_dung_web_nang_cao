@@ -41,11 +41,11 @@ export default function ErrorFallback({
           : 'flex flex-col items-center rounded-2xl border border-red-100 bg-red-50/40 px-6 py-8 text-center'
       }
     >
-      <AlertTriangle aria-hidden className="h-10 w-10 text-orange-700" />
-      <Heading className="mt-4 text-2xl font-bold text-gray-900">{title}</Heading>
-      <p className="mt-2 text-gray-700">{appError.message}</p>
+      <AlertTriangle aria-hidden className="h-10 w-10 text-gold-ink" />
+      <Heading className="mt-4 text-2xl font-bold text-ink">{title}</Heading>
+      <p className="mt-2 text-ink">{appError.message}</p>
       {lookupCode && (
-        <p className="mt-2 text-xs text-gray-600">
+        <p className="mt-2 text-xs text-ink-soft">
           Mã tra cứu: <code className="font-mono select-all">{lookupCode}</code>
         </p>
       )}
@@ -53,7 +53,7 @@ export default function ErrorFallback({
         <button
           type="button"
           onClick={reset}
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-orange-700 px-4 py-2 font-semibold text-white hover:bg-orange-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-navy px-4 py-2 font-semibold text-white hover:bg-navy-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
         >
           <RotateCcw aria-hidden className="h-4 w-4" />
           Thử lại

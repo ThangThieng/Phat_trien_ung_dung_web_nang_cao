@@ -53,12 +53,12 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
           { name: recipe.title, path: `/recipes/${recipe.slug}` },
         ])}
       />
-      <nav aria-label="Breadcrumb" className="recipe-breadcrumb text-sm text-gray-500">
-        <Link href="/recipes" className="hover:text-orange-700">
+      <nav aria-label="Breadcrumb" className="recipe-breadcrumb text-sm text-ink-soft">
+        <Link href="/recipes" className="hover:text-gold-ink">
           Công thức
         </Link>
         <span aria-hidden> / </span>
-        <Link href={`/categories/${recipe.category.slug}`} className="hover:text-orange-700">
+        <Link href={`/categories/${recipe.category.slug}`} className="hover:text-gold-ink">
           {recipe.category.name}
         </Link>
       </nav>
@@ -75,9 +75,9 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
           {recipe.nutrition && (
             <section
               aria-labelledby="nutrition-heading"
-              className="rounded-2xl border border-gray-200 bg-white p-5"
+              className="rounded-2xl border border-line bg-paper p-5"
             >
-              <h2 id="nutrition-heading" className="text-xl font-bold text-gray-900">
+              <h2 id="nutrition-heading" className="text-xl font-bold text-ink">
                 Thông tin dinh dưỡng
               </h2>
               <div className="mt-3">
@@ -87,7 +87,7 @@ export default async function RecipeDetailPage({ params }: { params: Params }) {
           )}
         </aside>
         <section aria-labelledby="steps-heading">
-          <h2 id="steps-heading" className="mb-4 text-xl font-bold text-gray-900">
+          <h2 id="steps-heading" className="mb-4 text-xl font-bold text-ink">
             Các bước thực hiện
           </h2>
           <StepChecklist steps={recipe.steps} />

@@ -11,8 +11,8 @@ import NavLink from './NavLink';
 const PANEL_ID = 'site-mobile-nav';
 
 const LINK =
-  'block rounded-lg px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 hover:text-orange-800';
-const ACTIVE = 'bg-orange-50 text-orange-800';
+  'block rounded-lg px-3 py-2 text-base font-medium text-ink hover:bg-gold-soft hover:text-gold-ink';
+const ACTIVE = 'bg-gold-soft text-gold-ink';
 
 /**
  * Menu điện thoại của header công khai (< 768 px): nút ☰ mở ngăn phủ cố định ngay dưới header (top-16). Lớp phủ cố định chứ
@@ -55,7 +55,7 @@ export default function MobileNav({ categories }: { categories: readonly Categor
       <button
         ref={buttonRef}
         type="button"
-        className="rounded-md p-2 text-gray-700 hover:bg-orange-50 md:hidden"
+        className="rounded-md p-2 text-cream hover:bg-navy-2 md:hidden"
         aria-expanded={open}
         aria-controls={PANEL_ID}
         aria-label={open ? 'Đóng menu' : 'Mở menu'}
@@ -73,13 +73,13 @@ export default function MobileNav({ categories }: { categories: readonly Categor
           <div
             id={PANEL_ID}
             style={{ top }}
-            className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto border-t border-orange-100 bg-white px-4 py-4 md:hidden"
+            className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto border-t border-line bg-paper px-4 py-4 md:hidden"
           >
             {/* Form GET thuần: tìm được cả khi JavaScript chưa tải xong. */}
             <form action="/search" method="get" role="search" className="relative">
               <Search
                 aria-hidden
-                className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-500"
+                className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-soft"
               />
               <input
                 type="search"
@@ -87,7 +87,7 @@ export default function MobileNav({ categories }: { categories: readonly Categor
                 aria-label="Tìm công thức"
                 placeholder="Tìm công thức…"
                 autoComplete="off"
-                className="w-full rounded-full border border-gray-300 bg-white py-2 pr-3 pl-9 text-base focus:border-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300"
+                className="w-full rounded-full border border-line-strong bg-paper py-2 pr-3 pl-9 text-base focus:border-gold-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-line"
               />
             </form>
 
@@ -125,9 +125,9 @@ export default function MobileNav({ categories }: { categories: readonly Categor
             {categories.length > 0 && (
               <nav
                 aria-label="Danh mục (điện thoại)"
-                className="mt-4 border-t border-gray-100 pt-4"
+                className="mt-4 border-t border-line pt-4"
               >
-                <p className="px-3 text-xs font-semibold tracking-wide text-gray-600 uppercase">
+                <p className="px-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
                   Danh mục
                 </p>
                 <ul className="mt-2 grid grid-cols-2 gap-1">
@@ -135,7 +135,7 @@ export default function MobileNav({ categories }: { categories: readonly Categor
                     <li key={category.id}>
                       <NavLink
                         href={`/categories/${category.slug}`}
-                        className="block truncate rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-800"
+                        className="block truncate rounded-lg px-3 py-2 text-sm text-ink hover:bg-gold-soft hover:text-gold-ink"
                         activeClassName={ACTIVE}
                         onClick={close}
                       >
@@ -147,7 +147,7 @@ export default function MobileNav({ categories }: { categories: readonly Categor
               </nav>
             )}
             {isReady && !user && (
-              <div className="mt-4 border-t border-gray-100 pt-4 sm:hidden">
+              <div className="mt-4 border-t border-line pt-4 sm:hidden">
                 <NavLink
                   href="/auth/register"
                   className={LINK}
