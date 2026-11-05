@@ -1,6 +1,6 @@
 """Sinh Seed/Data/legacy-recipe-images.json từ legacy_image_picks.json (ảnh đã xem bằng mắt, đúng món).
 
-Không có ảnh đúng món thì không thêm vào danh sách: công thức đó giữ không ảnh, không dùng ảnh gần đúng.
+Ảnh chỉ gần đúng món ghi lý do trong legacy_image_notes.json; không có ảnh gần đúng thì công thức giữ không ảnh, không dùng ảnh gần đúng.
 """
 from __future__ import annotations
 

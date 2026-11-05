@@ -39,7 +39,7 @@ Một trang được chọn khi đủ các điều kiện, theo thứ tự trong
 
 ## Ảnh
 
-`legacy_image_picks.json` là ảnh đã xem bằng mắt là đúng món cho công thức cũ. Không có ảnh đúng món thì không thêm: công thức giữ không ảnh, không dùng ảnh gần đúng.
+`legacy_image_picks.json` là ảnh đã xem bằng mắt cho công thức cũ. Ảnh chỉ gần đúng món được ghi kèm lý do trong `legacy_image_notes.json` để người duyệt thay khi có ảnh tốt hơn. Không có ảnh gần đúng thì công thức giữ không ảnh.
 
 ## Giấy phép
 
