@@ -3,7 +3,7 @@
 Mọi thay đổi đáng kể của Culinary Blog được ghi ở đây. Định dạng theo [Keep a Changelog 1.1.0](https://keepachangelog.com/vi/1.1.0/), đánh số
 phiên bản theo [Semantic Versioning 2.0.0](https://semver.org/lang/vi/) (NFR-MAINT-003).
 
-Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.6). Trước `1.0.0` dự án chưa phát hành bản nào;
+Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.7). Trước `1.0.0` dự án chưa phát hành bản nào;
 mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` và lịch sử git.
 
 ## [Unreleased] — sẽ phát hành thành [1.0.0]
@@ -22,7 +22,7 @@ cả 4 dev đã vào `develop` ngày 30/10/2026.
   (CC BY-SA 4.0, ghim theo revision, ghi công trên trang chi tiết); thêm 6 danh mục, tổng 26 danh mục và 201 công thức. Công cụ
   `tools/recipe-etl`. 100 công thức do nhóm biên soạn và ngưỡng 20/100/10/5 giữ nguyên.
 - **`SeedImageImportJob` (CR-2026-07):** tải ảnh giấy phép mở về MinIO qua đúng các lớp kiểm tra của tải ảnh lên; công thức Wikibooks
-  chỉ được xuất bản sau khi ảnh đã lưu. Tải tuần tự trên hàng đợi một worker, tôn trọng `Retry-After` theo quy định của Wikimedia. Ảnh cho cả 100 công thức cũ (21 ảnh gần đúng, ghi ở `tools/recipe-etl/legacy_image_notes.json`); 7 ảnh từ Flickr, trong đó 4 ảnh giấy phép phi thương mại (CC BY-NC, BY-NC-SA).
+  chỉ được xuất bản sau khi ảnh đã lưu. Tải tuần tự trên hàng đợi một worker, tôn trọng `Retry-After` theo quy định của Wikimedia. Ảnh cho cả 100 công thức cũ (21 ảnh gần đúng, ghi ở `tools/recipe-etl/legacy_image_notes.json`); 7 ảnh từ Flickr, trong đó 4 ảnh giấy phép phi thương mại (CC BY-NC, BY-NC-SA) theo CR-2026-09, SRS v1.2.7, MT-72.
 - **Khối nguồn dữ liệu trên trang chi tiết** (`RecipeSourceNote`) và dòng ghi nguồn ở footer. Không đổi API hay schema.
 - **`tools/seed-nutrition-cleanup` (CR-2026-07):** script một lần bỏ dinh dưỡng ngẫu nhiên trên cơ sở dữ liệu đang có, có chạy thử và script khôi phục.
 - **Log có cấu trúc (B8 — FR-OBS-002, CONS-010):** Serilog cho cả container `api` và `hangfire` — Console (JSON `CompactJsonFormatter`), File
