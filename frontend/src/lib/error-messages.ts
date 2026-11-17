@@ -33,6 +33,7 @@ export const ERROR_MESSAGES = {
   AUTH_ACCOUNT_DISABLED: 'Tài khoản đã bị quản trị viên vô hiệu hóa.',
   AUTH_ACCOUNT_LOCKED: 'Tài khoản tạm bị khóa do đăng nhập sai nhiều lần. Vui lòng thử lại sau.',
   AUTH_USER_NOT_FOUND: 'Không tìm thấy người dùng này.',
+  AUTH_PASSWORD_RESET_TOKEN_INVALID: 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
   // Recipe
   RECIPE_NOT_FOUND: 'Không tìm thấy công thức hoặc công thức đã bị xóa.',
   RECIPE_SLUG_EXISTS: 'Đường dẫn của công thức đã tồn tại. Hãy đổi tiêu đề.',
@@ -72,6 +73,7 @@ export const ERROR_KINDS = {
   AUTH_ACCOUNT_DISABLED: 'forbidden',
   AUTH_ACCOUNT_LOCKED: 'forbidden',
   AUTH_USER_NOT_FOUND: 'not-found',
+  AUTH_PASSWORD_RESET_TOKEN_INVALID: 'validation',
   RECIPE_NOT_FOUND: 'not-found',
   RECIPE_SLUG_EXISTS: 'conflict',
   RECIPE_PUBLISH_INCOMPLETE: 'validation',

@@ -23,17 +23,17 @@ public static class ImageUploadInspector
         // File rỗng không phải "file quá lớn" (review Buổi 3 — Dev 2, mục 16): nó không phải ảnh hợp lệ → FILE_MIME_INVALID.
         if (length <= 0)
         {
-            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "File rỗng — không phải ảnh hợp lệ.");
+            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "Tệp rỗng — không phải ảnh hợp lệ.");
         }
 
         if (length > ImageFileInspector.MaxFileSizeBytes)
         {
-            throw new BadRequestException(ErrorCodes.FileSizeExceeded, "Kích thước file vượt quá giới hạn 5MB.");
+            throw new BadRequestException(ErrorCodes.FileSizeExceeded, "Kích thước tệp vượt quá giới hạn 5MB.");
         }
 
         if (!ImageFileInspector.IsAllowedContentType(declaredContentType))
         {
-            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "Loại file không được phép. Chỉ chấp nhận JPEG, PNG, WebP, AVIF.");
+            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "Loại tệp không được phép. Chỉ chấp nhận JPEG, PNG, WebP, AVIF.");
         }
 
         var header = new byte[ImageFileInspector.HeaderLength];
@@ -42,7 +42,7 @@ public static class ImageUploadInspector
 
         if (detected is null || !string.Equals(detected.ContentType, declaredContentType!.Trim(), StringComparison.OrdinalIgnoreCase))
         {
-            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "File không hợp lệ.");
+            throw new BadRequestException(ErrorCodes.FileMimeInvalid, "Tệp không hợp lệ.");
         }
 
         return new InspectedImage(detected, new PrefixedReadStream(header.AsMemory(0, read), content, length));

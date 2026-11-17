@@ -1,10 +1,16 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { StrictMode } from 'react';
+import { StrictMode, type ReactNode } from 'react';
 import { apiFetch, configureAuthCallbacks } from '@/lib/api-client';
-import { AuthProvider, useAuth } from './auth-context';
+import { AuthStoreProvider } from '@/stores/auth-store-provider';
+import { AuthBootstrap } from './auth-bootstrap';
+import { useAuth } from './auth-context';
 
 jest.mock('@/lib/api-client', () => ({ apiFetch: jest.fn(), configureAuthCallbacks: jest.fn() }));
 jest.mock('@/lib/query-client', () => ({ getQueryClient: () => ({ clear: jest.fn() }) }));
+
+function AuthProvider({ children }: { children: ReactNode }) {
+  return <AuthStoreProvider><AuthBootstrap>{children}</AuthBootstrap></AuthStoreProvider>;
+}
 
 const session = {
   accessToken: 'memory-only-access-token',
@@ -12,6 +18,8 @@ const session = {
   expiresAt: '2026-10-05T12:00:00Z',
   user: { id: 'author', email: 'author@example.com', displayName: 'Author', roles: ['Author'] },
 };
+
+const persistedState = () => JSON.parse(window.localStorage.getItem('culinaryblog.auth')!).state;
 
 function Consumer() {
   const auth = useAuth();
@@ -63,11 +71,11 @@ describe('access token storage', () => {
       });
       if (logout) {
         expect(apiFetch).toHaveBeenCalledTimes(1);
-        expect(window.localStorage.getItem('culinaryblog.auth')).toBeNull();
+        expect(persistedState()).toEqual({ refreshToken: null, user: null });
         expect(screen.getByText('signed-out')).toBeInTheDocument();
       } else {
         expect(apiFetch).toHaveBeenLastCalledWith('/auth/refresh', expect.objectContaining({ body: { refreshToken: 'R2' } }));
-        const stored = JSON.parse(window.localStorage.getItem('culinaryblog.auth')!);
+        const stored = persistedState();
         expect(stored.refreshToken).toBe('R3');
         expect(stored).not.toHaveProperty('accessToken');
       }
@@ -95,7 +103,7 @@ describe('access token storage', () => {
     window.localStorage.setItem('culinaryblog.auth', raw);
     render(<AuthProvider><Consumer /></AuthProvider>);
     await screen.findByText('signed-out');
-    expect(window.localStorage.getItem('culinaryblog.auth')).toBeNull();
+    expect(persistedState()).toEqual({ refreshToken: null, user: null });
     expect(apiFetch).not.toHaveBeenCalled();
   });
 
@@ -105,7 +113,7 @@ describe('access token storage', () => {
     await screen.findByText(session.accessToken);
     act(() => { window.dispatchEvent(new StorageEvent('storage', { key: 'culinaryblog.auth', newValue: null })); });
     await screen.findByText('signed-out');
-    expect(window.localStorage.getItem('culinaryblog.auth')).toBeNull();
+    expect(persistedState()).toEqual({ refreshToken: null, user: null });
     expect(apiFetch).toHaveBeenCalledTimes(1);
   });
 
@@ -113,7 +121,7 @@ describe('access token storage', () => {
     render(<AuthProvider><Consumer /></AuthProvider>);
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
     await screen.findByText(session.accessToken);
-    const stored = JSON.parse(window.localStorage.getItem('culinaryblog.auth')!);
+    const stored = persistedState();
     expect(stored.refreshToken).toBe(session.refreshToken);
     expect(stored).not.toHaveProperty('accessToken');
     expect(stored).not.toHaveProperty('expiresAt');
@@ -127,6 +135,6 @@ describe('access token storage', () => {
     expect(apiFetch).toHaveBeenCalledWith('/auth/refresh', expect.objectContaining({
       body: { refreshToken: session.refreshToken }, accessToken: null, skipAuthRefresh: true,
     }));
-    expect(JSON.parse(window.localStorage.getItem('culinaryblog.auth')!)).not.toHaveProperty('accessToken');
+    expect(persistedState()).not.toHaveProperty('accessToken');
   });
 });

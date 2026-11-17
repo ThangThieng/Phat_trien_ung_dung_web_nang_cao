@@ -12,16 +12,51 @@ namespace CulinaryBlog.Application.Features.Recipes;
 /// </summary>
 public static class SearchTermBuilder
 {
+    /// <summary>
+    /// CR-2026-08 / MT-71: từ ghép và token do hàm <c>search_normalize</c> (migration B8_Search_TitleWeightCompoundTerms) sinh ra.
+    /// Hai danh sách phải khớp nhau: <c>RecipeSearchRelevanceTests</c> kiểm từng cặp trên PostgreSQL thật.
+    /// </summary>
+    private static readonly Dictionary<string, string> CompoundTokens = new(StringComparer.Ordinal)
+    {
+        ["pho mai"] = "qphomai",
+        ["pho mat"] = "qphomai",
+        ["pho bien"] = "qphobien",
+        ["pho thong"] = "qphothong",
+        ["thanh pho"] = "qthanhpho",
+        ["duong pho"] = "qduongpho",
+        ["khu pho"] = "qkhupho",
+        ["pho co"] = "qphoco",
+        ["pho hoi"] = "qphohoi",
+        ["phomai"] = "qphomai",
+        ["phomat"] = "qphomai",
+    };
+
     /// <summary>Trả chuỗi rỗng khi không còn từ nào sau khi làm sạch (ví dụ <c>q = "!!"</c>) — handler trả trang rỗng.</summary>
     public static string Build(string searchTerm)
     {
         ArgumentNullException.ThrowIfNull(searchTerm);
 
-        var terms = SlugHelper.Generate(searchTerm)
-            .Split('-', StringSplitOptions.RemoveEmptyEntries)
-            .Distinct(StringComparer.Ordinal)
-            .Select(term => term + ":*");
+        var words = SlugHelper.Generate(searchTerm).Split('-', StringSplitOptions.RemoveEmptyEntries);
+        var terms = MergeCompounds(words).Distinct(StringComparer.Ordinal).Select(term => term + ":*");
 
         return string.Join(" & ", terms);
+    }
+
+    private static IEnumerable<string> MergeCompounds(string[] words)
+    {
+        var i = 0;
+        while (i < words.Length)
+        {
+            if (i + 1 < words.Length && CompoundTokens.TryGetValue(words[i] + " " + words[i + 1], out var pair))
+            {
+                yield return pair;
+                i += 2;
+            }
+            else
+            {
+                yield return CompoundTokens.GetValueOrDefault(words[i], words[i]);
+                i++;
+            }
+        }
     }
 }

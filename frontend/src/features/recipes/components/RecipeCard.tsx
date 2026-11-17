@@ -1,3 +1,4 @@
+import { GRID_IMAGE_SIZES, IMAGE_UNOPTIMIZED } from '@/lib/images';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, Users } from 'lucide-react';
@@ -9,29 +10,41 @@ import HighlightText from './HighlightText';
  * Card công thức: ảnh chính, tiêu đề, thời gian chuẩn bị/nấu, độ khó (FR-RCP-001).
  * `primaryImageUrl` là ảnh thu nhỏ do FR-JOB-002 sinh, hoặc ảnh gốc khi job chưa chạy xong — API đã chọn sẵn.
  * `terms` (tùy chọn): từ khóa tìm kiếm đã bỏ dấu để tô sáng trong tiêu đề và mô tả (FR-SRCH-001).
+ * `prefetch` (tùy chọn, Buổi 7): `false` ở lưới kết quả `/search` — mỗi lần đổi bộ lọc là một lứa thẻ mới, để mặc định thì
+ * Next.js tải trước trang chi tiết của từng thẻ vừa hiện (đo: tới 12 request RSC cho một lần lọc). Không truyền = mặc định của
+ * Next.js như trước.
+ * `priority` (tùy chọn): chỉ đặt cho thẻ đầu tiên ở đầu trang — ảnh của nó thường là phần tử LCP, nên tải trước
+ * (`fetchpriority="high"`); các thẻ còn lại giữ `loading="lazy"` mặc định của `next/image` (NFR-PERF-005).
  */
 export default function RecipeCard({
   recipe,
   terms,
+  prefetch,
+  priority = false,
 }: {
   recipe: RecipeSummary;
   terms?: readonly string[];
+  prefetch?: boolean;
+  priority?: boolean;
 }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-paper shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <Link
         href={`/recipes/${recipe.slug}`}
+        prefetch={prefetch}
         className="flex flex-1 flex-col focus-visible:outline-none"
       >
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gold-soft to-paper">
           {recipe.primaryImageUrl ? (
             <Image
               src={recipe.primaryImageUrl}
               alt={recipe.title}
-              fill
-              unoptimized
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition group-hover:scale-105"
+              width={800}
+              height={600}
+              unoptimized={IMAGE_UNOPTIMIZED}
+              priority={priority}
+              sizes={GRID_IMAGE_SIZES}
+              className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-105"
             />
           ) : (
             <span
@@ -53,16 +66,16 @@ export default function RecipeCard({
           )}
         </div>
         <div className="flex flex-1 flex-col gap-2 p-4">
-          <p className="text-xs font-medium tracking-wide text-orange-700 uppercase">
+          <p className="text-xs font-medium tracking-wide text-gold-ink uppercase">
             {recipe.category.name}
           </p>
-          <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 group-hover:text-orange-700">
+          <h3 className="line-clamp-2 text-lg font-semibold text-ink group-hover:text-gold-ink">
             <HighlightText text={recipe.title} terms={terms} />
           </h3>
-          <p className="line-clamp-2 text-sm text-gray-600">
+          <p className="line-clamp-2 text-sm text-ink-soft">
             <HighlightText text={recipe.description} terms={terms} />
           </p>
-          <dl className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-2 text-xs text-gray-600">
+          <dl className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-2 text-xs text-ink-soft">
             <div className="flex items-center gap-1">
               <Clock aria-hidden className="h-3.5 w-3.5" />
               <dt className="sr-only">Chuẩn bị</dt>

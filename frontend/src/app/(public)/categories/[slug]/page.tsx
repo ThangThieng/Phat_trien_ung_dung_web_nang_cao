@@ -2,13 +2,21 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { BookOpen } from 'lucide-react';
+import JsonLd from '@/components/seo/JsonLd';
+import CategoryChips from '@/components/layout/CategoryChips';
+import SidebarCategory from '@/components/layout/SidebarCategory';
+import EmptyState from '@/components/shared/EmptyState';
 import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import SortSelect from '@/features/recipes/components/SortSelect';
-import { getCategoryBySlug } from '@/features/categories/api';
+import { getCategories, getCategoryBySlug } from '@/features/categories/api';
 import { buildHref, parseCategoryState } from '@/features/recipes/search-params';
+import type { Category } from '@/types/category';
 import type { RecipeQueryState } from '@/types/search';
 import { ApiError } from '@/lib/api-client';
+import { buildCategoryMetadata } from '@/lib/seo/metadata';
+import { buildBreadcrumbJsonLd } from '@/lib/seo/recipe-json-ld';
 
 type Params = Promise<{ slug: string }>;
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -39,11 +47,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const detail = await loadCategory((await params).slug, stateKey(await searchParams));
   if (!detail) return { title: 'Không tìm thấy danh mục', robots: { index: false } };
-  return {
-    title: detail.category.name,
-    description: detail.category.description ?? `Công thức thuộc danh mục ${detail.category.name}.`,
-    alternates: { canonical: `/categories/${detail.category.slug}` },
-  };
+  return buildCategoryMetadata(detail.category);
 }
 
 export default async function CategoryDetailPage({
@@ -56,50 +60,129 @@ export default async function CategoryDetailPage({
   const { slug } = await params;
   const rawParams = await searchParams;
   const state = parseCategoryState(rawParams);
-  const detail = await loadCategory(slug, stateKey(rawParams));
+  // Danh mục chi tiết (120 s) và danh sách danh mục cho sidebar (1800 s, dùng chung Data Cache với header/footer) gọi song song.
+  // Danh sách danh mục chỉ là phần phụ: lỗi thì bỏ sidebar chứ không làm hỏng trang.
+  const [detail, categories] = await Promise.all([
+    loadCategory(slug, stateKey(rawParams)),
+    getCategories().catch((): Category[] => []),
+  ]);
   if (!detail) notFound();
 
   const { category, recipes } = detail;
   const pathname = `/categories/${category.slug}`;
+  const hasSidebar = categories.length > 0;
+  // Trang vượt quá tổng số trang (URL gõ tay / danh mục vừa bớt công thức): khác với danh mục chưa có công thức nào.
+  const pastLastPage = recipes.items.length === 0 && recipes.page > 1;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
-        <Link href="/categories" className="hover:text-orange-700">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: 'Trang chủ', path: '/' },
+          { name: 'Danh mục', path: '/categories' },
+          { name: category.name, path: pathname },
+        ])}
+      />
+      <nav aria-label="Đường dẫn trang" className="text-sm text-ink-soft">
+        <Link href="/categories" className="hover:text-gold-ink">
           Danh mục
         </Link>
         <span aria-hidden> / </span>
-        <span className="text-gray-700">{category.name}</span>
+        <span className="text-ink">{category.name}</span>
       </nav>
 
-      <header className="mt-4 rounded-2xl bg-gradient-to-r from-orange-100 to-amber-50 p-8">
-        <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
-        {category.description && (
-          <p className="mt-2 max-w-2xl text-gray-700">{category.description}</p>
+      <div
+        className={`mt-4 grid gap-8 ${hasSidebar ? 'min-[1200px]:grid-cols-[16rem_minmax(0,1fr)]' : ''}`}
+      >
+        {hasSidebar && (
+          <SidebarCategory
+            categories={categories}
+            activeSlug={category.slug}
+            className="hidden h-fit min-[1200px]:sticky min-[1200px]:top-20 min-[1200px]:block"
+          />
         )}
-        <p className="mt-3 text-sm font-medium text-orange-800">{recipes.totalCount} công thức</p>
-      </header>
 
-      {/* FR-CAT-002 / SRS §8.2: danh mục chỉ nhận sortBy + sortOrder (không có bộ lọc khác). */}
-      <div className="mt-6 flex justify-end">
-        <SortSelect pathname={pathname} state={state} />
-      </div>
+        <div className="min-w-0">
+          {/* Dưới 1200 px: hàng nhãn cuộn ngang thay cho cột phụ. */}
+          <CategoryChips
+            categories={categories}
+            activeSlug={category.slug}
+            className="mb-6 min-[1200px]:hidden"
+          />
 
-      {recipes.items.length === 0 ? (
-        <p className="mt-16 text-center text-gray-600">Danh mục này chưa có công thức nào.</p>
-      ) : (
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {recipes.items.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
+          <header className="rounded-2xl bg-gradient-to-r from-gold-soft to-paper p-8">
+            <h1 className="text-3xl font-bold text-ink">{category.name}</h1>
+            {category.description && (
+              <p className="mt-2 max-w-2xl text-ink">{category.description}</p>
+            )}
+            <p className="mt-3 text-sm font-medium text-gold-ink">
+              {recipes.totalCount} công thức
+            </p>
+          </header>
+
+          {/* FR-CAT-002 / SRS §8.2: danh mục chỉ nhận sortBy + sortOrder (không có bộ lọc khác). */}
+          <div className="mt-6 flex justify-end">
+            <SortSelect pathname={pathname} state={state} />
+          </div>
+
+          {recipes.items.length === 0 ? (
+            <EmptyState
+              className="mt-8"
+              icon={BookOpen}
+              title={
+                pastLastPage
+                  ? 'Trang này không có công thức nào'
+                  : 'Danh mục này chưa có công thức nào'
+              }
+              description={
+                pastLastPage
+                  ? 'Có thể danh mục đã thay đổi kể từ lần bạn mở liên kết này.'
+                  : 'Hãy quay lại sau hoặc khám phá các công thức khác.'
+              }
+              action={
+                pastLastPage ? (
+                  <Link
+                    href={buildHref(pathname, state, { page: 1 })}
+                    className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
+                  >
+                    Về trang đầu
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/recipes"
+                      className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
+                    >
+                      Xem tất cả công thức
+                    </Link>
+                    <Link
+                      href="/categories"
+                      className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-gold-ink hover:bg-gold-soft"
+                    >
+                      Xem danh mục khác
+                    </Link>
+                  </>
+                )
+              }
+            />
+          ) : (
+            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <h2 className="sr-only">Danh sách công thức</h2>
+              {recipes.items.map((recipe, index) => (
+                <RecipeCard key={recipe.id} recipe={recipe} priority={index === 0} />
+              ))}
+            </div>
+          )}
+
+          <Pagination
+            page={recipes.page}
+            totalPages={recipes.totalPages}
+            hasPreviousPage={recipes.hasPreviousPage}
+            hasNextPage={recipes.hasNextPage}
+            buildHref={(p) => buildHref(pathname, state, { page: p })}
+          />
         </div>
-      )}
-
-      <Pagination
-        page={recipes.page}
-        totalPages={recipes.totalPages}
-        buildHref={(p) => buildHref(pathname, state, { page: p })}
-      />
+      </div>
     </div>
   );
 }

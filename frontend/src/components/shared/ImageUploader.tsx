@@ -18,7 +18,7 @@ import type { ProblemDetails, UploadedFile } from '@/types/api';
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-export interface ImageUploaderProps {
+interface ImageUploaderProps {
   /** Access token (Bearer) – endpoint upload yêu cầu đăng nhập. */
   accessToken: string | null;
   /** Ảnh hiện tại (controlled). */
@@ -50,7 +50,7 @@ function uploadWithProgress(
     rejectUpload = reject;
     withAuthRefresh((token) => new Promise<UploadedFile>((resolveAttempt, rejectAttempt) => {
       if (aborted) {
-        rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
+        rejectAttempt(new DOMException('Đã hủy tải lên', 'AbortError'));
         return;
       }
       const attempt = new XMLHttpRequest();
@@ -76,7 +76,7 @@ function uploadWithProgress(
       };
       // Cùng loại lỗi `fetch` ném khi mất mạng → `normalizeError` xếp vào nhóm `network`.
       attempt.onerror = () => rejectAttempt(new TypeError('Network request failed'));
-      attempt.onabort = () => rejectAttempt(new DOMException('Upload bị hủy', 'AbortError'));
+      attempt.onabort = () => rejectAttempt(new DOMException('Đã hủy tải lên', 'AbortError'));
       const form = new FormData();
       form.append('file', file);
       attempt.send(form);
@@ -85,7 +85,7 @@ function uploadWithProgress(
   return { promise, abort: () => {
     aborted = true;
     xhr?.abort();
-    rejectUpload(new DOMException('Upload bị hủy', 'AbortError'));
+    rejectUpload(new DOMException('Đã hủy tải lên', 'AbortError'));
   } };
 }
 
@@ -203,12 +203,12 @@ export default function ImageUploader({
 
   return (
     <div className="flex flex-col gap-2">
-      <span id={`${inputId}-label`} className="text-sm font-medium text-gray-800">
+      <span id={`${inputId}-label`} className="text-sm font-medium text-ink">
         {label}
       </span>
 
       {imageSrc ? (
-        <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+        <div className="relative overflow-hidden rounded-xl border border-line bg-paper">
           {/* eslint-disable-next-line @next/next/no-img-element -- preview blob: URL không đi qua next/image */}
           <img src={imageSrc} alt="Ảnh xem trước" className="aspect-video w-full object-cover" />
           {isUploading && (
@@ -219,10 +219,10 @@ export default function ImageUploader({
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={progress ?? 0}
-                className="h-2 overflow-hidden rounded-full bg-white/30"
+                className="h-2 overflow-hidden rounded-full bg-paper/30"
               >
                 <div
-                  className="h-full bg-orange-500 transition-all"
+                  className="h-full bg-navy transition-all"
                   style={{ width: `${progress ?? 0}%` }}
                 />
               </div>
@@ -235,7 +235,7 @@ export default function ImageUploader({
               onClick={handleRemove}
               disabled={isDeleting}
               aria-label="Xóa ảnh"
-              className="absolute top-2 right-2 rounded-full bg-white/90 p-2 text-red-600 shadow hover:bg-white disabled:opacity-60"
+              className="absolute top-2 right-2 rounded-full bg-paper/90 p-2 text-red-600 shadow hover:bg-paper disabled:opacity-60"
             >
               {isDeleting ? (
                 <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
@@ -260,15 +260,15 @@ export default function ImageUploader({
           }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
-          className={`flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 text-center transition focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none ${
+          className={`flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 text-center transition focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:outline-none ${
             isDragging
-              ? 'border-orange-500 bg-orange-50'
-              : 'border-gray-300 bg-gray-50 hover:border-orange-400'
+              ? 'border-gold-ink bg-gold-soft'
+              : 'border-line-strong bg-paper hover:border-gold-ink'
           } ${isDisabled ? 'cursor-not-allowed opacity-60' : ''}`}
         >
-          <ImagePlus aria-hidden className="h-8 w-8 text-orange-600" />
-          <p className="text-sm font-medium text-gray-800">Kéo thả ảnh vào đây hoặc bấm để chọn</p>
-          <p id={`${inputId}-hint`} className="text-xs text-gray-500">
+          <ImagePlus aria-hidden className="h-8 w-8 text-gold-ink" />
+          <p className="text-sm font-medium text-ink">Kéo thả ảnh vào đây hoặc bấm để chọn</p>
+          <p id={`${inputId}-hint`} className="text-xs text-ink-soft">
             {accessToken
               ? 'JPEG, PNG, WebP, AVIF – tối đa 5MB'
               : 'Vui lòng đăng nhập để tải ảnh lên'}

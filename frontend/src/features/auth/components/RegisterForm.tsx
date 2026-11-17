@@ -83,13 +83,13 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded-lg bg-orange-600 px-4 py-2.5 font-semibold text-white transition hover:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
+        className="rounded-lg bg-navy px-4 py-2.5 font-semibold text-white transition hover:bg-navy-2 focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-2 disabled:opacity-60"
       >
         {isSubmitting ? 'Đang tạo tài khoản…' : 'Đăng ký'}
       </button>
-      <p className="text-center text-sm text-gray-600">
+      <p className="text-center text-sm text-ink-soft">
         Đã có tài khoản?{' '}
-        <Link href="/auth/login" className="font-medium text-orange-700 hover:underline">
+        <Link href="/auth/login" className="font-medium text-gold-ink hover:underline">
           Đăng nhập
         </Link>
       </p>

@@ -2,9 +2,11 @@ using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Common.Interfaces.Persistence;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Domain.Exceptions.Auth;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -127,8 +129,12 @@ public sealed class IdentityService(
             // A3: tăng AccessFailedCount – đạt 5 lần thì Identity tự đặt LockoutEnd = now + 15 phút
             await userManager.AccessFailedAsync(user).ConfigureAwait(false);
 
-            return await userManager.IsLockedOutAsync(user).ConfigureAwait(false)
-                ? new PasswordCheckResult(PasswordCheckStatus.LockedOut, null, user.LockoutEnd)
+            // AccessFailedAsync persists through the Identity store. Re-read the user before reporting the
+            // threshold-crossing attempt so the API observes the newly persisted LockoutEnd consistently.
+            var updatedUser = await userManager.FindByIdAsync(user.Id).ConfigureAwait(false);
+
+            return updatedUser is not null && await userManager.IsLockedOutAsync(updatedUser).ConfigureAwait(false)
+                ? new PasswordCheckResult(PasswordCheckStatus.LockedOut, null, updatedUser.LockoutEnd)
                 : new PasswordCheckResult(PasswordCheckStatus.InvalidCredentials, null, null);
         }
 
@@ -151,11 +157,108 @@ public sealed class IdentityService(
         return user is null ? null : ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
     }
 
+    public async Task<IdentityUserInfo?> FindByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        var user = await userManager.Users.AsNoTracking()
+            .SingleOrDefaultAsync(candidate => candidate.NormalizedEmail == userManager.NormalizeEmail(email), cancellationToken).ConfigureAwait(false);
+        return user is null ? null : ToInfo(user, [.. await userManager.GetRolesAsync(user).ConfigureAwait(false)]);
+    }
+
     public async Task<bool> IsLockedOutAsync(string userId, CancellationToken cancellationToken)
     {
         var user = await userManager.Users.AsNoTracking()
             .SingleOrDefaultAsync(candidate => candidate.Id == userId, cancellationToken).ConfigureAwait(false);
         return user is not null && await userManager.IsLockedOutAsync(user).ConfigureAwait(false);
+    }
+
+    public async Task ChangePasswordAsync(string userId, string currentPassword, string newPassword, Guid? currentSessionId, CancellationToken cancellationToken)
+    {
+        await unitOfWork.Users.ExecuteForUserAsync(
+            userId,
+            async ct =>
+            {
+                var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false)
+                    ?? throw new InvalidTokenException();
+                if (!await userManager.HasPasswordAsync(user).ConfigureAwait(false))
+                {
+                    throw new ValidationException([new ValidationFailure("currentPassword", "Tài khoản này chưa có mật khẩu. Hãy dùng chức năng quên mật khẩu để đặt mật khẩu lần đầu.")]);
+                }
+
+                var result = await userManager.ChangePasswordAsync(user, currentPassword, newPassword).ConfigureAwait(false);
+                if (!result.Succeeded)
+                {
+                    ThrowPasswordChangeFailure(result);
+                }
+
+                await unitOfWork.Users.RevokeOtherRefreshTokensAsync(userId, currentSessionId, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
+                return true;
+            },
+            cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<string?> GeneratePasswordResetTokenAsync(string userId, CancellationToken cancellationToken)
+    {
+        var user = await userManager.FindByIdAsync(userId).ConfigureAwait(false);
+        if (user is null || !user.IsActive)
+        {
+            return null;
+        }
+
+        var token = await userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
+        return WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(token));
+    }
+
+    public async Task<PasswordResetStatus> ResetPasswordAsync(string email, string encodedToken, string newPassword, CancellationToken cancellationToken)
+    {
+        string token;
+        try
+        {
+            token = System.Text.Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(encodedToken));
+        }
+        catch (FormatException)
+        {
+            return PasswordResetStatus.InvalidToken;
+        }
+
+        var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
+        if (user is null)
+        {
+            return PasswordResetStatus.InvalidToken;
+        }
+
+        if (!user.IsActive)
+        {
+            return PasswordResetStatus.Disabled;
+        }
+
+        return await unitOfWork.Users.ExecuteForUserAsync(
+            user.Id,
+            async ct =>
+            {
+                var target = await userManager.FindByIdAsync(user.Id).ConfigureAwait(false)
+                    ?? throw new InvalidOperationException("User disappeared during password reset.");
+                if (!target.IsActive)
+                {
+                    return PasswordResetStatus.Disabled;
+                }
+
+                var result = await userManager.ResetPasswordAsync(target, token, newPassword).ConfigureAwait(false);
+                if (!result.Succeeded)
+                {
+                    if (result.Errors.Any(error => error.Code.StartsWith("Password", StringComparison.Ordinal)))
+                    {
+                        ThrowPasswordChangeFailure(result);
+                    }
+
+                    return PasswordResetStatus.InvalidToken;
+                }
+
+                await userManager.ResetAccessFailedCountAsync(target).ConfigureAwait(false);
+                await userManager.SetLockoutEndDateAsync(target, null).ConfigureAwait(false);
+                await unitOfWork.Users.RevokeAllRefreshTokensAsync(target.Id, timeProvider.GetUtcNow().UtcDateTime, ct).ConfigureAwait(false);
+                return PasswordResetStatus.Success;
+            },
+            cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken)
@@ -237,6 +340,14 @@ public sealed class IdentityService(
         }
 
         var failures = result.Errors.Select(e => new ValidationFailure(MapProperty(e.Code), e.Description) { ErrorCode = e.Code });
+        throw new ValidationException(failures);
+    }
+
+    private static void ThrowPasswordChangeFailure(IdentityResult result)
+    {
+        var failures = result.Errors.Select(error => new ValidationFailure(
+            error.Code == "PasswordMismatch" ? "currentPassword" : "newPassword",
+            error.Description) { ErrorCode = error.Code });
         throw new ValidationException(failures);
     }
 

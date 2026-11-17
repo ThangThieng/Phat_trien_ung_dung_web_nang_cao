@@ -1,18 +1,25 @@
 import type { Metadata } from 'next';
+import { FolderOpen } from 'lucide-react';
+import EmptyState from '@/components/shared/EmptyState';
 import CategoryCard from '@/features/categories/components/CategoryCard';
 import { getCategories } from '@/features/categories/api';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 
-export const metadata: Metadata = {
-  title: 'Danh mục công thức',
+export const metadata: Metadata = buildPageMetadata({
+  name: 'Danh mục công thức',
   description:
     'Duyệt công thức theo danh mục: món khai vị, món chính, canh súp, món chay, bánh, tráng miệng…',
-};
+  path: '/categories',
+});
 
 /*
- * SRS §5.1: /categories – revalidate 3600s.
- * Trang render theo request, dữ liệu lấy từ Data Cache của Next.js (fetch revalidate 3600s) nên API chỉ bị gọi
- * tối đa 1 lần/giờ. Không prerender lúc `next build` vì khi build image Docker, backend API chưa chạy.
+ * SRS §5.1: /categories – SSR + Data Cache `revalidate: 1800` (MT-67).
+ * Trang render theo request, dữ liệu lấy từ Data Cache của Next.js (`getCategories()` — revalidate 1800s, ≤ TTL Redis
+ * `categories:all` 30 phút) nên API chỉ bị gọi tối đa 1 lần / 30 phút. Không prerender lúc `next build` vì khi build image
+ * Docker, backend API chưa chạy. Không khai báo `export const revalidate` — giá trị nằm trên lời gọi `fetch` (xem
+ * features/categories/api.ts, được `api.test.ts` kiểm).
  */
+
 export const dynamic = 'force-dynamic';
 
 export default async function CategoriesPage() {
@@ -20,17 +27,24 @@ export default async function CategoriesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-3xl font-bold text-gray-900">Danh mục công thức</h1>
-      <p className="mt-1 text-gray-600">Chọn một danh mục để khám phá các món ngon.</p>
+      <h1 className="text-3xl font-bold text-ink">Danh mục công thức</h1>
+      <p className="mt-1 text-ink-soft">Chọn một danh mục để khám phá các món ngon.</p>
 
       {categories.length === 0 ? (
-        <p className="mt-16 text-center text-gray-600">Chưa có danh mục nào.</p>
+        <EmptyState
+          className="mt-8"
+          icon={FolderOpen}
+          title="Chưa có danh mục nào"
+          description="Danh mục sẽ xuất hiện ở đây khi quản trị viên tạo chúng."
+        />
       ) : (
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
+            <li key={category.id}>
+              <CategoryCard category={category} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

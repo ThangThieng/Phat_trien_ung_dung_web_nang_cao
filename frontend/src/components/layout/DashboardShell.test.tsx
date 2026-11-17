@@ -59,16 +59,16 @@ describe('DashboardShell', () => {
   it('opens and closes the phone menu with a button that reports its state', () => {
     mockAuth = { isReady: true, isAuthenticated: true, user: author, logout: jest.fn() };
     render(<DashboardShell>secret</DashboardShell>);
-    const toggle = screen.getByRole('button', { name: 'Mở menu' });
+    const toggle = screen.getByRole('button', { name: 'Mở trình đơn' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(toggle);
-    expect(screen.getByRole('button', { name: 'Đóng menu' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'Đóng trình đơn' })).toHaveAttribute(
       'aria-expanded',
       'true',
     );
     expect(screen.getAllByRole('navigation', { name: 'Bảng điều khiển' })).toHaveLength(2);
     fireEvent.keyDown(document, { key: 'Escape' });
-    expect(screen.getByRole('button', { name: 'Mở menu' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'Mở trình đơn' })).toHaveAttribute(
       'aria-expanded',
       'false',
     );

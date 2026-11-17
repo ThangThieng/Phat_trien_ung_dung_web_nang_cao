@@ -1,0 +1,2 @@
+# Bản dev (HTTP, cổng 80): không có header riêng. Production thay file này bằng nginx/prod/environment-headers.conf.template
+# (HSTS — NFR-SEC-005) qua bind mount trong docker-compose.prod.yml. Gửi HSTS trên HTTP là vô nghĩa (trình duyệt bỏ qua).

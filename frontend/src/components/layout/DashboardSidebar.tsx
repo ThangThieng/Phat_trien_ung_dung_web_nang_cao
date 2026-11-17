@@ -14,7 +14,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import type { Role } from '@/types/auth';
 
-export interface DashboardNavItem {
+interface DashboardNavItem {
   href: string;
   label: string;
   icon: LucideIcon;
@@ -71,8 +71,8 @@ export default function DashboardSidebar({ roles, onNavigate }: DashboardSidebar
           aria-current={current ? 'page' : undefined}
           className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${
             current
-              ? 'bg-orange-50 text-orange-800'
-              : 'text-gray-700 hover:bg-gray-50 hover:text-orange-800'
+              ? 'bg-navy-2 text-gold ring-1 ring-gold ring-inset'
+              : 'text-cream hover:bg-navy-2 hover:text-gold'
           }`}
         >
           <Icon aria-hidden className="h-4 w-4 shrink-0" />
@@ -89,7 +89,7 @@ export default function DashboardSidebar({ roles, onNavigate }: DashboardSidebar
         <div>
           <p
             id="dashboard-admin-nav"
-            className="px-3 text-xs font-semibold tracking-wide text-gray-500 uppercase"
+            className="px-3 text-xs font-semibold tracking-wide text-gold uppercase"
           >
             Quản trị
           </p>

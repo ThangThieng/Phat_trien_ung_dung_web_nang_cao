@@ -17,7 +17,7 @@ public sealed class DeleteFileCommandValidator : AbstractValidator<DeleteFileCom
             .NotEmpty()
             .MaximumLength(500)
             .Must(k => !k.Contains("..", StringComparison.Ordinal) && !k.StartsWith('/'))
-            .WithMessage("File key không hợp lệ.");
+            .WithMessage("Mã tệp không hợp lệ.");
     }
 }
 
@@ -31,7 +31,7 @@ public sealed class DeleteFileCommandHandler(IFileStorageService storage, ICurre
         var ownsFile = request.FileKey.StartsWith($"uploads/{userId}/", StringComparison.Ordinal);
         if (!ownsFile && !currentUser.IsAdmin)
         {
-            throw new ForbiddenException(ErrorCodes.FileForbidden, "Bạn không có quyền xóa file này.");
+            throw new ForbiddenException(ErrorCodes.FileForbidden, "Bạn không có quyền xóa tệp này.");
         }
 
         await storage.DeleteAsync(request.FileKey, cancellationToken).ConfigureAwait(false);

@@ -24,6 +24,22 @@ const MAX_PAGE = 100_000;
 const first = (value: string | string[] | undefined): string | undefined =>
   Array.isArray(value) ? value[0] : value;
 
+/**
+ * `URLSearchParams` của trình duyệt (`useSearchParams()`) → đúng dạng `searchParams` mà Server Component nhận (tham số lặp
+ * thành mảng). Hai phía parse ra cùng một trạng thái — `Object.fromEntries` thì lấy giá trị CUỐI của tham số lặp, lệch với
+ * server (lấy giá trị đầu) và làm query key SSR/CSR khác nhau.
+ */
+export function fromUrlSearchParams(
+  params: Pick<URLSearchParams, 'keys' | 'getAll'>,
+): RawSearchParams {
+  const raw: RawSearchParams = {};
+  Array.from(new Set(params.keys())).forEach((key) => {
+    const values = params.getAll(key);
+    raw[key] = values.length > 1 ? values : values[0];
+  });
+  return raw;
+}
+
 /** Số nguyên không âm (>= `min`), giới hạn trên để không vượt kiểu `int` của backend; không hợp lệ → undefined. */
 export function toOptionalInt(
   value: string | undefined,
@@ -81,13 +97,20 @@ export function parseCategoryState(raw: RawSearchParams): RecipeQueryState {
   };
 }
 
-/** /search — SRS §8.3 chỉ nhận `q`, `page`, `pageSize`, `categoryId`, `difficulty` (kết quả xếp theo `ts_rank`, không có sort). */
+/**
+ * /search — SRS v1.2.3 §8.3: `q`, `page`, `pageSize`, `categoryId`, `difficulty` và (CR-2026-05 / MT-66, Buổi 7)
+ * `maxCookTime`, `maxPrepTime`, `minServings`. Kết quả xếp theo `ts_rank`, không có sort. Cùng quy tắc giá trị với /recipes:
+ * phút ≥ 0, khẩu phần ≥ 1; giá trị hỏng (`maxCookTime=abc`) bị bỏ như chưa chọn.
+ */
 export function parseSearchState(raw: RawSearchParams): RecipeQueryState {
   return {
     q: first(raw.q)?.trim() ?? '',
     page: parsePage(first(raw.page)),
     categoryId: parseCategoryId(first(raw.categoryId)),
     difficulty: parseDifficulty(first(raw.difficulty)),
+    maxCookTime: toOptionalInt(first(raw.maxCookTime)),
+    maxPrepTime: toOptionalInt(first(raw.maxPrepTime)),
+    minServings: toOptionalInt(first(raw.minServings), 1),
   };
 }
 

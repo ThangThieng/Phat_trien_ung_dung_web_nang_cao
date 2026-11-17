@@ -13,6 +13,8 @@ interface RecipeImageGalleryProps {
   recipeId: string;
   recipeTitle: string;
   accessToken: string;
+  initialImages?: RecipeImageResult[];
+  onChanged?: () => void;
 }
 
 /**
@@ -24,10 +26,12 @@ export default function RecipeImageGallery({
   recipeId,
   recipeTitle,
   accessToken,
+  initialImages = [],
+  onChanged,
 }: RecipeImageGalleryProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [images, setImages] = useState<RecipeImageResult[]>([]);
+  const [images, setImages] = useState<RecipeImageResult[]>(initialImages);
   const [uploading, setUploading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -49,6 +53,7 @@ export default function RecipeImageGallery({
             altText: recipeTitle,
           });
           setImages((current) => [...current, uploaded]);
+          onChanged?.();
         }
       }
     } catch (error) {
@@ -66,6 +71,22 @@ export default function RecipeImageGallery({
         current.map((image) => ({ ...image, isPrimary: image.imageId === imageId })),
       );
       toast.success('Đã đổi ảnh chính.');
+      onChanged?.();
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const saveAltText = async (imageId: string, altText: string) => {
+    const current = images.find((image) => image.imageId === imageId);
+    if (!altText.trim() || current?.altText === altText) return;
+    setBusyId(imageId);
+    try {
+      await updateRecipeImage(recipeId, imageId, { altText }, accessToken);
+      setImages((items) => items.map((image) => (image.imageId === imageId ? { ...image, altText } : image)));
+      onChanged?.();
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
@@ -84,6 +105,7 @@ export default function RecipeImageGallery({
         return rest.map((image) => ({ ...image, isPrimary: image.imageId === next.imageId }));
       });
       toast.info('Đã xóa ảnh.');
+      onChanged?.();
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
@@ -95,12 +117,12 @@ export default function RecipeImageGallery({
     <div className="flex flex-col gap-4">
       <label
         htmlFor={inputId}
-        className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-orange-200 bg-orange-50/40 p-6 text-center text-sm text-gray-700 hover:border-orange-400"
+        className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-line bg-cream p-6 text-center text-sm text-ink hover:border-gold-ink"
       >
         {uploading ? (
-          <Loader2 aria-hidden className="h-6 w-6 animate-spin text-orange-600" />
+          <Loader2 aria-hidden className="h-6 w-6 animate-spin text-gold-ink" />
         ) : (
-          <ImagePlus aria-hidden className="h-6 w-6 text-orange-600" />
+          <ImagePlus aria-hidden className="h-6 w-6 text-gold-ink" />
         )}
         <span>
           {uploading
@@ -120,17 +142,17 @@ export default function RecipeImageGallery({
       </label>
 
       {images.length === 0 ? (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-ink-soft">
           Chưa có ảnh nào. Ảnh đầu tiên sẽ tự động là ảnh chính.
         </p>
       ) : (
         <fieldset>
-          <legend className="mb-2 text-sm font-semibold text-gray-800">Chọn ảnh chính</legend>
+          <legend className="mb-2 text-sm font-semibold text-ink">Chọn ảnh chính</legend>
           <ul className="grid gap-3 sm:grid-cols-3">
             {images.map((image) => (
               <li
                 key={image.imageId}
-                className="overflow-hidden rounded-xl border border-gray-200 bg-white"
+                className="overflow-hidden rounded-xl border border-line bg-paper"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- ảnh gốc trên MinIO, biến thể resize chưa có */}
                 <img
@@ -138,6 +160,19 @@ export default function RecipeImageGallery({
                   alt={image.altText ?? ''}
                   className="aspect-video w-full object-cover"
                 />
+                <label htmlFor={`alt-${image.imageId}`} className="block px-2 pt-2 text-xs font-medium text-ink">
+                  Mô tả ảnh (bắt buộc để xuất bản)
+                  <input
+                    id={`alt-${image.imageId}`}
+                    defaultValue={image.altText ?? ''}
+                    maxLength={200}
+                    disabled={busyId !== null}
+                    onBlur={(event) => {
+                      saveAltText(image.imageId, event.target.value).catch(() => undefined);
+                    }}
+                    className="mt-1 w-full rounded border border-line-strong px-2 py-1 text-sm"
+                  />
+                </label>
                 <div className="flex items-center justify-between gap-2 p-2">
                   <label
                     htmlFor={`primary-${image.imageId}`}
@@ -158,7 +193,7 @@ export default function RecipeImageGallery({
                     onClick={() => remove(image)}
                     disabled={busyId !== null}
                     aria-label="Xóa ảnh"
-                    className="rounded-md p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                    className="rounded-md p-1.5 text-ink-soft hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
                   >
                     <Trash2 aria-hidden className="h-4 w-4" />
                   </button>

@@ -1,0 +1,1058 @@
+[
+ {
+  "pageId": 222678,
+  "title": "Súp hành kiểu Pháp (French Onion Soup)",
+  "description": "Súp hành kiểu Pháp là món súp cổ điển của Pháp, ở dạng đơn giản nhất chỉ là hành tây thái lát luộc trong nước. Các phiên bản cầu kỳ hơn dùng thêm nước dùng, rượu vang và gia vị. Đây là món ăn gia đình thông thường, được dọn như món khai vị đơn giản, phủ phô mai Gruyère bào và bánh mì nướng giòn (hoặc bánh mì Pháp để cũ) ngay trước khi ăn. Súp cũng có thể dùng vào cuối buổi tối, không kèm gì, đựng trong cốc. Mỗi địa phương ở Pháp có cách nấu riêng, nhưng công thức này chứa nhiều thành phần cơ bản nhất.",
+  "ingredients": [
+   {
+    "n": "hành tây băm",
+    "u": "cốc đầy",
+    "o": "500 g"
+   },
+   {
+    "n": "bơ",
+    "t": "1 miếng",
+    "o": "gần 2 thìa canh, khoảng 25 g"
+   },
+   {
+    "n": "bột mì",
+    "o": "15 g"
+   },
+   {
+    "n": "nước dùng bò (có thể thay bằng nước dùng gà hoặc rau)",
+    "o": "khoảng 5¼ cốc"
+   },
+   {
+    "n": "bó gia vị (bouquet garni)",
+    "u": "bó",
+    "o": "lá nguyệt quế tươi, cỏ xạ hương, thảo mộc Provence, buộc bó hoặc cho vào túi vải"
+   },
+   {
+    "n": "bánh mì Pháp để cũ",
+    "o": "mỗi người một lát (hoặc bánh mì tươi nướng trước)"
+   },
+   {
+    "n": "rượu port đỏ",
+    "o": "50 ml"
+   },
+   {
+    "n": "phô mai Gruyère bào",
+    "o": "125 g"
+   },
+   {
+    "n": "nhục đậu khấu"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Xào hành",
+    "d": "Đun chảy bơ trong nồi lớn. Khuấy hành vào và xào ở lửa vừa (đến khi hành vàng nhạt và trong, đừng để hành caramel quá mức và sẫm màu)."
+   },
+   {
+    "t": "Thêm bột",
+    "d": "Cho bột mì vào hành. Khuấy nhẹ 3–4 phút. Bột sẽ như biến mất vì đã ngấm vào bơ, tạo độ sánh nhẹ đặc trưng của súp. Vét phần bơ bột nâu sẫm dính đáy nồi; phần này gọi là fond và sẽ tăng hương vị cho súp."
+   },
+   {
+    "t": "Thêm nước dùng",
+    "d": "Đổ ⅔ lượng nước dùng bò lên hành và trộn đều. Thêm bó gia vị. Đun sôi, khuấy đều tay."
+   },
+   {
+    "t": "Nêm và ninh",
+    "d": "Nêm muối, tiêu và một ít nhục đậu khấu vừa ăn. Thêm phần nước dùng còn lại, ninh nhẹ 10–15 phút."
+   },
+   {
+    "t": "Nướng bánh mì",
+    "d": "Nếu bánh mì còn tươi, hãy nướng lúc này ở lửa nhỏ."
+   },
+   {
+    "t": "Thêm rượu",
+    "d": "Nhấc nồi khỏi bếp, bỏ bó gia vị. Thêm rượu port và khuấy đều."
+   },
+   {
+    "t": "Nướng phô mai",
+    "d": "Chia súp vào 6 bát gốm hoặc thủy tinh chịu nhiệt. Ấn một lát bánh mì lên mặt mỗi bát. Rắc thật nhiều Gruyère bào. Nướng vỉ ở mức thấp 10 phút, hoặc đến khi phô mai tan và vàng."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng thật nóng."
+   }
+  ],
+  "sourceHash": "fd5e84b570d7aae86e08db5e7bd1688b477f12c9f4c7f8319a403796f8de918c"
+ },
+ {
+  "pageId": 8324,
+  "title": "Bánh mì nướng kiểu Pháp (French Toast)",
+  "description": "French toast, đôi khi được gọi là “bánh mì trứng” ở Vương quốc Anh, là món ăn sáng hoặc tráng miệng thịnh hành, làm bằng cách chiên lát bánh mì đã nhúng hỗn hợp trứng. Món ra đời như một cách tận dụng bánh mì cũ. Cái tên pain perdu dịch sát nghĩa là “bánh mì bị bỏ đi”, chỉ bánh mì cũ. Nếu không có bánh mì cũ, hãy nướng nhẹ bánh để bánh hút được nhiều trứng và sữa hơn. French toast thường dùng với các loại phủ giống như bánh pancake, waffle và bánh mì nướng. Cũng có thể dùng trong bữa sáng kiểu chiên với các món mặn như xúc xích, cà chua (hoặc tương cà), đậu sốt, nấm chiên… Công thức này dễ dàng tăng giảm khẩu phần.",
+  "ingredients": [
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "sữa hoặc kem",
+    "t": "khoảng ¼ cốc",
+    "o": "60 ml / 2 oz; nhiều hơn cho bánh mềm, ít vị trứng; ít hơn cho bánh chắc, đậm vị trứng"
+   },
+   {
+    "n": "bánh mì"
+   },
+   {
+    "n": "bơ, bơ thực vật hoặc dầu ăn"
+   },
+   {
+    "n": "tinh chất vani hoặc loại tương tự",
+    "o": "Hương liệu tùy chọn"
+   },
+   {
+    "n": "nhục đậu khấu, quế hoặc gia vị bột khác hợp món ngọt",
+    "o": "Hương liệu tùy chọn"
+   },
+   {
+    "n": "đường hoặc mật ong (trộn bột)",
+    "o": "Hương liệu tùy chọn"
+   },
+   {
+    "n": "muối",
+    "o": "Hương liệu tùy chọn"
+   },
+   {
+    "n": "tiêu",
+    "o": "Hương liệu tùy chọn"
+   },
+   {
+    "n": "siro phong",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "mứt hoặc siro trái cây",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "kem tươi đánh bông",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "đường bột",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "các loại hạt",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "mật ong",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "thịt xông khói",
+    "o": "Gợi ý phủ"
+   },
+   {
+    "n": "mâm xôi, dâu tây, việt quất và/hoặc chuối",
+    "o": "Gợi ý phủ"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đánh trứng",
+    "d": "Đánh trứng, sữa và các nguyên liệu tùy chọn trong tô đến khi hòa quyện, không còn vệt lòng trắng."
+   },
+   {
+    "t": "Làm nóng chảo",
+    "d": "Làm nóng chảo rán hoặc vỉ ở lửa vừa nhỏ."
+   },
+   {
+    "t": "Phết dầu chảo",
+    "d": "Phết bơ, bơ thực vật hoặc xịt dầu ăn lên chảo."
+   },
+   {
+    "t": "Nhúng bánh",
+    "d": "Nhúng từng mặt bánh vào hỗn hợp trứng, chỉ đến khi bánh được áo đều và hút một ít hỗn hợp. (Xem ghi chú trên trang nguồn để biết loại bánh mì nào phù hợp nhất.)"
+   },
+   {
+    "t": "Giữ bánh nguyên vẹn",
+    "d": "Đảm bảo bánh không bị nát. Bánh mì mềm chỉ cần nhúng nhanh; bánh chắc hơn có thể ngâm lâu hơn vài giây."
+   },
+   {
+    "t": "Chiên bánh",
+    "d": "Chiên và lật một lần đến khi hai mặt vàng và bên trong chín."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Bày ra đĩa, phủ các loại tùy thích."
+   }
+  ],
+  "sourceHash": "c1ece0643f37ff86744f842a1b49607187c1364ee721843913b8b46292074c5e"
+ },
+ {
+  "pageId": 238352,
+  "title": "Dưa chuột muối chiên giòn (Fried Pickle)",
+  "description": "Dưa chuột muối chiên giòn là món ăn vặt ở miền Nam nước Mỹ, làm bằng cách chiên ngập dầu những lát dưa chuột muối thì là đã tẩm bột.",
+  "ingredients": [
+   {
+    "n": "sữa",
+    "o": "Hỗn hợp sữa"
+   },
+   {
+    "n": "trứng",
+    "u": "quả",
+    "o": "đánh tan, hỗn hợp sữa"
+   },
+   {
+    "n": "bột mì (hỗn hợp sữa)",
+    "o": "Hỗn hợp sữa"
+   },
+   {
+    "n": "sốt Worcestershire",
+    "o": "Hỗn hợp sữa"
+   },
+   {
+    "n": "tương ớt",
+    "o": "Hỗn hợp sữa"
+   },
+   {
+    "n": "bột mì (hỗn hợp bột)",
+    "o": "Hỗn hợp bột"
+   },
+   {
+    "n": "muối",
+    "o": "Hỗn hợp bột"
+   },
+   {
+    "n": "tiêu",
+    "o": "Hỗn hợp bột"
+   },
+   {
+    "n": "dưa chuột muối thì là thái lát",
+    "o": "Nguyên liệu khác"
+   },
+   {
+    "n": "thì là khô",
+    "t": "tùy chọn",
+    "o": "Nguyên liệu khác"
+   },
+   {
+    "n": "dầu thực vật",
+    "t": "để chiên ngập",
+    "o": "Nguyên liệu khác"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn hỗn hợp sữa",
+    "d": "Trộn các nguyên liệu của hỗn hợp sữa, khuấy đều rồi để riêng."
+   },
+   {
+    "t": "Trộn hỗn hợp bột",
+    "d": "Trộn các nguyên liệu của hỗn hợp bột, khuấy đều."
+   },
+   {
+    "t": "Tẩm bột",
+    "d": "Nhúng dưa vào hỗn hợp sữa rồi lăn qua hỗn hợp bột. Lặp lại một lần nữa."
+   },
+   {
+    "t": "Chiên",
+    "d": "Chiên ngập trong dầu nóng 350 °F (175 °C) đến khi dưa nổi lên mặt và vàng nâu. Để ráo trên giấy thấm."
+   },
+   {
+    "t": "Rắc thì là",
+    "d": "Rắc thì là khô tùy thích."
+   }
+  ],
+  "sourceHash": "3437c27b17834c268ac295b14ede468df856bbf8454f6c7c8d832305dc3f4433"
+ },
+ {
+  "pageId": 21768,
+  "title": "Cơm chiên thập cẩm tùy biến",
+  "description": "Cơm chiên là món đơn giản, dễ biến tấu và có thể làm trong năm phút. Bạn tự chọn nguyên liệu và lượng dùng. Có thể thay thế nguyên liệu và tận dụng đồ ăn thừa rất tốt!",
+  "ingredients": [
+   {
+    "n": "cơm đã nấu (cơm nguội để tủ lạnh rất hợp)"
+   },
+   {
+    "n": "nước tương"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "đậu Hà Lan"
+   },
+   {
+    "n": "giá đỗ"
+   },
+   {
+    "n": "cải thìa"
+   },
+   {
+    "n": "đậu thận"
+   },
+   {
+    "n": "nấm"
+   },
+   {
+    "n": "cà rốt"
+   },
+   {
+    "n": "ngô ngọt"
+   },
+   {
+    "n": "đậu phụ chiên"
+   },
+   {
+    "n": "trứng"
+   },
+   {
+    "n": "gia vị thơm (hành tây, hành tím, hành lá, tỏi)"
+   },
+   {
+    "n": "tiêu đen",
+    "o": "Gia vị"
+   },
+   {
+    "n": "đường",
+    "o": "Gia vị"
+   },
+   {
+    "n": "muối",
+    "o": "Gia vị"
+   },
+   {
+    "n": "ớt",
+    "o": "Gia vị"
+   },
+   {
+    "n": "gia vị cơm chiên",
+    "o": "Gia vị"
+   },
+   {
+    "n": "thịt gà",
+    "o": "Thịt (tùy chọn)"
+   },
+   {
+    "n": "xá xíu",
+    "o": "Thịt (tùy chọn)"
+   },
+   {
+    "n": "thịt bò ướp",
+    "o": "Thịt (tùy chọn)"
+   },
+   {
+    "n": "thịt heo",
+    "o": "Thịt (tùy chọn)"
+   },
+   {
+    "n": "hải sản (thêm bột cà ri nếu thích vị cà ri)",
+    "o": "Thịt (tùy chọn)"
+   },
+   {
+    "n": "tôm lớn",
+    "o": "Thịt (tùy chọn)"
+   },
+   {
+    "n": "tôm nhỏ",
+    "o": "Thịt (tùy chọn)"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nấu đậu phụ",
+    "d": "Nếu dùng đậu phụ, hãy nấu chín trước."
+   },
+   {
+    "t": "Thái hành",
+    "d": "Nếu dùng hành, thái hạt lựu theo kích cỡ tùy thích."
+   },
+   {
+    "t": "Sơ chế cải thìa",
+    "d": "Nếu dùng cải thìa, tách phần thân và phần lá. Thái ngang phần lá thành dải rộng ¾ inch, rồi xé thành miếng 2 inch. Phần lá nấu gần như giá đỗ, có thể lâu hơn một chút. Phần thân nấu như cần tây."
+   },
+   {
+    "t": "Sơ chế giá",
+    "d": "Nếu dùng giá đỗ, rửa sạch và bỏ những cọng không còn trắng giòn."
+   },
+   {
+    "t": "Nấu thịt",
+    "d": "Nếu dùng thịt, thái miếng vừa ý và nấu chín."
+   },
+   {
+    "t": "Cho dầu",
+    "d": "Cho thật nhiều dầu vào chảo rán lớn (nhiều hơn bạn nghĩ) để khỏi dính. Nếu dùng xúc xích hoặc thịt nhiều mỡ thì có thể dùng ít dầu hơn."
+   },
+   {
+    "t": "Cho cơm",
+    "d": "Cho cơm vào. Nấu trên bếp ở lửa vừa lớn."
+   },
+   {
+    "t": "Thêm nguyên liệu",
+    "d": "Cho nước tương, thịt, trứng và tất cả rau, trừ hành và giá đỗ."
+   },
+   {
+    "t": "Nêm",
+    "d": "Thêm tiêu, một hai nhúm đường và thêm muối nếu muốn."
+   },
+   {
+    "t": "Hoàn thành",
+    "d": "Cho đậu phụ, giá đỗ và hành vào khi cơm gần xong (tùy độ chiên bạn muốn), cẩn thận đừng nấu quá kỹ."
+   }
+  ],
+  "sourceHash": "de8f6cab13b317fafeb9d78851c5a40314867da3f650193a7688df6049b19b8a"
+ },
+ {
+  "pageId": 127705,
+  "title": "Frijoles Antioqueños (Đậu đỏ hầm kiểu Colombia)",
+  "description": "Đậu kiểu Antioquia là biểu tượng của ẩm thực Colombia.",
+  "ingredients": [
+   {
+    "n": "đậu đỏ hoặc đậu Cargamanto"
+   },
+   {
+    "n": "cà chua đỏ",
+    "u": "quả"
+   },
+   {
+    "n": "hành lá băm"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "thì là Ai Cập"
+   },
+   {
+    "n": "bột tiêu Jamaica (allspice)"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "viên nêm gà",
+    "u": "viên"
+   },
+   {
+    "n": "chuối nấu lớn",
+    "u": "quả"
+   },
+   {
+    "n": "thịt bò bắp, giò heo hoặc da heo",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ngâm đậu",
+    "d": "Rửa đậu và ngâm qua đêm với lượng nước gấp đôi thể tích đậu."
+   },
+   {
+    "t": "Bỏ đậu nổi",
+    "d": "Hôm sau, bỏ những hạt đậu nổi lên."
+   },
+   {
+    "t": "Nấu sốt hogao",
+    "d": "Đun nóng dầu trong nồi áp suất. Cho hành lá vào chiên đến khi bắt đầu vàng. Thêm cà chua, thì là, viên nêm và tiêu Jamaica. Đây là “hogao”, loại sốt cơ bản của nhiều món Colombia."
+   },
+   {
+    "t": "Thêm đậu và nước",
+    "d": "Cho 6 cốc nước, đậu và chuối vào. Đun sôi ở lửa vừa."
+   },
+   {
+    "t": "Nấu áp suất",
+    "d": "Đậy nắp nồi áp suất và nấu 30 phút."
+   },
+   {
+    "t": "Mở nồi",
+    "d": "Để nguội rồi mở nắp."
+   },
+   {
+    "t": "Thêm thịt",
+    "d": "Kiểm tra mực nước, cho thịt vào nếu dùng và đậy lại. Nấu thêm 30 phút."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nếm lại muối. Nếu muốn đặc hơn, nấu không đậy nắp ở lửa nhỏ."
+   }
+  ],
+  "sourceHash": "e24a48c324bec1919218f8e56fe990e21aac63b96ecc5636140dfa92704dab3d"
+ },
+ {
+  "pageId": 155858,
+  "title": "Galaktoboureko (Bánh ngàn lớp nhân kem semolina kiểu Hy Lạp)",
+  "description": "Galaktoboureko (Γαλακτομπούρεκο) là món tráng miệng truyền thống của Hy Lạp, làm từ vỏ bánh phyllo (còn gọi là filo hoặc fillo), nhân kem semolina thơm mùi thanh yên, dùng kèm siro đường.",
+  "ingredients": [
+   {
+    "n": "đường cát trắng (phần bánh)",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "trứng",
+    "u": "quả",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "bột semolina",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "sữa",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "quả vani",
+    "u": "quả",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "chanh vàng",
+    "u": "quả",
+    "o": "vắt lấy nước, phần bánh"
+   },
+   {
+    "n": "muối",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "vỏ bánh phyllo",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "bơ đun chảy",
+    "o": "Phần bánh"
+   },
+   {
+    "n": "nước",
+    "o": "Phần siro"
+   },
+   {
+    "n": "đường cát trắng (phần siro)",
+    "o": "Phần siro"
+   },
+   {
+    "n": "nước cốt chanh",
+    "o": "Phần siro"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn nhân",
+    "d": "Trộn đường, trứng và semolina trong nồi. Trộn sữa và quả vani vào, khuấy nước cốt chanh vào."
+   },
+   {
+    "t": "Nấu nhân",
+    "d": "Đun sôi, dùng nĩa khuấy liên tục. Khi bắt đầu sôi, hạ nhỏ lửa và khuấy thêm 10 phút. Nhấc khỏi bếp và để nguội."
+   },
+   {
+    "t": "Phết bơ",
+    "d": "Phết một ít bơ đun chảy lên từng tấm phyllo."
+   },
+   {
+    "t": "Xếp lớp",
+    "d": "Phết bơ khay, xếp một nửa lượng phyllo vào từng tấm một. Đổ nhân semolina đã nguội lên, phủ phần phyllo đã phết bơ còn lại."
+   },
+   {
+    "t": "Rảy nước",
+    "d": "Rảy một ít nước lên mặt bánh."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng ở 356°F / 180°C / lò ga mức 4 trong 1 giờ. Để nguội."
+   },
+   {
+    "t": "Pha siro",
+    "d": "Cho nước và đường vào nồi."
+   },
+   {
+    "t": "Nấu siro",
+    "d": "Đun sôi và ninh khoảng 10 phút."
+   },
+   {
+    "t": "Để nguội siro",
+    "d": "Để siro nguội."
+   },
+   {
+    "t": "Thêm chanh",
+    "d": "Khi nguội mới khuấy nước cốt chanh vào để giữ vitamin C."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Phết siro lên bánh đã nướng và dọn ăn."
+   }
+  ],
+  "sourceHash": "8a86c5a61149240f1a75bc90c13ed59cb6fac93402c462bdcd8e3f0c61422d96"
+ },
+ {
+  "pageId": 382322,
+  "title": "Ghormeh Sabzi (Thịt hầm rau thơm kiểu Iran)",
+  "description": "Ghormeh sabzi là một trong những món thịnh hành nhất ở vùng Ba Tư của Iran. Món khá dễ nấu và đủ ăn trong nhiều ngày, nên thường được nấu lượng lớn. Rau thơm và chanh khô tạo nên hương vị độc đáo. Vì thịt được ninh ở nhiệt thấp trong thời gian dài nên trở nên rất mềm, chỉ cần nĩa và thìa là ăn được.",
+  "ingredients": [
+   {
+    "n": "đậu đỏ"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "thịt bò hoặc cừu có chút mỡ (như thịt dùng để luộc)"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "mùi tây",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "rau bina",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "ngò rí",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "rau thơm ghormeh sabzi xào sẵn",
+    "o": "khoảng 400 g"
+   },
+   {
+    "n": "chanh khô",
+    "u": "quả"
+   },
+   {
+    "n": "nghệ bột"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   },
+   {
+    "n": "gạo"
+   },
+   {
+    "n": "nghệ tây (saffron)"
+   },
+   {
+    "n": "đường",
+    "t": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Luộc đậu",
+    "d": "Luộc đậu đỏ trong 1 giờ."
+   },
+   {
+    "t": "Sơ chế thịt",
+    "d": "Bỏ phần mỡ thừa và cắt thịt thành miếng nhỏ."
+   },
+   {
+    "t": "Phi hành",
+    "d": "Đun nóng một ít dầu ô liu thường trong nồi lớn có nắp. Cho hành vào, chiên ở lửa lớn 1–2 phút."
+   },
+   {
+    "t": "Xào thịt",
+    "d": "Khuấy thịt vào, nấu thêm 1–2 phút."
+   },
+   {
+    "t": "Hạ lửa",
+    "d": "Hạ lửa nhỏ nhất. Thịt sẽ tiết ra nhiều nước, góp phần tạo vị cho món hầm."
+   },
+   {
+    "t": "Thêm rau thơm",
+    "d": "Khuấy mùi tây, rau bina, ngò rí và rau thơm ghormeh sabzi vào."
+   },
+   {
+    "t": "Thêm nước sôi",
+    "d": "Khuấy nước sôi vào (khoảng 0.5 L hoặc đến khi đủ độ sánh)."
+   },
+   {
+    "t": "Ninh với đậu",
+    "d": "Khuấy đậu đã luộc và để ráo vào. Ninh ở lửa nhỏ khoảng ½–3 giờ. Càng lâu càng ngon."
+   },
+   {
+    "t": "Ngâm chanh khô",
+    "d": "Ngâm chanh khô trong nước nóng 15 phút, rồi dùng nĩa xiên thủng từng quả."
+   },
+   {
+    "t": "Nêm",
+    "d": "Cho chanh khô, nghệ, tiêu và muối vào nồi. Ninh thêm ½–1 giờ."
+   },
+   {
+    "t": "Ủ tủ lạnh",
+    "d": "Nếu muốn ngon nhất, để món nguội rồi cất tủ lạnh. Hương vị sẽ ngon hơn trong hai ngày sau."
+   },
+   {
+    "t": "Hấp cơm",
+    "d": "Hấp gạo thành cơm."
+   },
+   {
+    "t": "Làm cơm nghệ tây",
+    "d": "Giã nghệ tây với đường trong cối. Thêm khoảng 1 thìa canh nước sôi. Trộn một phần cơm với nước nghệ tây để tạo màu."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Múc món hầm nóng ra bát riêng. Múc cơm trắng ra bát khác, phủ cơm nghệ tây lên trên."
+   }
+  ],
+  "sourceHash": "a642a5e84a3f04e83d02210d3777345b08a390cbd71d39f79b4c79e2bb737ed9"
+ },
+ {
+  "pageId": 31180,
+  "title": "Haggis (Dồi cừu yến mạch kiểu Scotland)",
+  "description": "Haggis là món quốc hồn quốc túy của Scotland, gồm nhân băm từ tim, gan và phổi cừu trộn với yến mạch, nêm đậm rồi nhồi vào túi làm từ dạ dày cừu. Haggis được luộc 2–3 giờ rồi để nguội. Khi dùng, ninh lại khoảng một giờ và theo truyền thống ăn với củ cải nghiền, khoai tây và rượu whisky. Món kèm “neeps” và “tatties” là củ cải Thụy Điển hoặc củ cải nghiền và khoai tây nghiền. Ở các tiệm cá và khoai chiên, thường có haggis hình xúc xích dài, tẩm bột chiên ngập ăn với khoai.",
+  "ingredients": [
+   {
+    "n": "tim bò hoặc cừu",
+    "o": "cắt dải rộng 2 inch, 450 g, nguyên liệu chính"
+   },
+   {
+    "n": "gan bò hoặc cừu",
+    "o": "450 g, nguyên liệu chính"
+   },
+   {
+    "n": "thịt cừu để hầm",
+    "o": "cắt khối 1 inch, 225 g, nguyên liệu chính"
+   },
+   {
+    "n": "hành tây vàng gọt vỏ băm nhuyễn",
+    "o": "Nguyên liệu chính"
+   },
+   {
+    "n": "rượu whisky Scotland",
+    "o": "Nguyên liệu chính"
+   },
+   {
+    "n": "eggnog",
+    "o": "Nguyên liệu chính"
+   },
+   {
+    "n": "yến mạch",
+    "o": "nướng trong lò 375°F (200°C) trong 10 phút, nguyên liệu chính"
+   },
+   {
+    "n": "muối (gia vị)",
+    "o": "Gia vị"
+   },
+   {
+    "n": "tiêu đen xay",
+    "o": "Gia vị"
+   },
+   {
+    "n": "cỏ xạ hương khô",
+    "o": "nguyên lá, gia vị"
+   },
+   {
+    "n": "hương thảo khô",
+    "o": "Gia vị"
+   },
+   {
+    "n": "nhục đậu khấu bào",
+    "o": "Gia vị"
+   },
+   {
+    "n": "màng bọc dạ dày bò (beef caps)",
+    "u": "cái",
+    "o": "hỏi tiệm làm xúc xích, phần vỏ"
+   },
+   {
+    "n": "giấm trắng chưng cất",
+    "o": "Phần vỏ"
+   },
+   {
+    "n": "muối để ngâm",
+    "o": "Phần vỏ"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ninh tim",
+    "d": "Cho tim bò vào nồi 4-quart (khoảng 3–3,5 lít) có nắp, đổ nước lạnh vừa ngập. Đậy nắp ninh 1 giờ 10 phút."
+   },
+   {
+    "t": "Thêm gan và thịt",
+    "d": "Cho gan bò và thịt cừu vào, đậy nắp ninh 20 phút. Vớt tất cả ra để nguội. Giữ lại 1 cốc nước luộc. Xay thô toàn bộ thịt."
+   },
+   {
+    "t": "Trộn nhân",
+    "d": "Trong tô lớn, trộn tất cả nguyên liệu, trừ màng bọc, giấm và muối ngâm. Trộn đều và để riêng."
+   },
+   {
+    "t": "Sơ chế vỏ",
+    "d": "Rửa màng bọc trong nước lạnh. Lộn trái và ngâm trong 2 quart nước lạnh với muối và giấm trong ½ giờ. Để ráo và rửa thật sạch cả trong lẫn ngoài."
+   },
+   {
+    "t": "Nhồi và hấp",
+    "d": "Chia nhân làm ba phần. Nhồi vào màng bọc và buộc đầu bằng dây. Hai cái chỉ cần buộc một đầu, cái thứ ba buộc cả hai đầu. Dùng xiên ngô hoặc nĩa nhọn châm khắp haggis. Đặt vào nồi hấp và hấp 1 giờ 20 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Thái lát haggis, dùng với nước sốt thịt bò hoặc cừu."
+   }
+  ],
+  "sourceHash": "14142c2fd12328582e4afa2a3d91e5823386aae9eeafb0f80260ee357cdb5d7e"
+ },
+ {
+  "pageId": 25427,
+  "title": "Jambalaya (Cơm thập cẩm kiểu Louisiana)",
+  "description": "Jambalaya, một trong những món nổi tiếng nhất của Louisiana, bắt nguồn từ ẩm thực Tây Ban Nha và Pháp, là phiên bản paella ở Tân Thế giới. Món ra đời tại Khu phố Pháp ở New Orleans, là kết quả tình cờ khi người Tây Ban Nha cố làm paella ở nơi nghệ tây khó kiếm do chi phí nhập khẩu, nên cà chua trở thành thứ thay thế. Về sau, ảnh hưởng của người Pháp ở New Orleans ngày càng mạnh, cùng các gia vị vùng Caribbean đã biến món này thành món độc đáo. Ở Louisiana ngày nay có nhiều biến thể, nhưng chủ yếu là hai loại: Creole và Cajun. Jambalaya Creole, còn gọi là jambalaya đỏ, thịnh hành ở New Orleans và vùng lân cận, có cà chua nên màu đỏ. Jambalaya Cajun không có cà chua, xuất phát từ vùng đầm lầy thấp ở nông thôn Louisiana, có vị khói đặc trưng và màu nâu do áp chảo thịt trong nồi gang. Cả hai đều có thể dùng hầu như mọi loại thịt và/hoặc hải sản, trong đó tôm càng rất được ưa chuộng. Món nổi tiếng này đơn giản đến bất ngờ và rất hợp cho bữa ăn hằng ngày. Công thức Jambalaya Creole dưới đây dùng thịt gia cầm và cà chua đóng hộp.",
+  "ingredients": [
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "rau savory"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "húng quế khô"
+   },
+   {
+    "n": "cỏ xạ hương"
+   },
+   {
+    "n": "thì là Ai Cập"
+   },
+   {
+    "n": "cần tây băm"
+   },
+   {
+    "n": "bơ"
+   },
+   {
+    "n": "cà chua đóng hộp",
+    "o": "thái hạt lựu hoặc xé nhỏ, 411 g"
+   },
+   {
+    "n": "gạo hạt dài"
+   },
+   {
+    "n": "nước dùng gà"
+   },
+   {
+    "n": "thịt gà tây hoặc gà đã nấu chín, xắt nhỏ"
+   },
+   {
+    "n": "nấm thái lát đóng hộp",
+    "u": "lon nhỏ",
+    "o": "tùy chọn, để ráo"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Xay gia vị",
+    "d": "Trộn muối, savory, húng quế, cỏ xạ hương và thì là, rồi xay thành bột."
+   },
+   {
+    "t": "Chuẩn bị cà chua",
+    "d": "Chuẩn bị cà chua đóng hộp: xé nhỏ, bỏ cuống, bỏ hạt… Giữ lại nước."
+   },
+   {
+    "t": "Xào cần tây",
+    "d": "Đun nóng chảo rộng có nắp. Xào nhẹ cần tây với bơ đến khi mềm, không để vàng."
+   },
+   {
+    "t": "Cho nguyên liệu vào chảo",
+    "d": "Cho tất cả vào chảo. Có thể cho húng quế, thịt và nấm vào sau nếu muốn."
+   },
+   {
+    "t": "Nấu",
+    "d": "Đun sôi, đậy nắp và ninh khoảng 20 phút. Gạo sẽ hút hết nước."
+   },
+   {
+    "t": "Bỏ lá nguyệt quế",
+    "d": "Bỏ lá nguyệt quế."
+   }
+  ],
+  "sourceHash": "4a011f4ea4b1983f8cb6faa16a4f8e4c4f024740fb338bb85311169309fbe8f6"
+ },
+ {
+  "pageId": 415177,
+  "title": "Ka'ak (Bánh quy mặn hình vòng)",
+  "description": "Ka'ak (tiếng Ả Rập: كعك) là loại bánh quy truyền thống được nướng khi dính vào thành lò đất, hoặc trên nền lò xây. Bột được làm giàu bằng dầu, đường, thì là đen và men, nêm hương vị như mật ong hoặc đường, và phết lòng đỏ trứng nếu muốn. Món được ăn rộng rãi khắp Trung Đông và Ba Tư.",
+  "ingredients": [
+   {
+    "n": "nước ấm"
+   },
+   {
+    "n": "dầu thực vật (tốt nhất là dầu cải)"
+   },
+   {
+    "n": "bơ thực vật mềm hoặc bơ"
+   },
+   {
+    "n": "bột mì"
+   },
+   {
+    "n": "bột nở hoặc men khô"
+   },
+   {
+    "n": "đường nâu nhạt"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "mè"
+   },
+   {
+    "n": "thì là đen (Nigella sativa)",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "kinh giới khô, za'atar hoặc oregano",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "nhân hạt anh đào Mahaleb xay (Prunus mahaleb)",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "lòng đỏ trứng (để phết)",
+    "u": "lòng",
+    "o": "đánh tan"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn phần ướt",
+    "d": "Trộn nước, dầu và bơ thực vật mềm (hoặc bơ) trong tô."
+   },
+   {
+    "t": "Trộn phần khô",
+    "d": "Trộn bột mì, bột nở (hoặc men khô), đường nâu, muối và gia vị."
+   },
+   {
+    "t": "Nhào bột",
+    "d": "Trộn phần khô với phần ướt (trừ lòng đỏ trứng) đến khi thành khối bột."
+   },
+   {
+    "t": "Nghỉ bột",
+    "d": "Để bột nghỉ 30 phút đến khi đạt độ dẻo phù hợp."
+   },
+   {
+    "t": "Chia lần một",
+    "d": "Cắt bột làm đôi. Dùng tay lăn mỗi nửa thành sợi dài. Lúc này có 2 phần."
+   },
+   {
+    "t": "Chia lần hai",
+    "d": "Cắt mỗi sợi làm đôi, lại dùng tay lăn thành sợi nhỏ hơn. Lúc này có 4 phần."
+   },
+   {
+    "t": "Chia lần ba",
+    "d": "Cắt mỗi sợi làm đôi, lại dùng tay lăn thành sợi nhỏ hơn. Lúc này có 8 phần."
+   },
+   {
+    "t": "Cắt miếng",
+    "d": "Cắt xéo mỗi sợi thành 4 phần bằng nhau. Lúc này có 32 phần."
+   },
+   {
+    "t": "Tạo vòng",
+    "d": "Bóp dính hai đầu mỗi sợi để tạo thành vòng. Đặt lên khay nướng và để đến khi bột nở."
+   },
+   {
+    "t": "Phết trứng",
+    "d": "Phết lòng đỏ trứng lên từng vòng bột."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng trong lò đã làm nóng ở nhiệt thấp (212–338°F / 100–170°C) đến khi bánh bắt đầu tỏa hơi, rồi lấy ra khỏi lò."
+   }
+  ],
+  "sourceHash": "36faab097b4c7f417e649eb3fe7cae7101622b205262605a91c5fb273277a936"
+ },
+ {
+  "pageId": 141255,
+  "title": "Kedgeree (Cơm cá hun khói kiểu Anh–Ấn)",
+  "description": "Kedgeree (đôi khi viết kitcherie, kitchari hoặc kitchiri) là món gồm cá xé (thường là cá haddock hun khói), cơm trắng, trứng và bơ. Món ra đời trong giới thực dân Anh ở Ấn Độ, sau đó được đưa về Vương quốc Anh thành món ăn sáng thịnh hành thời Victoria, thuộc ẩm thực Anh–Ấn thịnh hành lúc bấy giờ. Khi ấy, cá thường được dọn trong bữa sáng để ăn cá đánh bắt lúc sáng sớm khi còn tươi. Ngày nay món hiếm khi dùng vào bữa sáng nhưng vẫn được yêu thích.",
+  "ingredients": [
+   {
+    "n": "gạo Basmati hoặc gạo trắng hạt dài"
+   },
+   {
+    "n": "nước dùng gà ít muối chất lượng tốt"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "cá haddock hun khói",
+    "o": "1 lb"
+   },
+   {
+    "n": "hành tím cỡ vừa hoặc 1 củ hành tây vừa",
+    "u": "củ",
+    "o": "băm khá nhỏ"
+   },
+   {
+    "n": "bơ lạt",
+    "t": "thật nhiều"
+   },
+   {
+    "n": "tỏi",
+    "t": "tùy khả năng ăn",
+    "o": "băm hoặc ép"
+   },
+   {
+    "n": "trứng luộc chín",
+    "u": "quả",
+    "o": "băm khá nhỏ"
+   },
+   {
+    "n": "mù tạt Anh pha sẵn",
+    "t": "ít nhất 3 thìa cà phê",
+    "o": "hoặc 1½ thìa cà phê mù tạt bột"
+   },
+   {
+    "n": "mùi tây hoặc ngò rí băm nhuyễn"
+   },
+   {
+    "n": "tiêu xay"
+   },
+   {
+    "n": "bột cà ri",
+    "t": "tùy chọn"
+   },
+   {
+    "n": "kem tươi béo"
+   },
+   {
+    "n": "muối"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nấu cơm hấp cá",
+    "d": "Nấu gạo với lượng nước dùng gà gấp rưỡi cùng lá nguyệt quế. Khi cơm chín và đang giữ ấm, bỏ lá nguyệt quế, dùng đũa xới tơi, đặt nguyên miếng cá haddock sống lên trên. Đậy nắp, để cá hấp bằng hơi nóng 15 phút."
+   },
+   {
+    "t": "Xé cá",
+    "d": "Lấy cá ra, dùng nĩa xé nhỏ và loại bỏ hết xương. Cho cá trở lại với cơm."
+   },
+   {
+    "t": "Xào hành tỏi",
+    "d": "Xào hành tím trong nhiều bơ đến khi vàng nhạt. Thêm tỏi, nấu thêm 1 phút, đừng để tỏi vàng. Trút hỗn hợp vào cơm."
+   },
+   {
+    "t": "Trộn",
+    "d": "Cho trứng, mù tạt, mùi tây, tiêu, bột cà ri và đủ kem để hỗn hợp hơi béo mịn. Trộn nhẹ nhàng và kỹ (đũa rất hợp để làm việc này). Nêm muối vừa ăn."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng ngay hoặc để sau, món giữ được khá tốt."
+   }
+  ],
+  "sourceHash": "e63885a32f6b5d1bab10ea56c508825215a4dd46427a5edc9a169a236b0c223b"
+ }
+]

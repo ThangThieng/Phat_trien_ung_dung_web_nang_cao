@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Threading.RateLimiting;
+using CulinaryBlog.API.Logging;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -162,6 +163,11 @@ public static class SecurityExtensions
     public static IApplicationBuilder UseRequestSecurity(this IApplicationBuilder app)
     {
         app.UseForwardedHeaders();
+
+        // FR-OBS-002 (Buổi 8): ngay sau ForwardedHeaders (IP thật) — log của MỌI bước sau (rate limit, CORS, lỗi) đều mang
+        // CorrelationId; request logging bọc ngoài GlobalExceptionMiddleware để ghi đúng mã trạng thái cuối cùng.
+        app.UseCorrelationId();
+        app.UseCulinaryRequestLogging();
         app.UseRouting();
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.UseSecurityHeaders();
@@ -171,6 +177,7 @@ public static class SecurityExtensions
         app.UseRateLimiter();
         app.UseUnsupportedVersionContract();
         app.UseAuthentication();
+        app.UseUserLogContext();
         app.UseAuthorization();
         return app;
     }

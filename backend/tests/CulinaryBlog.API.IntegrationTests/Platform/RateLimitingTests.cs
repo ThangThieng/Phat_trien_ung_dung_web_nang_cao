@@ -22,6 +22,7 @@ public sealed class RateLimitingTests(CulinaryBlogApiFactory factory)
     [InlineData("/api/v1/auth/login", 10)]
     [InlineData("/api/v1/auth/google", 10)]
     [InlineData("/api/v1/auth/refresh", 10)]
+    [InlineData("/api/v1/auth/forgot-password", 10)]
     [InlineData("/api/v1/files/upload", 5)]
     [InlineData("/api/v1/recipes/00000000-0000-0000-0000-000000000001/images", 5)]
     [InlineData("/api/v1/users", 100)]

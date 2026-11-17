@@ -18,9 +18,9 @@ public sealed class GoogleLoginCommandValidator : AbstractValidator<GoogleLoginC
     {
         RuleFor(x => x.IdToken)
             .Cascade(CascadeMode.Stop)
-            .NotEmpty().WithMessage("Google ID token không được để trống.")
+            .NotEmpty().WithMessage("Mã xác thực Google không được để trống.")
             .WithErrorCode(ErrorCodes.AuthGoogleTokenInvalid)
-            .Must(IsJwtFormat).WithMessage("Google ID token không đúng định dạng.")
+            .Must(IsJwtFormat).WithMessage("Mã xác thực Google không đúng định dạng.")
             .WithErrorCode(ErrorCodes.AuthGoogleTokenInvalid);
     }
 
@@ -69,7 +69,7 @@ public sealed class GoogleLoginCommandHandler(
         var payload = await googleValidator.ValidateAsync(request.IdToken, cancellationToken).ConfigureAwait(false);
         if (string.IsNullOrWhiteSpace(payload.Email))
         {
-            throw new BusinessRuleViolationException(ErrorCodes.AuthGoogleTokenInvalid, "Google ID token không chứa địa chỉ email.");
+            throw new BusinessRuleViolationException(ErrorCodes.AuthGoogleTokenInvalid, "Mã xác thực Google không chứa địa chỉ email.");
         }
 
         var user = await identityService.FindOrCreateGoogleUserAsync(payload, cancellationToken).ConfigureAwait(false);

@@ -37,6 +37,13 @@ public enum PasswordCheckStatus
 
 public sealed record PasswordCheckResult(PasswordCheckStatus Status, IdentityUserInfo? User, DateTimeOffset? LockoutEnd);
 
+public enum PasswordResetStatus
+{
+    Success,
+    InvalidToken,
+    Disabled,
+}
+
 /// <summary>
 /// Bọc ASP.NET Core Identity (UserManager) – PBKDF2 hashing, lockout – để Application không phụ thuộc Identity EF.
 /// Mọi thao tác GHI người dùng đi qua đây (xem giải trình ở <c>IUserRepository</c>).
@@ -60,7 +67,17 @@ public interface IIdentityService
     /// <summary>FR-AUTH-004/006: người dùng theo Id (null nếu không còn tồn tại).</summary>
     Task<IdentityUserInfo?> FindByIdAsync(string userId, CancellationToken cancellationToken);
 
+    /// <summary>Internal lookup for enumeration-safe password recovery.</summary>
+    Task<IdentityUserInfo?> FindByEmailAsync(string email, CancellationToken cancellationToken) => throw new NotSupportedException();
+
     Task<bool> IsLockedOutAsync(string userId, CancellationToken cancellationToken);
+
+    Task ChangePasswordAsync(string userId, string currentPassword, string newPassword, Guid? currentSessionId, CancellationToken cancellationToken) => throw new NotSupportedException();
+
+    /// <summary>Returns a base64url value only to the mail worker; it must never be persisted or logged.</summary>
+    Task<string?> GeneratePasswordResetTokenAsync(string userId, CancellationToken cancellationToken) => throw new NotSupportedException();
+
+    Task<PasswordResetStatus> ResetPasswordAsync(string email, string encodedToken, string newPassword, CancellationToken cancellationToken) => throw new NotSupportedException();
 
     /// <summary>FR-AUTH-007: cập nhật hồ sơ qua UserManager.UpdateAsync (null nếu người dùng không còn tồn tại).</summary>
     Task<IdentityUserInfo?> UpdateProfileAsync(string userId, ProfileChanges changes, CancellationToken cancellationToken);
@@ -118,4 +135,10 @@ public interface ITokenService
 public interface IWelcomeEmailScheduler
 {
     void ScheduleWelcomeEmail(string userId);
+}
+
+/// <summary>FR-AUTH-011: Hangfire payload contains only a user id and correlation id, never a reset token.</summary>
+public interface IPasswordResetEmailScheduler
+{
+    void SchedulePasswordResetEmail(string userId, string correlationId);
 }

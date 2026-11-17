@@ -65,11 +65,66 @@ public class RecipeQueryEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncL
         Assert.Empty((await response.ReadAsAsync<PagedResult<RecipeSearchResultDto>>()).Items);
     }
 
-    /// <summary>A1: q rỗng hoặc &lt; 2 ký tự → 400 VALIDATION_ERROR.</summary>
+    // ---------- CR-2026-05 / MT-66 – maxCookTime, maxPrepTime, minServings ----------
+    // Dữ liệu: "Phở bò Hà Nội" (chuẩn bị 40′, nấu 180′) và "Bún chả Hà Nội" (30′, 45′) cùng khớp q=ha noi; mọi công thức 4 khẩu phần.
+    [Fact]
+    public async Task Search_MaxCookTime_ReturnsOnlyRecipesCookedWithinLimit()
+    {
+        var page = await SearchAsync("q=ha+noi&maxCookTime=60");
+
+        var hit = Assert.Single(page.Items);
+        Assert.Equal("bun-cha-ha-noi", hit.Slug);
+        Assert.Equal(1, page.TotalCount);
+        Assert.All(page.Items, r => Assert.True(r.CookTimeMinutes <= 60));
+    }
+
+    [Fact]
+    public async Task Search_MaxPrepTime_FiltersInDatabase()
+    {
+        var page = await SearchAsync("q=ha+noi&maxPrepTime=35");
+
+        Assert.Equal("bun-cha-ha-noi", Assert.Single(page.Items).Slug);
+    }
+
+    [Theory]
+    [InlineData("q=ha+noi&minServings=4", 2)]
+    [InlineData("q=ha+noi&minServings=5", 0)]
+    public async Task Search_MinServings_FiltersInDatabase(string query, int expected) =>
+        Assert.Equal(expected, (await SearchAsync(query)).TotalCount);
+
+    /// <summary>Tương thích ngược: không gửi tham số mới thì kết quả như trước CR-2026-05.</summary>
+    [Fact]
+    public async Task Search_WithoutNewFilters_IsUnchanged()
+    {
+        var page = await SearchAsync("q=ha+noi");
+
+        Assert.Equal(2, page.TotalCount);
+    }
+
+    /// <summary>Khóa cache <c>search:{queryHash}</c> phải khác nhau theo bộ lọc — gọi nối tiếp không trả nhầm kết quả của nhau.</summary>
+    [Fact]
+    public async Task Search_DifferentTimeFilters_AreNotServedFromEachOthersCache()
+    {
+        var wide = await SearchAsync("q=ha+noi&maxCookTime=200");
+        var narrow = await SearchAsync("q=ha+noi&maxCookTime=60");
+        var wideAgain = await SearchAsync("q=ha+noi&maxCookTime=200");
+
+        Assert.Equal(2, wide.TotalCount);
+        Assert.Equal(1, narrow.TotalCount);
+        Assert.Equal(2, wideAgain.TotalCount);
+    }
+
+    /// <summary>
+    /// A1: q rỗng hoặc &lt; 2 ký tự → 400 VALIDATION_ERROR. Bộ lọc MT-66 ngoài khoảng (phút &lt; 0, khẩu phần &lt; 1) cũng → 400,
+    /// cùng quy tắc với <c>GET /recipes</c>.
+    /// </summary>
     [Theory]
     [InlineData("/api/v1/recipes/search")]
     [InlineData("/api/v1/recipes/search?q=p")]
     [InlineData("/api/v1/recipes/search?q=pho&pageSize=51")]
+    [InlineData("/api/v1/recipes/search?q=pho&maxCookTime=-1")]
+    [InlineData("/api/v1/recipes/search?q=pho&maxPrepTime=-5")]
+    [InlineData("/api/v1/recipes/search?q=pho&minServings=0")]
     public async Task Search_InvalidQuery_Returns400(string url)
     {
         var response = await factory.CreateClient().GetAsync(new Uri(url, UriKind.Relative));
@@ -249,5 +304,12 @@ public class RecipeQueryEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncL
         var page = await (await owner.GetAsync(new Uri("/api/v1/recipes/mine?status=Draft", UriKind.Relative)))
             .ReadAsAsync<PagedResult<RecipeSummaryDto>>();
         return Assert.Single(page.Items).Id;
+    }
+
+    private async Task<PagedResult<RecipeSearchResultDto>> SearchAsync(string query)
+    {
+        var response = await factory.CreateClient().GetAsync(new Uri($"/api/v1/recipes/search?{query}", UriKind.Relative));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        return await response.ReadAsAsync<PagedResult<RecipeSearchResultDto>>();
     }
 }

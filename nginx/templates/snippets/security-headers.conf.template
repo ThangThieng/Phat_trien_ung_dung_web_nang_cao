@@ -1,0 +1,7 @@
+# Header bảo mật cho mọi phản hồi. Nginx chỉ kế thừa add_header từ cấp cha khi location KHÔNG tự khai báo add_header nào,
+# nên location nào có add_header riêng (/_next/static/, /media/) phải include lại file này — nếu không, phản hồi của nó mất
+# toàn bộ header bên dưới (kể cả HSTS ở production).
+add_header X-Content-Type-Options nosniff always;
+add_header X-Frame-Options DENY always;
+add_header Referrer-Policy strict-origin-when-cross-origin always;
+include /etc/nginx/snippets/environment-headers.conf;

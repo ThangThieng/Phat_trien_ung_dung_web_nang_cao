@@ -68,6 +68,8 @@ public sealed class SetUserStatusCommandValidator : AbstractValidator<SetUserSta
     {
         RuleFor(x => x.UserId).NotEmpty().MaximumLength(450);
         RuleFor(x => x.IsActive).NotNull().WithMessage("isActive là bắt buộc (true = mở khóa, false = khóa).");
+
+        // SRS §8.1: `reason?` tùy chọn, ví dụ FR-AUTH-008 là "Spam". Giao diện /dashboard/users mới bắt buộc nhập lý do khi thao tác.
         RuleFor(x => x.Reason).MaximumLength(500).WithMessage("reason tối đa 500 ký tự.");
     }
 }

@@ -1,0 +1,1155 @@
+[
+ {
+  "pageId": 7289,
+  "title": "Khara Pongal (Cháo gạo đậu xanh mặn kiểu Nam Ấn)",
+  "description": "Khara pongal là món mặn giống cháo, được nấu theo truyền thống ở miền Nam Ấn Độ trong lễ hội Makar Sankranti đón mùa hè. Loại pongal ngọt chỉ khác ở gia vị, và hai loại thường được nấu cùng từ một mẻ gạo và đậu.",
+  "ingredients": [
+   {
+    "n": "gạo trắng"
+   },
+   {
+    "n": "đậu xanh tách vỏ (moong dhal)"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "nghệ bột"
+   },
+   {
+    "n": "hạt điều băm"
+   },
+   {
+    "n": "lá cà ri",
+    "u": "lá"
+   },
+   {
+    "n": "tiêu đen xay thô"
+   },
+   {
+    "n": "hạt thì là Ai Cập"
+   },
+   {
+    "n": "ớt xanh",
+    "u": "quả",
+    "o": "bổ dọc"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "bơ ghee (hoặc thay bằng bơ)"
+   },
+   {
+    "n": "hạt mù tạt"
+   },
+   {
+    "n": "muối"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nấu gạo và đậu",
+    "d": "Nấu gạo và đậu cùng nghệ bột trong nồi thường hoặc nồi áp suất đến khi nhừ."
+   },
+   {
+    "t": "Rang điều",
+    "d": "Đun nóng một ít ghee trong chảo lớn, rang hạt điều đến khi vàng rồi lấy ra."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Cho phần ghee còn lại và dầu vào, đun nóng."
+   },
+   {
+    "t": "Phi gia vị",
+    "d": "Cho tất cả gia vị vào, bắt đầu với hạt mù tạt và kết thúc với hạt điều."
+   },
+   {
+    "t": "Trộn cháo",
+    "d": "Trộn gạo và đậu vào, đun cho nóng đều. Nếu quá đặc, thêm một ít nước."
+   },
+   {
+    "t": "Nêm",
+    "d": "Thêm muối và ghee tùy khẩu vị. Có thể thêm dừa bào vào cuối."
+   }
+  ],
+  "sourceHash": "8555a407810f085a5ae4461397019796990ac96e989f20dfe7c924ca0ab396ca"
+ },
+ {
+  "pageId": 474566,
+  "title": "Koko da Kosai (Cháo ngô lên men và bánh đậu chiên)",
+  "description": "Koko da kosai (tiếng Hausa nghĩa là cháo ngô lên men và bánh đậu chiên) là bữa sáng truyền thống được yêu thích, thịnh hành khắp miền Bắc Nigeria và một phần Tây Phi, đặc biệt trong cộng đồng nói tiếng Hausa. Bữa ăn gồm hai phần chính. Koko: cháo ngô lên men mịn, nêm gừng (citta), đinh hương (kanumfari) và đôi khi tiêu đen (masoro). Kosai: bánh đậu chiên ngập dầu, làm từ đậu mắt đen xay (wake) trộn hành tây và ớt. Koko da kosai không chỉ là món ăn mà còn là một trải nghiệm văn hóa. Món thường được những người bán hàng rong (mai koko hoặc mai kosai) bán vào sáng sớm, và mọi lứa tuổi đều ăn, nhất là học sinh và người đi làm. Trong văn hóa Hausa, món ăn và cộng đồng luôn đi đôi với nhau. Món nổi tiếng vì rẻ, bổ dưỡng và mang tính cộng đồng. Một câu tục ngữ Hausa gắn với bữa ăn này: “Abincin safe shi ke sa ka fara rana da kyau”, nghĩa là “bữa sáng ngon giúp ngày mới khởi đầu tốt đẹp”. Điều này thể hiện quan niệm rằng một bữa sáng bổ dưỡng như koko da kosai giúp con người sẵn sàng cho một ngày làm việc hiệu quả.",
+  "ingredients": [
+   {
+    "n": "hạt kê (jiƙo)",
+    "o": "Phần koko"
+   },
+   {
+    "n": "nước (để trộn)",
+    "o": "Phần koko"
+   },
+   {
+    "n": "nước sôi (để nấu)",
+    "o": "Phần koko"
+   },
+   {
+    "n": "gừng bột (citta)",
+    "o": "Phần koko"
+   },
+   {
+    "n": "đinh hương bột (kanumfari)",
+    "o": "Phần koko"
+   },
+   {
+    "n": "tiêu đen hoặc ớt bột",
+    "o": "tùy chọn, phần koko"
+   },
+   {
+    "n": "bồ tạt ăn được (kanwa)",
+    "o": "tùy chọn, phần koko"
+   },
+   {
+    "n": "đường",
+    "t": "tùy chọn",
+    "o": "Phần koko"
+   },
+   {
+    "n": "sữa bột",
+    "t": "tùy chọn",
+    "o": "Phần koko"
+   },
+   {
+    "n": "đậu mắt đen (wake)",
+    "o": "ngâm qua đêm, bóc vỏ, phần kosai"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "băm nhuyễn, phần kosai"
+   },
+   {
+    "n": "ớt tươi",
+    "u": "quả",
+    "o": "băm, hoặc tùy khẩu vị, phần kosai"
+   },
+   {
+    "n": "muối",
+    "o": "Phần kosai"
+   },
+   {
+    "n": "nước (phần kosai)",
+    "o": "Phần kosai"
+   },
+   {
+    "n": "dầu thực vật",
+    "o": "Phần kosai"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ủ kê",
+    "d": "Cho kê vào tô lớn, đổ nhiều nước sạch mát ngập. Ngâm 1–2 ngày cho lên men nhẹ, thay nước mỗi ngày để tránh hỏng."
+   },
+   {
+    "t": "Xay kê",
+    "d": "Rửa và để ráo kê, rồi dùng máy xay hoặc dụng cụ phù hợp xay với 2 cốc nước thành hỗn hợp mịn."
+   },
+   {
+    "t": "Lọc",
+    "d": "Dùng rây mịn hoặc vải lọc để bỏ bã. Bỏ phần bã, giữ phần tinh bột lỏng (gọi là cốt koko)."
+   },
+   {
+    "t": "Nấu koko",
+    "d": "Cho cốt koko, bồ tạt, gừng và đinh hương vào nồi ở lửa vừa. Khuấy liên tục để không vón cục, nấu đến khi thành cháo mịn. Nhấc khỏi bếp khi đạt độ sánh mịn."
+   },
+   {
+    "t": "Nêm koko",
+    "d": "Nếu muốn, thêm đường hoặc sữa vừa ăn trước khi dọn."
+   },
+   {
+    "t": "Ngâm đậu",
+    "d": "Đổ nước mát ngập đậu mắt đen, ngâm 4–12 giờ. Để ráo và bóc vỏ."
+   },
+   {
+    "t": "Xay đậu",
+    "d": "Xay đậu đã bóc vỏ với hành tây và lượng nước vừa đủ để thành hỗn hợp mịn, đặc. Đừng để quá lỏng."
+   },
+   {
+    "t": "Nêm bột đậu",
+    "d": "Khuấy muối và ớt vào."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Trong chảo sâu, đun nóng đủ dầu thực vật để chiên ngập ở lửa vừa lớn."
+   },
+   {
+    "t": "Chiên kosai",
+    "d": "Dùng thìa múc nhẹ từng phần bột nhỏ vào dầu nóng. Chiên đến khi vàng nâu hai mặt (khoảng 2–3 phút mỗi mặt)."
+   },
+   {
+    "t": "Để ráo",
+    "d": "Dùng muôi thủng vớt ra, đặt lên giấy thấm cho ráo dầu."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng kosai với koko đã nấu."
+   }
+  ],
+  "sourceHash": "6059e1aa355de8d6c284fb2202e98e9215d8ef651b21b26ecd09cf919166308f"
+ },
+ {
+  "pageId": 276070,
+  "title": "Kyselo (Súp nấm men chua kiểu Séc)",
+  "description": "Kyselo hay krkonošské kyselo là món súp chua truyền thống của vùng Bohemia, có nấm và men chua. Món có nguồn gốc từ vùng núi Krkonoše ở miền bắc Bohemia. Kyselo khá bổ dưỡng nên thường dùng làm món chính, nhưng với lượng nhỏ cũng có thể dùng như món súp.",
+  "ingredients": [
+   {
+    "n": "khoai tây"
+   },
+   {
+    "n": "men chua",
+    "o": "tốt nhất làm từ bột lúa mạch đen"
+   },
+   {
+    "n": "nấm porcini khô",
+    "o": "tốt nhất là loại Trung Âu"
+   },
+   {
+    "n": "hạt thì là Ba Tư (caraway)"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "bơ"
+   },
+   {
+    "n": "trứng gà",
+    "u": "quả"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "giấm"
+   },
+   {
+    "n": "rau thơm xanh băm như mùi tây hoặc hành lá"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Chuẩn bị khoai",
+    "d": "Luộc khoai tây nguyên vỏ, lột vỏ, thái nhỏ và rang trên chảo (không dùng dầu mỡ)."
+   },
+   {
+    "t": "Pha men chua",
+    "d": "Cho 250 ml nước ấm vào tô, khuấy men chua vào. Đậy khăn sạch và để ở nhiệt độ phòng 30 phút đến 3 giờ."
+   },
+   {
+    "t": "Nấu nước dùng",
+    "d": "Cho 1000 ml nước vào nồi lớn, thêm nấm khô và hạt thì là Ba Tư, đun sôi ít nhất 15 phút để có nước dùng đậm."
+   },
+   {
+    "t": "Thêm men chua",
+    "d": "Cẩn thận cho hỗn hợp men chua vào nước dùng, khuấy đều vì men chua có thể co lại thành viên nhỏ."
+   },
+   {
+    "t": "Nấu súp",
+    "d": "Đun sôi súp, vừa đun vừa khuấy đến khi men chua làm súp sánh lại, khoảng 10 phút."
+   },
+   {
+    "t": "Xào hành",
+    "d": "Xào hành băm với bơ trong chảo, rồi khuấy vào súp."
+   },
+   {
+    "t": "Làm trứng",
+    "d": "Đánh trứng với một nhúm muối, chiên tơi trên chảo không dầu. Khuấy trứng vào súp."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nêm súp với muối và giấm vừa ăn. Súp nên chua nhẹ, mùi vị chủ yếu từ nấm và men chua."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng súp nóng, rắc rau thơm băm, ăn kèm khoai tây. Mỗi người có thể thêm giấm và muối tùy khẩu vị."
+   }
+  ],
+  "sourceHash": "afb1f5d1758b1370327fc122fdabc967ba0e49a9ef65065c17a3848f216cbff0"
+ },
+ {
+  "pageId": 21215,
+  "title": "Khoai tây hầm thịt bò muối kiểu Lancashire",
+  "description": "Dùng kèm bánh mì phết bơ và sốt HP.",
+  "ingredients": [
+   {
+    "n": "khoai tây",
+    "u": "củ",
+    "o": "cắt khúc"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "thịt bò muối đóng hộp"
+   },
+   {
+    "n": "cà rốt",
+    "u": "củ",
+    "o": "băm, tùy chọn"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu trắng"
+   },
+   {
+    "n": "ngải giấm (tarragon)",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "lá oregano",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "sốt Worcestershire",
+    "t": "tùy chọn"
+   },
+   {
+    "n": "lá nguyệt quế nhỏ",
+    "u": "lá",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Cho nguyên liệu vào chảo",
+    "d": "Cho tất cả nguyên liệu vào chảo sâu lòng (rất hợp dù không truyền thống) hoặc chảo lớn khác."
+   },
+   {
+    "t": "Thêm nước",
+    "d": "Thêm nước gần ngập nguyên liệu."
+   },
+   {
+    "t": "Đun sôi",
+    "d": "Đậy nắp và đun sôi."
+   },
+   {
+    "t": "Ninh",
+    "d": "Hạ lửa, ninh 30 phút hoặc đến khi khoai mềm."
+   },
+   {
+    "t": "Chắt bớt nước",
+    "d": "Nếu quá nhiều nước, chắt bớt."
+   },
+   {
+    "t": "Thêm thịt bò",
+    "d": "Cho thịt bò muối đã tách nhỏ vào, khuấy nhẹ."
+   },
+   {
+    "t": "Đun lại",
+    "d": "Đun gần sôi."
+   },
+   {
+    "t": "Để yên",
+    "d": "Tắt bếp và để yên 15 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Hâm nóng lại hoặc dùng luôn."
+   },
+   {
+    "t": "Cách khác: nồi áp suất",
+    "d": "Cho tất cả nguyên liệu, trừ thịt bò muối, vào nồi áp suất. Không cần nhiều nước, chỉ khoảng 1–2 cm."
+   },
+   {
+    "t": "Nấu áp suất",
+    "d": "Đun đến khi đủ áp suất và nấu khoảng 4 phút."
+   },
+   {
+    "t": "Trộn thịt bò",
+    "d": "Trong lúc đó, băm thịt bò muối. Khi các nguyên liệu khác đã chín, mở nồi và trộn thịt bò vào."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dọn ăn."
+   }
+  ],
+  "sourceHash": "183b7c749adf48b684809aae83e837d7d464e6f45cffca09e79411f2914d83a8"
+ },
+ {
+  "pageId": 122648,
+  "title": "Trứng tráng kiểu Latinh (Latino Scramble)",
+  "description": "Latino scramble là lựa chọn bữa sáng thơm ngon, rất hợp cho một buổi sáng nhiệt đới ấm áp. Có thể dùng với bánh arepa ngô phủ phô mai trắng, cà phê Colombia 100% và nước cam.",
+  "ingredients": [
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "cà chua lớn",
+    "u": "quả",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "giăm bông",
+    "u": "lát",
+    "o": "băm"
+   },
+   {
+    "n": "phô mai mozzarella bào"
+   },
+   {
+    "n": "bơ"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   },
+   {
+    "n": "sốt Tabasco"
+   },
+   {
+    "n": "tương cà"
+   },
+   {
+    "n": "ngô ngọt",
+    "o": "425 g"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun bơ",
+    "d": "Đun chảy bơ trong chảo vừa ở lửa vừa."
+   },
+   {
+    "t": "Phi hành",
+    "d": "Cho hành băm vào, chiên đến khi bắt đầu vàng."
+   },
+   {
+    "t": "Xào giăm bông và ngô",
+    "d": "Cho giăm bông và ngô ngọt vào, chiên 5 phút."
+   },
+   {
+    "t": "Thêm cà chua",
+    "d": "Cho cà chua, muối và tiêu vào. Dù không truyền thống, có thể thêm một giọt Tabasco cho mỗi quả trứng."
+   },
+   {
+    "t": "Thêm trứng",
+    "d": "Đánh trứng với tương cà, đổ vào chảo. Cho ngay phô mai mozzarella vào."
+   },
+   {
+    "t": "Hoàn thành",
+    "d": "Nấu đến độ chín trứng mong muốn."
+   }
+  ],
+  "sourceHash": "5bf37ce8424ffc4763a63e3f0889a88e12650c202ba6c0cdb96a8fec9024d300"
+ },
+ {
+  "pageId": 25636,
+  "title": "Bánh chanh phủ meringue kiểu Mỹ",
+  "description": "Đây là bánh chanh phủ meringue kiểu Mỹ truyền thống, có nhân dạng gel. Nếu thích nhân dẻo, hãy dùng công thức bánh chanh phủ meringue kiểu Anh.",
+  "ingredients": [
+   {
+    "n": "nước lạnh",
+    "o": "360 ml, phần nhân"
+   },
+   {
+    "n": "đường cát trắng (phần nhân)",
+    "o": "240 g, phần nhân"
+   },
+   {
+    "n": "bột mì đa dụng",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "bột bắp",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "muối",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "nước cốt chanh (khoảng 2 quả hoặc chanh đóng chai)",
+    "o": "120 ml, phần nhân"
+   },
+   {
+    "n": "vỏ chanh bào (khoảng 2 quả)",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "bơ",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "lòng đỏ trứng",
+    "u": "lòng",
+    "o": "đánh tan, phần nhân"
+   },
+   {
+    "n": "nghệ bột",
+    "o": "Phần nhân"
+   },
+   {
+    "n": "lòng trắng trứng",
+    "u": "lòng",
+    "o": "Phần meringue"
+   },
+   {
+    "n": "bột kem tartar (cream of tartar)",
+    "o": "Phần meringue"
+   },
+   {
+    "n": "đường cát trắng (phần meringue)",
+    "o": "Phần meringue"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Chuẩn bị vỏ bánh",
+    "d": "Chuẩn bị và nướng vỏ bánh Grandma's Pie Crust (trên trang nguồn), hoặc dùng vỏ bánh làm sẵn trữ mát hay đông lạnh."
+   },
+   {
+    "t": "Để nguội",
+    "d": "Để nguội."
+   },
+   {
+    "t": "Trộn nhân",
+    "d": "Trong nồi, đánh đều nước, đường, bột mì, bột bắp, muối, nghệ, nước cốt chanh và vỏ chanh. Khuấy cho tan hết các cục bột."
+   },
+   {
+    "t": "Nấu nhân",
+    "d": "Nấu ở lửa vừa đến khi bắt đầu sôi nhẹ, khuấy liên tục."
+   },
+   {
+    "t": "Thêm bơ",
+    "d": "Cho bơ vào, khuấy đến khi tan."
+   },
+   {
+    "t": "Làm ấm lòng đỏ",
+    "d": "Đánh lòng đỏ trong tô nhỏ. Cho khoảng ½ cốc (120 g) hỗn hợp chanh nóng vào trứng và khuấy đều, để lòng đỏ không bị đóng cục khi cho vào nồi."
+   },
+   {
+    "t": "Cho trứng vào nồi",
+    "d": "Đổ hỗn hợp trứng vào nồi chanh đang sôi nhẹ. Khuấy đến khi đều."
+   },
+   {
+    "t": "Nấu sánh",
+    "d": "Tiếp tục đun nhẹ khoảng 2 phút đến khi sánh, khuấy liên tục."
+   },
+   {
+    "t": "Đổ nhân",
+    "d": "Đổ vào vỏ bánh đã nguội và để nguội trong lúc làm meringue."
+   },
+   {
+    "t": "Đánh lòng trắng",
+    "d": "Cho 4 lòng trắng vào máy đánh trứng, đánh tốc độ cao đến khi bắt đầu nổi bọt."
+   },
+   {
+    "t": "Thêm đường",
+    "d": "Cho bột kem tartar vào lòng trắng, vừa đánh vừa thêm đường, mỗi lần 1 thìa canh. Đánh khoảng 30 giây giữa mỗi lần thêm."
+   },
+   {
+    "t": "Đánh cứng",
+    "d": "Tiếp tục đánh đến khi meringue tạo chóp cứng khi nhấc que đánh lên."
+   },
+   {
+    "t": "Phủ meringue",
+    "d": "Dùng xẻng cao su trải meringue lên bánh, bắt đầu từ phần nhân. Trải phủ qua viền vỏ, bịt kín hoàn toàn phần nhân."
+   },
+   {
+    "t": "Tạo chóp",
+    "d": "Để tạo chóp, chạm mặt phẳng của xẻng vào meringue rồi nhấc lên. Lặp lại trên toàn bộ mặt bánh."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng trong lò 350°F (180°C) trong 15 phút đến khi các chóp hơi vàng."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng ở nhiệt độ phòng hoặc để lạnh."
+   }
+  ],
+  "sourceHash": "f51c859bfd00f5679c4366fa29c247f98084c1b194af6ca265347d6681ab26da"
+ },
+ {
+  "pageId": 21833,
+  "title": "Lomo Saltado (Bò xào khoai tây kiểu Peru)",
+  "description": "Lomo saltado là món gồm thịt bò ướp, rau củ và khoai tây chiên, thường ăn với cơm trắng. Đây là một trong những món thịnh hành nhất ở Peru, thường có trong thực đơn của nhiều nhà hàng nhỏ với giá rất phải chăng.",
+  "ingredients": [
+   {
+    "n": "thăn bò hoặc loại bít tết mềm khác",
+    "o": "900 g"
+   },
+   {
+    "n": "rượu vang đỏ (như Burgundy)"
+   },
+   {
+    "n": "tỏi đập dập"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "cắt sợi"
+   },
+   {
+    "n": "cà chua",
+    "u": "quả",
+    "o": "bỏ hạt, xay nhuyễn"
+   },
+   {
+    "n": "khoai tây",
+    "u": "củ",
+    "o": "gọt vỏ, cắt thanh để chiên"
+   },
+   {
+    "n": "ớt vàng Peru (aji)",
+    "u": "quả",
+    "o": "thái sợi mảnh"
+   },
+   {
+    "n": "giấm"
+   },
+   {
+    "n": "nước tương"
+   },
+   {
+    "n": "dầu thực vật",
+    "t": "để chiên"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   },
+   {
+    "n": "ngò gai hoặc ngò rí"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ướp thịt",
+    "d": "Thái thịt thành sợi mỏng và ướp với rượu trong 1 giờ."
+   },
+   {
+    "t": "Xào thịt",
+    "d": "Dùng chảo sâu lòng phi tỏi trong dầu ở lửa vừa, cho thịt vào. Giữ lại nước ướp."
+   },
+   {
+    "t": "Thêm cà chua",
+    "d": "Cho cà chua xay, muối và tiêu vào. Nấu vài phút."
+   },
+   {
+    "t": "Thêm nước tương",
+    "d": "Cho nước tương vào trong lúc đảo thịt."
+   },
+   {
+    "t": "Thêm rau",
+    "d": "Cho hành tây, ớt aji, ngò và giấm vào. Trộn với nước ướp thịt."
+   },
+   {
+    "t": "Chiên khoai",
+    "d": "Chiên khoai trong chảo riêng rồi cho vào các nguyên liệu khác."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng với cơm trắng."
+   }
+  ],
+  "sourceHash": "52a30d163c0bed611e64f248a6969a4fc2b3e0f244fd3de0c2708fc65c5cd012"
+ },
+ {
+  "pageId": 54215,
+  "title": "Cà ri gà Malvani (Kombdi Vade)",
+  "description": "Kombdi vade là món của vùng Malvan, khá thịnh hành ở bang Maharashtra. Món gồm cà ri gà Malvani truyền thống (có cả xương), vade (còn gọi là puri, loại bánh chiên phồng làm từ bột mì và bột nachni), hành tây, chanh và solkadhi (đồ uống từ nước cốt dừa).",
+  "ingredients": [
+   {
+    "n": "ớt xanh",
+    "u": "quả",
+    "o": "băm"
+   },
+   {
+    "n": "gừng xay"
+   },
+   {
+    "n": "tỏi xay"
+   },
+   {
+    "n": "thịt gà cắt miếng vừa",
+    "o": "1,8 lb / 8 miếng"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "dừa tươi",
+    "u": "quả",
+    "o": "nạo cơm dừa"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "ớt bột"
+   },
+   {
+    "n": "nghệ bột"
+   },
+   {
+    "n": "garam masala",
+    "u": "thìa cà phê"
+   },
+   {
+    "n": "bột gia vị Malvani",
+    "u": "thìa cà phê"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "ngò rí băm nhuyễn",
+    "t": "để trang trí"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn hỗn hợp ướp",
+    "d": "Xay một nửa lượng ớt xanh thành hỗn hợp nhuyễn, trộn đều với gừng và tỏi xay."
+   },
+   {
+    "t": "Ướp gà",
+    "d": "Khứa các miếng gà, xoa đều hỗn hợp này và ướp ít nhất khoảng một giờ."
+   },
+   {
+    "t": "Rang dừa",
+    "d": "Rang dừa nạo trong chảo với ít dầu nóng đến khi vàng nhạt. Để nguội và xay cùng một nửa lượng hành thành hỗn hợp nhuyễn."
+   },
+   {
+    "t": "Phi hành",
+    "d": "Đun nóng dầu trong chảo đáy dày, xào hành ở lửa vừa khoảng 2 phút hoặc đến khi vàng nhạt."
+   },
+   {
+    "t": "Xào gà",
+    "d": "Cho phần ớt xanh băm còn lại và các gia vị bột vào, chiên vài giây. Thêm gà đã ướp, chiên ở lửa vừa khoảng 3 phút hoặc đến khi hơi vàng."
+   },
+   {
+    "t": "Nấu cà ri",
+    "d": "Cho hỗn hợp dừa xay và muối vào, trộn đều. Thêm nước tùy độ sánh mong muốn và đun sôi. Đậy nắp, nấu nhỏ lửa khoảng 25 phút hoặc đến khi gà mềm và chín hẳn."
+   },
+   {
+    "t": "Trang trí",
+    "d": "Rắc ngò rí băm nhuyễn."
+   }
+  ],
+  "sourceHash": "684a7f9f08ff5eff0f9a76b296fae001fe74e9b9cf7e8ab44de40791dd18b3fc"
+ },
+ {
+  "pageId": 124761,
+  "title": "Mazorca Desgranada (Salad bò và ngô kiểu Colombia)",
+  "description": "La mazorca desgranada là món ăn nhanh đặc trưng của vùng bờ biển phía bắc Colombia, làm từ ngô ngọt, thịt bò, phô mai, khoai tây chiên giòn nghiền và sốt tartar.",
+  "ingredients": [
+   {
+    "n": "thăn bò",
+    "o": "thái sợi mỏng, 250 g"
+   },
+   {
+    "n": "sốt tartar"
+   },
+   {
+    "n": "bột tiêu Jamaica (allspice)"
+   },
+   {
+    "n": "tiêu xay"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "sốt Worcestershire"
+   },
+   {
+    "n": "xà lách Summer Crisp (Batavia) nhỏ",
+    "u": "cây",
+    "o": "thái mỏng"
+   },
+   {
+    "n": "phô mai costeño hoặc Monterey Jack bào",
+    "o": "125 g"
+   },
+   {
+    "n": "ngô hạt nguyên",
+    "o": "lon 15 oz / 425 g"
+   },
+   {
+    "n": "khoai tây chiên giòn nghiền"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Chiên thịt",
+    "d": "Chiên thịt bò trong chảo vừa. Nêm tiêu Jamaica, tiêu, muối và sốt Worcestershire."
+   },
+   {
+    "t": "Làm nóng ngô",
+    "d": "Làm nóng ngô trong nước ấm rồi để thật ráo."
+   },
+   {
+    "t": "Xếp xà lách",
+    "d": "Xếp xà lách vào đĩa."
+   },
+   {
+    "t": "Thêm ngô",
+    "d": "Đặt ngô lên xà lách."
+   },
+   {
+    "t": "Thêm phô mai",
+    "d": "Rắc phô mai bào lên ngô."
+   },
+   {
+    "t": "Thêm thịt",
+    "d": "Xếp thịt bò lên trên."
+   },
+   {
+    "t": "Phủ khoai",
+    "d": "Phủ khoai tây chiên nghiền lên tất cả."
+   },
+   {
+    "t": "Rưới sốt",
+    "d": "Rưới sốt tartar khắp món và thưởng thức."
+   }
+  ],
+  "sourceHash": "4ab04c46f15d875087a02d3e38745d8e200c791094d4ca2af61f2ec08929d3ae"
+ },
+ {
+  "pageId": 474340,
+  "title": "Miyan Kubewa (Súp đậu bắp kiểu Hausa)",
+  "description": "Miyan kuɓewa là món súp thịnh hành trong ẩm thực Hausa, làm chủ yếu từ đậu bắp. Nổi tiếng với độ sánh nhớt và vị đậm đà, món được nấu rộng rãi khắp miền Bắc Nigeria và nhiều nơi ở Tây Phi. Súp thường ăn với các món tinh bột truyền thống như tuwo shinkafa (bột gạo), tuwo masara (bột ngô) hoặc tuwo dawa (bột cao lương).",
+  "ingredients": [
+   {
+    "n": "thịt bò, dê hoặc thịt thập cẩm",
+    "o": "có thể thêm dạ dày, thận hoặc gan bò"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "viên nêm",
+    "u": "viên"
+   },
+   {
+    "n": "muối",
+    "t": "vừa ăn"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "cá hun khói hoặc cá khô",
+    "u": "con",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "đậu locust xay (dawadawa)"
+   },
+   {
+    "n": "dầu cọ"
+   },
+   {
+    "n": "đậu bắp tươi băm hoặc bào",
+    "o": "hoặc 1½ cốc đậu bắp khô"
+   },
+   {
+    "n": "tôm khô xay"
+   },
+   {
+    "n": "ớt Scotch bonnet tươi hoặc khô xay",
+    "t": "vừa ăn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ninh thịt",
+    "d": "Trong nồi, cho thịt đã làm sạch, hành băm, viên nêm và một nhúm muối. Thêm ít nước và ninh đến khi thịt chín mềm như ý. Thịt dai có thể mất khá lâu."
+   },
+   {
+    "t": "Thêm cá và dawadawa",
+    "d": "Nếu dùng cá hun khói hoặc cá khô, cho vào cùng đậu locust xay (dawadawa). Ninh 5–10 phút."
+   },
+   {
+    "t": "Thêm dầu cọ",
+    "d": "Đổ dầu cọ vào, khuấy đều. Nấu vài phút cho các vị hòa quyện."
+   },
+   {
+    "t": "Thêm đậu bắp",
+    "d": "Khuấy đậu bắp vào. Nếu dùng đậu bắp khô có thể cần thêm nước. Khuấy liên tục để tạo độ nhớt đặc trưng."
+   },
+   {
+    "t": "Nêm",
+    "d": "Rắc tôm khô xay và ớt vào. Nêm muối và gia vị vừa ăn."
+   },
+   {
+    "t": "Ninh tiếp",
+    "d": "Ninh súp thêm 5–10 phút. Đừng nấu đậu bắp quá kỹ để giữ kết cấu."
+   }
+  ],
+  "sourceHash": "74090c0e7136d695aed894e221dcc69573529158a72c9d2f4131831bce0341f0"
+ },
+ {
+  "pageId": 446271,
+  "title": "Miyan Kuka (Súp lá bao báp kiểu Nigeria)",
+  "description": "Miyan kuka (“súp lá bao báp”) là món súp miền Bắc Nigeria nấu từ lá bao báp khô xay (kuka). Súp được ăn cùng tuwo shinkafa hoặc tuwo masara.",
+  "ingredients": [
+   {
+    "n": "cá trê khô lớn",
+    "u": "con"
+   },
+   {
+    "n": "đậu dawa dawa",
+    "u": "cục lớn"
+   },
+   {
+    "n": "tôm khô xay"
+   },
+   {
+    "n": "ớt habanero (atarugu)"
+   },
+   {
+    "n": "sườn bò"
+   },
+   {
+    "n": "viên nêm lớn",
+    "u": "viên"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "cắt miếng"
+   },
+   {
+    "n": "bột lá bao báp (kuka)"
+   },
+   {
+    "n": "dầu cọ",
+    "u": "muôi"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ngâm cá",
+    "d": "Ngâm cá khô trong nước lạnh. Khi mềm thì gỡ xương."
+   },
+   {
+    "t": "Xay gia vị",
+    "d": "Xay tôm khô với dawadawa. Giã ớt."
+   },
+   {
+    "t": "Nấu sườn",
+    "d": "Nấu sườn bò với nước, viên nêm, muối và hành đến khi thịt mềm. Vớt hành, rồi vớt thịt, giữ lại nước dùng trong nồi."
+   },
+   {
+    "t": "Hòa bột kuka",
+    "d": "Khuấy bột kuka vào nước dùng đến khi mịn, không vón cục."
+   },
+   {
+    "t": "Thêm gia vị",
+    "d": "Khuấy ớt giã, hỗn hợp tôm khô và dawadawa cùng dầu cọ vào."
+   },
+   {
+    "t": "Thêm cá",
+    "d": "Cho cá đã gỡ xương vào, đậy nắp và nấu 5 phút ở lửa vừa."
+   },
+   {
+    "t": "Thêm thịt",
+    "d": "Khuấy thịt bò vào, nêm muối vừa ăn. Nấu 2 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng với tuwo shinkafa hoặc tuwo masara."
+   }
+  ],
+  "sourceHash": "8a4d9b55fb0e5238037d2483de34cd89f772f74bb809063ae5695bb479e421c8"
+ },
+ {
+  "pageId": 474356,
+  "title": "Miyan Taushe (Súp bí đỏ kiểu Hausa)",
+  "description": "Miyan taushe là món súp truyền thống thịnh hành trong các gia đình Hausa, nhất là vào dịp lễ hội hoặc mùa bí đỏ. Món thể hiện sự sáng tạo của người Hausa khi dùng nguyên liệu địa phương để nấu những bữa ăn bổ dưỡng, đậm đà. Súp béo, hơi ngọt, thường nêm với bơ lạc và gia vị. Món thường ăn với tuwo shinkafa (cơm nghiền Nigeria), tuwo masara (fufu ngô Nigeria) hoặc tuwon dawa (bột cao lương Nigeria).",
+  "ingredients": [
+   {
+    "n": "thịt bò hoặc dê"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "viên nêm",
+    "u": "viên"
+   },
+   {
+    "n": "muối",
+    "t": "vừa ăn"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "bí đỏ gọt vỏ cắt khúc"
+   },
+   {
+    "n": "bơ lạc",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "đậu locust lên men (daddawa)"
+   },
+   {
+    "n": "dầu cọ hoặc dầu lạc"
+   },
+   {
+    "n": "ớt bột",
+    "o": "vừa ăn"
+   },
+   {
+    "n": "cá khô hoặc cá hun khói",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "rau bina, lá ugu hoặc lá yakuwa băm",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ninh thịt",
+    "d": "Cho thịt vào nồi. Thêm hành băm, viên nêm, muối và đủ nước ngập. Ninh đến khi thịt chín mềm như ý; thịt dai có thể mất khá lâu."
+   },
+   {
+    "t": "Thêm bí đỏ",
+    "d": "Cho bí đỏ vào nồi. Nấu đến khi mềm (khoảng 10–15 phút), rồi nghiền nhẹ một phần bí cho súp sánh lại."
+   },
+   {
+    "t": "Thêm gia vị",
+    "d": "Cho bơ lạc (nếu dùng), daddawa, dầu cọ, ớt và cá vào. Khuấy đều và ninh thêm 10 phút."
+   },
+   {
+    "t": "Thêm rau",
+    "d": "Cho rau lá vào và nấu thêm 5 phút."
+   },
+   {
+    "t": "Chỉnh độ sánh",
+    "d": "Thêm nước nếu cần để súp đạt độ sánh mong muốn."
+   }
+  ],
+  "sourceHash": "74c930d041eecfc1b76363f393a460bf7f099ffbc5f792b0c78d6a05337c8b9b"
+ },
+ {
+  "pageId": 456990,
+  "title": "Ndole (Súp lá đắng và lạc kiểu Cameroon)",
+  "description": "Ndole là món súp truyền thống thịnh hành ở Cameroon, kết hợp rau bina và lá đắng cùng tôm khô, tôm và thịt bò. Đây cũng là món thường có trong các buổi lễ.",
+  "ingredients": [
+   {
+    "n": "thịt bò để hầm",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "viên nêm Maggi"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "thái lát"
+   },
+   {
+    "n": "cá tuyết khô (stockfish)",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "lạc bóc vỏ lụa"
+   },
+   {
+    "n": "tỏi"
+   },
+   {
+    "n": "tôm khô xay"
+   },
+   {
+    "n": "lá đắng hoặc rau bina"
+   },
+   {
+    "n": "dầu ăn"
+   },
+   {
+    "n": "tôm"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Luộc thịt",
+    "d": "Ướp thịt bò trong nồi lớn với muối, Maggi và một phần ba lượng hành, rồi luộc đến khi mềm."
+   },
+   {
+    "t": "Luộc cá",
+    "d": "Trong lúc đó, luộc cá tuyết khô với muối và nước, rồi cho vào thịt bò đã nấu. Từ thịt và cá sẽ có khoảng 3 cốc. Phần còn lại đem đông lạnh hoặc để dành."
+   },
+   {
+    "t": "Luộc lạc",
+    "d": "Trong nồi nhỏ, luộc lạc khoảng 10 phút. Để nguội rồi xay bằng máy. Cho vào hỗn hợp thịt và cá."
+   },
+   {
+    "t": "Thêm hành tỏi",
+    "d": "Xay một nửa lượng hành còn lại với tỏi thành hỗn hợp nhuyễn, khuấy vào hỗn hợp thịt và lạc."
+   },
+   {
+    "t": "Thêm tôm khô",
+    "d": "Cho tôm khô vào, đun sôi 10 phút, khuấy thường xuyên để khỏi cháy. Nêm muối và Maggi vừa ăn. Về sau có thể cần thêm."
+   },
+   {
+    "t": "Thêm rau",
+    "d": "Cho rau bina hoặc lá đắng vào súp. Khuấy và tiếp tục ninh vài phút."
+   },
+   {
+    "t": "Xào tôm",
+    "d": "Đun nóng dầu trong chảo khi ndole đang ninh. Cho tôm vào, đảo liên tục đến khi bắt đầu chuyển hồng. Thêm toàn bộ hành còn lại và đảo thêm vài phút."
+   },
+   {
+    "t": "Trộn vào súp",
+    "d": "Cho hỗn hợp tôm và hành vào nồi súp, khuấy liên tục khoảng 2 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng nóng."
+   }
+  ],
+  "sourceHash": "b0dade226cc684fb598d4179bec274798ceada825987ff71ac6b7f7bd4a87130"
+ }
+]

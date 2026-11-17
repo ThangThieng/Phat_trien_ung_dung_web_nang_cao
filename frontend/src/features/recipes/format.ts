@@ -1,4 +1,11 @@
-import type { RecipeDifficulty } from '@/types/recipe';
+import type { RecipeDifficulty, RecipeStatus } from '@/types/recipe';
+
+/** Nhãn hiển thị của trạng thái; giá trị Draft/Published/Archived là hợp đồng API nên giữ nguyên khi gửi và lọc. */
+export const RECIPE_STATUS_LABEL: Record<RecipeStatus, string> = {
+  Draft: 'Bản nháp',
+  Published: 'Đã xuất bản',
+  Archived: 'Đã lưu trữ',
+};
 
 export const DIFFICULTY_LABEL: Record<RecipeDifficulty, string> = {
   Easy: 'Dễ',
@@ -8,10 +15,10 @@ export const DIFFICULTY_LABEL: Record<RecipeDifficulty, string> = {
 };
 
 export const DIFFICULTY_STYLE: Record<RecipeDifficulty, string> = {
-  Easy: 'bg-green-100 text-green-800',
-  Medium: 'bg-yellow-100 text-yellow-800',
-  Hard: 'bg-orange-100 text-orange-800',
-  Expert: 'bg-red-100 text-red-800',
+  Easy: 'bg-navy text-gold',
+  Medium: 'bg-navy text-gold',
+  Hard: 'bg-navy text-gold',
+  Expert: 'bg-navy text-gold',
 };
 
 export function formatMinutes(minutes: number): string {

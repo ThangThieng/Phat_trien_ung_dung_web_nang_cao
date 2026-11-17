@@ -17,16 +17,16 @@ export default function GoogleSignIn({ onSuccess }: GoogleSignInProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-3 text-xs text-gray-500">
-        <span className="h-px flex-1 bg-gray-200" />
+      <div className="flex items-center gap-3 text-xs text-ink-soft">
+        <span className="h-px flex-1 bg-line" />
         <span>hoặc</span>
-        <span className="h-px flex-1 bg-gray-200" />
+        <span className="h-px flex-1 bg-line" />
       </div>
       <div className="flex justify-center">
         <GoogleLogin
           onSuccess={async ({ credential }) => {
             if (!credential) {
-              toast.error('Google không trả về ID token. Vui lòng thử lại.');
+              toast.error('Google không trả về mã xác thực. Vui lòng thử lại.');
               return;
             }
             try {

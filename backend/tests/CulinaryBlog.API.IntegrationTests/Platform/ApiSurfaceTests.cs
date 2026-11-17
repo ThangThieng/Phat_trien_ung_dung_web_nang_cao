@@ -20,12 +20,15 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
     private static readonly (string Method, string Route, string Srs)[] SrsEndpoints =
     [
 
-        // §8.1 Authentication (12)
+        // §8.1 Authentication (15, including CR-2026-05)
         ("POST", "/api/v1/auth/register", "8.1"),
         ("POST", "/api/v1/auth/login", "8.1"),
         ("POST", "/api/v1/auth/google", "8.1"),
         ("POST", "/api/v1/auth/refresh", "8.1"),
         ("POST", "/api/v1/auth/logout", "8.1"),
+        ("POST", "/api/v1/auth/change-password", "8.1"),
+        ("POST", "/api/v1/auth/forgot-password", "8.1"),
+        ("POST", "/api/v1/auth/reset-password", "8.1"),
         ("GET", "/api/v1/auth/me", "8.1"),
         ("PATCH", "/api/v1/auth/me", "8.1"),
         ("GET", "/api/v1/users", "8.1"),
@@ -92,10 +95,10 @@ public partial class ApiSurfaceTests(CulinaryBlogApiFactory factory)
     ];
 
     [Fact]
-    public void SrsChapter8_Lists45Endpoints()
+    public void SrsChapter8_Lists48Endpoints()
     {
-        Assert.Equal(45, SrsEndpoints.Length);
-        Assert.Equal(45, SrsEndpoints.Select(e => Key(e.Method, e.Route)).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(48, SrsEndpoints.Length);
+        Assert.Equal(48, SrsEndpoints.Select(e => Key(e.Method, e.Route)).Distinct(StringComparer.Ordinal).Count());
     }
 
     [Fact]

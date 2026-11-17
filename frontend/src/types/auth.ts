@@ -24,41 +24,6 @@ export interface AuthResponse {
   user: User;
 }
 
-/** `POST /auth/login` (FR-AUTH-002). */
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-/** `POST /auth/register` (FR-AUTH-001) – không có `userName`: Backend tự sinh (MT-12). */
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  displayName: string;
-}
-
-/** `POST /auth/google` (FR-AUTH-003) – ID Token từ Google Identity Services (MT-11). */
-export interface GoogleLoginRequest {
-  idToken: string;
-}
-
-/** `POST /auth/refresh` (FR-AUTH-004). */
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-/** `POST /auth/logout` (FR-AUTH-005). */
-export interface LogoutRequest {
-  refreshToken: string;
-}
-
-/** `PATCH /auth/me` (FR-AUTH-007) – trường bỏ qua (hoặc `null`) thì Backend giữ nguyên giá trị cũ. */
-export interface UpdateProfileRequest {
-  displayName?: string;
-  avatarUrl?: string;
-  bio?: string;
-}
-
 /** `GET /auth/sessions` (FR-AUTH-009) – `SessionDto`, không bao giờ có `tokenHash`. */
 export interface Session {
   id: string;
@@ -102,20 +67,3 @@ export interface UserStatus {
   isActive: boolean;
 }
 
-/** `POST /auth/change-password` (FR-AUTH-010, CR-2026-05 – API làm ở Buổi 7). */
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
-/** `POST /auth/forgot-password` (FR-AUTH-011, CR-2026-05) – luôn trả 202. */
-export interface ForgotPasswordRequest {
-  email: string;
-}
-
-/** `POST /auth/reset-password` (FR-AUTH-011, CR-2026-05). */
-export interface ResetPasswordRequest {
-  email: string;
-  token: string;
-  newPassword: string;
-}

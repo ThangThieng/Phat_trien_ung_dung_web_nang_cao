@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import '@/lib/zod-locale';
 import { Loader2, X } from 'lucide-react';
 import FormField from '@/components/shared/FormField';
 import ImageUploader from '@/components/shared/ImageUploader';
@@ -117,26 +118,26 @@ export default function CategoryFormDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="category-dialog-title"
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-paper p-6 shadow-xl"
       >
         <div className="flex items-start justify-between gap-4">
-          <h2 id="category-dialog-title" className="text-lg font-bold text-gray-900">
+          <h2 id="category-dialog-title" className="text-lg font-bold text-ink">
             {isEditing ? 'Sửa danh mục' : 'Thêm danh mục'}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Đóng"
-            className="rounded-md p-1 text-gray-500 hover:bg-gray-100"
+            className="rounded-md p-1 text-ink-soft hover:bg-gold-soft"
           >
             <X aria-hidden className="h-5 w-5" />
           </button>
         </div>
 
         {isEditing && (
-          <p className="mt-1 text-xs text-gray-500">
-            Đường dẫn <code className="rounded bg-gray-100 px-1">/{category.slug}</code> không đổi
-            khi sửa tên, để link đã chia sẻ không bị hỏng.
+          <p className="mt-1 text-xs text-ink-soft">
+            Đường dẫn <code className="rounded bg-gold-soft px-1">/{category.slug}</code> không đổi
+            khi sửa tên, để liên kết đã chia sẻ không bị hỏng.
           </p>
         )}
 
@@ -154,14 +155,14 @@ export default function CategoryFormDialog({
 
           <div className="flex flex-col gap-1">
             <label htmlFor="category-description" className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-gray-800">Mô tả</span>
+              <span className="text-sm font-medium text-ink">Mô tả</span>
               <textarea
                 id="category-description"
                 rows={3}
                 aria-invalid={errors.description ? true : undefined}
                 aria-describedby={errors.description ? 'category-description-error' : undefined}
-                className={`rounded-lg border px-3 py-2 text-sm shadow-sm transition outline-none focus:ring-2 focus:ring-orange-500 ${
-                  errors.description ? 'border-red-500' : 'border-gray-300'
+                className={`rounded-lg border px-3 py-2 text-sm shadow-sm transition outline-none focus:ring-2 focus:ring-gold-ink ${
+                  errors.description ? 'border-red-500' : 'border-line-strong'
                 }`}
                 {...register('description')}
               />
@@ -202,14 +203,14 @@ export default function CategoryFormDialog({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-line-strong px-4 py-2 text-sm font-semibold text-ink hover:bg-paper"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-60"
+              className="flex items-center gap-2 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2 disabled:opacity-60"
             >
               {isSubmitting && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
               {isEditing ? 'Lưu thay đổi' : 'Tạo danh mục'}

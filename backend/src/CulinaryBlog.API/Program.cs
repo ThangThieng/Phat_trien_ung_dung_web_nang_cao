@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using CulinaryBlog.API.Endpoints;
 using CulinaryBlog.API.Extensions;
+using CulinaryBlog.API.Logging;
 using CulinaryBlog.API.Middleware;
 using CulinaryBlog.API.Middleware.ExceptionMapping;
 using CulinaryBlog.API.OpenApi;
@@ -15,7 +16,6 @@ using CulinaryBlog.Infrastructure.Persistence.Seed;
 using Hangfire;
 using Hangfire.Dashboard;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,15 +27,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Container "hangfire" dùng cùng image nhưng chỉ chạy BackgroundJobServer (SRS §6.5)
 var workerOnly = builder.Configuration.GetValue<bool>("Hangfire:WorkerOnly");
 
+// FR-OBS-002 / FR-OBS-003 (Buổi 8): Serilog + OpenTelemetry cho CẢ hai container; thuộc tính "Application" tách log của từng loại.
+var applicationName = workerOnly ? "CulinaryBlog.Hangfire" : "CulinaryBlog.API";
+builder.Services.AddCulinarySerilog(builder.Configuration, applicationName);
+builder.Services.AddCulinaryOpenTelemetry(
+    builder.Configuration,
+    workerOnly ? "culinaryblog-hangfire" : builder.Configuration["OpenTelemetry:ServiceName"] ?? "culinaryblog-api");
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Khóa DataProtection lưu bền trên volume dùng chung cho api + hangfire (không mất khi tạo lại container)
-var dataProtection = builder.Services.AddDataProtection().SetApplicationName("CulinaryBlog");
-if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath)
-{
-    dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
-}
+// Khóa DataProtection lưu bền trên volume dùng chung cho api + hangfire; production mã hóa khóa bằng chứng chỉ (D-17, Buổi 7)
+builder.Services.AddCulinaryDataProtection(builder.Configuration, builder.Environment);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTrustedForwardedHeaders(builder.Configuration);
@@ -46,11 +49,18 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddUrlSegmentVersioning();
 builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 {
+    // FR-OBS-002 (Buổi 8): mọi Problem Details (lỗi nghiệp vụ, 400, 429, 500…) mang mã tra cứu cùng giá trị header X-Correlation-ID.
+    var correlationId = CorrelationIdMiddleware.Get(ctx.HttpContext);
+    if (correlationId is not null)
+    {
+        ctx.ProblemDetails.Extensions["correlationId"] = correlationId;
+    }
+
     // Body vượt RequestSizeLimit (> 10MB) bị chặn trước khi tới handler → vẫn trả Application Error Code (Phụ lục B)
     if (ctx.ProblemDetails.Status == StatusCodes.Status413PayloadTooLarge)
     {
         ctx.ProblemDetails.Type = ErrorCodes.FileSizeExceeded;
-        ctx.ProblemDetails.Detail = "Kích thước file vượt quá giới hạn 5MB.";
+        ctx.ProblemDetails.Detail = "Kích thước tệp vượt quá giới hạn 5MB.";
     }
 });
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -84,11 +94,20 @@ if (builder.Configuration.GetValue("Hangfire:RegisterRecurringJobs", true))
 if (workerOnly)
 {
     app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.Hangfire", mode = "worker" }));
+
+    // Buổi 8 — healthcheck của container hangfire (8 service healthy): worker không phục vụ được job khi mất PostgreSQL/Redis.
+    app.MapGet("/health/live", (HttpContext context, HealthCheckService healthChecks) => WriteLivenessResponseAsync(context, healthChecks));
+    app.MapGet("/health/ready", (HttpContext context, HealthCheckService healthChecks) =>
+        WriteHealthResponseAsync(context, healthChecks, check => check.Tags.Contains("ready")));
     await app.RunAsync().ConfigureAwait(false);
     return;
 }
 
-if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.IsDevelopment()))
+// Production chạy nhiều bản sao api (docker-compose.prod.yml): migrate + seed do MỘT container "migrate" chạy với
+// Database:MigrateOnly=true rồi thoát; các bản sao api chỉ khởi động sau khi nó xong (service_completed_successfully), nên
+// không có hai process cùng áp migration hay cùng chèn dữ liệu mẫu.
+var migrateOnly = builder.Configuration.GetValue("Database:MigrateOnly", false);
+if (migrateOnly || builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.IsDevelopment()))
 {
     await using var scope = app.Services.CreateAsyncScope();
     await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>().Database.MigrateAsync().ConfigureAwait(false);
@@ -99,6 +118,11 @@ if (builder.Configuration.GetValue("Database:MigrateOnStartup", app.Environment.
 
     // NFR-PERF-004 (Buổi 5): bộ ≥ 10.000 công thức để đo EXPLAIN ANALYZE — chỉ chạy khi PerformanceSeed:Enabled=true (mặc định tắt).
     await scope.ServiceProvider.GetRequiredService<PerformanceSeeder>().SeedAsync(CancellationToken.None).ConfigureAwait(false);
+}
+
+if (migrateOnly)
+{
+    return;
 }
 
 app.UseRequestSecurity();

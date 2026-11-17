@@ -1,0 +1,45 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='720' height='380' viewBox='0 0 720 380' role='img' aria-label='Stress: độ trễ API theo số người dùng đồng thời'>
+<rect width='720' height='380' fill='#fcfcfb'/>
+<text x='64' y='26' font-family='Segoe UI, Arial, sans-serif' font-size='16' font-weight='600' fill='#0b0b0b'>Stress: độ trễ API theo số người dùng đồng thời</text>
+<text x='64' y='46' font-family='Segoe UI, Arial, sans-serif' font-size='12' fill='#52514e'>k6, 3 bản sao API qua Nginx HTTPS · ngưỡng NFR-PERF-001: p95 ≤ 500 ms, p99 ≤ 1000 ms (ngoài khung, cao hơn ~20 lần)</text>
+<line x1='64' x2='600' y1='328.0' y2='328.0' stroke='#e4e3df' stroke-width='1'/>
+<text x='56' y='332.0' text-anchor='end' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>0 ms</text>
+<line x1='64' x2='600' y1='275.2' y2='275.2' stroke='#e4e3df' stroke-width='1'/>
+<text x='56' y='279.2' text-anchor='end' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>10 ms</text>
+<line x1='64' x2='600' y1='222.4' y2='222.4' stroke='#e4e3df' stroke-width='1'/>
+<text x='56' y='226.4' text-anchor='end' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>20 ms</text>
+<line x1='64' x2='600' y1='169.6' y2='169.6' stroke='#e4e3df' stroke-width='1'/>
+<text x='56' y='173.6' text-anchor='end' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>30 ms</text>
+<line x1='64' x2='600' y1='116.8' y2='116.8' stroke='#e4e3df' stroke-width='1'/>
+<text x='56' y='120.8' text-anchor='end' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>40 ms</text>
+<line x1='64' x2='600' y1='64.0' y2='64.0' stroke='#e4e3df' stroke-width='1'/>
+<text x='56' y='68.0' text-anchor='end' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>50 ms</text>
+<line x1='64' x2='600' y1='328.0' y2='328.0' stroke='#52514e' stroke-width='1'/>
+<text x='93.8' y='346.0' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>200</text>
+<text x='212.9' y='346.0' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>400</text>
+<text x='332.0' y='346.0' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>600</text>
+<text x='451.1' y='346.0' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>800</text>
+<text x='570.2' y='346.0' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='11' fill='#52514e'>1.000</text>
+<text x='332.0' y='370' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='12' fill='#52514e'>Người dùng đồng thời (mỗi nấc giữ 2 phút)</text>
+<path d='M93.8,232.4 L212.9,227.7 L332.0,193.4 L451.1,178.0 L570.2,113.1' fill='none' stroke='#1baf7a' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/>
+<circle cx='93.8' cy='232.4' r='4.5' fill='#1baf7a' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='212.9' cy='227.7' r='4.5' fill='#1baf7a' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='332.0' cy='193.4' r='4.5' fill='#1baf7a' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='451.1' cy='178.0' r='4.5' fill='#1baf7a' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='570.2' cy='113.1' r='4.5' fill='#1baf7a' stroke='#fcfcfb' stroke-width='2'/>
+<text x='582.2' y='117.1' font-family='Segoe UI, Arial, sans-serif' font-size='12' fill='#0b0b0b'>p99 40,7 ms</text>
+<path d='M93.8,256.2 L212.9,249.9 L332.0,238.2 L451.1,227.7 L570.2,205.5' fill='none' stroke='#eb6834' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/>
+<circle cx='93.8' cy='256.2' r='4.5' fill='#eb6834' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='212.9' cy='249.9' r='4.5' fill='#eb6834' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='332.0' cy='238.2' r='4.5' fill='#eb6834' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='451.1' cy='227.7' r='4.5' fill='#eb6834' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='570.2' cy='205.5' r='4.5' fill='#eb6834' stroke='#fcfcfb' stroke-width='2'/>
+<text x='582.2' y='209.5' font-family='Segoe UI, Arial, sans-serif' font-size='12' fill='#0b0b0b'>p95 23,2 ms</text>
+<path d='M93.8,316.9 L212.9,316.4 L332.0,315.9 L451.1,314.8 L570.2,312.2' fill='none' stroke='#2a78d6' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/>
+<circle cx='93.8' cy='316.9' r='4.5' fill='#2a78d6' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='212.9' cy='316.4' r='4.5' fill='#2a78d6' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='332.0' cy='315.9' r='4.5' fill='#2a78d6' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='451.1' cy='314.8' r='4.5' fill='#2a78d6' stroke='#fcfcfb' stroke-width='2'/>
+<circle cx='570.2' cy='312.2' r='4.5' fill='#2a78d6' stroke='#fcfcfb' stroke-width='2'/>
+<text x='582.2' y='316.2' font-family='Segoe UI, Arial, sans-serif' font-size='12' fill='#0b0b0b'>p50 3,0 ms</text>
+</svg>

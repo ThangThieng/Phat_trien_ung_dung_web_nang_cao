@@ -2,9 +2,12 @@ import { apiFetch } from '@/lib/api-client';
 import type { Category, CategoryDetail, CategoryDetailParams } from '@/types/category';
 import { DEFAULT_PAGE_SIZE } from '@/types/search';
 
-/** FR-CAT-001 – dữ liệu revalidate mỗi 3600s (SRS §5.1). Backend cache Redis 60 phút. */
+/**
+ * FR-CAT-001 – Data Cache `revalidate: 1800` (SRS §5.1 `/categories`; ≤ TTL Redis `categories:all` 30 phút — NFR-PERF-003).
+ * Trước Buổi 6 là 3600 (lệch D-7); header/footer công khai dùng hàm này từ Buổi 6 nên sửa giá trị ngay tại đây.
+ */
 export function getCategories() {
-  return apiFetch<Category[]>('/categories', { next: { revalidate: 3600, tags: ['categories'] } });
+  return apiFetch<Category[]>('/categories', { next: { revalidate: 1800, tags: ['categories'] } });
 }
 
 /**

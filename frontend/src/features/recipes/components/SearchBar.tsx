@@ -12,6 +12,8 @@ const DEBOUNCE_MS = 300;
  * FR-SRCH-001: thanh tìm kiếm trên header. Enter → điều hướng `/search?q=`. Khi đang ở trang `/search`, gõ tới đâu kết quả
  * cập nhật tới đó sau 300 ms ngừng gõ (debounce) — thay URL bằng `replace` để lịch sử không bị đầy từng ký tự và vẫn giữ
  * bộ lọc đang bật. Dưới ngưỡng 2 ký tự không gọi API (sẽ là 400).
+ * Buổi 7 (Dev 4): trên `/search` dùng `history.replaceState` thay cho `router.replace` — trang tìm kiếm đọc URL bằng
+ * `useSearchParams` và tự gọi API ở client, nên đổi từ khóa chỉ tốn một request JSON, không render lại Server Component.
  */
 export default function SearchBar({ className = '' }: { className?: string }) {
   const router = useRouter();
@@ -40,8 +42,8 @@ export default function SearchBar({ className = '' }: { className?: string }) {
     next.set('q', term);
     next.delete('page');
     lastReplaced.current = term;
-    router.replace(`/search?${next.toString()}`);
-  }, [debounced, value, urlQuery, onSearchPage, params, router]);
+    window.history.replaceState(null, '', `/search?${next.toString()}`);
+  }, [debounced, value, urlQuery, onSearchPage, params]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -55,7 +57,7 @@ export default function SearchBar({ className = '' }: { className?: string }) {
       <div className="relative">
         <Search
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-gray-400"
+          className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-gold"
         />
         <input
           id="site-search"
@@ -65,7 +67,7 @@ export default function SearchBar({ className = '' }: { className?: string }) {
           onChange={(event) => setValue(event.target.value)}
           placeholder="Tìm công thức…"
           autoComplete="off"
-          className="w-48 rounded-full border border-gray-300 bg-white py-1.5 pr-3 pl-8 text-sm text-gray-800 focus:border-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 lg:w-64"
+          className="w-48 rounded-full border border-navy-line bg-navy-2 py-1.5 pr-3 pl-8 text-sm text-cream placeholder:text-cream/80 focus:border-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-line lg:w-64"
         />
       </div>
     </form>

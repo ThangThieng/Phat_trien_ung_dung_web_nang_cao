@@ -17,6 +17,7 @@ public sealed class AuthExceptionMappings : IExceptionStatusMapping
             .Map<AccountLockedException>(StatusCodes.Status423Locked)
             .Map<AccountDisabledException>(StatusCodes.Status403Forbidden)
             .Map<EmailAlreadyExistsException>(StatusCodes.Status409Conflict)
+            .Map<PasswordResetTokenInvalidException>(StatusCodes.Status400BadRequest)
             .Map<UserNotFoundException>(StatusCodes.Status404NotFound);
     }
 }

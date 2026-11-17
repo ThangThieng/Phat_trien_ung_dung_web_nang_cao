@@ -1,8 +1,11 @@
 import type { ProblemDetails } from '@/types/api';
 
 /** Thông tin đọc từ response, không nằm trong body Problem Details. */
-export interface ApiErrorMeta {
-  /** `X-Correlation-ID` Backend trả lại (Buổi 8), không có thì `traceId` của Problem Details. */
+interface ApiErrorMeta {
+  /**
+   * `X-Correlation-ID` Backend trả lại (Buổi 8). Không đọc được header (ví dụ XHR không có quyền) thì lấy `correlationId` của
+   * Problem Details — cùng giá trị — rồi mới tới `traceId`.
+   */
   correlationId?: string;
   /** Header `Retry-After` của 429/503 đã đổi ra giây. */
   retryAfterSeconds?: number;
@@ -30,7 +33,9 @@ export class ApiError extends Error {
     this.fieldErrors = problem.errors ?? {};
     this.problem = problem;
     this.correlationId =
-      meta.correlationId ?? (typeof problem.traceId === 'string' ? problem.traceId : undefined);
+      meta.correlationId ??
+      (typeof problem.correlationId === 'string' ? problem.correlationId : undefined) ??
+      (typeof problem.traceId === 'string' ? problem.traceId : undefined);
     this.retryAfterSeconds = meta.retryAfterSeconds;
   }
 }
@@ -58,4 +63,9 @@ export function isAbortError(error: unknown): boolean {
     error !== null &&
     (error as { name?: unknown }).name === 'AbortError'
   );
+}
+
+/** 429, 408, 5xx khi làm mới phiên là lỗi tạm thời: phiên vẫn hợp lệ, không được đăng xuất người dùng. */
+export function isTransientAuthError(error: unknown): boolean {
+  return error instanceof ApiError && (error.status === 408 || error.status === 429 || error.status >= 500);
 }

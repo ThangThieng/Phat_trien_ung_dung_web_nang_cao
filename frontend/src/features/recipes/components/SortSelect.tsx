@@ -32,11 +32,11 @@ export default function SortSelect({ pathname, state }: SortSelectProps) {
   const sortBy = state.sortBy ?? DEFAULT_SORT_BY;
   const sortOrder = state.sortOrder ?? DEFAULT_SORT_ORDER;
   const selectClass =
-    'rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-800 focus:border-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300';
+    'rounded-lg border border-line-strong bg-paper px-2 py-1.5 text-sm text-ink focus:border-gold-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-line';
 
   return (
     <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Sắp xếp">
-      <label htmlFor={fieldId} className="flex items-center gap-2 text-sm text-gray-700">
+      <label htmlFor={fieldId} className="flex items-center gap-2 text-sm text-ink">
         <span>Sắp xếp theo</span>
         <select
           id={fieldId}

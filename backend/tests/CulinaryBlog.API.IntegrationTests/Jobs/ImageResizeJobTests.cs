@@ -90,6 +90,17 @@ public class ImageResizeJobTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
     }
 
     /// <summary>
+    /// Mọi advisory TIFF đang miễn trừ trong Directory.Build.props (BigTIFF GHSA-wmxv-xphr-5c9g, tile nén fax GHSA-v76p-62qx-wwq2)
+    /// chỉ chạy khi decoder TIFF được tạo. Thêm một định dạng vào cấu hình giải mã của job phải đi kèm việc xét lại các miễn trừ đó.
+    /// </summary>
+    [Fact]
+    public void Job_DecodesOnlyJpegPngAndWebp()
+    {
+        Assert.Equal(["JPEG", "PNG", "Webp"], ImageResizeJob.DecodableFormats);
+        Assert.DoesNotContain(ImageResizeJob.DecodableFormats, f => f.Contains("TIFF", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
     /// Lớp chặn thứ hai cho các advisory TIFF/BigTIFF chưa vá của ImageSharp 3.x (Directory.Build.props): kể cả khi object
     /// gốc trên MinIO bị thay bằng một TIFF hợp lệ (vượt qua kiểm tra magic bytes lúc tải lên), job không giải mã nó.
     /// </summary>

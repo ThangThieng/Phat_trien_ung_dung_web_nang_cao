@@ -1,10 +1,10 @@
 # PHÂN TÍCH MÂU THUẪN TRONG SRS & ĐỀ XUẤT GIẢI PHÁP
 
-**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.3.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
-**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5) · 29/09/2026 (lượt 6) · 12/10/2026 (lượt 7)
+**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.7.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
+**Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5) · 29/09/2026 (lượt 6) · 12/10/2026 (lượt 7) · 21/10/2026 (lượt 8) · 26/10/2026 (bổ sung khi hiện thực Buổi 7 — ghi chú hiện thực ở MT-23, MT-57, MT-67, D-7 và đánh đổi O-8; không phát sinh mâu thuẫn SRS mới)
 **Phạm vi:** Toàn bộ 8 chương + các phụ lục; lượt 4 mở rộng sang **hệ thống đang chạy** (code, cấu hình Docker/Nginx, báo cáo Buổi 2)
-**Kết quả:** **68 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4, 1 mục ở lượt 5, 5 mục ở lượt 6 và 5 mục ở lượt 7. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 13 điểm xung đột giữa lộ trình / yêu cầu Lab và SRS (§5).
-**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026). MT-59 → MT-63 đã áp dụng vào **SRS v1.2.2** (CR-2026-04, 29/09/2026). MT-64 → MT-68 đã áp dụng vào **SRS v1.2.3** (CR-2026-05, 12/10/2026).
+**Kết quả:** **72 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4, 1 mục ở lượt 5, 5 mục ở lượt 6, 5 mục ở lượt 7, 1 mục ở lượt 8, 1 mục ở lượt 9, 1 mục ở lượt 10 và 1 mục ở lượt 11. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 13 điểm xung đột giữa lộ trình / yêu cầu Lab và SRS (§5).
+**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026). MT-59 → MT-63 đã áp dụng vào **SRS v1.2.2** (CR-2026-04, 29/09/2026). MT-64 → MT-68 đã áp dụng vào **SRS v1.2.3** (CR-2026-05, 12/10/2026). MT-69 đã áp dụng vào **SRS v1.2.4** (CR-2026-06, 21/10/2026). MT-70 đã áp dụng vào **SRS v1.2.5** (CR-2026-07, 04/11/2026). MT-71 đã áp dụng vào **SRS v1.2.6** (CR-2026-08, 04/11/2026). MT-72 đã áp dụng vào **SRS v1.2.7** (CR-2026-09, 05/11/2026).
 
 **Lịch sử rà soát**
 
@@ -17,6 +17,10 @@
 | 5 | Đối chiếu **yêu cầu mới của giảng viên cho Buổi 2** (dữ liệu mẫu) ↔ SRS v1.2.0 §2.6.1 ↔ dữ liệu đang có trong cơ sở dữ liệu | MT-58 |
 | 6 | Đối chiếu **yêu cầu của giảng viên cho Buổi 3–4** (domain exceptions, repository & Unit of Work, middleware Problem Details; hoàn thành **tất cả** API endpoints) ↔ Phụ lục B ↔ §6.2; và **từng route giao diện §5.1 ↔ endpoint Chương 8** (route nào không có API phục vụ) | MT-59 → MT-63 |
 | 7 | Đối chiếu **yêu cầu tối thiểu Lab 5 → Lab 8 của giảng viên** ↔ SRS v1.2.2 ↔ code đang có trên các nhánh `buoiso5`: yêu cầu nào là chức năng SRS chưa có (→ Change Request), yêu cầu nào chỉ khác SRS về cách làm (→ theo SRS, ghi ở §5); khi thiết kế phần CORS (Lab 5) và CSP (Lab 6), **kiểm chứng bằng thực nghiệm** trên Next.js 15.5.25 | MT-64 → MT-68 |
+| 8 | **Đo tải hệ thống đang chạy** (Buổi 8 — k6, 100 người dùng đồng thời, môi trường giống production 3 bản sao API) và đối chiếu kết quả với từng con số của NFR-PERF-001 → 003; đối chiếu cột "Invalidate khi" của bảng TTL với các bước "invalidate" trong FR-RCP-003 → 007 và với code | MT-69 |
+| 9 | **Rà soát dữ liệu mẫu** (Phụ lục B của kế hoạch): đo 3.801 trang Wikibooks và đối chiếu với §2.6.1, NFR-SEO-001 | MT-70 |
+| 10 | **Xem kết quả tìm kiếm trên dữ liệu thật** sau khi bổ sung 101 công thức | MT-71 |
+| 11 | **Rà soát ảnh dữ liệu mẫu** trên trang thật, tìm ảnh đúng món cho 58 công thức còn thiếu | MT-72 |
 
 > Lượt 3 cho ra ít mục hơn nhưng **có mục nặng nhất toàn tài liệu là MT-34** — một lỗi rò rỉ dữ liệu giữa các tài khoản, sinh ra từ việc hai câu nằm cách nhau 5 dòng trong **cùng một FR** mà không ai đối chiếu.
 
@@ -108,6 +112,10 @@
 | MT-66 | Lab 7 yêu cầu `/search` lọc theo thời gian; `GET /recipes/search` không nhận tham số đó | 🟢 | Thêm `maxCookTime`, `maxPrepTime`, `minServings` (tùy chọn) |
 | MT-67 | CSP có nonce (NFR-SEC-005) và ISR (§5.1) loại trừ nhau — nonce chỉ gắn được khi render theo request | 🔴 | Giữ nonce; `/`, `/recipes/[slug]`, `/categories` chuyển sang SSR + Data Cache cùng `revalidate` |
 | MT-68 | Header CORS ở §5.2 thiếu `If-Match` và danh sách expose (`ETag`, `Retry-After`, `X-RateLimit-*`) | 🟡 | Bổ sung `If-Match` + `Access-Control-Expose-Headers` |
+| MT-69 | NFR-PERF-003 tự mâu thuẫn: xóa cache công khai ở **mọi** thay đổi công thức (kể cả bản nháp) kéo hit rate xuống 75,4 % < 80 %; FR-RCP-003 → 007 ghi lại danh sách khóa lệch bảng TTL | 🟡 | Chỉ xóa họ khóa công khai khi thay đổi chạm tới tập Published; FR tham chiếu bảng TTL |
+| MT-70 | §2.6.1 để Bogus sinh dinh dưỡng, dữ liệu mẫu không có ảnh nên không đạt NFR-SEO-001 | 🟡 | Bổ sung công thức Wikibooks đã dịch và có ảnh; bỏ dinh dưỡng ngẫu nhiên |
+| MT-71 | `SearchVector` không phân trọng số, bỏ dấu toàn bộ: `pho` trả "Welsh Rarebit" (phô mai) trên "Phở bò" | 🟡 | `Title` trọng số A, `Description` B; hàm `search_normalize` gộp từ ghép khác nghĩa; có đổi schema |
+| MT-72 | §2.6.1 đòi ảnh giấy phép mở, nhưng nhiều món Việt không có ảnh đúng món ở giấy phép cho phép thương mại | 🟢 | Cho phép CC BY-NC, CC BY-NC-SA khi vận hành phi thương mại; thay trước khi dùng thương mại |
 
 ---
 
@@ -637,6 +645,8 @@ Chương 8 còn có `orderIndex` và `altText` mà FR-RCP-008 không nhắc; FR-
 | C | Thêm `ViewCount` và sắp xếp theo lượt xem | "Nổi bật" có căn cứ tự nhiên | Phải ghi DB mỗi lượt xem → đụng NFR-PERF (write nóng, hỏng cache); cần chống spam đếm view |
 
 **➡️ Khuyến nghị: Phương án A** cho v1.0 (sửa mục 5.1 thành "công thức mới xuất bản"), **B** nếu muốn có điểm nhấn cho phần demo. Tránh C vì xung đột trực tiếp với mục tiêu cache và p95 ≤ 500ms.
+
+**Hiện thực (Buổi 7 — Dev 3, phương án A):** trang chủ gọi `getLatestRecipes()` = `GET /recipes?pageSize=8&sortBy=publishedAt&sortOrder=desc` (Data Cache `revalidate: 120` = TTL `recipes:list`), mục "Công thức mới xuất bản"; không thêm cột, không thêm endpoint. `features/recipes/api.test.ts` khẳng định đúng tham số và `revalidate`.
 
 ---
 
@@ -1403,6 +1413,8 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 **➡️ Quyết định (v1.2.0): Phương án A.** Quy tắc "thời gian tái sinh ≤ TTL cache API" được phát biểu lại để áp dụng cho cả ISR lẫn Data Cache. Sửa: §5.1.
 
+**Hiện thực:** `getCategoryBySlug()` mang `next: { revalidate: 120 }` từ Buổi 5; Buổi 7 (Dev 3) thêm sidebar/nhãn danh mục, sắp xếp + phân trang qua link thật, 404 → `notFound()`. Đo trên `next build && next start` (26/10/2026): 1 lượt gọi API cho mọi lượt xem trong 120 giây, gọi lại đúng 1 lần sau khi hết hạn (báo cáo Lab 07 của Dev 3).
+
 ### MT-58 🟡 — Yêu cầu dữ liệu mẫu của giảng viên khác SRS §2.6.1
 
 **Hiện trạng:** SRS v1.2.0 §2.6.1 ghi *"Dữ liệu test (seed) được tạo bằng thư viện Bogus với 50 recipe mẫu và 5 tác giả mẫu"*; kế hoạch Buổi 2 seed ~8 danh mục. Khi đánh số lại 8 buổi (21/09/2026), giảng viên yêu cầu Buổi 2 phải có CSDL chứa dữ liệu ngẫu nhiên cho **ít nhất 20 categories, 100 recipes; mỗi recipe ít nhất 10 nguyên liệu và 5 bước chế biến**. Cơ sở dữ liệu thực tế lúc đó: 8 danh mục, 50 công thức, mỗi công thức 4–9 nguyên liệu chọn ngẫu nhiên từ một danh sách chung và 3–6 bước có mô tả Lorem ipsum.
@@ -1569,6 +1581,15 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 
 **➡️ Quyết định (v1.2.3, CR-2026-05): Phương án B** — sửa §5.1, §6.1, NFR-SEC-005, NFR-PERF-005, Phụ lục C. `sitemap.xml`, `robots.txt` không chứa script nên vẫn sinh định kỳ. Hiện thực: Buổi 6 Dev 1 (CSP), Buổi 7 Dev 2, Dev 3 (trang).
 
+**Bổ sung khi hiện thực (Buổi 7 — Dev 3, 21/10 → 26/10/2026): điều kiện để Data Cache thật sự giữ dữ liệu.** App tối giản của thực nghiệm trên gọi `fetch` trần; app thật gọi qua lớp `ky` (Buổi 6), lớp này gắn `X-Correlation-ID` mới cho **mỗi** request. Next.js đưa **header của request vào khóa cache** của `fetch`, nên mỗi lời gọi có một khóa khác nhau: Data Cache không bao giờ trúng, `revalidate` vô tác dụng, và việc gộp lời gọi trùng trong cùng một lần render cũng mất. Tức là phương án B đúng, nhưng trên code của nhóm nó chưa đạt yêu cầu "không tạo thêm tải cho API" cho tới Buổi 7.
+
+| Đo trên `next build && next start` + API giả đếm lượt gọi, 15 lượt xem (5 × `/`, 5 × `/categories`, 5 × `/categories/mon-chinh`) | Lượt gọi API |
+| --- | --- |
+| Lớp gọi API của Buổi 6 (gắn `X-Correlation-ID` cho mọi request) | **55** — 45 × `/categories` (3 lần mỗi lượt xem — các component cùng cần danh sách danh mục không còn dùng chung một lời gọi), 5 × `/recipes`, 5 × `/categories/mon-chinh` |
+| Buổi 7: không gắn header cho request phía server có `next.revalidate > 0` | **3** — mỗi nguồn dữ liệu 1 lần; sau 125 giây gọi lại đúng `/recipes` và `/categories/mon-chinh` (TTL 120), `/categories` (1800) đứng yên |
+
+Cách sửa (`lib/api-client.ts`, kiểm thử `api-client.server.test.ts`): request phía server dùng Data Cache **không** mang `X-Correlation-ID`; Backend tự sinh mã khi request không có header (SRS §5.2 "Correlation ID"), nên không lệch SRS và không cần Change Request. Request từ trình duyệt và request phía server không cache vẫn mang header như cũ. Đánh đổi ghi ở **O-8** (§6). Quy tắc rút ra cho mọi `fetch` có `revalidate`: header phải giống nhau giữa các lượt xem — không gắn giá trị sinh theo request (mã tương quan, thời điểm, token người dùng).
+
 ---
 ### MT-68 🟡 — Danh sách header CORS thiếu header mà chính SRS dùng
 
@@ -1587,6 +1608,100 @@ Riêng cặp mức **C/W**: nếu không dùng thì nên bỏ khỏi quy ước,
 **➡️ Quyết định (v1.2.3, CR-2026-05): Phương án A** — sửa §5.2 (thêm cả header `api-supported-versions` ở dòng Versioning). Hiện thực: Buổi 5 Dev 1.
 
 ---
+### MT-69 🟡 — Phạm vi xóa cache của NFR-PERF-003 mâu thuẫn với chính chỉ tiêu hit rate ≥ 80 %
+
+**Hiện trạng (SRS v1.2.3)**
+
+| Vị trí | Quy định |
+| --- | --- |
+| NFR-PERF-003 | *"Redis Cache hit rate ≥ 80% trong điều kiện steady-state"*; bảng TTL là *"nguồn sự thật duy nhất — mọi chương khác chỉ được tham chiếu"* |
+| Bảng TTL — `recipes:list:` | Invalidate khi *"**bất kỳ** thay đổi recipe nào"* |
+| Bảng TTL — `categories:detail:` | Invalidate khi *"thay đổi category đó hoặc **bất kỳ** recipe nào thuộc nó"* |
+| Bảng TTL — `search:` | *"Không invalidate — để hết hạn tự nhiên"* |
+| FR-RCP-003 bước 11 | Tạo bản nháp → xóa prefix `recipes:list:` **và `categories:`** "vì `recipeCount` thay đổi" — nhưng `recipeCount` chỉ đếm Published |
+| FR-RCP-005 bước 7, FR-RCP-006 bước 4, FR-RCP-007 bước 5 | Xóa prefix **`search:`** — trái dòng `search:` của bảng |
+
+**Vì sao là vấn đề:**
+- Bản nháp và bản lưu trữ **không bao giờ** xuất hiện ở `GET /recipes` hay `GET /categories/{slug}` (MT-34). Xóa hai họ khóa đó khi tác giả tạo hay sửa bản nháp không làm dữ liệu công khai đúng hơn chút nào — chỉ làm mất cache.
+- **Đo trên hệ thống thật (Buổi 8, 21/10/2026)** — môi trường giống production (3 bản sao API sau Nginx HTTPS), k6 100 người dùng đồng thời trong 5 phút, tỉ lệ 70 % đọc / 20 % tìm kiếm / 10 % ghi (tác giả tạo và sửa bản nháp):
+
+  | Lượt đo | Hit rate giai đoạn ổn định | p95 |
+  | --- | --- | --- |
+  | Làm đúng chữ v1.2.3 | **75,4 %** — không đạt chỉ tiêu ≥ 80 % của chính NFR-PERF-003 | 18,4 ms |
+  | Đối chứng: cùng tải, không ghi | 97,9 % | 3,4 ms |
+
+  Không có giá trị TTL nào làm hai dòng của cùng một NFR cùng đúng: với ~9 lượt ghi mỗi giây, họ khóa `recipes:list:` và `categories:detail:` bị xóa liên tục nên 32 % lượt đọc (trang chủ + trang danh mục) gần như luôn miss.
+- Các FR tự ghi lại danh sách khóa và đã lệch khỏi bảng ở hai chỗ (xóa `search:`; xóa `categories:` khi tạo bản nháp) — đúng tình huống mà câu "bảng TTL là nguồn sự thật duy nhất" muốn ngăn.
+
+**Phương án**
+
+| # | Phương án | Ưu điểm | Nhược điểm |
+| --- | --- | --- | --- |
+| A | **Chỉ xóa họ khóa công khai khi thay đổi chạm tới tập Published** (công thức Published đổi nội dung, hoặc vào/ra trạng thái Published); `recipe:{slug}` vẫn xóa ở mọi thay đổi; FR chỉ tham chiếu bảng | Đạt cả hai dòng của NFR-PERF-003; dữ liệu công khai vẫn mới ngay khi đổi; một nguồn sự thật | Quy tắc xóa phụ thuộc trạng thái — phải có kiểm thử cho từng trạng thái |
+| B | Nới TTL danh sách lên 10 phút | Không sửa code | Không giải quyết gốc rễ (vẫn bị xóa liên tục); trang chủ chậm cập nhật hơn — kế hoạch đã cấm "nới TTL cho đạt chỉ tiêu" |
+| C | Giữ nguyên, ghi "chưa đạt" | Không sửa gì | Chỉ tiêu ≥ 80 % trở thành con số không bao giờ đạt được với tải thực tế có ghi |
+
+**➡️ Quyết định (v1.2.4, CR-2026-06 — trưởng nhóm duyệt 21/10/2026): Phương án A.** Sửa: NFR-PERF-003 (bảng TTL + ghi chú `[CR-2026-06 / MT-69]`), FR-RCP-003 (Kết quả mong đợi, bước 11), FR-RCP-004 bước 10, FR-RCP-005 bước 7, FR-RCP-006 bước 4, FR-RCP-007 bước 5. Hiện thực: Buổi 8 Dev 4 (`RecipeCacheKeys.ForContentChange/ForVisibilityChange/ForCategoryChange` nhận trạng thái; `CreateRecipeCommand` không còn xóa cache). **Đo lại sau khi sửa: 97,3 %, p95 14,8 ms, 0 lỗi** (`docs/load-test-report.md`).
+
+### MT-70 🟡 — Dữ liệu mẫu hiển thị dinh dưỡng ngẫu nhiên và không có ảnh
+
+**Hiện trạng (SRS v1.2.4)**
+
+| Vị trí | Quy định hoặc hiện trạng |
+| --- | --- |
+| §2.6.1 | *"thư viện Bogus sinh các giá trị ngẫu nhiên (tác giả, trạng thái, ngày xuất bản, dinh dưỡng)"* |
+| Trang chi tiết công thức | Hiển thị bảng dinh dưỡng từ các số ngẫu nhiên đó, không liên quan tới nguyên liệu của món |
+| NFR-SEO-001 | JSON-LD có `image`, Google Rich Results *"phải pass 100%"*; dữ liệu mẫu không có ảnh nào nên không đạt |
+
+**Phương án**
+
+| Phương án | Nội dung | Đánh giá |
+| --- | --- | --- |
+| A | Thay 100 công thức bằng dữ liệu Wikibooks | Mất nội dung món Việt; chỉ còn 6 món Việt để trình diễn tìm kiếm tiếng Việt |
+| **B** | **Bổ sung** công thức Wikibooks, dịch sang tiếng Việt; giữ 100 công thức cũ | Giữ được kiểm thử tìm kiếm không dấu; tốn công dịch và duyệt |
+
+**➡️ Quyết định (v1.2.5, CR-2026-07 — trưởng nhóm duyệt 04/11/2026): Phương án B.** Sửa: §2.6.1 (+ ghi chú `[CR-2026-07 / MT-70]`), thêm Phụ lục J. Không đổi FR, endpoint, mã lỗi, schema. Hiện thực và số liệu đo: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` Phụ lục B.
+
+### MT-71 🟡 — Tìm `pho` xếp món có "phô mai" trên món Phở
+
+**Hiện trạng (SRS v1.2.5)**
+
+| Vị trí | Quy định hoặc hiện trạng |
+| --- | --- |
+| §7.2 | Biểu thức `SearchVector` ghép `Title` và `Description` cùng một trọng số rồi bỏ dấu |
+| FR-SRCH-001 | Xếp theo `ts_rank`; prefix matching `pho:*`; "pho" phải tìm được "phở" |
+| Đo trên dữ liệu thật | `q=pho` trả 55 kết quả; "Welsh Rarebit" có điểm cao hơn "Phở bò Hà Nội" vì "phô mai", "phổ biến", "thành phố" đều bỏ dấu thành `pho` |
+
+**Phương án**
+
+| Phương án | Nội dung | Đánh giá |
+| --- | --- | --- |
+| A | Chỉ thêm trọng số cho `Title` | Món Phở lên đầu nhưng món có "phô mai" trong mô tả vẫn nằm trong kết quả |
+| **B** | **Trọng số + gộp từ ghép khác nghĩa khi còn dấu thành token riêng** | Xử lý cả hai vấn đề; phải duy trì danh sách từ ghép ở hàm SQL và `SearchTermBuilder`, có test kiểm từng cặp |
+| C | Tìm kiếm có dấu chính xác | Trái yêu cầu "pho" tìm được "phở" |
+
+**➡️ Quyết định (v1.2.6, CR-2026-08 — trưởng nhóm yêu cầu sửa triệt để ngày 04/11/2026): Phương án B.** Sửa: FR-SRCH-001, §7.2, thêm Phụ lục K. Có đổi schema (cột generated và một hàm), không đổi FR, endpoint, mã lỗi. **Giới hạn còn lại:** prefix matching theo FR-SRCH-001 nên `pho` vẫn khớp "phơi", "phộng", "phối" ở nhóm điểm thấp; từ ghép ngoài danh sách vẫn trùng khi bỏ dấu.
+
+### MT-72 🟢 — Ảnh dữ liệu mẫu đúng món nhưng chỉ có giấy phép phi thương mại
+
+**Hiện trạng (SRS v1.2.6)**
+
+| Vị trí | Quy định hoặc hiện trạng |
+| --- | --- |
+| §2.6.1 | *"Công thức bổ sung chỉ được xuất bản khi có ảnh giấy phép mở"*, không nói rõ giấy phép phi thương mại |
+| Đo trên nguồn ảnh | Wikimedia Commons không có ảnh đúng món cho phở cuốn; Flickr có, nhưng phần lớn là CC BY-NC hoặc CC BY-NC-SA |
+
+**Phương án**
+
+| Phương án | Nội dung | Đánh giá |
+| --- | --- | --- |
+| A | Chỉ nhận giấy phép cho phép thương mại | Phở cuốn không có ảnh; đậu hũ sốt cà chua dùng ảnh có thịt, sai với món chay |
+| **B** | **Cho phép CC BY-NC, CC BY-NC-SA khi vận hành phi thương mại, phải thay trước khi dùng thương mại** | Ảnh đúng món, hợp pháp với đồ án; có ràng buộc cần nhớ khi đổi mục đích sử dụng |
+| C | Lấy ảnh từ kết quả tìm kiếm Google | Ảnh giữ toàn quyền bản quyền, trái dòng ghi nguồn trên trang |
+
+**➡️ Quyết định (v1.2.7, CR-2026-09 — trưởng nhóm duyệt 05/11/2026): Phương án B.** Sửa: §2.6.1 (+ ghi chú `[CR-2026-09 / MT-72]`), thêm Phụ lục L. Không đổi FR, endpoint, mã lỗi, schema. Bốn ảnh đang dùng giấy phép này: phở cuốn, lẩu riêu cua bắp bò, đậu hũ sốt cà chua, trứng cút lộn xào me.
+
+---
 ## 4. Xung đột giữa SRS và hiện trạng code Buổi 2 (nợ kỹ thuật)
 
 Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS v1.2.0 đã nhất quán ở những điểm này — mà là chỗ **code đã chạy khác với SRS**, vì Buổi 2 được hiện thực theo SRS v1.0.0 (trước CR-2026). Mỗi điểm được kiểm chứng trực tiếp trong code. Kế hoạch hoàn trả chi tiết (buổi nào, dev nào, bước nào) nằm tại `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` §4.1; bảng này ghi lại để tài liệu mâu thuẫn có bức tranh đầy đủ.
@@ -1599,7 +1714,7 @@ Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS
 | D-4 🔴 | Danh sách công thức lọc theo danh tính + Output Cache khóa công khai; Draft trả 403 | Chỉ Published cho mọi người gọi; Draft → 404; riêng tư qua `/recipes/mine` | **MT-34** | Buổi 4 *(kéo từ Buổi 6)* |
 | D-5 🔴 | Chi tiết danh mục lọc theo danh tính | Chỉ Published | **MT-34** | Buổi 4 *(kéo từ Buổi 6)* |
 | D-6 | Output Cache (Redis-backed) 15′/60′ | Redis cache-aside 2′/5′, không Output Cache | MT-16, MT-17 | Buổi 4 *(kéo từ Buổi 6)* |
-| D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | Buổi 6 |
+| D-7 | Tái sinh dữ liệu danh mục 3600s/600s | 1800s/120s | MT-33.3, MT-57 | ✅ Buổi 5 (`/categories/[slug]` → 120) · Buổi 6–7 (`/categories` → 1800); khóa bằng kiểm thử `features/categories/api.test.ts`, `lib/revalidate-ttl.test.ts` — Buổi 7, Dev 3 |
 | D-8 | `Instructions` NOT NULL | NULL | MT-20.8 | Buổi 3 |
 | D-9 | Hangfire worker riêng | **Đã chuẩn hóa theo code** | MT-47 | — (không còn lệch) |
 | D-10 | `sort=-field` | `sortBy` + `sortOrder` | MT-01 | Buổi 4 (API) · Buổi 5 (FE) |
@@ -1656,6 +1771,7 @@ Sau khi áp dụng CR-2026-02, SRS không còn mâu thuẫn nội bộ nào đư
 | O-5 | Khôi phục dữ liệu xóa mềm chỉ do quản trị viên vận hành làm trên DB (MT-49) | Không có trong lộ trình 8 buổi | FR "Thùng rác" ở phiên bản sau |
 | O-6 | TTL cache ngắn hơn (5′ thay 60′) nên **hit rate thấp hơn**, mốc ≥ 80% của NFR-PERF-003 khó đạt hơn | Dữ liệu tươi và một cơ chế cache duy nhất quan trọng hơn con số đẹp | Nếu đo được < 80%: ghi nhận trung thực và phân tích, **không** nới TTL chỉ để đạt chỉ tiêu |
 | O-7 | *(từ MT-67, v1.2.3)* Mọi trang HTML render theo request vì CSP có nonce — máy chủ Next.js tốn CPU ở mỗi lượt xem, HTML không cache được ở Nginx/CDN | Bảo vệ refresh token khỏi XSS quan trọng hơn; Data Cache giữ cho API không bị gọi thêm (đã đo) | Nếu Next.js ổn định Partial Prerendering tương thích nonce, hoặc refresh token chuyển sang cookie `HttpOnly` qua một CR riêng (O-2), có thể xét lại trang tĩnh |
+| O-8 | *(từ MT-67, ghi nhận 26/10/2026 — Buổi 7)* Request phía server dùng Data Cache không mang `X-Correlation-ID` của Frontend → log của Backend cho các lời gọi này mang mã do Backend tự sinh (SRS §5.2), không nối được với một lượt xem trang cụ thể | Header nằm trong khóa cache của Next.js; gắn mã mới mỗi request là mất Data Cache (đo: 55 so với 3 lượt gọi API cho 15 lượt xem). Một lời gọi được cache vốn phục vụ nhiều lượt xem, nên cũng không có "một lượt xem" để gắn mã vào. Request từ trình duyệt và request không cache vẫn mang mã | Nếu Buổi 8 cần nối log Next.js ↔ API cho lời gọi cache: ghi mã tương quan vào log của chính máy chủ Next.js khi lời gọi thật sự đi ra mạng (lúc cache hết hạn), không đưa vào header của request |
 
 ---
 
@@ -1686,7 +1802,7 @@ MT-07, MT-13, MT-20, MT-24, MT-31, MT-33, MT-40 (MoSCoW), MT-41
 
 ---
 
-## 8. Quy trình Change Request (đã thực hiện năm lần)
+## 8. Quy trình Change Request (đã thực hiện chín lần)
 
 **Quy trình áp dụng cho mỗi lượt:**
 
@@ -1703,14 +1819,18 @@ MT-07, MT-13, MT-20, MT-24, MT-31, MT-33, MT-40 (MoSCoW), MT-41
 | --- | --- | --- | --- | --- |
 | **CR-2026** | 17/09/2026 | MT-01 → MT-41 (lượt 1–3) | SRS v1.1.0 — 36 FR, 37 endpoint, 24 mã lỗi (đã được v1.2.0 kế thừa toàn bộ; không lưu tệp riêng) | SRS Phụ lục D |
 | **CR-2026-02** | 19/09/2026 | MT-42 → MT-57 (lượt 4) | SRS v1.2.0 — **37 FR, 44 endpoint, 27 mã lỗi** (đã được v1.2.1 kế thừa toàn bộ) | SRS Phụ lục E |
-| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | SRS v1.2.1 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.3.md`) — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
+| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | SRS v1.2.1 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.7.md`) — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
 | **CR-2026-04** | 29/09/2026 | MT-59 → MT-63 (lượt 6) | SRS v1.2.2 — **37 FR, 45 endpoint, 29 mã lỗi**; §6.2 chỉnh phân tầng; không đổi schema (đã được v1.2.3 kế thừa toàn bộ) | SRS Phụ lục G |
-| **CR-2026-05** | 12/10/2026 | MT-64 → MT-68 (lượt 7) | `SPEC/SRS_Culinary_Blog_v1.2.3.md` — **39 FR, 48 endpoint, 30 mã lỗi**; thêm FR-AUTH-010/011, mở rộng bộ lọc `GET /recipes/search`; CSP nonce ↔ SSR + Data Cache (§5.1), header CORS (§5.2); không đổi schema | SRS Phụ lục H |
+| **CR-2026-05** | 12/10/2026 | MT-64 → MT-68 (lượt 7) | SRS v1.2.3 — **39 FR, 48 endpoint, 30 mã lỗi**; thêm FR-AUTH-010/011, mở rộng bộ lọc `GET /recipes/search`; CSP nonce ↔ SSR + Data Cache (§5.1), header CORS (§5.2); không đổi schema (đã được v1.2.4 kế thừa toàn bộ) | SRS Phụ lục H |
+| **CR-2026-06** | 21/10/2026 | MT-69 (lượt 8) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi không đổi; bảng TTL NFR-PERF-003 chỉ xóa họ khóa công khai khi thay đổi chạm tới tập Published, FR-RCP-003 → 007 tham chiếu bảng; phát sinh từ đo tải Buổi 8 | SRS Phụ lục I |
+| **CR-2026-07** | 04/11/2026 | MT-70 (lượt 9) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi, schema không đổi; §2.6.1 bổ sung công thức Wikibooks đã dịch, bỏ dinh dưỡng ngẫu nhiên | SRS Phụ lục J |
+| **CR-2026-08** | 04/11/2026 | MT-71 (lượt 10) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi không đổi; **có đổi schema**: `SearchVector` có trọng số và hàm `search_normalize` | SRS Phụ lục K |
+| **CR-2026-09** | 05/11/2026 | MT-72 (lượt 11) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi, schema không đổi; §2.6.1 cho phép ảnh CC phi thương mại khi vận hành phi thương mại | SRS Phụ lục L |
 
-Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.3).
+Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.7).
 
 > **Bài học quy trình từ lượt 4 — áp dụng cho mọi CR sau:** 7/16 mục của lượt 4 là **lỗi do chính CR-2026 đưa vào** (cấu hình Nginx, lệnh healthcheck, mã lỗi tự khóa, tên API .NET, cơ chế route, dạng ràng buộc DB, kiểu render). Chúng không thể phát hiện bằng cách đọc chéo các chương với nhau — chỉ lộ ra khi đối chiếu với hệ thống đang chạy. Vì vậy, từ CR-2026-02 trở đi, **mọi thay đổi chạm tới cấu hình hạ tầng, mã lỗi, ràng buộc cơ sở dữ liệu hoặc API của framework phải được kiểm chứng trên code/môi trường thật trước khi duyệt**.
 
 ---
 
-*Trạng thái tài liệu: toàn bộ 68 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1, MT-59 → MT-63 trong SRS v1.2.2, MT-64 → MT-68 trong SRS v1.2.3. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*
+*Trạng thái tài liệu: toàn bộ 72 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1, MT-59 → MT-63 trong SRS v1.2.2, MT-64 → MT-68 trong SRS v1.2.3, MT-69 trong SRS v1.2.4, MT-70 trong SRS v1.2.5, MT-71 trong SRS v1.2.6, MT-72 trong SRS v1.2.7. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*

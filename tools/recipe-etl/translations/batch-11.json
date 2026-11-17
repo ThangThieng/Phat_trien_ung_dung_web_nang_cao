@@ -1,0 +1,1035 @@
+[
+ {
+  "pageId": 292859,
+  "title": "Thalassery Biryani (Cơm gà gia vị kiểu Malabar)",
+  "description": "Thalassery biriyani là món cơm trộn gà và gia vị, mang đậm dấu ấn ẩm thực Mughal. Biến thể biryani này có nguồn gốc từ vùng Malabar, miền Nam Ấn Độ. Điểm đặc biệt là loại gạo khác biệt (không dùng Basmati mà dùng gạo hạt nhỏ Khaima hoặc Jeerakasala) và gà không chiên trước khi cho vào masala. Thalassery biryani thuộc loại Pakki biryani, còn Hyderabadi là Kacchi biryani và do đó là dum biryani. Vị của Thalassery biryani khác biệt rõ với các loại biryani khác.",
+  "ingredients": [
+   {
+    "n": "gạo khaima hoặc jeerakasala",
+    "o": "3 cốc, phần cơm"
+   },
+   {
+    "n": "bơ ghee",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "dầu dalda (vanaspati)",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "quế thanh",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "đinh hương nguyên nụ",
+    "u": "nụ",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "bạch đậu khấu",
+    "u": "quả",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "lá Malabar (lá nguyệt quế Ấn Độ)",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "hạt anh túc trắng Ấn Độ (kaskas)",
+    "o": "Phần cơm"
+   },
+   {
+    "n": "hoa hồi",
+    "o": "tùy chọn, phần cơm"
+   },
+   {
+    "n": "dầu dừa",
+    "o": "Phần masala"
+   },
+   {
+    "n": "hành tây băm nhuyễn",
+    "u": "củ",
+    "o": "500 g, phần masala"
+   },
+   {
+    "n": "hạt điều",
+    "o": "~50 g, phần masala"
+   },
+   {
+    "n": "nho khô (kismis)",
+    "o": "~50 g, phần masala"
+   },
+   {
+    "n": "phẩm màu thực phẩm vàng cam",
+    "o": "Phần masala"
+   },
+   {
+    "n": "nghệ tây (saffron)",
+    "o": "ngâm trong sữa, phần masala"
+   },
+   {
+    "n": "cà chua cỡ vừa",
+    "u": "quả",
+    "o": "băm, phần masala"
+   },
+   {
+    "n": "gừng tươi",
+    "u": "inch",
+    "o": "bào hoặc cắt nhỏ, phần masala"
+   },
+   {
+    "n": "tỏi",
+    "o": "hoặc tùy khẩu vị, phần masala"
+   },
+   {
+    "n": "ớt xanh",
+    "u": "quả",
+    "o": "hoặc tùy khẩu vị, phần masala"
+   },
+   {
+    "n": "hành tím",
+    "u": "củ",
+    "o": "hoặc tùy khẩu vị, phần masala"
+   },
+   {
+    "n": "hạt thì là tây",
+    "o": "Phần masala"
+   },
+   {
+    "n": "hạt thì là Ai Cập",
+    "o": "Phần masala"
+   },
+   {
+    "n": "nghệ bột",
+    "o": "Phần masala"
+   },
+   {
+    "n": "vỏ nhục đậu khấu (mace)",
+    "o": "Phần masala"
+   },
+   {
+    "n": "ớt đỏ bột",
+    "o": "Phần masala"
+   },
+   {
+    "n": "thịt gà",
+    "o": "cắt miếng lớn hơn khi nấu cà ri, ngâm nước 20 phút và rửa sạch, phần masala"
+   },
+   {
+    "n": "nước cốt chanh",
+    "o": "Phần masala"
+   },
+   {
+    "n": "bột garam masala",
+    "o": "Phần masala"
+   },
+   {
+    "n": "ngò rí",
+    "o": "băm, ~1 bó, phần masala"
+   },
+   {
+    "n": "lá bạc hà (pudina)",
+    "o": "băm, ~1 bó, phần masala"
+   },
+   {
+    "n": "tiêu đen bột",
+    "o": "Phần masala"
+   },
+   {
+    "n": "sữa chua pha loãng",
+    "o": "Phần masala"
+   },
+   {
+    "n": "muối ăn",
+    "o": "Phần masala"
+   },
+   {
+    "n": "nước hoa hồng ăn được",
+    "o": "Phần lắp ráp"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Vo gạo",
+    "d": "Vo gạo và để thật ráo."
+   },
+   {
+    "t": "Xào gạo",
+    "d": "Đun nóng ghee và một ít dalda trong chảo kadai. Cho gạo đã ráo vào xào vài phút."
+   },
+   {
+    "t": "Thêm nước",
+    "d": "Thêm nước vào gạo theo tỉ lệ 1¾:1 nước so với gạo."
+   },
+   {
+    "t": "Nấu cơm",
+    "d": "Cho quế, đinh hương, bạch đậu khấu, lá nguyệt quế, hạt anh túc trắng, hoa hồi và nước cốt chanh vào. Hạ nhỏ lửa, đậy nắp và nấu đến khi hết nước."
+   },
+   {
+    "t": "Phi hành",
+    "d": "Đun nóng dầu dừa và ít ghee trong chảo kadai sâu. Cho hành băm, hạt điều và nho khô vào, chiên đến khi màu caramel. Nhấc khỏi bếp và để riêng."
+   },
+   {
+    "t": "Nấu cà chua",
+    "d": "Đun cà chua băm với ít nước trong chảo kadai sâu (không cho dầu) đến khi mềm."
+   },
+   {
+    "t": "Thêm gia vị tươi",
+    "d": "Cho gừng đập dập, tỏi, ớt xanh băm và hành tím băm vào. Đảo đến khi hết mùi sống."
+   },
+   {
+    "t": "Thêm gia vị khô",
+    "d": "Khuấy hạt thì là tây, hạt thì là Ai Cập, nghệ bột, vỏ nhục đậu khấu và ớt đỏ bột vào."
+   },
+   {
+    "t": "Thêm gà",
+    "d": "Trộn gà vào. Đậy nắp, nấu và thỉnh thoảng khuấy để khỏi dính, đến khi gần chín."
+   },
+   {
+    "t": "Thêm hành phi",
+    "d": "Cho ¼ lượng hành phi, nước cốt chanh, bột garam masala, ngò rí băm và lá bạc hà vào. Hạ nhỏ lửa."
+   },
+   {
+    "t": "Thêm sữa chua",
+    "d": "Cho tiêu đen bột và sữa chua vào, nấu đến khi gà và masala hòa quyện."
+   },
+   {
+    "t": "Trộn cơm",
+    "d": "Trộn cơm với phần hành còn lại, phẩm màu, sữa nghệ tây và nước hoa hồng."
+   },
+   {
+    "t": "Xếp lớp",
+    "d": "Xếp xen kẽ masala và cơm vào nồi, đậy nắp và bịt kín bằng bột maida hoặc khăn."
+   },
+   {
+    "t": "Ủ than",
+    "d": "Đặt than nóng lên nắp trong khi nấu. Ở giai đoạn này, lửa dưới nồi phải rất nhỏ."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dọn ăn."
+   }
+  ],
+  "sourceHash": "0f4498c4abd6b7ef988bc6da35d3a1e077990764cbfb947a0b80e64ac37c037f"
+ },
+ {
+  "pageId": 477181,
+  "title": "Bắp cải cuộn gà tây và lúa mạch với thì là tươi",
+  "description": "Công thức này biến tấu món bắp cải cuộn truyền thống (Holubtsi) bằng nguyên liệu sản xuất tại Canada, với lúa mạch dai, bùi thay cho gạo, giúp tăng dinh dưỡng và giảm chỉ số đường huyết. Công thức cũng giảm chất béo bão hòa bằng cách thay thịt đỏ trong nhân bằng gà tây xay. Món giống kiểu bắp cải cuộn thịnh hành ở các tỉnh thảo nguyên của Canada, dùng bắp cải xanh và thì là tươi làm gia vị.",
+  "ingredients": [
+   {
+    "n": "lúa mạch trân châu"
+   },
+   {
+    "n": "nước dùng rau hoặc gà"
+   },
+   {
+    "n": "bắp cải xanh cỡ vừa",
+    "u": "cái"
+   },
+   {
+    "n": "thịt gà tây nạc xay",
+    "o": "450 g"
+   },
+   {
+    "n": "hành tây nhỏ",
+    "u": "củ",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn (hoặc ½ thìa cà phê tỏi bột)"
+   },
+   {
+    "n": "trứng",
+    "u": "quả",
+    "o": "tùy chọn, giúp nhân kết dính"
+   },
+   {
+    "n": "thì là tươi băm",
+    "o": "không nén chặt, thêm một ít để trang trí"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu đen"
+   },
+   {
+    "n": "cà chua nghiền hoặc thái hạt lựu không thêm muối",
+    "o": "796 mL"
+   },
+   {
+    "n": "cà chua cô đặc",
+    "o": "tùy chọn, để đậm vị"
+   },
+   {
+    "n": "dầu cải",
+    "o": "tùy chọn, để xào"
+   },
+   {
+    "n": "giấm táo"
+   },
+   {
+    "n": "ớt bột paprika"
+   },
+   {
+    "n": "siro phong hoặc đường nâu",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nấu lúa mạch",
+    "d": "Ninh lúa mạch trong nước dùng đến khi mềm (khoảng 30–40 phút). Chắt bớt nước nếu cần và để nguội."
+   },
+   {
+    "t": "Luộc bắp cải",
+    "d": "Đun sôi nồi nước lớn. Bỏ lõi bắp cải và cho vào nồi. Ninh 5–10 phút, tách lá khi mềm. Giữ lại 10–12 lá lớn để cuộn."
+   },
+   {
+    "t": "Trộn nhân",
+    "d": "Trong tô lớn, trộn lúa mạch đã nấu, gà tây xay, hành, tỏi, trứng, thì là, muối và tiêu."
+   },
+   {
+    "t": "Cuộn bắp cải",
+    "d": "Trải phẳng một lá bắp cải. Đặt 2–3 thìa canh nhân gần gốc lá. Gấp hai bên vào và cuộn chặt để bọc nhân. Lặp lại với phần nhân và lá còn lại."
+   },
+   {
+    "t": "Pha sốt",
+    "d": "Trộn cà chua nghiền, cà chua cô đặc, dầu cải, paprika và giấm táo trong tô hoặc cốc đong lớn. Thêm đường hoặc siro phong nếu thích sốt hơi ngọt."
+   },
+   {
+    "t": "Xếp khay",
+    "d": "Trải vài thìa sốt dưới đáy khay nướng lớn hoặc nồi. Xếp các cuộn bắp cải lên, mép gấp úp xuống. Đổ phần sốt còn lại lên trên. Rắc thêm thì là nếu muốn."
+   },
+   {
+    "t": "Nấu",
+    "d": "Nếu dùng lò, đậy giấy bạc và nướng ở 175 °C (350 °F) trong 1 giờ. Nếu dùng bếp, đậy nắp và ninh nhẹ ở lửa nhỏ trong 1 giờ."
+   }
+  ],
+  "sourceHash": "3d5e073f00b2a241c693d89d0d60282906266d5793f3c9f605140707d670f70f"
+ },
+ {
+  "pageId": 290301,
+  "title": "Paella cảm hứng Valencia (Cơm gà, thỏ và vịt)",
+  "description": "Đây không phải công thức paella truyền thống của Tây Ban Nha, nhưng lấy cảm hứng từ paella valenciana vì có gà, thỏ, vịt và đậu (các nguyên liệu chính của món đó). Công thức này không dành cho người ngại khó vì tốn khá nhiều công. Tuy nhiên, vị vịt béo ngậy của món rất đáng công nếu bạn có thời gian.",
+  "ingredients": [
+   {
+    "n": "thịt gà không xương, không da",
+    "o": "thái hạt lựu, 1 pound"
+   },
+   {
+    "n": "thỏ lớn nguyên con (hoặc thêm một pound ức gà thay thế)",
+    "u": "con"
+   },
+   {
+    "n": "vịt lớn nguyên con",
+    "u": "con"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "dầu ô liu"
+   },
+   {
+    "n": "ớt chuông đỏ lớn",
+    "u": "quả",
+    "o": "một quả cắt sợi, còn lại thái hạt lựu"
+   },
+   {
+    "n": "ớt chuông xanh lớn",
+    "u": "quả",
+    "o": "cắt tư"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "cắt tư"
+   },
+   {
+    "n": "tỏi",
+    "o": "1 oz"
+   },
+   {
+    "n": "ớt bột paprika ngọt"
+   },
+   {
+    "n": "cà chua thái hạt lựu hoặc bào",
+    "o": "1 pound"
+   },
+   {
+    "n": "đậu cannellini đóng hộp ngâm nước",
+    "o": "rửa kỹ, 1 pound"
+   },
+   {
+    "n": "nhụy nghệ tây và/hoặc 1,5 thìa cà phê phẩm màu vàng",
+    "u": "sợi"
+   },
+   {
+    "n": "gạo trắng hạt ngắn (còn gọi là gạo Valencia hoặc gạo hạt tròn)"
+   },
+   {
+    "n": "cành hương thảo tươi",
+    "u": "cành"
+   },
+   {
+    "n": "atisô tươi",
+    "u": "bông",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Rã đông vịt",
+    "d": "Rã đông vịt nếu cần."
+   },
+   {
+    "t": "Sơ chế vịt",
+    "d": "Lấy nội tạng và gói sốt cam ra, để riêng."
+   },
+   {
+    "t": "Cắt đuôi và da cổ",
+    "d": "Cắt đuôi, tỉa da cổ và để riêng."
+   },
+   {
+    "t": "Chặt vịt",
+    "d": "Chặt vịt làm tư."
+   },
+   {
+    "t": "Cho vào nồi",
+    "d": "Cho vịt đã chặt, xương sống, da cổ và đuôi vào nồi cùng thỏ đông lạnh, hành tây và ớt chuông xanh."
+   },
+   {
+    "t": "Luộc",
+    "d": "Đổ nước gần đầy nồi, đun sôi vừa. Để sôi khoảng một giờ."
+   },
+   {
+    "t": "Vớt thịt",
+    "d": "Vớt thỏ và vịt ra nhưng để cổ, đuôi và xương sống lại trong nước. Để nguội. Tất cả thịt phải chín."
+   },
+   {
+    "t": "Lọc da vịt",
+    "d": "Lọc da khỏi thịt vịt và cho da trở lại nồi."
+   },
+   {
+    "t": "Gỡ thịt",
+    "d": "Gỡ thịt thỏ và vịt, để riêng."
+   },
+   {
+    "t": "Cho xương vào nồi",
+    "d": "Cho xương vịt, da vịt và xương thỏ trở lại nồi nước đang sôi."
+   },
+   {
+    "t": "Cô nước dùng",
+    "d": "Đun sôi đến khi nước còn một nửa."
+   },
+   {
+    "t": "Lọc",
+    "d": "Bỏ xương và da, lọc nước dùng."
+   },
+   {
+    "t": "Thêm nghệ tây",
+    "d": "Cho nghệ tây và/hoặc phẩm màu vào, ninh thêm 2–3 phút đến khi nước dùng có màu cam vàng."
+   },
+   {
+    "t": "Sơ chế atisô",
+    "d": "Cắt cuống và rửa kỹ atisô."
+   },
+   {
+    "t": "Luộc atisô",
+    "d": "Luộc cả cuống và atisô khoảng 20 phút."
+   },
+   {
+    "t": "Làm nguội atisô",
+    "d": "Vớt ra, xả nước lạnh đến khi nguội."
+   },
+   {
+    "t": "Lấy lõi atisô",
+    "d": "Cắt lá khỏi lõi atisô và nạo bỏ phần lông gai. Dùng lõi và cuống cho paella. Giữ lá cho lần khác."
+   },
+   {
+    "t": "Đun dầu",
+    "d": "Đổ dầu ô liu vào chảo paella ở lửa lớn, đợi dầu lăn tăn."
+   },
+   {
+    "t": "Áp chảo ớt",
+    "d": "Áp chảo ớt sợi rồi lấy ra."
+   },
+   {
+    "t": "Xào gà",
+    "d": "Cho ức gà và một thìa canh muối vào. Nấu gà khoảng một nửa."
+   },
+   {
+    "t": "Thêm vịt và thỏ",
+    "d": "Cho vịt và thỏ vào. Xào đến khi vàng nâu."
+   },
+   {
+    "t": "Thêm ớt",
+    "d": "Cho ớt thái hạt lựu vào xào 1 phút."
+   },
+   {
+    "t": "Phi tỏi",
+    "d": "Tạo khoảng trống giữa chảo, cho tỏi vào. Xào đến khi vàng nâu (cẩn thận vì tỏi dễ cháy)."
+   },
+   {
+    "t": "Thêm cà chua",
+    "d": "Cũng ở khoảng trống đó, cho cà chua vào nấu khoảng một phút. Sau đó trộn đều."
+   },
+   {
+    "t": "Thêm paprika",
+    "d": "Cho paprika vào và trộn đều."
+   },
+   {
+    "t": "Cho gạo",
+    "d": "Cho gạo vào và khuấy đến khi gạo áo đều hỗn hợp."
+   },
+   {
+    "t": "Thêm nước dùng",
+    "d": "Dàn phẳng hỗn hợp và đổ nước dùng gần tới miệng chảo."
+   },
+   {
+    "t": "Thêm hương thảo và atisô",
+    "d": "Cho cành hương thảo, lõi và cuống atisô vào."
+   },
+   {
+    "t": "Ninh",
+    "d": "Hạ nhỏ lửa và ninh 10 phút."
+   },
+   {
+    "t": "Nêm",
+    "d": "Nếm nước dùng. Thêm muối nếu cần, trộn nhẹ để không tràn."
+   },
+   {
+    "t": "Nấu tiếp",
+    "d": "Bỏ cành hương thảo và tiếp tục nấu. Lúc này KHÔNG được khuấy để tạo lớp cơm cháy dưới đáy chảo."
+   },
+   {
+    "t": "Nếm cơm",
+    "d": "Nếm cơm ở nhiều chỗ, khoảng bốn đến năm phút một lần. Cơm chín khi mềm nhưng không nhão."
+   },
+   {
+    "t": "Xếp ớt",
+    "d": "Xếp lại ớt sợi thành hình vòng tròn."
+   },
+   {
+    "t": "Ủ",
+    "d": "Nhấc chảo khỏi bếp và đậy khăn trắng."
+   },
+   {
+    "t": "Đợi",
+    "d": "Đợi 5–10 phút để cơm hút nốt nước."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng nóng. Dưới đáy chảo sẽ có lớp cơm cháy nhẹ (không cháy đen)."
+   }
+  ],
+  "sourceHash": "44d395ca6066cdad6c9bd33d03a68a76c6c0c00dccaebff06583036fb1194840"
+ },
+ {
+  "pageId": 480537,
+  "title": "Pizza rau củ",
+  "description": "Pizza rau củ cỡ nhỏ này là biến tấu của pizza Margherita, có nhiều dinh dưỡng và hương vị đa dạng hơn.",
+  "ingredients": [
+   {
+    "n": "đế pizza làm sẵn",
+    "u": "cái",
+    "o": "cán rộng 30 cm (12 inch)"
+   },
+   {
+    "n": "sốt cà chua làm sẵn"
+   },
+   {
+    "n": "dầu ô liu"
+   },
+   {
+    "n": "muối",
+    "o": "Phần phủ"
+   },
+   {
+    "n": "tiêu",
+    "o": "Phần phủ"
+   },
+   {
+    "n": "phô mai mozzarella bào",
+    "o": "255 g, phần phủ"
+   },
+   {
+    "n": "phô mai Parmesan bào",
+    "o": "113 g, phần phủ"
+   },
+   {
+    "n": "ớt chuông xanh",
+    "u": "quả",
+    "o": "bỏ hạt, thái mỏng, phần phủ"
+   },
+   {
+    "n": "cà chua Roma",
+    "u": "quả",
+    "o": "thái hạt lựu, phần phủ"
+   },
+   {
+    "n": "rau bina tươi",
+    "o": "Phần phủ"
+   },
+   {
+    "n": "nấm baby bella thái mỏng",
+    "o": "Phần phủ"
+   },
+   {
+    "n": "hành tây thái mỏng",
+    "o": "Phần phủ"
+   },
+   {
+    "n": "lá húng quế tươi",
+    "u": "lá",
+    "o": "Phần phủ"
+   },
+   {
+    "n": "ô liu đen bỏ hạt thái lát",
+    "o": "Phần phủ"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Làm nóng lò",
+    "d": "Làm nóng lò trước ở 240° C (450° F / lò ga mức 9)."
+   },
+   {
+    "t": "Phết dầu",
+    "d": "Phết dầu ô liu lên mặt đế."
+   },
+   {
+    "t": "Phết sốt",
+    "d": "Múc sốt lên đế và dàn đều."
+   },
+   {
+    "t": "Rắc phô mai",
+    "d": "Rải đều các loại phô mai lên đế."
+   },
+   {
+    "t": "Thêm rau",
+    "d": "Xếp đều các nguyên liệu lên phô mai. Nếu cần, ấn xuống để cách trần lò. Nếu muốn, phủ thêm phô mai và sốt lên rau để giữ rau."
+   },
+   {
+    "t": "Nướng",
+    "d": "Nướng đến khi viền bánh nâu sẫm (khoảng 15 phút với đế làm sẵn, lâu hơn nhiều với bột tươi)."
+   },
+   {
+    "t": "Để nguội",
+    "d": "Lấy pizza ra khỏi lò và để nguội."
+   }
+  ],
+  "sourceHash": "246e79f95dcc76bbc5679fdfc6bd32f7e128cbb569df56e19cb8cbd5ab520c35"
+ },
+ {
+  "pageId": 39267,
+  "title": "Welsh Rarebit (Bánh mì sốt phô mai kiểu xứ Wales)",
+  "description": "Có khá nhiều tranh cãi về việc thế nào mới là Welsh Rarebit. Nhiều người cho rằng đó chỉ là phô mai trên bánh mì nướng. Ở thái cực khác là các công thức ngâm bánh mì trong bia hoặc thả nổi trong súp. Có người nói “Welsh rarebit” là một câu đùa sau Đạo luật Liên hiệp, theo đó “thỏ Ireland” chỉ là bánh mì, “thỏ xứ Wales” là bánh mì với phô mai, “thỏ Scotland” là bánh mì với mỡ, còn “thỏ Anh” mới thật là thỏ. Dù sao, đây là một công thức Welsh Rarebit khá ít gây tranh cãi.",
+  "ingredients": [
+   {
+    "n": "bơ lạt"
+   },
+   {
+    "n": "bột mì đa dụng"
+   },
+   {
+    "n": "mù tạt Dijon"
+   },
+   {
+    "n": "sốt Worcestershire"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu đen xay"
+   },
+   {
+    "n": "bia đen porter (Guinness cũng được)",
+    "o": "60 ml"
+   },
+   {
+    "n": "kem tươi béo (double cream)",
+    "o": "120 ml"
+   },
+   {
+    "n": "phô mai Cheddar bào",
+    "o": "170 g"
+   },
+   {
+    "n": "bánh mì nướng"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Làm roux",
+    "d": "Trong nồi vừa ở lửa nhỏ, đun chảy bơ và đánh bột mì vào."
+   },
+   {
+    "t": "Nấu bột",
+    "d": "Nấu và đánh liên tục 2–3 phút, cẩn thận đừng để bột ngả nâu."
+   },
+   {
+    "t": "Thêm gia vị",
+    "d": "Đánh mù tạt, sốt Worcestershire, muối và tiêu vào đến khi mịn."
+   },
+   {
+    "t": "Thêm bia",
+    "d": "Cho bia vào và đánh đều."
+   },
+   {
+    "t": "Thêm kem",
+    "d": "Đổ kem vào, đánh đến khi đều và mịn."
+   },
+   {
+    "t": "Thêm phô mai",
+    "d": "Từ từ cho phô mai vào, khuấy liên tục đến khi phô mai tan và sốt mịn, mất 4–5 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Rưới lên bánh mì nướng và dọn ngay."
+   }
+  ],
+  "sourceHash": "460bd75b693f9275f184458f2177b07f10db2beb24ee1d28c035ab6e546f2424"
+ },
+ {
+  "pageId": 262949,
+  "title": "Kadhi (Súp cà ri sữa chua kiểu Gujarat)",
+  "description": "Kadhi, còn gọi là Karhi hoặc Gujarati Kadhi, là món cà ri sữa chua ngọt, thường ăn với bánh mì dẹt không men gọi là roti và món rau sabzi ở Ấn Độ.",
+  "ingredients": [
+   {
+    "n": "bột đậu gà (besan)"
+   },
+   {
+    "n": "sữa chua (dahi)"
+   },
+   {
+    "n": "hỗn hợp gừng và ớt xanh xay"
+   },
+   {
+    "n": "lá cà ri (kadi patta)",
+    "u": "lá"
+   },
+   {
+    "n": "đường"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "bơ ghee"
+   },
+   {
+    "n": "hạt thì là Ai Cập (jeera)"
+   },
+   {
+    "n": "hạt mù tạt (rai/sarson)"
+   },
+   {
+    "n": "bột a ngụy (hing)"
+   },
+   {
+    "n": "ớt đỏ",
+    "u": "quả",
+    "o": "bẻ nhỏ"
+   },
+   {
+    "n": "ngò rí tươi băm (dhania)"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn bột",
+    "d": "Cho bột đậu gà, sữa chua và 3 tách nước vào nồi. Đánh đều."
+   },
+   {
+    "t": "Nêm và đun sôi",
+    "d": "Cho hỗn hợp gừng ớt, lá cà ri, đường và muối vào. Đun sôi."
+   },
+   {
+    "t": "Đun tiếp",
+    "d": "Vừa đun sôi vừa khuấy một lúc."
+   },
+   {
+    "t": "Phi gia vị",
+    "d": "Đun nóng ghee trong chảo, cho hạt thì là và hạt mù tạt vào, rang đến khi vàng nhạt. Đừng để cháy."
+   },
+   {
+    "t": "Thêm hing và ớt",
+    "d": "Cho bột a ngụy và ớt đỏ vào."
+   },
+   {
+    "t": "Trộn gia vị",
+    "d": "Cho hỗn hợp gia vị vào cà ri, đun sôi vài phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Rắc ngò rí lên trên và dùng nóng."
+   }
+  ],
+  "sourceHash": "f68cae3ca76c8b85585c02e1b313569f543105de9d76461c05c46b7a7c1a5d58"
+ },
+ {
+  "pageId": 6066,
+  "title": "Zupa Ogórkowa (Súp dưa chuột muối kiểu Ba Lan)",
+  "description": "Zupa ogórkowa là món súp truyền thống của Ba Lan, làm từ dưa chuột muối chua.",
+  "ingredients": [
+   {
+    "n": "cánh gà",
+    "u": "cái"
+   },
+   {
+    "n": "tỏi tây nhỏ (hoặc 1 củ hành tây nhỏ)",
+    "u": "cây"
+   },
+   {
+    "n": "cà rốt",
+    "u": "củ"
+   },
+   {
+    "n": "củ cần tây",
+    "u": "củ",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "củ cải vàng",
+    "u": "củ"
+   },
+   {
+    "n": "khoai tây cỡ vừa",
+    "u": "củ"
+   },
+   {
+    "n": "dưa chuột muối chua lớn",
+    "u": "quả"
+   },
+   {
+    "n": "bơ"
+   },
+   {
+    "n": "bột mì"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "hạt tiêu Jamaica (pimento)",
+    "u": "hạt"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   },
+   {
+    "n": "kem (cream hoặc half and half)",
+    "o": "tùy chọn; có thể dùng sữa chua dù không truyền thống"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nấu nước dùng",
+    "d": "Cho cánh gà, muối, tiêu, lá nguyệt quế và hạt tiêu Jamaica vào nồi với 1.5 L (1½ quart) nước lạnh. Đun sôi rồi ninh nhỏ lửa 25 phút."
+   },
+   {
+    "t": "Thêm rau củ",
+    "d": "Cho cà rốt đã gọt, củ cần tây, củ cải vàng và tỏi tây vào, đun sôi thêm 10 phút. Trong lúc đó gọt khoai và thái hạt lựu cỡ 6 mm x 6 mm, tức khoảng một phần tư inch (0.25 x 0.25 inch)."
+   },
+   {
+    "t": "Thêm khoai",
+    "d": "Vớt tỏi tây ra, cho khoai vào nồi. Đun sôi 10–12 phút đến khi khoai chín hẳn."
+   },
+   {
+    "t": "Xào dưa",
+    "d": "Bào dưa chuột muối, cho vào chảo với bơ đun chảy. Xào 2 phút, thêm bột mì và khuấy liên tục ở lửa nhỏ."
+   },
+   {
+    "t": "Thêm nước",
+    "d": "Thêm ½–⅓ cốc (120-80 ml) nước vào chảo và tiếp tục khuấy."
+   },
+   {
+    "t": "Hoàn thiện",
+    "d": "Khi khoai chín, cho hỗn hợp dưa vào nồi và trộn đều. Đun sôi 3–5 phút và nêm vừa ăn. Nếu thích, trộn ít súp với kem hoặc kem chua trong cốc nhỏ rồi cho vào nồi, hoặc thêm một ít vào từng bát."
+   },
+   {
+    "t": "Chúc ngon miệng",
+    "d": "Chúc ngon miệng! Smacznego!"
+   }
+  ],
+  "sourceHash": "627e77b089619d25f981817f50a0c70b1a566b923eb52343516f846750fa5f21"
+ },
+ {
+  "pageId": 29733,
+  "title": "Zuppa Toscana (Súp xúc xích, khoai tây và cải xoăn)",
+  "description": "Zuppa toscana là món súp có bán tại chuỗi nhà hàng Olive Garden.",
+  "ingredients": [
+   {
+    "n": "xúc xích Ý cay",
+    "o": "bóp vụn"
+   },
+   {
+    "n": "thịt xông khói",
+    "o": "băm"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "nước dùng gà",
+    "o": "29 oz"
+   },
+   {
+    "n": "khoai tây russet lớn",
+    "u": "củ",
+    "o": "cắt khối"
+   },
+   {
+    "n": "tỏi",
+    "u": "tép",
+    "o": "đập dập"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "băm"
+   },
+   {
+    "n": "cải xoăn hoặc cải cầu vồng băm"
+   },
+   {
+    "n": "kem tươi béo"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "tiêu"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Áp chảo xúc xích",
+    "d": "Trong chảo ở lửa vừa lớn, áp chảo xúc xích, tách thành miếng nhỏ khi chiên. Để ráo và để riêng."
+   },
+   {
+    "t": "Áp chảo thịt xông khói",
+    "d": "Trong chảo ở lửa vừa lớn, áp chảo thịt xông khói. Để ráo và để riêng."
+   },
+   {
+    "t": "Nấu khoai",
+    "d": "Cho nước, nước dùng, khoai tây, tỏi và hành vào nồi. Ninh ở lửa lớn đến khi khoai mềm."
+   },
+   {
+    "t": "Thêm thịt",
+    "d": "Cho xúc xích và thịt xông khói vào nồi. Ninh 10 phút."
+   },
+   {
+    "t": "Thêm cải và kem",
+    "d": "Cho cải xoăn và kem vào nồi. Nêm muối và tiêu; đun cho nóng đều."
+   }
+  ],
+  "sourceHash": "5e284d0ad2a7da0dc097679222885948e6b5b2cbb099f5bbe16e6ccf71544799"
+ },
+ {
+  "pageId": 178938,
+  "title": "Zwiebelrostbraten (Bò áp chảo sốt hành rượu vang kiểu Áo)",
+  "description": "Zwiebelrostbraten là món chính đặc trưng của Áo và được yêu thích từ lâu tại đây. Thịt dùng theo truyền thống là phần sườn bò, tiếng Đức gọi là “Rostbraten”. Món có nhiều biến thể và rất nhiều công thức. Công thức này dùng sốt hành rượu vang đỏ, phỏng theo một công thức đăng trên tạp chí nấu ăn, ít calo hơn bản gốc nhưng vẫn đậm vị. Nước thịt cũng được dùng trong khi nấu để không phí hương vị đậm đà. Món kèm tiêu chuẩn là “Bratkartoffeln” (khoai tây áp chảo), nhưng có thể chọn bánh bao bột mì, rau hoặc khoai tây nghiền. Món kèm tùy sở thích nên không có trong công thức này. Dù công thức khá dễ, nên dành ít nhất 45 phút vì sốt cần thời gian để cô lại. Hãy chuẩn bị rửa khá nhiều bát đĩa sau khi nấu xong, nhưng rất đáng công.",
+  "ingredients": [
+   {
+    "n": "hành tây (nước sốt)",
+    "u": "củ",
+    "o": "băm nhuyễn, nước sốt"
+   },
+   {
+    "n": "tỏi",
+    "u": "tép",
+    "o": "băm nhuyễn, nước sốt"
+   },
+   {
+    "n": "dầu thực vật (nước sốt)",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "cà chua cô đặc",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "đường nâu",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "ớt bột paprika Hungary",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "rượu vang đỏ",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "nước dùng bò",
+    "o": "Nước sốt"
+   },
+   {
+    "n": "thịt sườn bò",
+    "o": "mỗi lát 200 g, phần thịt"
+   },
+   {
+    "n": "mù tạt Dijon",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "muối",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "tiêu",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "dầu thực vật (phần thịt)",
+    "o": "Phần thịt"
+   },
+   {
+    "n": "hành tây (khoanh)",
+    "u": "củ",
+    "o": "thái khoanh mỏng, phần thịt"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Xào hành tỏi",
+    "d": "Xào hành và tỏi trong dầu."
+   },
+   {
+    "t": "Thêm gia vị",
+    "d": "Cho cà chua cô đặc, đường và paprika Hungary vào, xào nhẹ rồi khử chảo bằng rượu vang đỏ."
+   },
+   {
+    "t": "Cô sốt",
+    "d": "Cho nước dùng vào và cô đến độ sánh mong muốn, mất khoảng 25 phút. Nhớ thỉnh thoảng khuấy sốt."
+   },
+   {
+    "t": "Chuẩn bị thịt",
+    "d": "Trong lúc cô sốt, dùng búa dần nhẹ thịt để thịt mềm. Sau đó xoa mù tạt, thêm muối và tiêu."
+   },
+   {
+    "t": "Áp chảo thịt",
+    "d": "Áp chảo thịt hai mặt rồi nấu thêm 4–5 phút ở lửa vừa."
+   },
+   {
+    "t": "Nấu hành khoanh",
+    "d": "Cho hành khoanh vào phần nước thịt còn lại để ngấm vị. Tùy lượng dầu và nước thịt còn trong chảo, có thể thêm dầu hoặc nước để hành ngấm đều."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Phủ hành khoanh lên thịt, rưới sốt và dùng với món kèm tùy thích. Chúc ngon miệng!"
+   }
+  ],
+  "sourceHash": "e783bb08a73f5b504b50c8e2a0226272125fcf61240c46ca4ff41f417529d9e4"
+ }
+]

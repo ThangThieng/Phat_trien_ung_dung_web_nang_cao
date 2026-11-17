@@ -1,7 +1,7 @@
 import ky, { isHTTPError, isNetworkError } from 'ky';
 import type { AfterResponseHook, BeforeErrorHook, BeforeRequestHook, NormalizedOptions } from 'ky';
 import type { ProblemDetails } from '@/types/api';
-import { ApiError, parseRetryAfter } from './api-error';
+import { ApiError, parseRetryAfter, isTransientAuthError } from './api-error';
 import { getApiBaseUrl } from './config';
 import { normalizeError } from './normalize-error';
 
@@ -9,13 +9,13 @@ export { ApiError, isAbortError } from './api-error';
 
 /** FR-OBS-002 – mỗi request một mã, Backend ghi vào log (Buổi 8 trả lại trên response). */
 export const CORRELATION_ID_HEADER = 'X-Correlation-ID';
-export const REQUEST_TIMEOUT_MS = 15_000;
+const REQUEST_TIMEOUT_MS = 15_000;
 /** 429/503 có `Retry-After` dài hơn mức này thì không chờ — trả lỗi để giao diện báo người dùng. */
-export const MAX_RETRY_AFTER_MS = 5_000;
+const MAX_RETRY_AFTER_MS = 5_000;
 /** Chỉ lỗi tạm thời. 500 là lỗi code phía server — gửi lại cũng ra kết quả như cũ. */
 const RETRY_STATUS_CODES = [408, 429, 502, 503, 504];
 
-export interface ApiRequestOptions {
+interface ApiRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   /** Object → gửi JSON; `FormData`/`Blob`/`URLSearchParams` → gửi nguyên (trình duyệt tự đặt Content-Type). */
   body?: unknown;
@@ -25,6 +25,8 @@ export interface ApiRequestOptions {
   next?: NextFetchRequestConfig;
   cache?: RequestCache;
   signal?: AbortSignal;
+  /** Extra request headers such as `If-Match`; shared hooks still add auth/correlation headers afterwards. */
+  headers?: Record<string, string>;
   skipAuthRefresh?: boolean;
 }
 
@@ -42,6 +44,22 @@ export function configureAuthCallbacks(callbacks: AuthCallbacks | null) {
   authCallbacks = callbacks;
 }
 
+/** Thông tin của request trình duyệt mà server đang render — chỉ có ở phía server (xem `lib/server-request-context.ts`). */
+interface ServerRequestContext {
+  /** Giá trị `X-Forwarded-For` Nginx gắn cho request của trình duyệt (`null` khi không có, ví dụ gọi thẳng cổng 3000). */
+  forwardedFor: () => Promise<string | null>;
+}
+
+let serverRequestContext: ServerRequestContext | null = null;
+
+/**
+ * Đăng ký từ code chỉ chạy trên server (`next/headers` không được nằm trong bundle trình duyệt). Callback đọc header của
+ * ĐÚNG request đang render (Next.js giữ theo request bằng AsyncLocalStorage), nên đăng ký một lần cho cả process là an toàn.
+ */
+export function configureServerRequestContext(context: ServerRequestContext | null) {
+  serverRequestContext = context;
+}
+
 const isServer = () => typeof window === 'undefined';
 
 /**
@@ -54,7 +72,7 @@ function renewAccessToken(staleToken: string | null, callbacks: AuthCallbacks): 
   refreshPromise ??= Promise.resolve()
     .then(() => callbacks.refresh())
     .catch((refreshError: unknown) => {
-      callbacks.onRefreshFailure();
+      if (!isTransientAuthError(refreshError)) callbacks.onRefreshFailure();
       throw refreshError;
     })
     .finally(() => {
@@ -97,8 +115,22 @@ interface AuthAttempt {
   refreshed: boolean;
 }
 
-const authAttemptOf = (options: NormalizedOptions) =>
-  (options.context as { auth?: AuthAttempt }).auth;
+interface RequestContext {
+  auth?: AuthAttempt;
+  /** Lời gọi dùng Data Cache của Next.js (`next.revalidate` / `force-cache`). */
+  dataCache?: boolean;
+}
+
+const contextOf = (options: NormalizedOptions) => options.context as RequestContext;
+const authAttemptOf = (options: NormalizedOptions) => contextOf(options).auth;
+
+/** `next.revalidate` > 0 hoặc `false` (giữ mãi) hay `cache: 'force-cache'` → kết quả nằm trong Data Cache. */
+export function usesDataCache(options: Pick<ApiRequestOptions, 'next' | 'cache'>): boolean {
+  if (options.cache === 'no-store') return false;
+  if (options.cache === 'force-cache') return true;
+  const revalidate = options.next?.revalidate;
+  return revalidate !== undefined && revalidate !== 0;
+}
 
 /** UUID v4. `crypto.randomUUID` chỉ có trong secure context — mở qua http://<IP LAN> thì dựng từ `getRandomValues`. */
 export function createCorrelationId(): string {
@@ -117,10 +149,35 @@ export function createCorrelationId(): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-const attachCorrelationId: BeforeRequestHook = ({ request }) => {
+/**
+ * Mỗi request một `X-Correlation-ID` (FR-OBS-002) — TRỪ request phía server dùng Data Cache. Next.js lấy toàn bộ header của
+ * `Request` mà `ky` truyền cho `fetch` làm khóa Data Cache (chỉ bỏ `traceparent`/`tracestate`): một header ngẫu nhiên làm
+ * khóa đổi mỗi lần, Data Cache không bao giờ trúng và các lời gọi trùng trong cùng một lần render không được gộp. Đo trên
+ * Docker trước khi sửa (Buổi 7): 5 lượt tải `/categories` → API nhận 15 lần `GET /categories` dù `revalidate: 1800`.
+ * Dữ liệu cache dùng chung cho nhiều lượt xem nên không thuộc về request nào để mang mã tra cứu; API tự sinh mã khi thiếu.
+ */
+const attachCorrelationId: BeforeRequestHook = ({ request, options }) => {
+  if (isServer() && contextOf(options).dataCache) {
+    request.headers.delete(CORRELATION_ID_HEADER);
+    return;
+  }
   if (!request.headers.has(CORRELATION_ID_HEADER)) {
     request.headers.set(CORRELATION_ID_HEADER, createCorrelationId());
   }
+};
+
+/**
+ * NFR-SEC-003 khi render trên server: request SSR đi thẳng `frontend` → `api:8080`, không qua Nginx. Không chuyển tiếp IP thì
+ * API thấy IP của container `frontend` cho MỌI người dùng — mọi lượt SSR dùng chung một hạn mức 100 request/phút (đo trên
+ * Docker, Buổi 7: quá ngưỡng thì mọi trang `/search` render không có kết quả vì API trả 429). Chuyển tiếp nguyên chuỗi
+ * `X-Forwarded-For` mà Nginx đã gắn: API chỉ tin header từ dải mạng Docker (`ForwardedHeaders:TrustedNetworks`) và lấy giá
+ * trị ngoài cùng bên phải — do Nginx thêm, client không giả được. Request dùng Data Cache thì không gắn (giữ khóa cache ổn định;
+ * mỗi khóa chỉ gọi API một lần trong khoảng `revalidate`).
+ */
+const forwardClientAddress: BeforeRequestHook = async ({ request, options }) => {
+  if (!isServer() || !serverRequestContext || contextOf(options).dataCache) return;
+  const forwardedFor = await serverRequestContext.forwardedFor();
+  if (forwardedFor) request.headers.set('X-Forwarded-For', forwardedFor);
 };
 
 /**
@@ -207,7 +264,7 @@ const http = ky.create({
     },
   },
   hooks: {
-    beforeRequest: [attachCorrelationId, attachBearerToken],
+    beforeRequest: [attachCorrelationId, attachBearerToken, forwardClientAddress],
     afterResponse: [refreshOnExpiredToken],
     beforeError: [toApiError],
   },
@@ -236,12 +293,12 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   const response = await http(path, {
     prefix: getApiBaseUrl(),
     method: options.method ?? 'GET',
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', ...options.headers },
     ...payload,
     next: options.next,
     cache: options.cache,
     signal: options.signal,
-    context: { auth },
+    context: { auth, dataCache: usesDataCache(options) } satisfies RequestContext,
   });
 
   if (response.status === 204) return undefined as T;

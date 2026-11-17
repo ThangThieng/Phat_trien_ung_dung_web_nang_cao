@@ -3,7 +3,10 @@ using System.Net.Http.Json;
 using CulinaryBlog.API.IntegrationTests.Infrastructure;
 using CulinaryBlog.Application.Features.Auth;
 using CulinaryBlog.Domain.Exceptions;
+using CulinaryBlog.Infrastructure.Identity;
 using CulinaryBlog.Infrastructure.Jobs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CulinaryBlog.API.IntegrationTests.Auth;
 
@@ -23,6 +26,40 @@ public class AuthEndpointsTests(CulinaryBlogApiFactory factory) : IAsyncLifetime
     public Task InitializeAsync() => factory.ResetDatabaseAsync();
 
     public Task DisposeAsync() => Task.CompletedTask;
+
+    [Fact]
+    public async Task PasswordResetTokenProvider_GeneratesNonEmptyToken()
+    {
+        var client = factory.CreateClient();
+        var suffix = NewSuffix();
+        using var registration = await client.PostAsJsonAsync("/api/v1/auth/register", NewRegistration(suffix));
+        var auth = await registration.ReadAsAsync<AuthResponseDto>();
+
+        await using var scope = factory.Services.CreateAsyncScope();
+        var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var user = Assert.IsType<ApplicationUser>(await users.FindByIdAsync(auth.User.Id));
+
+        var token = await users.GeneratePasswordResetTokenAsync(user);
+        Assert.False(string.IsNullOrWhiteSpace(token));
+    }
+
+    [Fact]
+    public async Task ForgotPassword_ReturnsEquivalentAcceptedResponseForExistingAndUnknownEmail()
+    {
+        var client = factory.CreateClient();
+        var suffix = NewSuffix();
+        var existingEmail = $"it-{suffix}@culinaryblog.test";
+        using var registration = await client.PostAsJsonAsync("/api/v1/auth/register", NewRegistration(suffix)).ConfigureAwait(true);
+        registration.EnsureSuccessStatusCode();
+
+        using var existing = await client.PostAsJsonAsync("/api/v1/auth/forgot-password", new { email = existingEmail }).ConfigureAwait(true);
+        using var unknown = await client.PostAsJsonAsync("/api/v1/auth/forgot-password", new { email = $"unknown-{suffix}@culinaryblog.test" }).ConfigureAwait(true);
+
+        Assert.Equal(HttpStatusCode.Accepted, existing.StatusCode);
+        Assert.Equal(existing.StatusCode, unknown.StatusCode);
+        Assert.Equal(await existing.Content.ReadAsStringAsync().ConfigureAwait(true), await unknown.Content.ReadAsStringAsync().ConfigureAwait(true));
+        Assert.Equal(existing.Content.Headers.ContentType?.MediaType, unknown.Content.Headers.ContentType?.MediaType);
+    }
 
     [Fact]
     public async Task Register_WithValidPayload_Returns201WithTokensAndEnqueuesWelcomeEmail()

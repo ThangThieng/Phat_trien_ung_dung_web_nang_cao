@@ -41,13 +41,20 @@ export interface RecipeListParams {
   sortOrder?: SortOrder;
 }
 
-/** FR-SRCH-001 – tham số `GET /recipes/search` (SRS §8.3: chỉ q, page, pageSize, categoryId, difficulty). */
+/**
+ * FR-SRCH-001 – tham số `GET /recipes/search` (SRS v1.2.3 §8.3). Ba bộ lọc `maxCookTime`, `maxPrepTime`, `minServings` thêm ở
+ * CR-2026-05 / MT-66 (tùy chọn, tương thích ngược) — lọc ở cơ sở dữ liệu nên `totalCount` và phân trang đúng. Không có
+ * `sortBy`/`sortOrder`: kết quả tìm kiếm luôn xếp theo độ liên quan (`ts_rank`).
+ */
 export interface RecipeSearchParams {
   q: string;
   page?: number;
   pageSize?: number;
   categoryId?: string;
   difficulty?: string;
+  maxCookTime?: number;
+  maxPrepTime?: number;
+  minServings?: number;
 }
 
 /**

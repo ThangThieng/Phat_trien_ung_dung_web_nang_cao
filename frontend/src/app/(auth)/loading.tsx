@@ -1,6 +1,6 @@
-import { InterimPageLoading } from '@/components/layout/interim-shell';
+import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
 
-/** Dev 3 thay bằng `LoadingSkeleton variant="form"`. */
+/** Khung chờ cùng kích thước thẻ đăng nhập/đăng ký (`AuthCard`) — không nhảy bố cục khi trang về. */
 export default function AuthLoading() {
-  return <InterimPageLoading />;
+  return <LoadingSkeleton variant="form" />;
 }

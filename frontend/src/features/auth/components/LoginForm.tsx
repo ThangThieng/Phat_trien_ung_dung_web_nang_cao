@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import FormField from '@/components/shared/FormField';
 import { getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
+import { toSafeInternalPath } from '@/lib/safe-redirect';
 import { useAuth } from '../auth-context';
 import { loginSchema, type LoginFormValues } from '../schemas';
 import GoogleSignIn from './GoogleSignIn';
@@ -14,9 +15,7 @@ import GoogleSignIn from './GoogleSignIn';
 const LOGIN_FIELDS = ['email', 'password'] as const;
 
 /** Chỉ cho phép redirect nội bộ (chống open redirect). Dùng chung với `AuthCard`. */
-export function safeCallbackUrl(value: string | null): string {
-  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/recipes';
-}
+const safeCallbackUrl = toSafeInternalPath;
 
 export default function LoginForm() {
   const { login } = useAuth();
@@ -66,19 +65,22 @@ export default function LoginForm() {
         error={errors.password?.message}
         {...register('password')}
       />
+      <Link href="/auth/forgot-password" className="-mt-2 text-sm font-medium text-gold-ink hover:underline">
+        Quên mật khẩu?
+      </Link>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded-lg bg-orange-600 px-4 py-2.5 font-semibold text-white transition hover:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-60"
+        className="rounded-lg bg-navy px-4 py-2.5 font-semibold text-white transition hover:bg-navy-2 focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-2 disabled:opacity-60"
       >
         {isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
       </button>
       <GoogleSignIn
         onSuccess={() => router.replace(safeCallbackUrl(searchParams.get('callbackUrl')))}
       />
-      <p className="text-center text-sm text-gray-600">
+      <p className="text-center text-sm text-ink-soft">
         Chưa có tài khoản?{' '}
-        <Link href="/auth/register" className="font-medium text-orange-700 hover:underline">
+        <Link href="/auth/register" className="font-medium text-gold-ink hover:underline">
           Đăng ký ngay
         </Link>
       </p>

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BookOpen, SearchX } from 'lucide-react';
+import EmptyState from '@/components/shared/EmptyState';
 import Pagination from '@/components/shared/Pagination';
 import RecipeCard from '@/features/recipes/components/RecipeCard';
 import FilterPanel from '@/features/recipes/components/FilterPanel';
@@ -11,13 +13,15 @@ import {
   countActiveFilters,
   parseRecipeListState,
 } from '@/features/recipes/search-params';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 import type { Category } from '@/types/category';
 
-export const metadata: Metadata = {
-  title: 'Công thức nấu ăn',
+export const metadata: Metadata = buildPageMetadata({
+  name: 'Công thức nấu ăn',
   description:
     'Khám phá hàng trăm công thức nấu ăn Việt Nam và quốc tế – từ món khai vị, món chính đến tráng miệng.',
-};
+  path: '/recipes',
+});
 
 // SRS §5.1: /recipes render SSR dynamic
 export const dynamic = 'force-dynamic';
@@ -42,8 +46,8 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Công thức nấu ăn</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-3xl font-bold text-ink">Công thức nấu ăn</h1>
+          <p className="mt-1 text-ink-soft">
             {filtered
               ? `${result.totalCount} công thức phù hợp bộ lọc.`
               : `${result.totalCount} công thức đang chờ bạn khám phá.`}
@@ -62,30 +66,38 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
 
         <div>
           {result.items.length === 0 ? (
-            <div className="mt-8 text-center text-gray-600">
-              <p>
-                {filtered ? 'Không có công thức nào phù hợp bộ lọc.' : 'Chưa có công thức nào.'}
-              </p>
-              {filtered && (
-                <Link
-                  href={buildHref(PATHNAME, state, {
-                    categoryId: undefined,
-                    difficulty: undefined,
-                    maxCookTime: undefined,
-                    maxPrepTime: undefined,
-                    minServings: undefined,
-                    page: 1,
-                  })}
-                  className="mt-3 inline-block font-medium text-orange-700 hover:underline"
-                >
-                  Xóa bộ lọc
-                </Link>
-              )}
-            </div>
+            <EmptyState
+              icon={filtered ? SearchX : BookOpen}
+              title={filtered ? 'Không có công thức nào phù hợp bộ lọc' : 'Chưa có công thức nào'}
+              description={
+                filtered
+                  ? 'Thử nới bộ lọc thời gian, khẩu phần hoặc chọn danh mục khác.'
+                  : undefined
+              }
+              action={
+                filtered && (
+                  <Link
+                    href={buildHref(PATHNAME, state, {
+                      categoryId: undefined,
+                      difficulty: undefined,
+                      maxCookTime: undefined,
+                      maxPrepTime: undefined,
+                      minServings: undefined,
+                      page: 1,
+                    })}
+                    className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2"
+                  >
+                    Xóa bộ lọc
+                  </Link>
+                )
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {result.items.map((recipe) => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
+              {/* WCAG 1.3.1: tiêu đề thẻ là h3 nên cần một h2 phía trên — bảng lọc (h2) bị ẩn dưới 1024 px. */}
+              <h2 className="sr-only">Danh sách công thức</h2>
+              {result.items.map((recipe, index) => (
+                <RecipeCard key={recipe.id} recipe={recipe} priority={index === 0} />
               ))}
             </div>
           )}
@@ -93,6 +105,8 @@ export default async function RecipesPage({ searchParams }: { searchParams: Sear
           <Pagination
             page={result.page}
             totalPages={result.totalPages}
+            hasPreviousPage={result.hasPreviousPage}
+            hasNextPage={result.hasNextPage}
             buildHref={(p) => buildHref(PATHNAME, state, { page: p })}
           />
         </div>

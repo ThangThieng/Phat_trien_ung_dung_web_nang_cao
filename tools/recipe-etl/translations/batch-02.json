@@ -1,0 +1,1016 @@
+[
+ {
+  "pageId": 3284,
+  "title": "Sườn heo sốt BBQ nướng lò",
+  "description": "Sườn sốt BBQ là món nướng cổ điển của Mỹ làm từ thịt heo. Phiên bản này nấu trong lò chứ không nướng trên than, dùng sốt BBQ mang hương vị châu Á như nước tương, giấm gạo và tỏi.",
+  "ingredients": [
+   {
+    "n": "sườn heo",
+    "o": "910 g"
+   },
+   {
+    "n": "nước tương",
+    "o": "60 ml / 2 oz"
+   },
+   {
+    "n": "mật ong"
+   },
+   {
+    "n": "tương hoisin"
+   },
+   {
+    "n": "giấm trắng"
+   },
+   {
+    "n": "rượu sake"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "đường"
+   },
+   {
+    "n": "tiêu trắng xay"
+   },
+   {
+    "n": "nước dùng heo"
+   },
+   {
+    "n": "tiêu đen xay và muối"
+   },
+   {
+    "n": "thì là Ai Cập",
+    "o": "tùy chọn"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Ướp sườn",
+    "d": "Xếp sườn thành một lớp trong khay nướng lớn. Trộn các nguyên liệu còn lại trong tô nhỏ, đổ lên sườn và phủ đều hai mặt. Ướp qua đêm, thỉnh thoảng phết lại nước ướp."
+   },
+   {
+    "t": "Chuẩn bị lò",
+    "d": "Làm nóng lò trước ở 375 F (190 °C). Đặt một khay nông lớn dưới đáy lò, đổ nước cao 0.5 inch. Đặt sườn lên vỉ nướng."
+   },
+   {
+    "t": "Nướng sườn",
+    "d": "Nướng sườn trong 45 phút."
+   },
+   {
+    "t": "Tăng nhiệt",
+    "d": "Tăng nhiệt độ lò lên 450 F (230 °C) và nướng thêm 15 phút."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng nóng hoặc nguội."
+   }
+  ],
+  "sourceHash": "be0c638fca1d892babf951a7a444cb4cbc90395127497e8f9880bda354c87f04"
+ },
+ {
+  "pageId": 127132,
+  "title": "Bhuna Khichuri (Cơm nấu đậu lăng kiểu Bengal)",
+  "description": "Khichuri là món ăn Bengal từng được xem là món an ủi của người nghèo, nay trở thành món ngon được dùng nóng trong những ngày mưa gió mùa. Cũng như khichdi, nguyên liệu chính là gạo và đậu lăng, nhưng có nhiều biến thể thêm rau, thịt gia cầm hoặc thịt và được đặt tên theo đó (ví dụ sabji khichuri là loại có rau). Đây là công thức Bhuna Khichuri được ưa chuộng, đầy chất lãng mạn và đặc biệt hợp với ngày mưa. Dùng nóng kèm cà ri cá kiểu Bengal và tương chutney.",
+  "ingredients": [
+   {
+    "n": "gạo trắng thơm (như Basmati hoặc gạo pilau hạt ngắn)"
+   },
+   {
+    "n": "đậu xanh hoặc đậu lăng đỏ tách đôi"
+   },
+   {
+    "n": "đậu gà khô tách đôi (tốt nhất là loại Bengal)",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "đậu Hà Lan",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "bơ (phần xào gia vị, tốt nhất là ghee)"
+   },
+   {
+    "n": "nghệ bột"
+   },
+   {
+    "n": "ớt xanh nguyên quả",
+    "u": "quả",
+    "o": "khứa giữa, có thể bỏ hạt"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "nước để nấu"
+   },
+   {
+    "n": "lá nguyệt quế",
+    "u": "lá"
+   },
+   {
+    "n": "bạch đậu khấu xanh",
+    "u": "quả"
+   },
+   {
+    "n": "đinh hương nguyên nụ",
+    "u": "nụ"
+   },
+   {
+    "n": "quế thanh dài 1 inch"
+   },
+   {
+    "n": "hạt thì là Ai Cập"
+   },
+   {
+    "n": "gừng",
+    "q": 2,
+    "u": "cm",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "1 củ vừa hoặc 2 củ nhỏ, thái lát mỏng"
+   },
+   {
+    "n": "bơ (phần phi hành, tốt nhất là ghee)"
+   },
+   {
+    "n": "ngò rí tươi thái thô"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Rửa nguyên liệu",
+    "d": "Rửa riêng gạo, đậu lăng và đậu gà trong nước lạnh."
+   },
+   {
+    "t": "Để ráo gạo",
+    "d": "Để gạo khô ráo trong rổ hoặc trải trên mặt phẳng."
+   },
+   {
+    "t": "Ngâm đậu",
+    "d": "Ngâm đậu lăng và đậu gà trong nước 30 phút."
+   },
+   {
+    "t": "Rang đậu",
+    "d": "Để ráo đậu lăng và đậu gà, rang sơ đến khi dậy mùi thơm, rồi để nguội."
+   },
+   {
+    "t": "Đun nước",
+    "d": "Đun nước trong ấm để dùng sau. Giữ nước nóng nhưng không sôi."
+   },
+   {
+    "t": "Giã gia vị",
+    "d": "Giã dập bạch đậu khấu, quế và đinh hương."
+   },
+   {
+    "t": "Phi gia vị",
+    "d": "Đun nóng 2 thìa canh bơ trong chảo đáy dày ở lửa vừa. Cho lá nguyệt quế và gia vị đã giã vào; khi bắt đầu nổ lách tách, thêm gừng và thì là. Đảo 1–2 phút đến khi gừng có mùi thơm bùi."
+   },
+   {
+    "t": "Thêm ớt và đậu Hà Lan",
+    "d": "Cho ớt xanh và đậu Hà Lan vào, đảo một hai lần."
+   },
+   {
+    "t": "Xào gạo",
+    "d": "Cho gạo vào hỗn hợp, đảo nhẹ 2–3 phút sao cho dầu áo đều hạt gạo."
+   },
+   {
+    "t": "Thêm đậu",
+    "d": "Cho đậu lăng, đậu gà và muối vào, đảo thêm 1–2 phút."
+   },
+   {
+    "t": "Nấu cơm",
+    "d": "Đổ nước nóng vào chảo, mực nước cao hơn hỗn hợp khoảng 1 inch. Hạ lửa một chút, đậy nắp và ninh đến khi chín. Kiểm tra thường xuyên để gạo không cháy đáy. Món đạt khi hạt gạo không còn phần cứng, độ chắc vừa phải, các hạt dễ tách rời nhưng không quá mềm hay dính. Mất khoảng 10 phút."
+   },
+   {
+    "t": "Phi hành",
+    "d": "Trong lúc ninh cơm, đun nóng phần bơ còn lại trong chảo khác. Phi hành ở lửa vừa đến khi bắt đầu vàng nâu."
+   },
+   {
+    "t": "Phủ hành",
+    "d": "Khi cơm chín, phủ hành cùng phần dầu phi lên trên. Trang trí với ngò rí."
+   },
+   {
+    "t": "Giữ ấm",
+    "d": "Hạ lửa nhỏ nhất và đậy nắp cho đến khi dọn, không nên để quá lâu."
+   }
+  ],
+  "sourceHash": "b9447781878dbcfe318479507f7ba99ebd5157fe758da1c1bbf018c1c1f12ca2"
+ },
+ {
+  "pageId": 415433,
+  "title": "Bint as-Saḥn (Bánh nhiều lớp kiểu Yemen)",
+  "description": "Bint al-sahn (tiếng Ả Rập: بنت الصحن), còn gọi là Sabayah, là loại bánh nhiều lớp truyền thống của Yemen, nay được ưa chuộng ở nhiều vùng khác. Cách làm khá mất thời gian.",
+  "ingredients": [
+   {
+    "n": "men khô"
+   },
+   {
+    "n": "nước ấm"
+   },
+   {
+    "n": "sữa ấm"
+   },
+   {
+    "n": "muối"
+   },
+   {
+    "n": "đường cát"
+   },
+   {
+    "n": "dầu thực vật"
+   },
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "bột mì trắng đa dụng"
+   },
+   {
+    "n": "bột semolina"
+   },
+   {
+    "n": "bơ thực vật ấm (hoặc bơ đun chảy)"
+   },
+   {
+    "n": "hạt thì là đen (Nigella sativa)"
+   },
+   {
+    "n": "mè",
+    "t": "tùy chọn"
+   },
+   {
+    "n": "hạnh nhân giã dập"
+   },
+   {
+    "n": "hạt dẻ cười giã dập"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Pha men",
+    "d": "Trộn men với nước ấm, rồi khuấy sữa ấm vào."
+   },
+   {
+    "t": "Thêm phần ướt",
+    "d": "Khuấy muối, đường, dầu thực vật và trứng vào hỗn hợp men."
+   },
+   {
+    "t": "Nhào bột",
+    "d": "Trộn bột mì và semolina vào hỗn hợp trên. Nhào kỹ thành khối bột."
+   },
+   {
+    "t": "Ủ bột",
+    "d": "Đậy bột lại và để đến khi nở."
+   },
+   {
+    "t": "Chia bột",
+    "d": "Chia bột thành từng phần cỡ bàn tay, đặt lên mặt phẳng đã rắc bột để không dính."
+   },
+   {
+    "t": "Kéo và gấp bột",
+    "d": "Với từng viên bột, kéo giãn và gấp lại nhiều lần. Quá trình kéo gấp này giúp bột xốp và nhẹ."
+   },
+   {
+    "t": "Nghỉ bột",
+    "d": "Để các viên bột nghỉ 10–15 phút."
+   },
+   {
+    "t": "Cán bột",
+    "d": "Xoa một ít bơ thực vật lên mặt phẳng làm việc. Cán một phần bột thành hình tròn thật mỏng."
+   },
+   {
+    "t": "Rắc nhân",
+    "d": "Phết bơ thực vật lên miếng bột, rồi rắc nhẹ hạnh nhân, hạt dẻ cười, thì là đen và mè."
+   },
+   {
+    "t": "Xếp lớp",
+    "d": "Cán một phần bột khác thành hình tròn mỏng, đặt chồng lên miếng đầu, phết bơ và rắc thêm hạnh nhân, hạt dẻ cười… Lặp lại cho đến khi hết bột."
+   },
+   {
+    "t": "Nướng bánh",
+    "d": "Nướng khối bột đã xếp lớp trong lò. Dùng với mật ong."
+   }
+  ],
+  "sourceHash": "c45f7270410c42f9a7c413ef9fd821c17f29efb8506036cb0af4c5d99ba3e591"
+ },
+ {
+  "pageId": 34618,
+  "title": "Bánh Rừng Đen (Black Forest Cake)",
+  "description": "Bánh Rừng Đen, đôi khi được gọi bằng từ tiếng Pháp gateau, gateaux hay gâteau (nghĩa là “bánh”), là loại bánh sô-cô-la đậm vị anh đào. Công thức có nguồn gốc từ Đức, nơi bánh được gọi là Schwarzwälder Kirschtorte.",
+  "ingredients": [
+   {
+    "n": "bơ (phần cốt bánh)",
+    "o": "100 g"
+   },
+   {
+    "n": "đường nâu",
+    "o": "225 g"
+   },
+   {
+    "n": "sô-cô-la nguyên chất",
+    "o": "100 g"
+   },
+   {
+    "n": "bột mì tự nở",
+    "o": "200 g"
+   },
+   {
+    "n": "quế xay"
+   },
+   {
+    "n": "kem chua"
+   },
+   {
+    "n": "cà phê đen đặc để nguội"
+   },
+   {
+    "n": "trứng",
+    "u": "quả"
+   },
+   {
+    "n": "muối (phần cốt bánh)"
+   },
+   {
+    "n": "bột mì mịn",
+    "o": "100 g, phần đế bánh"
+   },
+   {
+    "n": "muối (phần đế bánh)"
+   },
+   {
+    "n": "đường bột",
+    "o": "50 g, phần đế bánh"
+   },
+   {
+    "n": "bơ Ireland",
+    "o": "50 g, phần đế bánh"
+   },
+   {
+    "n": "lòng đỏ trứng",
+    "u": "lòng",
+    "o": "Phần đế bánh"
+   },
+   {
+    "n": "tinh chất vani",
+    "t": "vài giọt",
+    "o": "Phần đế bánh"
+   },
+   {
+    "n": "kem tươi"
+   },
+   {
+    "n": "anh đào đen đóng hộp",
+    "u": "hộp",
+    "o": "hộp 1 lb"
+   },
+   {
+    "n": "mứt anh đào đen"
+   },
+   {
+    "n": "rượu brandy hoặc nước ép anh đào"
+   },
+   {
+    "n": "sô-cô-la bào",
+    "o": "100 g"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đánh bơ đường",
+    "d": "Đánh kỹ bơ với đường."
+   },
+   {
+    "t": "Thêm sô-cô-la và trứng",
+    "d": "Đun chảy sô-cô-la, đánh vào hỗn hợp bơ đường, rồi đánh trứng vào."
+   },
+   {
+    "t": "Rây bột",
+    "d": "Rây chung bột mì, muối và quế."
+   },
+   {
+    "t": "Trộn bột",
+    "d": "Trộn nhẹ tay phần khô vào phần ướt, rồi trộn nhẹ tay kem chua và cà phê nguội vào."
+   },
+   {
+    "t": "Nướng cốt bánh",
+    "d": "Đổ hỗn hợp vào khuôn tròn sâu 9 inch đã lót giấy và phết dầu, nướng trong 1 giờ 25 phút."
+   },
+   {
+    "t": "Để nguội",
+    "d": "Đặt bánh lên vỉ cho nguội."
+   },
+   {
+    "t": "Trộn đế bánh",
+    "d": "Trộn tất cả nguyên liệu phần đế trong tô đến khi hỗn hợp kết lại và cứng."
+   },
+   {
+    "t": "Cán đế bánh",
+    "d": "Cán bột trên mặt bàn đã rắc bột đến khi bằng kích thước đáy khuôn bánh."
+   },
+   {
+    "t": "Nướng đế bánh",
+    "d": "Đặt lên khay nướng và nướng trong 20–25 phút ở 350°F (175 °C), hoặc đến khi cắm tăm vào giữa rút ra sạch."
+   },
+   {
+    "t": "Đánh kem",
+    "d": "Đánh kem tươi đến khi giữ được hình dạng."
+   },
+   {
+    "t": "Chuẩn bị túi bắt kem",
+    "d": "Cho một ít kem đã đánh vào túi bắt kem gắn đầu sao, để dành trang trí."
+   },
+   {
+    "t": "Cắt cốt bánh",
+    "d": "Cắt ngang bánh thành 3 lớp bằng nhau."
+   },
+   {
+    "t": "Chuẩn bị anh đào",
+    "d": "Để ráo anh đào, giữ lại 8 quả để trang trí và bỏ hạt phần còn lại."
+   },
+   {
+    "t": "Phết mứt",
+    "d": "Đặt đế bánh lên đĩa, phết mứt anh đào đen lên đế."
+   },
+   {
+    "t": "Tẩm cốt bánh",
+    "d": "Tẩm các lớp bánh bằng rượu brandy hoặc nước ép anh đào."
+   },
+   {
+    "t": "Đặt lớp đầu",
+    "d": "Đặt một lớp bánh lên đế đã phết mứt."
+   },
+   {
+    "t": "Phết kem",
+    "d": "Phết một lớp kem lên bánh, rồi xếp một nửa lượng anh đào đã bỏ hạt lên."
+   },
+   {
+    "t": "Thêm lớp thứ hai",
+    "d": "Đặt lớp bánh thứ hai, rồi thêm một lớp kem và anh đào."
+   },
+   {
+    "t": "Đặt lớp cuối",
+    "d": "Đặt lớp bánh cuối cùng lên trên."
+   },
+   {
+    "t": "Phủ kem",
+    "d": "Phủ phần kem còn lại quanh toàn bộ bánh, rồi ấn sô-cô-la bào lên."
+   },
+   {
+    "t": "Trang trí",
+    "d": "Trang trí mặt bánh bằng những bông kem và các quả anh đào nguyên đã để dành."
+   }
+  ],
+  "sourceHash": "3534d2a7e06bb13117e61b40207804de85ae228ea065d2616d992cff0b4d27b1"
+ },
+ {
+  "pageId": 480539,
+  "title": "Dürüm bữa sáng (Bánh cuốn trứng, khoai và bò)",
+  "description": "Dürüm là món ăn nhanh Trung Đông, tương tự bánh cuốn. Biến thể này kết hợp trứng ốp lết rau bina và nấm, khoai bào áp chảo, hummus và thịt bò, tất cả cuộn trong bánh mì dẹt “lavash” hoặc “yufka” có vị bùi, tạo nên bữa sáng mang theo cay nồng và béo ngậy.",
+  "ingredients": [
+   {
+    "n": "bánh mì dẹt lavash hoặc yufka",
+    "u": "tấm lớn"
+   },
+   {
+    "n": "nước (phết bánh)"
+   },
+   {
+    "n": "khoai tây russet",
+    "u": "củ",
+    "o": "bào sợi"
+   },
+   {
+    "n": "nước nóng"
+   },
+   {
+    "n": "bơ hoặc dầu ô liu",
+    "o": "chia làm hai phần"
+   },
+   {
+    "n": "nấm baby bella hoặc Crimini thái mỏng"
+   },
+   {
+    "n": "rau bina tươi"
+   },
+   {
+    "n": "trứng lớn",
+    "u": "quả"
+   },
+   {
+    "n": "sữa"
+   },
+   {
+    "n": "phô mai cheddar đậm vị bào sợi"
+   },
+   {
+    "n": "hành tây",
+    "u": "củ",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "thịt bò thăn đã nấu chín",
+    "u": "lát mỏng"
+   },
+   {
+    "n": "muối",
+    "o": "Gia vị"
+   },
+   {
+    "n": "ớt bột paprika",
+    "o": "Gia vị"
+   },
+   {
+    "n": "thì là Ai Cập",
+    "o": "Gia vị"
+   },
+   {
+    "n": "ớt bột",
+    "o": "Gia vị"
+   },
+   {
+    "n": "nhục đậu khấu",
+    "o": "Gia vị"
+   },
+   {
+    "n": "tiêu",
+    "o": "Gia vị"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Nướng bánh dẹt",
+    "d": "Phết thìa nước lên bánh mì dẹt để giữ mềm. Nướng bánh trên chảo hoặc lò nướng nhỏ đến khi rìa vàng nâu, rồi để riêng."
+   },
+   {
+    "t": "Rửa bột khoai",
+    "d": "Trộn khoai bào với một nửa lượng nước nóng trong tô. Để 3 phút, khuấy kỹ rồi chắt nước. Lặp lại với phần nước nóng còn lại, rồi để ráo khoai trong rổ. Lắc nhẹ theo chiều ngang để loại bớt tinh bột và nước, rồi để khô."
+   },
+   {
+    "t": "Xào nấm và rau",
+    "d": "Xào nấm với 1 thìa canh bơ. Thêm rau bina, nấu ở lửa vừa đến khi hơi héo."
+   },
+   {
+    "t": "Làm trứng ốp lết",
+    "d": "Đánh đều trứng, gia vị và sữa, đổ lên rau bina và nấm. Khi trứng chín một nửa, rắc cheddar lên, gấp đôi trứng lại và lấy ra khỏi chảo."
+   },
+   {
+    "t": "Áp chảo khoai và thịt",
+    "d": "Đun nóng phần bơ còn lại trong chảo. Tăng lửa lớn, cho khoai, hành và thịt bò vào, trải đều kín đáy chảo. Nêm vừa ăn, áp chảo đến khi đạt độ vàng và giòn mong muốn, nhớ lật mặt. Tắt bếp."
+   },
+   {
+    "t": "Cuộn dürüm",
+    "d": "Đặt tấm bánh phẳng, cạnh dài nằm hai bên trái phải. Phết đều hummus lên nửa bánh xa bạn. Xếp đều khoai và trứng lên nửa gần bạn. Gấp mép gần lại, cuộn thành khối trụ dày 5 cm (2 inch) và dọn ăn."
+   }
+  ],
+  "sourceHash": "6095694d40cede82372bbbdb654932150227de80eac17848736dd8a6dd1f15a1"
+ },
+ {
+  "pageId": 483806,
+  "title": "Bunny Chow (Ổ bánh mì nhồi cà ri Nam Phi)",
+  "description": "Bunny chow là món ăn đường phố Nam Phi gồm ổ bánh mì khoét rỗng nhồi cà ri. Có nguồn gốc từ Durban, món này thường làm với cà ri cừu, gà, bò hoặc đậu. Món ăn thịnh hành khắp Nam Phi và được yêu thích vì dễ mang theo và đậm vị. Dùng kèm salad cà rốt, chutney hoặc rau muối để thêm hương vị; ngon nhất khi bánh mì còn tươi và cà ri còn nóng.",
+  "ingredients": [
+   {
+    "n": "dầu thực vật",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "hành tây lớn",
+    "u": "củ",
+    "o": "băm, phần cà ri"
+   },
+   {
+    "n": "tỏi",
+    "o": "băm nhuyễn, phần cà ri"
+   },
+   {
+    "n": "gừng tươi bào",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "cà chua",
+    "u": "quả",
+    "o": "băm, phần cà ri"
+   },
+   {
+    "n": "bột cà ri",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "nghệ bột",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "ớt bột paprika",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "thịt bò, cừu, gà hoặc rau củ thập cẩm",
+    "o": "1 lb, cắt miếng, phần cà ri"
+   },
+   {
+    "n": "khoai tây cỡ vừa",
+    "u": "củ",
+    "o": "cắt khối, phần cà ri"
+   },
+   {
+    "n": "nước lọc hoặc nước dùng",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "muối",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "tiêu đen",
+    "o": "Phần cà ri"
+   },
+   {
+    "n": "bánh mì trắng nguyên ổ",
+    "u": "ổ lớn",
+    "o": "không cắt lát, phần dọn món"
+   },
+   {
+    "n": "ngò rí tươi",
+    "t": "tùy chọn",
+    "o": "Phần dọn món"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun dầu",
+    "d": "Đun nóng dầu trong nồi lớn ở lửa vừa."
+   },
+   {
+    "t": "Xào hành",
+    "d": "Cho hành tây vào xào đến khi mềm."
+   },
+   {
+    "t": "Thêm tỏi gừng",
+    "d": "Khuấy tỏi và gừng vào, nấu 1 phút."
+   },
+   {
+    "t": "Thêm gia vị",
+    "d": "Cho bột cà ri, nghệ và paprika vào, đảo đến khi dậy mùi."
+   },
+   {
+    "t": "Xào thịt",
+    "d": "Cho thịt hoặc rau củ vào, nấu đến khi hơi vàng."
+   },
+   {
+    "t": "Thêm cà chua",
+    "d": "Cho cà chua vào nấu đến khi mềm."
+   },
+   {
+    "t": "Thêm khoai và nước",
+    "d": "Cho khoai tây và nước vào, nêm một ít muối và tiêu."
+   },
+   {
+    "t": "Ninh cà ri",
+    "d": "Ninh nhỏ lửa 30–40 phút, đến khi thịt và khoai mềm, nước sốt sánh lại. Nêm lại nếu cần."
+   },
+   {
+    "t": "Khoét bánh mì",
+    "d": "Cắt ổ bánh mì làm đôi hoặc làm tư, bỏ bớt ruột mềm ở mỗi phần để tạo khoang rỗng."
+   },
+   {
+    "t": "Nhồi cà ri",
+    "d": "Múc thật nhiều cà ri nóng vào khoang bánh."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Trang trí với ngò rí nếu muốn và dọn ăn ngay."
+   }
+  ],
+  "sourceHash": "293989dcbfb81f5e22a3fc710d1934aad3e81c9eeae74ce76e1fb8646efbd743"
+ },
+ {
+  "pageId": 196407,
+  "title": "Caponata (Cà tím và rau củ kiểu Sicily)",
+  "description": "Caponata là món cà tím của Sicily, gồm rau củ nấu chín với cà tím chiên thái nhỏ, cần tây, giấm ngọt và nụ bạch hoa trong nước sốt ngọt.",
+  "ingredients": [
+   {
+    "n": "cà tím",
+    "o": "1 kg"
+   },
+   {
+    "n": "ô liu xanh ngâm nước muối",
+    "o": "bỏ hạt, 225 g"
+   },
+   {
+    "n": "nụ bạch hoa muối (capers)",
+    "o": "rửa sạch, 170 g"
+   },
+   {
+    "n": "cần tây",
+    "o": "570 g"
+   },
+   {
+    "n": "sốt cà chua",
+    "o": "tùy chọn"
+   },
+   {
+    "n": "hành tây",
+    "o": "300 g"
+   },
+   {
+    "n": "cà chua",
+    "o": "300 g"
+   },
+   {
+    "n": "giấm"
+   },
+   {
+    "n": "đường"
+   },
+   {
+    "n": "húng quế"
+   },
+   {
+    "n": "hạt thông"
+   },
+   {
+    "n": "dầu ô liu"
+   },
+   {
+    "n": "muối"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Sơ chế cần tây",
+    "d": "Tước xơ cần tây, chần trong nước hơi muối năm phút. Để ráo, cắt miếng vừa ăn, xào với ít dầu rồi để riêng."
+   },
+   {
+    "t": "Sơ chế cà tím và cà chua",
+    "d": "Rửa và thái hạt lựu cà tím, để ráo, rắc nhiều muối và để vài giờ cho hết đắng. Trong lúc đó, chần, lột vỏ, bỏ hạt và băm cà chua."
+   },
+   {
+    "t": "Nấu sốt cà chua",
+    "d": "Sau khi ngâm muối, rửa sạch muối và thấm khô cà tím. Thái mỏng hành tây, xào trong dầu ô liu đến khi trong, rồi cho nụ bạch hoa, hạt thông, ô liu và cà chua vào. Tiếp tục nấu, khuấy bằng thìa gỗ đến khi cà chua chín, khoảng 15 phút, rồi nhấc nồi khỏi bếp."
+   },
+   {
+    "t": "Chiên cà tím và trộn",
+    "d": "Trong lúc nấu cà chua, đun nóng chảo dầu khác và chiên cà tím theo từng mẻ để nhiệt độ dầu không tụt. Khi xong mẻ cuối, đặt lại nồi cà chua lên bếp, khuấy cà tím và cần tây đã xào vào. Nấu vài phút ở lửa nhỏ, khuấy nhẹ, rồi cho giấm và đường vào; khi giấm gần bay hơi hết, nhấc nồi và để nguội."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng caponata nguội, trang trí húng quế tươi. Món này giữ được vài ngày trong tủ lạnh."
+   }
+  ],
+  "sourceHash": "849de32662c6b53b07ab731d7d43de3ced5def0501f13f0b1838b6d3665f8018"
+ },
+ {
+  "pageId": 476140,
+  "title": "Chakalaka (Rau củ hầm cay Nam Phi)",
+  "description": "Chakalaka là món rau củ cay của Nam Phi làm từ đậu, ớt, cà rốt và cà chua. Món này thường dùng làm món phụ ăn với bánh mì, pap (cháo ngô) hoặc thịt. Chakalaka rất linh hoạt, có thể thay đổi rau củ và gia vị tùy vùng hoặc sở thích.",
+  "ingredients": [
+   {
+    "n": "dầu ăn",
+    "o": "hoặc nhiều hơn nếu cần"
+   },
+   {
+    "n": "hành tây cỡ vừa",
+    "u": "củ",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "bột cà ri",
+    "o": "hoặc tùy khẩu vị"
+   },
+   {
+    "n": "ớt bột"
+   },
+   {
+    "n": "ớt xanh Thái nhỏ",
+    "u": "quả",
+    "o": "băm"
+   },
+   {
+    "n": "cà rốt cỡ vừa",
+    "u": "củ",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "cà chua cỡ vừa",
+    "u": "quả",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "ớt chuông xanh cỡ vừa",
+    "u": "quả",
+    "o": "thái hạt lựu"
+   },
+   {
+    "n": "nước"
+   },
+   {
+    "n": "viên nêm rau củ",
+    "u": "viên",
+    "o": "bóp vụn"
+   },
+   {
+    "n": "muối và tiêu đen xay"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun dầu",
+    "d": "Đun nóng dầu trong chảo sâu lòng lớn ở lửa vừa."
+   },
+   {
+    "t": "Xào hành",
+    "d": "Cho hành tây vào xào 2–3 phút đến khi mềm."
+   },
+   {
+    "t": "Thêm gia vị",
+    "d": "Khuấy bột cà ri, ớt bột và ớt xanh vào. Nấu 1 phút đến khi dậy mùi."
+   },
+   {
+    "t": "Thêm rau củ",
+    "d": "Cho cà chua, cà rốt và ớt chuông vào, đảo đều."
+   },
+   {
+    "t": "Ninh rau củ",
+    "d": "Cho viên nêm và nước vào. Đậy nắp, ninh nhỏ lửa 10–15 phút đến khi rau mềm."
+   },
+   {
+    "t": "Thêm đậu",
+    "d": "Khuấy đậu đóng hộp sốt cà vào, nấu không đậy nắp thêm 3–5 phút đến khi hỗn hợp sánh lại."
+   },
+   {
+    "t": "Nêm lại",
+    "d": "Nếm và nêm lại với muối và tiêu."
+   }
+  ],
+  "sourceHash": "17d9c4572b2e2b49afa395cae40b7c3535f2366fb9cb484e316095647706c9ef"
+ },
+ {
+  "pageId": 42652,
+  "title": "Chicken Tikka (Gà nướng tẩm sữa chua kiểu Ấn Độ)",
+  "description": "Chicken tikka là món gà có nguồn gốc từ vùng Punjab của tiểu lục địa Ấn Độ, làm bằng cách nướng thịt gà đã ướp gia vị và sữa chua. Không nên nhầm với Chicken Tikka Masala, món dùng chính gà tikka làm nguyên liệu. Theo truyền thống, gà được xiên và nướng trong lò đất tandoor, thường không có xương. Món rất ngon khi dùng với cơm vàng và salad cay.",
+  "ingredients": [
+   {
+    "n": "ức gà bỏ da và xương",
+    "o": "thái khối, 1,5 lb"
+   },
+   {
+    "n": "dầu hạt mù tạt"
+   },
+   {
+    "n": "sữa",
+    "o": "2 fl oz"
+   },
+   {
+    "n": "sữa chua tự nhiên",
+    "o": "5 fl oz"
+   },
+   {
+    "n": "nước cốt chanh"
+   },
+   {
+    "n": "cà chua cô đặc"
+   },
+   {
+    "n": "ngò rí tươi băm"
+   },
+   {
+    "n": "tỏi lớn",
+    "u": "tép",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "ớt đỏ tươi băm",
+    "o": "tùy độ cay của ớt và độ cay mong muốn của nước ướp"
+   },
+   {
+    "n": "ớt bột paprika"
+   },
+   {
+    "n": "garam masala"
+   },
+   {
+    "n": "bột thì là Ai Cập"
+   },
+   {
+    "n": "nghệ bột"
+   },
+   {
+    "n": "muối (tốt nhất là muối hột)"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Trộn nước ướp",
+    "d": "Cho tất cả nguyên liệu, trừ thịt gà, vào tô không phải kim loại và trộn đều."
+   },
+   {
+    "t": "Áo gà",
+    "d": "Cho gà vào, trộn đến khi áo đều."
+   },
+   {
+    "t": "Ướp gà",
+    "d": "Tốt nhất nên để gà trong tủ lạnh ướp ít nhất 24 giờ. Gà đã từng đông lạnh có thể không an toàn nếu ướp quá 24 giờ, còn gà tươi nên ướp 48 giờ để đạt kết quả tốt nhất. Nếu không muốn ướp, chuyển ngay sang bước sau."
+   },
+   {
+    "t": "Nướng gà",
+    "d": "Tốt nhất là xiên gà và nướng trong lò tandoor hoặc lò gốm. Cũng có thể xiên và nướng vỉ ở nhiệt vừa 5–8 phút mỗi mặt, hoặc nướng than (thời gian tùy nhiệt độ bếp). Luôn đảm bảo gà chín kỹ trước khi dọn; thịt phải tách ra dễ dàng khi ấn bằng cạnh nĩa."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Dùng với bánh naan, cơm, hoặc dùng để nấu Chicken Tikka Masala."
+   }
+  ],
+  "sourceHash": "0468857ff1fb70d6b8345eb308246b4dfd6229450e286e7157e0bb5d334c234a"
+ },
+ {
+  "pageId": 42657,
+  "title": "Chicken Tikka Masala (Gà nướng sốt cà chua cà ri)",
+  "description": "Chicken tikka masala là món gồm những miếng gà nướng kiểu Ấn Độ (Chicken Tikka) nấu trong sốt cà ri cà chua, có nguồn gốc từ Ấn Độ. Món này không có công thức chuẩn; một khảo sát cho thấy trong 48 công thức khác nhau, nguyên liệu chung duy nhất là thịt gà. Nước sốt thường có cà chua, kem tươi hoặc kem dừa và nhiều loại gia vị.",
+  "ingredients": [
+   {
+    "n": "gà tikka đã nấu chín",
+    "o": "1,5 lb"
+   },
+   {
+    "n": "dầu hạt mù tạt"
+   },
+   {
+    "n": "tỏi lớn",
+    "u": "tép",
+    "o": "băm nhuyễn"
+   },
+   {
+    "n": "hành tây",
+    "o": "băm nhuyễn (tùy chọn), 7 oz"
+   },
+   {
+    "n": "cà chua đóng hộp",
+    "u": "hộp",
+    "o": "hộp 28 oz, băm"
+   },
+   {
+    "n": "ớt xanh tươi băm",
+    "o": "tùy độ cay của ớt và độ cay mong muốn của sốt"
+   },
+   {
+    "n": "ngò rí tươi băm"
+   },
+   {
+    "n": "kem tươi loãng",
+    "o": "4 fl oz"
+   },
+   {
+    "n": "giấm mạch nha hoặc nước cốt me"
+   },
+   {
+    "n": "sốt cà ri"
+   },
+   {
+    "n": "sốt tandoori masala"
+   },
+   {
+    "n": "cà chua cô đặc"
+   },
+   {
+    "n": "garam masala"
+   }
+  ],
+  "steps": [
+   {
+    "t": "Đun dầu",
+    "d": "Đun nóng dầu trong chảo sâu lòng hoặc chảo rán lớn."
+   },
+   {
+    "t": "Xào tỏi hành",
+    "d": "Cho tỏi và hành tây vào xào đến khi vàng."
+   },
+   {
+    "t": "Thêm sốt cà ri",
+    "d": "Cho các loại sốt cà ri vào, trộn đều, thêm một ít nước hoặc sữa chua."
+   },
+   {
+    "t": "Làm nóng gà",
+    "d": "Cho gà tikka đã nấu vào, xào hai phút cho nóng đều."
+   },
+   {
+    "t": "Ninh sốt",
+    "d": "Cho cà chua, giấm, cà chua cô đặc và ớt vào, ninh nhỏ lửa năm phút. Thêm nước nếu cần."
+   },
+   {
+    "t": "Thêm kem",
+    "d": "Cho kem, garam masala và ngò rí băm vào, ninh nhỏ lửa thêm một lúc."
+   },
+   {
+    "t": "Dọn món",
+    "d": "Trang trí với ngò rí tươi, dùng với bánh naan, cơm nhuộm vàng bằng nghệ, bánh hành bhaji và/hoặc một ly rượu vang trắng."
+   }
+  ],
+  "sourceHash": "62655bf79567a912bc843e173ee6bf4a9cb8c40d6f6c1bc0cc7d9640c582acbd"
+ }
+]
