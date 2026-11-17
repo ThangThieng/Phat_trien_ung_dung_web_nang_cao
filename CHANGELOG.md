@@ -12,8 +12,8 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
 chứng cuối dự án xanh (39/39 FR, 48/48 endpoint, `dotnet test`, `npm test`, `npx playwright test`, 8 service healthy). Gắn tag trên commit merge vào
 `main`: `git tag -a v1.0.0 -m "Culinary Blog 1.0.0"`, rồi đổi tiêu đề mục này thành `## [1.0.0] - YYYY-MM-DD`.
 
-Các mục còn chờ trước khi phát hành: Lab 8 của Dev 1, Dev 2, Dev 3 (quản lý người dùng; biểu mẫu công thức + máy trạng thái; SEO + WCAG). Lab 7 của
-cả 4 dev đã vào `develop` ngày 30/10/2026.
+Lab 7 của cả 4 dev đã vào `develop` ngày 30/10/2026, Lab 8 của cả 4 dev ngày 05/11/2026. Kiểm chứng lại ngày 17/11/2026: `dotnet test`
+729/729, `npm test` 453/453. Các mục còn chờ trước khi gắn tag: người trong nhóm duyệt bản dịch và ảnh dữ liệu mẫu (kế hoạch §B.2.7).
 
 ### Thay đổi: Việt hóa toàn bộ giao diện (06/11/2026)
 
