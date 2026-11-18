@@ -6,14 +6,27 @@ phiên bản theo [Semantic Versioning 2.0.0](https://semver.org/lang/vi/) (NFR-
 Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.7). Trước `1.0.0` dự án chưa phát hành bản nào;
 mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` và lịch sử git.
 
-## [Unreleased] — sẽ phát hành thành [1.0.0]
+## [1.0.0] - 2026-11-18
 
-**Điều kiện gắn tag `v1.0.0`** (kế hoạch §7 — Verification B8): cả 4 nhánh Buổi 8 đã vào `develop` theo thứ tự merge chuẩn, `develop` → `main`, kiểm
-chứng cuối dự án xanh (39/39 FR, 48/48 endpoint, `dotnet test`, `npm test`, `npx playwright test`, 8 service healthy). Gắn tag trên commit merge vào
-`main`: `git tag -a v1.0.0 -m "Culinary Blog 1.0.0"`, rồi đổi tiêu đề mục này thành `## [1.0.0] - YYYY-MM-DD`.
+Bản phát hành đầu tiên. Tag `v1.0.0` gắn trên commit merge `develop` → `main` (kế hoạch §7 — Verification B8). Cả 4 nhánh Buổi 7 vào `develop`
+ngày 30/10/2026, cả 4 nhánh Buổi 8 ngày 05/11/2026.
 
-Lab 7 của cả 4 dev đã vào `develop` ngày 30/10/2026, Lab 8 của cả 4 dev ngày 05/11/2026. Kiểm chứng lại ngày 17/11/2026: `dotnet test`
-729/729, `npm test` 453/453. Các mục còn chờ trước khi gắn tag: người trong nhóm duyệt bản dịch và ảnh dữ liệu mẫu (kế hoạch §B.2.7).
+Kiểm chứng ngày 17–18/11/2026: `dotnet test` 729/729; `npm test` 453/453; `npx playwright test --workers=1` 48 đạt, 1 bỏ qua có chủ đích
+(`responsive.spec.ts` kiểm ảnh qua `/_next/image`, mà ở `localhost` ảnh đi thẳng `/media/` — `lib/images.ts`) trên stack production
+(`docker-compose.prod.yml` + `docker-compose.e2e.yml`, Edge); 8 service healthy (api ×3). Chạy E2E 2 worker thì vòng đời công thức và đặt lại
+mật khẩu có lúc nhận 429: hai worker dùng chung hạn mức thật theo IP (`/auth/*` 10 lần/phút, ghi công thức) — rate limit đúng thiết kế.
+
+**Đã biết khi phát hành:**
+
+- Bản dịch và ảnh của dữ liệu mẫu Wikibooks chưa được người trong nhóm duyệt (kế hoạch §B.2.7) — nhóm trưởng chọn gắn tag trước, duyệt sau.
+- Nút "Đăng nhập bằng Google" chỉ hiện khi đặt `GOOGLE_CLIENT_ID` (`.env` / `.env.production`) rồi build lại `frontend`.
+- URL ảnh lưu tuyệt đối theo `MEDIA_PUBLIC_URL` lúc nhập ảnh: dev (`http://localhost/media`) và production (`https://localhost/media`) dùng chung
+  volume nên khi đổi qua lại cần đổi tiền tố trong `RecipeImages`; triển khai thật chỉ có một địa chỉ nên không gặp.
+- Còn cần người làm: Google Rich Results Test, Facebook/Zalo debugger, NVDA/VoiceOver, đo lại Lighthouse trên máy demo.
+
+### Thay đổi: Trang hồ sơ theo giao diện xanh navy – vàng (18/11/2026)
+
+- `/profile`: thẻ ảnh đại diện, tab có biểu tượng, khung, nút và danh sách phiên đăng nhập cùng kiểu với các trang quản trị; tiểu sử dùng ô nhiều dòng.
 
 ### Thay đổi: Việt hóa toàn bộ giao diện (06/11/2026)
 
