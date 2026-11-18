@@ -4008,7 +4008,7 @@ Trưởng nhóm yêu cầu hợp nhất cả 4 nhánh và tự hoàn thiện ph�
 
 **Kiểm chứng trên bản hợp nhất:** backend 729/729, frontend 447/447, ETL 64/64, không có thay đổi model chưa có migration, E2E 48/48 trên stack production với Edge (xác thực, vòng đời, hai tab, tìm kiếm, SEO, a11y, responsive, CSP).
 
-**Còn cần người làm:** duyệt bản dịch và ảnh (§B.2.7); Google Rich Results Test, Facebook/Zalo debugger, NVDA/VoiceOver; đo lại Lighthouse trên máy demo; gắn tag `v1.0.0` (chưa gắn, chờ duyệt bản dịch). Stress test và chịu lỗi chưa đo lại trên bản hợp nhất. Báo cáo Lab của từng thành viên không sửa, nên số liệu trong đó là số tại nhánh riêng.
+**Còn cần người làm:** duyệt bản dịch và ảnh (§B.2.7); Google Rich Results Test, Facebook/Zalo debugger, NVDA/VoiceOver; đo lại Lighthouse trên máy demo; gắn tag `v1.0.0` (chưa gắn, chờ duyệt bản dịch — *cập nhật 18/11/2026: đã gắn theo quyết định của nhóm trưởng, việc duyệt bản dịch và ảnh vẫn còn; kiểm chứng lại xem `CHANGELOG.md` mục [1.0.0]*). Stress test và chịu lỗi chưa đo lại trên bản hợp nhất. Báo cáo Lab của từng thành viên không sửa, nên số liệu trong đó là số tại nhánh riêng.
 
 **Bổ sung ảnh (05/11/2026), theo yêu cầu của trưởng nhóm:** tìm lại trên Wikimedia Commons cho 58 công thức cũ còn thiếu, xem từng ứng viên rồi chọn được 57; tổng 200/201 công thức có ảnh, đều giấy phép mở và đủ biến thể. **Phở cuốn** chưa có ảnh vì không tìm được ảnh giấy phép mở đúng món. Khác nguyên tắc ban đầu "không có ảnh đúng món thì không thêm": 26 ảnh chỉ gần đúng (ví dụ lẩu mắm dùng ảnh bún mắm, cua rang me dùng ảnh cua rang muối), ghi từng món và lý do ở `tools/recipe-etl/legacy_image_notes.json` để người duyệt thay khi có ảnh tốt hơn.
 
