@@ -112,6 +112,11 @@ WebP đã thu nhỏ (ảnh thẻ đầu 27 KB → 13 KB). Hai cách đo:
 - **React #418 (hydration)** xuất hiện ở 4/9 lượt `devtools` (trang chủ, trang chi tiết); không tái hiện được bằng Playwright (Edge, cùng
   user-agent Moto G, DPR 1,75, làm chậm mạng/CPU) hay bản `next dev`. React tự dựng lại phần lệch nên người dùng không thấy lỗi; ghi lại để theo dõi.
 
+**Lưu ý về các lượt đo 18 – 19/11/2026:** image `culinaryblog-web` dùng để đo được build tay bằng Git Bash, nên `NEXT_PUBLIC_API_BASE_URL=/api/v1`
+bị đổi thành đường dẫn Windows và mọi lời gọi API **từ trình duyệt** thất bại (phát hiện nhờ E2E ngày 19/11). Ba trang được đo render phía server
+(`API_INTERNAL_BASE_URL` không bị ảnh hưởng) nên ảnh, chữ và LCP đúng; phần JavaScript chạy sau hydrate có thể ít việc hơn thực tế. Build lại
+đúng (`MSYS_NO_PATHCONV=1`): E2E **49/49** trên stack production. Nên đo lại một lượt trên máy demo.
+
 Hướng còn lại nếu cần đạt 2,5 s trên mobile: giảm bộ font (bớt độ đậm 500 hoặc 700 của Be Vietnam Pro, hoặc bỏ Playfair) — là thay đổi thiết kế,
 cần nhóm quyết định; và đo lại khi bộ tối ưu ảnh hoạt động.
 
