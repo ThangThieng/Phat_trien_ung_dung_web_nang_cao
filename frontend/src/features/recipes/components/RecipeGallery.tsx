@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { IMAGE_UNOPTIMIZED } from '@/lib/images';
+import { IMAGE_UNOPTIMIZED, toImageSrc } from '@/lib/images';
 import type { RecipeImage } from '@/types/recipe';
 
 const RecipeLightbox = dynamic(() => import('./RecipeLightbox'), { ssr: false });
@@ -42,11 +42,12 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
         className="relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-gold-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
       >
         <Image
-          src={imageUrl(primary)}
+          src={toImageSrc(imageUrl(primary))}
           alt={primary.altText ?? title}
           width={800}
           height={600}
           priority
+          fetchPriority="high"
           unoptimized={IMAGE_UNOPTIMIZED}
           sizes="(max-width: 1024px) 100vw, 50vw"
           className="absolute inset-0 h-full w-full object-cover"
@@ -62,7 +63,7 @@ export default function RecipeGallery({ images, title }: { images: RecipeImage[]
                 className="relative block size-16 overflow-hidden rounded-lg ring-offset-2 focus-visible:outline-2 focus-visible:outline-gold-ink"
               >
                 <Image
-                  src={image.thumbnailUrl ?? imageUrl(image)}
+                  src={toImageSrc(image.thumbnailUrl ?? imageUrl(image))}
                   alt={image.altText ?? title}
                   width={64}
                   height={64}

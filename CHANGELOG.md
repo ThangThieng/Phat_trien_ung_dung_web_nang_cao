@@ -3,8 +3,37 @@
 Mọi thay đổi đáng kể của Culinary Blog được ghi ở đây. Định dạng theo [Keep a Changelog 1.1.0](https://keepachangelog.com/vi/1.1.0/), đánh số
 phiên bản theo [Semantic Versioning 2.0.0](https://semver.org/lang/vi/) (NFR-MAINT-003).
 
-Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.7). Trước `1.0.0` dự án chưa phát hành bản nào;
+Số phiên bản ở đây là phiên bản **phần mềm**, độc lập với số phiên bản tài liệu đặc tả (SRS v1.2.8). Trước `1.0.0` dự án chưa phát hành bản nào;
 mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` và lịch sử git.
+
+## [Unreleased]
+
+### Fixed
+
+- **Tác giả mẫu không còn mang tên người giả:** 5 tài khoản mẫu tên "Tác giả mẫu 1…5", giới thiệu ghi rõ không phải người thật (trước đó Bogus đặt
+  tên người Việt ngẫu nhiên như "Kim Quyên Vũ"). Database cũ được đổi tên khi API khởi động, trừ hồ sơ đã có người tự sửa.
+
+- **Trang trả 500 khi nhiều người (hoặc Googlebot) đọc nhanh (CR-2026-10, SRS v1.2.8, MT-73):** request nạp Data Cache của Frontend không mang
+  IP người xem nên cả hệ thống chung hạn mức 100/phút của IP container Frontend. Nay có hạn mức render chung 1.000/phút qua bí mật nội bộ
+  `RENDER_GATE_SECRET` (Nginx xóa header `X-Render-Gate` từ bên ngoài); 429 lúc render → `/too-many-requests` trả 429 + `Retry-After`.
+  Đo lại: 190 trang công thức trong 17 giây đều 200, API 0 lần 429. **Máy đã có `.env`: thêm `RENDER_GATE_SECRET`** (`tools/dev-setup.sh` tự điền).
+- Tải ảnh lên khi MinIO tắt: 503 sau **5 giây** thay vì 12 – 16 giây (`MinIO:OperationTimeoutSeconds`).
+- Ảnh đi qua bộ tối ưu của `next/image` ở mọi môi trường, kể cả `localhost` (đường dẫn tương đối `/media/…` + rewrite nội bộ tới MinIO).
+- Máy mới dựng thiếu `SEED_ADMIN_PASSWORD`: API ghi cảnh báo rõ ràng thay vì im lặng bỏ qua tài khoản Admin; mật khẩu không đạt quy tắc cũng
+  được ghi lỗi. Worker Hangfire có thêm `/health` như container `api`.
+
+### Changed
+
+- Logo chuyển sang WebP 128/256 px (từ PNG 92 KB) và không còn được tải sẵn; ảnh LCP có `fetchPriority="high"`; font tiêu đề Playfair
+  không preload. Ảnh LCP bắt đầu tải sớm hơn ~0,5 s, nhưng LCP mobile mô phỏng chưa đạt 2,5 s (`docs/lighthouse-report.md` §4c).
+- README: hướng dẫn bật đăng nhập Google (Client ID, origin, build lại); số liệu dữ liệu mẫu cập nhật 26 danh mục / 201 công thức.
+
+### Đo lại (19/11/2026)
+
+- Stress tới 1.000 người dùng và chịu lỗi (tắt Redis, MinIO khi đang tải) trên bản `v1.0.0`: 0 lỗi, không có ngưỡng gãy
+  (`docs/load-test-report.md` §9). Tải ảnh lên khi MinIO tắt trả 503 sau 16 giây.
+- Lighthouse trên hệ thống thật: desktop đạt mọi ngưỡng; mobile LCP 3,96 – 4,11 s (`docs/lighthouse-report.md` §4c).
+- JSON-LD Recipe: 190/190 trang công thức có đủ thuộc tính bắt buộc của Google và đúng định dạng thời gian ISO 8601.
 
 ## [1.0.0] - 2026-11-18
 

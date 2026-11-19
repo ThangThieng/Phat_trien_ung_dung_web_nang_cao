@@ -6,6 +6,8 @@ export function middleware(request: NextRequest) {
   const nonce = crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
+  // CR-2026-10: đường dẫn đang render, để trang /too-many-requests có nút quay lại đúng trang.
+  requestHeaders.set('x-request-path', `${request.nextUrl.pathname}${request.nextUrl.search}`);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   const header = getCspMode() === 'report-only' ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';

@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
   htmlLimitedBots: /.*/,
   eslint: { dirs: ['src'] },
   // Route chính thức theo SRS §5.1 là /auth/login, /auth/register – giữ alias ngắn
+  // CR-2026-10: bộ tối ưu ảnh đọc ảnh `/media/…` (đường dẫn tương đối — lib/images.ts) qua rewrite nội bộ này tới MinIO trong mạng
+  // Docker; trình duyệt không bao giờ tới đây vì Nginx tự phục vụ /media/ (app-locations.conf). Đích cố định lúc build.
+  async rewrites() {
+    const mediaInternal = (process.env.MEDIA_INTERNAL_URL ?? 'http://minio:9000/culinary-blog').replace(/\/$/, '');
+    return [{ source: '/media/:path+', destination: `${mediaInternal}/:path+` }];
+  },
   async redirects() {
     return [
       { source: '/login', destination: '/auth/login', permanent: true },

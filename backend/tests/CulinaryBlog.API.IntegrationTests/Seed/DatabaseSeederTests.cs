@@ -52,6 +52,55 @@ public class DatabaseSeederTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
     }
 
     [Fact]
+    public async Task Seed_CreatesSampleAuthorsWhoseNamesSayTheyAreSamples()
+    {
+        await SeedAsync();
+
+        using var scope = factory.Services.CreateScope();
+        var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        for (var i = 1; i <= 5; i++)
+        {
+            var author = await users.FindByEmailAsync($"author{i}@culinaryblog.local");
+            Assert.NotNull(author);
+            Assert.Equal($"Tác giả mẫu {i}", author.DisplayName);
+            Assert.Equal(RecipeSeedCatalog.SampleAuthorBio, author.Bio);
+        }
+    }
+
+    /// <summary>
+    /// Database dựng trước 19/11/2026 có tên do Bogus đặt (seed 2026): author1 = "Kim Quyên Vũ" (đo trên database dev). Seed lại thì
+    /// đổi sang tên mẫu; hồ sơ người dùng đã tự sửa (FR-AUTH-007) giữ nguyên.
+    /// </summary>
+    [Fact]
+    public async Task Reseed_RenamesLegacyRandomNames_ButKeepsProfilesUsersEdited()
+    {
+        await SeedAsync();
+        using (var scope = factory.Services.CreateScope())
+        {
+            var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var legacy = await users.FindByEmailAsync("author1@culinaryblog.local");
+            legacy!.DisplayName = "Kim Quyên Vũ";
+            legacy.Bio = "Đầu bếp tại gia, đam mê ẩm thực miền Nam.";
+            await users.UpdateAsync(legacy);
+            var edited = await users.FindByEmailAsync("author2@culinaryblog.local");
+            edited!.DisplayName = "Tên người dùng tự sửa";
+            edited.Bio = "Giới thiệu tự viết";
+            await users.UpdateAsync(edited);
+        }
+
+        await SeedAsync();
+
+        using var verify = factory.Services.CreateScope();
+        var check = verify.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var renamed = await check.FindByEmailAsync("author1@culinaryblog.local");
+        Assert.Equal("Tác giả mẫu 1", renamed!.DisplayName);
+        Assert.Equal(RecipeSeedCatalog.SampleAuthorBio, renamed.Bio);
+        var kept = await check.FindByEmailAsync("author2@culinaryblog.local");
+        Assert.Equal("Tên người dùng tự sửa", kept!.DisplayName);
+        Assert.Equal("Giới thiệu tự viết", kept.Bio);
+    }
+
+    [Fact]
     public async Task SeedTwice_DoesNotAddOrOverwrite_UserEditedRecipe()
     {
         await SeedAsync();

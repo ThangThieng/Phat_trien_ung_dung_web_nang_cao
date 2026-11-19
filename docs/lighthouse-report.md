@@ -65,6 +65,61 @@ CLS = 0 ở mọi lần; Accessibility 100, SEO 100 cả ba trang.
 
 **Phát hiện trong lúc đo — ảnh vỡ dưới CSP production:** CSP của `develop` (`style-src 'self'`, không `'unsafe-inline'` ở production) chặn thuộc tính `style` trong HTML. `next/image` với `fill` dựa vào `style="position:absolute;…"` nên mọi ảnh thẻ/ảnh chính rơi về `position: static`, cao ~24 px. Đã sửa ở phía ảnh (không đụng CSP của Dev 1): bỏ `fill`, dùng `width`/`height` + lớp `absolute inset-0 h-full w-full` (`RecipeCard`, `CategoryCard`, `RecipeGallery`, `RecipeLightbox`); thêm kiểm thử *"ảnh lấp đầy khung"* trong `e2e/responsive.spec.ts`.
 
+## 4c. Đo lại trên hệ thống thật sau khi phát hành v1.0.0 (18–19/11/2026)
+
+**Khác các lần trước:** đo thẳng trên Docker dev (`http://localhost`, qua Nginx): bản build production của Next.js, **API thật, ảnh thật**
+(WebP 800×600, 10–30 KB), giao diện navy – vàng (font Be Vietnam Pro + Playfair Display, logo). Lighthouse 12.6.1 trong Edge headless,
+3 lần/URL, median; `benchmarkIndex` ≈ 3 100 – 3 500.
+
+| Trang | Mobile LCP (ban đầu) | Mobile LCP (sau sửa) | Desktop LCP (sau sửa) | CLS | TBT mobile | A11y / SEO / BP |
+|---|---|---|---|---|---|---|
+| `/` | 3,96 s ❌ | 3,96 s ❌ | 0,96 s ✅ | 0 | 28 ms ✅ | 100 / 100 / 100 |
+| `/recipes` | 4,54 s ❌ | 4,11 s ❌ | 0,94 s ✅ | 0 | 28 ms ✅ | 100 / 100 / 100 |
+| `/recipes/{slug}` | 3,65 s ❌ | 3,99 s ❌ | 0,83 s ✅ | 0 – 0,013 | 48 ms ✅ | 100 / 100 / 100 |
+
+**Kết luận trung thực:** desktop đạt mọi ngưỡng; **mobile mô phỏng (4G chậm, CPU chậm 4×) chưa đạt LCP ≤ 2,5 s**. CLS, TBT (≈ INP),
+Accessibility, SEO, Best Practices đều đạt. First Load JS trang chi tiết 290 KB (> 200 KB, đã ghi ở §4b).
+
+**Đã sửa** (giữ lại vì đúng, dù không đổi được LCP mobile một cách đo được):
+- Logo PNG 256×256 (92 KB, hiển thị 52 – 92 px) → WebP 128/256 px (16 – 48 KB). Logo header và logo lớn ở hero (ẩn trên mobile) bỏ `priority`,
+  nên không còn được tải sẵn trước ảnh LCP.
+- Ảnh LCP (thẻ đầu tiên, ảnh chính trang chi tiết) có `fetchPriority="high"`: `priority` của Next 15.5 chỉ tạo preload trong header `Link`,
+  xếp sau 8 font. Thời gian chờ trước khi tải ảnh LCP giảm từ 0,84 – 1,37 s xuống 0,37 – 0,65 s.
+- Playfair Display (font tiêu đề) không preload (`preload: false`); CLS vẫn 0 nhờ fallback đã chỉnh cỡ của `next/font`.
+
+**Vì sao vẫn chậm trên mobile:** khi chạy thật không giới hạn mạng, trang vẽ ảnh LCP ở **265 ms**; Lighthouse mô phỏng 4G chậm và coi ảnh LCP
+phụ thuộc mọi tệp được yêu cầu trước thời điểm đó — 13 – 15 tệp font (157 – 172 KB), 186 – 290 KB JavaScript và các ảnh thẻ khác. Hai phép thử:
+- **Bỏ hẳn web font** (bản build thử, không giữ): LCP mobile 2,84 – 3,10 s → font chiếm khoảng 0,8 – 1,0 s, nhưng bỏ font vẫn chưa đạt.
+- **Ở `localhost` ảnh không qua bộ tối ưu** (`lib/images.ts`), điện thoại nhận ảnh 800 px gốc; trên tên miền thật bộ tối ưu trả ảnh nhỏ hơn
+  (thử: 27 KB → 13 KB). Chưa đo được trọn vẹn: dựng tên miền giả `host.docker.internal` qua HTTPS thì bộ tối ưu trong container từ chối
+  chứng chỉ tự ký; tắt kiểm chứng chứng chỉ để đo bị chặn vì lý do an toàn. **Cần đo lại trên máy demo có tên miền và chứng chỉ thật.**
+
+**Cập nhật 19/11/2026 — bộ tối ưu ảnh chạy ở mọi môi trường.** Ảnh của hệ thống đưa cho `next/image` dưới dạng đường dẫn tương đối
+`/media/…`; bộ tối ưu đọc ảnh qua rewrite nội bộ `/media/*` → MinIO (`next.config.ts`, `lib/images.ts`), nên ở `localhost` cũng nhận
+WebP đã thu nhỏ (ảnh thẻ đầu 27 KB → 13 KB). Hai cách đo:
+
+| Trang | Mobile, `simulate` (mặc định) | Mobile, `devtools` (làm chậm thật: 1,6 Mbps, RTT 150 ms, CPU 4×) | Desktop |
+|---|---|---|---|
+| `/` | 4,12 s | **2,52 s** · CLS 0 · Perf 93 | 1,00 s |
+| `/recipes` | 4,09 s | **2,49 s** · CLS **0,218** · Perf 83 | 0,95 s |
+| `/recipes/{slug}` | 3,34 s | **2,52 s** · CLS 0 · Perf 92 | 0,84 s |
+
+- Chế độ `simulate` ước lượng từ một lượt tải không giới hạn: máy chủ chạy ngay trên máy nên mọi tệp xong trong ~0,25 s và Lighthouse coi ảnh
+  LCP phụ thuộc toàn bộ font + JavaScript → số liệu bi quan. Chế độ `devtools` làm chậm mạng và CPU thật: LCP ≈ 2,5 s, **đúng ngưỡng**.
+- Thử bớt Be Vietnam Pro còn 2 độ đậm (font 157 → 112 KB): LCP không đổi trong nhiễu → **không** đổi thiết kế.
+- **CLS 0,218 ở `/recipes` khi mạng chậm**: font Be Vietnam Pro tải muộn, chữ đổi kích thước làm khung lọc và lưới bị đẩy (Lighthouse chỉ
+  đúng 2 tệp `woff2` là nguyên nhân). Chưa sửa trong lượt này — hướng sửa: `display: 'optional'` cho font thân bài.
+- **React #418 (hydration)** xuất hiện ở 4/9 lượt `devtools` (trang chủ, trang chi tiết); không tái hiện được bằng Playwright (Edge, cùng
+  user-agent Moto G, DPR 1,75, làm chậm mạng/CPU) hay bản `next dev`. React tự dựng lại phần lệch nên người dùng không thấy lỗi; ghi lại để theo dõi.
+
+**Lưu ý về các lượt đo 18 – 19/11/2026:** image `culinaryblog-web` dùng để đo được build tay bằng Git Bash, nên `NEXT_PUBLIC_API_BASE_URL=/api/v1`
+bị đổi thành đường dẫn Windows và mọi lời gọi API **từ trình duyệt** thất bại (phát hiện nhờ E2E ngày 19/11). Ba trang được đo render phía server
+(`API_INTERNAL_BASE_URL` không bị ảnh hưởng) nên ảnh, chữ và LCP đúng; phần JavaScript chạy sau hydrate có thể ít việc hơn thực tế. Build lại
+đúng (`MSYS_NO_PATHCONV=1`): E2E **49/49** trên stack production. Nên đo lại một lượt trên máy demo.
+
+Hướng còn lại nếu cần đạt 2,5 s trên mobile: giảm bộ font (bớt độ đậm 500 hoặc 700 của Be Vietnam Pro, hoặc bỏ Playfair) — là thay đổi thiết kế,
+cần nhóm quyết định; và đo lại khi bộ tối ưu ảnh hoạt động.
+
 ## 5. Cách chạy lại
 
 ```bash

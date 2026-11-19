@@ -137,6 +137,67 @@ public sealed class RateLimitingTests(CulinaryBlogApiFactory factory)
     }
 
     [Fact]
+    public async Task RenderRequestsUseOneSharedRenderQuotaInsteadOfTheClientIpQuota()
+    {
+        // CR-2026-10: Frontend nạp Data Cache từ nhiều người xem nhưng request cùng đi từ IP container — trước đây dùng chung 100/phút.
+        using var isolated = CreateRateLimitedHost(
+            options =>
+            {
+                options.General = new RateQuota { PermitLimit = 2, WindowSeconds = 3600 };
+                options.Render = new RateQuota { PermitLimit = 4, WindowSeconds = 3600 };
+            },
+            RenderSecret);
+        using var client = isolated.CreateClient();
+        for (var index = 0; index < 4; index++)
+        {
+            var accepted = await SendAsync(isolated.Server, "GET", "/api/v1/categories", "172.20.0.5", RenderSecret).ConfigureAwait(true);
+            Assert.NotEqual(429, accepted.Response.StatusCode);
+            Assert.Equal("4", accepted.Response.Headers["X-RateLimit-Limit"]);
+        }
+
+        Assert.Equal(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "172.20.0.5", RenderSecret).ConfigureAwait(true)).Response.StatusCode);
+
+        // Hạn mức IP của chính container (và của mọi người dùng) không bị request render tiêu hao.
+        Assert.NotEqual(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "172.20.0.5").ConfigureAwait(true)).Response.StatusCode);
+        Assert.NotEqual(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "172.20.0.5").ConfigureAwait(true)).Response.StatusCode);
+        Assert.Equal(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "172.20.0.5").ConfigureAwait(true)).Response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("wrong-secret", RenderSecret)]
+    [InlineData(RenderSecret + "x", RenderSecret)]
+    [InlineData(RenderSecret, "")]
+    public async Task RenderHeaderWithoutTheConfiguredSecretFallsBackToTheIpQuota(string presented, string configured)
+    {
+        using var isolated = CreateRateLimitedHost(
+            options =>
+            {
+                options.General = new RateQuota { PermitLimit = 2, WindowSeconds = 3600 };
+                options.Render = new RateQuota { PermitLimit = 50, WindowSeconds = 3600 };
+            },
+            configured);
+        using var client = isolated.CreateClient();
+        Assert.NotEqual(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "198.51.100.80", presented).ConfigureAwait(true)).Response.StatusCode);
+        Assert.NotEqual(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "198.51.100.80", presented).ConfigureAwait(true)).Response.StatusCode);
+        Assert.Equal(429, (await SendAsync(isolated.Server, "GET", "/api/v1/categories", "198.51.100.80", presented).ConfigureAwait(true)).Response.StatusCode);
+    }
+
+    [Fact]
+    public async Task RenderSecretDoesNotLiftTheAuthQuota()
+    {
+        using var isolated = CreateRateLimitedHost(
+            options =>
+            {
+                options.Auth = new RateQuota { PermitLimit = 1, WindowSeconds = 3600 };
+                options.Render = new RateQuota { PermitLimit = 50, WindowSeconds = 3600 };
+            },
+            RenderSecret);
+        using var client = isolated.CreateClient();
+        Assert.NotEqual(429, (await SendAsync(isolated.Server, "POST", "/api/v1/auth/login", "198.51.100.90", RenderSecret).ConfigureAwait(true)).Response.StatusCode);
+        Assert.Equal(429, (await SendAsync(isolated.Server, "POST", "/api/v1/auth/login", "198.51.100.90", RenderSecret).ConfigureAwait(true)).Response.StatusCode);
+    }
+
+    [Fact]
     public async Task DefaultIntegrationHostDoesNotEnforceLimiter()
     {
         using var client = factory.CreateClient();
@@ -147,7 +208,10 @@ public sealed class RateLimitingTests(CulinaryBlogApiFactory factory)
         }
     }
 
-    private Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<Program> CreateRateLimitedHost(Action<SecurityRateLimitingOptions>? configure = null)
+    private const string RenderSecret = "render-gate-secret-for-tests";
+
+    private Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<Program> CreateRateLimitedHost(
+        Action<SecurityRateLimitingOptions>? configure = null, string renderSecret = "")
     {
         var options = new SecurityRateLimitingOptions { Enabled = true };
         configure?.Invoke(options);
@@ -158,8 +222,25 @@ public sealed class RateLimitingTests(CulinaryBlogApiFactory factory)
             .UseSetting("RateLimiting:Upload:PermitLimit", options.Upload.PermitLimit.ToString(System.Globalization.CultureInfo.InvariantCulture))
             .UseSetting("RateLimiting:Upload:WindowSeconds", options.Upload.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture))
             .UseSetting("RateLimiting:General:PermitLimit", options.General.PermitLimit.ToString(System.Globalization.CultureInfo.InvariantCulture))
-            .UseSetting("RateLimiting:General:WindowSeconds", options.General.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+            .UseSetting("RateLimiting:General:WindowSeconds", options.General.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:Render:PermitLimit", options.Render.PermitLimit.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:Render:WindowSeconds", options.Render.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .UseSetting("RateLimiting:RenderGateSecret", renderSecret));
     }
+
+    private static Task<HttpContext> SendAsync(TestServer server, string method, string path, string ip, string? renderGate = null) =>
+        server.SendAsync(context =>
+        {
+            context.Connection.RemoteIpAddress = IPAddress.Parse(ip);
+            context.Request.Method = method;
+            context.Request.Path = path;
+            context.Request.Host = new HostString("localhost");
+            context.Request.Scheme = "http";
+            if (renderGate is not null)
+            {
+                context.Request.Headers[SecurityRateLimits.RenderGateHeader] = renderGate;
+            }
+        });
 
     private static Task<HttpContext> SendFromAsync(TestServer server, string path, string ip, string? forwarded = null) =>
         server.SendAsync(context =>

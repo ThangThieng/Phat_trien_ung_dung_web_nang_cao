@@ -1,24 +1,25 @@
 /**
  * Retrofit D-14 (SRS NFR-PERF-005): ảnh đi qua trình tối ưu của `next/image` (Nginx `/media/` → MinIO).
  *
- * Mặc định BẬT tối ưu. Đặt `NEXT_PUBLIC_IMAGE_UNOPTIMIZED=true` chỉ khi chạy dev mà container Next.js không với tới được
- * địa chỉ ảnh (ví dụ MinIO ở `localhost:9000`) — đúng lý do `unoptimized` từng được thêm ở Buổi 2.
+ * Mặc định BẬT tối ưu. `NEXT_PUBLIC_IMAGE_UNOPTIMIZED=true` tắt hẳn (chạy `next dev` ngoài Docker, không có MinIO).
  */
-const LOOPBACK_HOSTS = ['localhost', '127.0.0.1'];
+export const IMAGE_UNOPTIMIZED = process.env.NEXT_PUBLIC_IMAGE_UNOPTIMIZED === 'true';
 
 /**
- * Bộ tối ưu chạy TRONG container Next.js nên `localhost` trỏ vào chính container, không tới Nginx: `/_next/image` trả 500 và mọi ảnh
- * vỡ. Địa chỉ ảnh là loopback thì tự bỏ qua bộ tối ưu; ảnh vẫn đúng cỡ nhờ biến thể medium/thumbnail của FR-JOB-002.
+ * Đường dẫn ảnh đưa cho `next/image` (CR-2026-10 — đo Lighthouse 18/11/2026).
+ *
+ * Bộ tối ưu chạy TRONG container Next.js: với URL tuyệt đối `http://localhost/media/…` nó gọi chính container (localhost) chứ
+ * không tới Nginx → `/_next/image` trả 500, nên trước đây ở `localhost` ảnh bỏ qua bộ tối ưu và điện thoại nhận ảnh 800 px gốc
+ * (LCP mobile ~4 s). Đổi ảnh của chính hệ thống (cùng tiền tố `NEXT_PUBLIC_MINIO_PUBLIC_URL`) thành đường dẫn tương đối
+ * `/media/…`: bộ tối ưu đọc ảnh qua rewrite nội bộ `/media/*` → MinIO (`next.config.ts`), chạy được ở mọi môi trường.
+ * URL khác (ảnh Google…) giữ nguyên, đi theo `remotePatterns`.
  */
-export function shouldSkipOptimizer(flag: string | undefined, mediaUrl: string | undefined): boolean {
-  if (flag === 'true') return true;
-  return LOOPBACK_HOSTS.includes(new URL(mediaUrl ?? 'http://localhost/media').hostname);
+export function toImageSrc(url: string, mediaBaseUrl = process.env.NEXT_PUBLIC_MINIO_PUBLIC_URL): string {
+  if (!mediaBaseUrl) return url;
+  const base = mediaBaseUrl.replace(/\/$/, '');
+  if (url !== base && !url.startsWith(`${base}/`)) return url;
+  return `/media${url.slice(base.length)}`;
 }
-
-export const IMAGE_UNOPTIMIZED = shouldSkipOptimizer(
-  process.env.NEXT_PUBLIC_IMAGE_UNOPTIMIZED,
-  process.env.NEXT_PUBLIC_MINIO_PUBLIC_URL,
-);
 
 /** `sizes` cho lưới thẻ công thức: 4 cột ≥ 1200 px là 25vw, 2 cột ≥ 768 px là 50vw, còn lại 100vw. */
 export const GRID_IMAGE_SIZES = '(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw';

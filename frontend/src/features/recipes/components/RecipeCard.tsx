@@ -1,4 +1,4 @@
-import { GRID_IMAGE_SIZES, IMAGE_UNOPTIMIZED } from '@/lib/images';
+import { GRID_IMAGE_SIZES, IMAGE_UNOPTIMIZED, toImageSrc } from '@/lib/images';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, Users } from 'lucide-react';
@@ -37,12 +37,14 @@ export default function RecipeCard({
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gold-soft to-paper">
           {recipe.primaryImageUrl ? (
             <Image
-              src={recipe.primaryImageUrl}
+              src={toImageSrc(recipe.primaryImageUrl)}
               alt={recipe.title}
               width={800}
               height={600}
               unoptimized={IMAGE_UNOPTIMIZED}
               priority={priority}
+              // `priority` của Next 15 chỉ tạo preload qua header Link (xếp sau font); đặt thẳng độ ưu tiên cho ảnh LCP.
+              fetchPriority={priority ? 'high' : undefined}
               sizes={GRID_IMAGE_SIZES}
               className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-105"
             />

@@ -36,6 +36,7 @@ public sealed partial class MinioFileStorageService(
             seekable = buffer;
         }
 
+        using var timeout = StartTimeout(cancellationToken);
         try
         {
             await s3.PutObjectAsync(
@@ -47,9 +48,9 @@ public sealed partial class MinioFileStorageService(
                     ContentType = contentType,
                     AutoCloseStream = false,
                 },
-                cancellationToken).ConfigureAwait(false);
+                timeout.Token).ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is AmazonS3Exception or HttpRequestException or AmazonServiceException)
+        catch (Exception ex) when (IsUnavailable(ex, cancellationToken))
         {
             LogStorageError(logger, "upload", key, ex);
             throw new ServiceUnavailableException(ErrorCodes.FileStorageUnavailable, "Dịch vụ lưu trữ ảnh tạm thời không khả dụng.");
@@ -68,16 +69,17 @@ public sealed partial class MinioFileStorageService(
     public async Task DeleteAsync(string fileUrlOrKey, CancellationToken cancellationToken = default)
     {
         var key = ToObjectKey(fileUrlOrKey);
+        using var timeout = StartTimeout(cancellationToken);
         try
         {
             // S3 DeleteObject idempotent: object không tồn tại vẫn trả 204
-            await s3.DeleteObjectAsync(_options.BucketName, key, cancellationToken).ConfigureAwait(false);
+            await s3.DeleteObjectAsync(_options.BucketName, key, timeout.Token).ConfigureAwait(false);
         }
         catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             // Idempotent – bỏ qua
         }
-        catch (Exception ex) when (ex is AmazonS3Exception or HttpRequestException or AmazonServiceException)
+        catch (Exception ex) when (IsUnavailable(ex, cancellationToken))
         {
             LogStorageError(logger, "delete", key, ex);
             throw new ServiceUnavailableException(ErrorCodes.FileStorageUnavailable, "Dịch vụ lưu trữ ảnh tạm thời không khả dụng.");
@@ -87,13 +89,14 @@ public sealed partial class MinioFileStorageService(
     public async Task<Stream> OpenReadAsync(string fileUrlOrKey, CancellationToken cancellationToken = default)
     {
         var key = ToObjectKey(fileUrlOrKey);
+        using var timeout = StartTimeout(cancellationToken);
         try
         {
-            using var response = await s3.GetObjectAsync(_options.BucketName, key, cancellationToken).ConfigureAwait(false);
+            using var response = await s3.GetObjectAsync(_options.BucketName, key, timeout.Token).ConfigureAwait(false);
             var buffer = new MemoryStream();
             await using (response.ResponseStream.ConfigureAwait(false))
             {
-                await response.ResponseStream.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
+                await response.ResponseStream.CopyToAsync(buffer, timeout.Token).ConfigureAwait(false);
             }
 
             buffer.Position = 0;
@@ -103,7 +106,7 @@ public sealed partial class MinioFileStorageService(
         {
             throw new FileNotFoundException($"Không tìm thấy tệp '{key}' trên object storage.", key, ex);
         }
-        catch (Exception ex) when (ex is AmazonS3Exception or HttpRequestException or AmazonServiceException)
+        catch (Exception ex) when (IsUnavailable(ex, cancellationToken))
         {
             LogStorageError(logger, "read", key, ex);
             throw new ServiceUnavailableException(ErrorCodes.FileStorageUnavailable, "Dịch vụ lưu trữ ảnh tạm thời không khả dụng.");
@@ -145,4 +148,16 @@ public sealed partial class MinioFileStorageService(
 
     [LoggerMessage(Level = LogLevel.Error, Message = "MinIO {Operation} failed for object {ObjectKey}")]
     private static partial void LogStorageError(ILogger logger, string operation, string objectKey, Exception exception);
+
+    /// <summary>Lỗi kết nối/phía MinIO, hoặc hết <see cref="MinioOptions.OperationTimeoutSeconds"/> (không phải người gọi tự hủy).</summary>
+    private static bool IsUnavailable(Exception ex, CancellationToken callerToken) =>
+        ex is AmazonS3Exception or HttpRequestException or AmazonServiceException ||
+        (ex is OperationCanceledException && !callerToken.IsCancellationRequested);
+
+    private CancellationTokenSource StartTimeout(CancellationToken callerToken)
+    {
+        var source = CancellationTokenSource.CreateLinkedTokenSource(callerToken);
+        source.CancelAfter(TimeSpan.FromSeconds(_options.OperationTimeoutSeconds));
+        return source;
+    }
 }

@@ -32,6 +32,8 @@ x-api-env: &api-env
   Seq__ServerUrl: http://seq:5341
   OpenTelemetry__OtlpEndpoint: http://seq:5341/ingest/otlp
   Cors__AllowedOrigins__0: ${SITE_URL:-http://localhost:3000}
+  # CR-2026-10: bí mật nhận diện request render của Frontend (hạn mức render chung). Trống → tính như mọi request theo IP.
+  RateLimiting__RenderGateSecret: ${RENDER_GATE_SECRET:-}
   Smtp__SiteUrl: ${SITE_URL:-http://localhost:3000}
 
 services:
@@ -144,6 +146,7 @@ services:
       AUTH_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET}
       AUTH_TRUST_HOST: "true"
       REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      RENDER_GATE_SECRET: ${RENDER_GATE_SECRET:-}
     depends_on:
       - api
     healthcheck:

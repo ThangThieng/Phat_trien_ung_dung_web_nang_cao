@@ -141,6 +141,7 @@ location /hangfire {
     proxy_set_header     X-Hangfire-Gate ${HANGFIRE_GATE_SECRET};
 
     proxy_pass           $api_upstream;
+    proxy_set_header     X-Render-Gate "";
     proxy_http_version   1.1;
     proxy_set_header     Host $host;
     proxy_set_header     X-Real-IP $remote_addr;
@@ -151,6 +152,7 @@ location /hangfire {
 # Scalar + tài liệu OpenAPI (Buổi 5). Production tắt ở API (OpenApi__Enabled=false) nên các đường dẫn này trả 404.
 location ^~ /scalar/ {
     proxy_pass $api_upstream;
+    proxy_set_header X-Render-Gate "";
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -158,6 +160,7 @@ location ^~ /scalar/ {
 
 location = /scalar {
     proxy_pass $api_upstream;
+    proxy_set_header X-Render-Gate "";
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -165,6 +168,7 @@ location = /scalar {
 
 location ^~ /openapi/ {
     proxy_pass $api_upstream;
+    proxy_set_header X-Render-Gate "";
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -172,6 +176,7 @@ location ^~ /openapi/ {
 
 location ~ ^/health(?:/|$) {
     proxy_pass $api_upstream;
+    proxy_set_header X-Render-Gate "";
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 }

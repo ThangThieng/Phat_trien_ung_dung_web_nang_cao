@@ -77,11 +77,10 @@ export default async function HomePage() {
           </form>
           </div>
           <Image
-            src="/brand/logo-gold.png"
+            src="/brand/logo-gold-256.webp"
             alt=""
             width={256}
             height={256}
-            priority
             unoptimized
             className="hidden shrink-0 lg:block"
           />

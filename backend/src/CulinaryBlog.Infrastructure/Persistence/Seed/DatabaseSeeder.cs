@@ -42,7 +42,7 @@ public sealed class SeedOptions
 }
 
 /// <summary>
-/// Seed dữ liệu theo SRS §2.6.1 (CR-2026-03, CR-2026-07): roles Author/Admin (§2.3), 5 tác giả mẫu (Bogus),
+/// Seed dữ liệu theo SRS §2.6.1 (CR-2026-03, CR-2026-07): roles Author/Admin (§2.3), 5 tác giả mẫu ("Tác giả mẫu 1…5"),
 /// ≥ 20 danh mục và ≥ 100 công thức lấy từ <see cref="RecipeSeedCatalog"/>, mỗi công thức ≥ 10 nguyên liệu và ≥ 5 bước.
 /// Idempotent và tự bù: chỉ thêm phần còn thiếu; công thức mẫu cũ (chưa từng bị sửa, thiếu nguyên liệu/bước)
 /// được thay bằng nội dung đúng trong catalog. Không động vào dữ liệu người dùng tạo hoặc đã chỉnh sửa.
@@ -120,8 +120,16 @@ public sealed partial class DatabaseSeeder(
     private async Task SeedAdminAsync()
     {
         var seed = options.Value;
-        if (string.IsNullOrWhiteSpace(seed.AdminPassword) || await userManager.FindByEmailAsync(seed.AdminEmail).ConfigureAwait(false) is not null)
+        if (await userManager.FindByEmailAsync(seed.AdminEmail).ConfigureAwait(false) is not null)
         {
+            return;
+        }
+
+        // 19/11/2026: máy mới dựng từ .env.example (chưa chạy tools/dev-setup.sh) có role Admin mà không có tài khoản Admin, và
+        // không có dòng log nào giải thích. Ghi rõ lý do để người dựng máy biết phải đặt biến nào.
+        if (string.IsNullOrWhiteSpace(seed.AdminPassword))
+        {
+            LogAdminSkipped(logger, seed.AdminEmail);
             return;
         }
 
@@ -131,6 +139,11 @@ public sealed partial class DatabaseSeeder(
         if (result.Succeeded)
         {
             await userManager.AddToRolesAsync(admin, [Roles.Admin, Roles.Author]).ConfigureAwait(false);
+            LogAdminCreated(logger, seed.AdminEmail);
+        }
+        else
+        {
+            LogAdminFailed(logger, seed.AdminEmail, string.Join(", ", result.Errors.Select(error => error.Code)));
         }
     }
 
@@ -161,20 +174,21 @@ public sealed partial class DatabaseSeeder(
 
     private async Task<List<ApplicationUser>> SeedAuthorsAsync()
     {
-        var faker = new Faker("vi") { Random = new Randomizer(2026) };
+        // Chỉ để nhận ra tên và giới thiệu mà bản cũ đã sinh (cùng seed 2026, cùng thứ tự gọi) — không dùng cho dữ liệu mới.
+        var legacyFaker = new Faker("vi") { Random = new Randomizer(2026) };
         var authors = new List<ApplicationUser>();
 
         for (var i = 1; i <= SeedAuthorCount; i++)
         {
-            var fullName = faker.Name.FullName();
-            var region = faker.PickRandom("miền Bắc", "miền Trung", "miền Nam");
+            var legacyName = legacyFaker.Name.FullName();
+            var legacyBio = $"Đầu bếp tại gia, đam mê ẩm thực {legacyFaker.PickRandom("miền Bắc", "miền Trung", "miền Nam")}.";
             var email = $"author{i}@culinaryblog.local";
             var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
             if (user is null)
             {
-                user = ApplicationUser.Create(fullName, email, $"author{i}", timeProvider.GetUtcNow().UtcDateTime);
+                user = ApplicationUser.Create(RecipeSeedCatalog.SampleAuthorName(i), email, $"author{i}", timeProvider.GetUtcNow().UtcDateTime);
                 user.EmailConfirmed = true;
-                user.Bio = $"Đầu bếp tại gia, đam mê ẩm thực {region}.";
+                user.Bio = RecipeSeedCatalog.SampleAuthorBio;
 
                 var password = string.IsNullOrWhiteSpace(options.Value.AuthorPassword)
                     ? $"Aa1!{Convert.ToBase64String(RandomNumberGenerator.GetBytes(18))}"
@@ -187,6 +201,13 @@ public sealed partial class DatabaseSeeder(
                 }
 
                 await userManager.AddToRoleAsync(user, Roles.Author).ConfigureAwait(false);
+            }
+            else if (user.DisplayName == legacyName && user.Bio == legacyBio)
+            {
+                // Database cũ: đổi sang tên mẫu. Ai đã tự sửa hồ sơ (FR-AUTH-007) thì giữ nguyên, không ghi đè.
+                user.DisplayName = RecipeSeedCatalog.SampleAuthorName(i);
+                user.Bio = RecipeSeedCatalog.SampleAuthorBio;
+                await userManager.UpdateAsync(user).ConfigureAwait(false);
             }
 
             authors.Add(user);
@@ -347,6 +368,15 @@ public sealed partial class DatabaseSeeder(
     }
 
     private sealed record ExistingRecipe(Guid Id, string Slug, string AuthorId, DateTime? UpdatedAt, int IngredientCount, int StepCount, bool IsDeleted);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Admin account {AdminEmail} was NOT created: Seed:AdminPassword is empty. Set SEED_ADMIN_PASSWORD in .env (or run tools/dev-setup.sh) and restart the api container")]
+    private static partial void LogAdminSkipped(ILogger logger, string adminEmail);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin account {AdminEmail} created")]
+    private static partial void LogAdminCreated(ILogger logger, string adminEmail);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Admin account {AdminEmail} could not be created ({Errors}). SEED_ADMIN_PASSWORD needs at least 8 characters with upper case, lower case, a digit and a symbol (NFR-SEC-001)")]
+    private static partial void LogAdminFailed(ILogger logger, string adminEmail, string errors);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Database seeded: {Categories} categories, {Authors} authors, {Created} recipes created, {Repaired} recipes repaired")]
     private static partial void LogSeeded(ILogger logger, int categories, int authors, int created, int repaired);
