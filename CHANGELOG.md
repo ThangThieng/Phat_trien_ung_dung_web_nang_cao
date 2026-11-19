@@ -10,6 +10,7 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
 
 ### Added
 
+- **Duyệt bản dịch và ảnh 101 công thức Wikibooks (kế hoạch §B.7 bước 10):** sửa 20 chỗ dùng từ sai ở 11 công thức, ví dụ "black cardamom" → thảo quả, "red onion" → hành tây tím, "urad dal" → đậu urad, "pickled eggs" → trứng ngâm giấm, "beef caps" → ruột bò làm vỏ dồi, tên món "Dürüm bữa sáng (Bánh mì cuộn trứng, khoai và bò)" (trước là "Bánh cuốn"). Ảnh 101/101 đúng món. Database đã seed từ trước nhận bản sửa khi API khởi động (`SeedTextCorrections`): chỉ thay khi giá trị còn đúng văn bản cũ nên bản người dùng đã sửa giữ nguyên; món đổi tên mang slug mới, không sinh bản trùng.
 - **Đăng nhập xong không còn bị đưa vào bảng điều khiển trống:** quay về đúng trang đang xem (nút Đăng nhập/Đăng ký mang `callbackUrl`),
   không có thì về trang chủ — người đã đăng nhập vẫn có mọi quyền của khách (SRS §2.3). Trang đăng nhập/đăng ký có lối "Tiếp tục với tư cách
   khách"; bảng điều khiển và menu tài khoản có mục **Trang chủ**; trang Tổng quan có nút "Viết công thức", "Xem công thức của mọi người" và
@@ -18,6 +19,8 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
   của nhóm (công khai, không phải bí mật — Client secret không dùng). Máy đã cài: chạy lại `dev-setup.sh` rồi build lại.
 
 ### Fixed
+
+- **Trang bảng điều khiển và hồ sơ có tiêu đề riêng (WCAG 2.4.2, NFR-USE-002):** trước đều là "Culinary Blog", nay ví dụ "Quản lý người dùng | Culinary Blog" — trình đọc màn hình đọc tiêu đề này đầu tiên khi mở trang.
 
 - **Bố cục `/recipes` nhảy khi mạng chậm (CLS 0,218 → 0):** font thân bài dùng `display: 'optional'`, không đổi font giữa chừng lượt xem.
 

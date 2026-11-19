@@ -49,6 +49,6 @@
 
 | Việc | Vì sao chưa | Cách làm |
 |---|---|---|
-| **Google Rich Results Test** (NFR-SEO-001 "pass 100%") | Cần URL công khai; công cụ không gọi được từ máy đo | Dán URL một công thức đã deploy vào https://search.google.com/test/rich-results, hoặc dán nguyên HTML. Cấu trúc JSON-LD đã khớp Schema.org `Recipe` (ISO 8601, `HowToStep`, không `aggregateRating`). |
+| **Google Rich Results Test** (NFR-SEO-001 "pass 100%") | **Đã chạy 19/11/2026** (tab Mã, dán HTML của `pho-bo-ha-noi`, `bun-cha-ha-noi`, `pizza-rau-cu` từ stack dev): phát hiện mục **Công thức** và **Đường dẫn**, đọc đủ tên, mô tả, tác giả, ngày đăng, `prepTime`/`cookTime`/`totalTime`, khẩu phần, danh mục, nguyên liệu, bước. Lỗi nghiêm trọng duy nhất: "URL trong trường image không hợp lệ" — ảnh là `http://localhost/media/…`, Google không nhận `localhost`. Cảnh báo vàng chỉ là trường không bắt buộc (`aggregateRating`, `video`, `nutrition`, `keywords`, `recipeCuisine`). | Lỗi ảnh tự hết khi chạy trên tên miền thật (`MEDIA_PUBLIC_URL=https://<domain>/media`). Sau khi deploy: dán URL công khai một công thức vào https://search.google.com/test/rich-results để có kết quả "đủ điều kiện" chính thức. |
 | Chạy `seo.spec.ts` trên stack Docker/HTTPS tự ký | Backend/Docker chưa có ở máy đo | `E2E_BASE_URL=https://localhost` + `NODE_TLS_REJECT_UNAUTHORIZED=0` hoặc cấu hình `ignoreHTTPSErrors` |
 | Ảnh OG với **ảnh món thật** từ `/media/` | API giả chỉ có một ảnh PNG nhỏ | Mở `/recipes/{slug}/opengraph-image-…` trên stack thật |
