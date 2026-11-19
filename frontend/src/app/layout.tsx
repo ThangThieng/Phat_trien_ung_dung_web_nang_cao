@@ -8,7 +8,15 @@ import '@/lib/server-request-context';
 import './globals.css';
 
 // Subset 'vietnamese' để hiển thị đầy đủ dấu tiếng Việt
-const body = Be_Vietnam_Pro({ subsets: ['latin', 'vietnamese'], weight: ['400', '500', '600', '700'], variable: '--font-body' });
+// NFR-PERF-005 (đo 19/11/2026, mạng chậm thật): font thân bài tải muộn rồi thay chữ dự phòng làm khung lọc và lưới ở /recipes nhảy
+// (CLS 0,218 > 0,1). 'optional': chỉ dùng font nếu về kịp lúc vẽ đầu tiên (font được preload nên thường kịp); không kịp thì lần xem đó giữ
+// chữ dự phòng đến hết, trang sau đã có font trong cache — không bao giờ đổi font giữa chừng.
+const body = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
+  display: 'optional',
+});
 // Font tiêu đề không tải sẵn (preload) để không giành băng thông với ảnh LCP trên mạng chậm; fallback Georgia đã chỉnh cỡ nên không xô lệch bố cục.
 const display = Playfair_Display({ subsets: ['latin', 'vietnamese'], variable: '--font-display', preload: false });
 
