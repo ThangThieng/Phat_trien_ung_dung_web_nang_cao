@@ -30,7 +30,7 @@ export default function Header({ categories }: { categories: Category[] }) {
           aria-label="Culinary Blog – Trang chủ"
           className="flex shrink-0 items-center"
         >
-          <Image src="/brand/logo-gold.png" alt="" width={60} height={60} priority unoptimized />
+          <Image src="/brand/logo-gold-128.webp" alt="" width={60} height={60} unoptimized />
         </Link>
 
         <nav aria-label="Điều hướng chính" className="hidden items-center gap-2 md:flex lg:gap-4">

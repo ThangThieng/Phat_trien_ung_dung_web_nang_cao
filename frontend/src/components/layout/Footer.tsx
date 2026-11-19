@@ -17,7 +17,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
     <footer className="rule-gold mt-16 border-t-[3px] bg-navy text-cream">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_2fr]">
         <div>
-          <Image src="/brand/logo-gold.png" alt="Culinary Blog" width={92} height={92} unoptimized />
+          <Image src="/brand/logo-gold-256.webp" alt="Culinary Blog" width={92} height={92} unoptimized />
           <p className="mt-2 max-w-xs text-sm text-cream">
             Chia sẻ và khám phá công thức nấu ăn Việt Nam và thế giới — đủ nguyên liệu, định lượng
             và từng bước.

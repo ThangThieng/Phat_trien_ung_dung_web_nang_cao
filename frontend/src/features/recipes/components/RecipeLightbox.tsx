@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { IMAGE_UNOPTIMIZED } from '@/lib/images';
+import { IMAGE_UNOPTIMIZED, toImageSrc } from '@/lib/images';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import type { RecipeImage } from '@/types/recipe';
 
@@ -28,7 +28,7 @@ export default function RecipeLightbox({ image, title, opener, onOpenChange }: R
         {image && (
           <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
             <Image
-              src={image.originalUrl}
+              src={toImageSrc(image.originalUrl)}
               alt={image.altText ?? title}
               width={1200}
               height={900}

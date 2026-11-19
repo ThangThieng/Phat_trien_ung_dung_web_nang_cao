@@ -1,4 +1,4 @@
-import { IMAGE_UNOPTIMIZED } from '@/lib/images';
+import { IMAGE_UNOPTIMIZED, toImageSrc } from '@/lib/images';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Category } from '@/types/category';
@@ -49,7 +49,7 @@ export default function CategoryCard({ category }: { category: Category }) {
       <div className="relative flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-gold-soft via-paper to-white">
         {category.imageUrl ? (
           <Image
-            src={category.imageUrl}
+            src={toImageSrc(category.imageUrl)}
             alt=""
             width={800}
             height={450}

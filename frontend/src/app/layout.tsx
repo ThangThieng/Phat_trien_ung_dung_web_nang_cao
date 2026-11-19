@@ -9,7 +9,8 @@ import './globals.css';
 
 // Subset 'vietnamese' để hiển thị đầy đủ dấu tiếng Việt
 const body = Be_Vietnam_Pro({ subsets: ['latin', 'vietnamese'], weight: ['400', '500', '600', '700'], variable: '--font-body' });
-const display = Playfair_Display({ subsets: ['latin', 'vietnamese'], variable: '--font-display' });
+// Font tiêu đề không tải sẵn (preload) để không giành băng thông với ảnh LCP trên mạng chậm; fallback Georgia đã chỉnh cỡ nên không xô lệch bố cục.
+const display = Playfair_Display({ subsets: ['latin', 'vietnamese'], variable: '--font-display', preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),

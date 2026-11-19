@@ -57,7 +57,7 @@ function DashboardFrame({ children }: { children: ReactNode }) {
             )}
           </button>
           <Link href="/" className="flex items-center gap-2 font-bold text-gold">
-            <Image src="/brand/logo-gold.png" alt="" width={52} height={52} unoptimized />
+            <Image src="/brand/logo-gold-128.webp" alt="" width={52} height={52} unoptimized />
             <span className="sr-only">Culinary Blog</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
