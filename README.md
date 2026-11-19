@@ -1364,16 +1364,15 @@ Tài khoản và dữ liệu mẫu: xem "Lần đầu chạy, web tự làm gì"
 | E2E giống production (Playwright) | `docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml --env-file .env.production up -d --build` | + MailHog, access token 1 phút, dữ liệu mẫu; rate limit thật |
 | Đo tải (k6) | `docker compose -f docker-compose.prod.yml -f docker-compose.loadtest.yml --env-file .env.production up -d --build` | nâng hạn mức rate limit — [`tests/load/README.md`](tests/load/README.md) |
 
-**Bật đăng nhập Google (FR-AUTH-003)** — code đã có sẵn; thiếu Client ID thì nút Google tự ẩn, các cách đăng nhập khác vẫn chạy:
+**Đăng nhập Google (FR-AUTH-003)** — đã cấu hình sẵn: `.env.example` và `tools/dev-setup.sh` điền Client ID của nhóm
+(`621955829445-h01jimdlcdjut80e93umca9c5v95uk0t.apps.googleusercontent.com`, dự án Google Cloud "Culinary Blog", chế độ *In production*, origin `http://localhost` và `https://localhost`). Client ID
+không phải bí mật (Google thiết kế để công khai), nên được ghi trong repo; **Client secret không dùng và không bao giờ được commit**.
 
-1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → *Create credentials* → *OAuth client ID* → loại **Web application**
-   (lần đầu phải điền *OAuth consent screen*, chế độ *Testing* là đủ và thêm email của nhóm vào *Test users*).
-2. *Authorized JavaScript origins*: `http://localhost` (dev) và `https://localhost` hoặc tên miền thật (production). Không cần *redirect URI* —
-   hệ thống dùng Google Identity Services gửi ID Token thẳng về `POST /api/v1/auth/google`.
-3. Dán Client ID (dạng `…apps.googleusercontent.com`) vào `GOOGLE_CLIENT_ID` của `.env` và `.env.production`. API chỉ cần Client ID để kiểm
-   `aud` của ID Token; `GOOGLE_CLIENT_SECRET` có thể để trống.
-4. Build lại web vì Client ID được đóng vào bundle lúc build: `docker compose --profile dev up -d --build frontend api`
-   (production: thêm `-f docker-compose.prod.yml --env-file .env.production`).
+- Máy cài từ trước 19/11/2026 (ô `GOOGLE_CLIENT_ID` trong `.env` còn trống): chạy lại `./tools/dev-setup.sh` (chỉ điền ô trống) rồi
+  `docker compose --profile dev up -d --build` — phải có `--build` vì Client ID được đóng vào bundle lúc build.
+- Chạy trên tên miền thật: chủ dự án Google Cloud thêm `https://<domain>` vào *Authorized JavaScript origins* của client "Culinary Blog Web".
+- Muốn dùng client riêng: tạo *OAuth client ID* loại **Web application** trong Google Cloud Console (Google Auth Platform → Clients), thêm
+  các origin trên, dán ID vào `GOOGLE_CLIENT_ID` rồi build lại.
 
 **Tra log theo mã lỗi:** màn hình lỗi hiện "Mã tra cứu" = header `X-Correlation-ID` → dán vào Seq: `CorrelationId = '<mã>'` ra mọi log của
 request đó ở mọi tầng, kể cả job Hangfire nó sinh ra. Production không có Seq: `docker compose … logs api | grep '<mã>'` (log JSON).
