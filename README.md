@@ -2,7 +2,7 @@
 
 Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (nguyên liệu, các bước, ảnh), xuất bản, tìm kiếm tiếng Việt không dấu; Admin quản trị danh mục và tài khoản.
 **Công nghệ:** .NET 10 Minimal API (Clean Architecture + CQRS/MediatR) · Next.js 15 App Router · PostgreSQL 16 · Redis 7 · MinIO · Hangfire · Nginx · Docker Compose.
-**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.7.md`](SPEC/SRS_Culinary_Blog_v1.2.7.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (69 mâu thuẫn đã giải quyết).
+**Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.8.md`](SPEC/SRS_Culinary_Blog_v1.2.8.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (69 mâu thuẫn đã giải quyết).
 
 ## Thành viên
 
@@ -1282,7 +1282,7 @@ git clone https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao.git cu
 | Seq (log, trace, metric) | http://localhost:5341 |
 | Mailhog | http://localhost:8025 |
 
-Tài khoản mẫu: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWORD`), `author1..5@culinaryblog.local` (`SEED_AUTHOR_PASSWORD`). Dữ liệu mẫu: 20 danh mục, 100 công thức (~85% đã xuất bản) — API tự seed/bù khi khởi động, không cần xóa volume. Máy đã có PostgreSQL chiếm cổng 5432 → đặt `POSTGRES_HOST_PORT=5434`.
+Tài khoản mẫu: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWORD`), `author1..5@culinaryblog.local` (`SEED_AUTHOR_PASSWORD`). Dữ liệu mẫu: 26 danh mục, 201 công thức (100 do nhóm biên soạn + 101 dịch từ Wikibooks Cookbook, CR-2026-07; 190 đã xuất bản), công thức nào cũng có ảnh giấy phép mở — API tự seed/bù khi khởi động, không cần xóa volume. Máy đã có PostgreSQL chiếm cổng 5432 → đặt `POSTGRES_HOST_PORT=5434`.
 
 **Môi trường khác (Buổi 7 – 8)** — cùng project `culinaryblog`, dừng bản dev trước (`docker compose --profile dev down`):
 
@@ -1291,6 +1291,29 @@ Tài khoản mẫu: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWOR
 | Production (HTTPS, 3 bản sao API) | `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build` | chuẩn bị một lần: `.env.production`, `./nginx/generate-ssl-cert.sh` |
 | E2E giống production (Playwright) | `docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml --env-file .env.production up -d --build` | + MailHog, access token 1 phút, dữ liệu mẫu; rate limit thật |
 | Đo tải (k6) | `docker compose -f docker-compose.prod.yml -f docker-compose.loadtest.yml --env-file .env.production up -d --build` | nâng hạn mức rate limit — [`tests/load/README.md`](tests/load/README.md) |
+
+**Dựng máy mới (ví dụ để bảo vệ) — kiểm tra 4 điều trước khi demo:**
+
+1. Tạo `.env` bằng `./tools/dev-setup.sh` (không chép tay `.env.example`): script điền `SEED_ADMIN_PASSWORD`, `SEED_AUTHOR_PASSWORD`,
+   `RENDER_GATE_SECRET`… và in mật khẩu tài khoản mẫu. Thiếu `SEED_ADMIN_PASSWORD` thì **không có tài khoản Admin** — log API ghi
+   `Admin account … was NOT created`. Điền xong chạy `docker compose --profile dev up -d api` (tạo lại container để nhận biến mới — `restart` không đọc lại `.env`); seed chạy lại khi API khởi động, không cần xóa volume.
+2. Luôn chạy với **`--profile dev`**: `docker compose --profile dev up -d --build`. Thiếu profile thì MailHog không chạy, email chào mừng và
+   đặt lại mật khẩu thất bại rồi nằm ở trạng thái **Scheduled** (Hangfire chờ thử lại sau 1, 5, 30 phút). Bật MailHog xong, vào
+   http://localhost/hangfire → *Scheduled* → chọn job → *Enqueue now* để gửi ngay; thư xem ở http://localhost:8025.
+3. `docker compose --profile dev ps`: 9 container `Up`, 8 container có `(healthy)` (MailHog không có healthcheck). Healthcheck của
+   worker gọi `/health/ready` bên trong container — không có cổng mở ra máy.
+4. Đăng nhập `admin@culinaryblog.local` để mở trang Quản lý người dùng.
+
+**Bật đăng nhập Google (FR-AUTH-003)** — code đã có sẵn; thiếu Client ID thì nút Google tự ẩn, các cách đăng nhập khác vẫn chạy:
+
+1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → *Create credentials* → *OAuth client ID* → loại **Web application**
+   (lần đầu phải điền *OAuth consent screen*, chế độ *Testing* là đủ và thêm email của nhóm vào *Test users*).
+2. *Authorized JavaScript origins*: `http://localhost` (dev) và `https://localhost` hoặc tên miền thật (production). Không cần *redirect URI* —
+   hệ thống dùng Google Identity Services gửi ID Token thẳng về `POST /api/v1/auth/google`.
+3. Dán Client ID (dạng `…apps.googleusercontent.com`) vào `GOOGLE_CLIENT_ID` của `.env` và `.env.production`. API chỉ cần Client ID để kiểm
+   `aud` của ID Token; `GOOGLE_CLIENT_SECRET` có thể để trống.
+4. Build lại web vì Client ID được đóng vào bundle lúc build: `docker compose --profile dev up -d --build frontend api`
+   (production: thêm `-f docker-compose.prod.yml --env-file .env.production`).
 
 **Tra log theo mã lỗi:** màn hình lỗi hiện "Mã tra cứu" = header `X-Correlation-ID` → dán vào Seq: `CorrelationId = '<mã>'` ra mọi log của
 request đó ở mọi tầng, kể cả job Hangfire nó sinh ra. Production không có Seq: `docker compose … logs api | grep '<mã>'` (log JSON).
