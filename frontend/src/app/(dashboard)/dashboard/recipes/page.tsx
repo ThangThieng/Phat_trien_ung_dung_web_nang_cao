@@ -66,7 +66,7 @@ export default function MyRecipesPage() {
     return (
       <section className="mx-auto max-w-6xl px-4 py-10" role="alert">
         <h1 className="text-2xl font-bold">Không thể tải công thức</h1>
-        <p className="mt-2 text-ink-soft">Vui lòng thử lại sau.</p>
+        <p className="text-ink-soft mt-2">Vui lòng thử lại sau.</p>
       </section>
     );
   const { data } = recipes;
@@ -74,8 +74,8 @@ export default function MyRecipesPage() {
     <section className="mx-auto max-w-6xl px-4 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-ink">Công thức của tôi</h1>
-          <p className="mt-1 text-sm text-ink-soft">
+          <h1 className="text-ink text-2xl font-bold">Công thức của tôi</h1>
+          <p className="text-ink-soft mt-1 text-sm">
             Quản lý các bản nháp và công thức đã xuất bản.
           </p>
         </div>
@@ -89,7 +89,7 @@ export default function MyRecipesPage() {
       <div
         role="tablist"
         aria-label="Trạng thái công thức"
-        className="mt-6 flex gap-1 overflow-x-auto border-b border-line"
+        className="border-line mt-6 flex gap-1 overflow-x-auto border-b"
       >
         {TABS.map((tab) => {
           const selected = tab.status === status || (!tab.status && !status);
@@ -100,17 +100,17 @@ export default function MyRecipesPage() {
               role="tab"
               aria-selected={selected}
               onClick={() => router.replace(hrefFor(1, tab.status))}
-              className={`shrink-0 border-b-2 px-3 py-2 text-sm font-medium ${selected ? 'border-gold-ink text-gold-ink' : 'border-transparent text-ink-soft hover:text-ink'}`}
+              className={`shrink-0 border-b-2 px-3 py-2 text-sm font-medium ${selected ? 'border-gold-ink text-gold-ink' : 'text-ink-soft hover:text-ink border-transparent'}`}
             >
               {tab.label}
             </button>
           );
         })}
       </div>
-      {recipes.isLoading && <p className="py-12 text-center text-ink-soft">Đang tải công thức…</p>}
+      {recipes.isLoading && <p className="text-ink-soft py-12 text-center">Đang tải công thức…</p>}
       {!recipes.isLoading && data?.items.length ? (
         <>
-          <div className="mt-6 rounded-xl border border-line bg-paper">
+          <div className="border-line bg-paper mt-6 rounded-xl border">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -168,9 +168,9 @@ export default function MyRecipesPage() {
         </>
       ) : (
         !recipes.isLoading && (
-          <div className="mt-8 rounded-xl border border-dashed border-line-strong bg-paper p-10 text-center">
-            <h2 className="text-lg font-semibold text-ink">Bạn chưa có công thức nào</h2>
-            <p className="mt-2 text-sm text-ink-soft">
+          <div className="border-line-strong bg-paper mt-8 rounded-xl border border-dashed p-10 text-center">
+            <h2 className="text-ink text-lg font-semibold">Bạn chưa có công thức nào</h2>
+            <p className="text-ink-soft mt-2 text-sm">
               Hãy bắt đầu lưu lại món ăn yêu thích của bạn.
             </p>
             <Button asChild className="mt-5">

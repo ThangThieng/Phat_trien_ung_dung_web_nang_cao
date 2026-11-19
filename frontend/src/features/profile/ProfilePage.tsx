@@ -19,6 +19,15 @@ import type { Session, User } from '@/types/auth';
 import ImageUploader from '@/components/shared/ImageUploader';
 import { initialsOf } from '@/components/layout/UserMenu';
 import type { UploadedFile } from '@/types/api';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 
 type Tab = 'Thông tin' | 'Bảo mật' | 'Phiên';
 const tabs: Tab[] = ['Thông tin', 'Bảo mật', 'Phiên'];
@@ -147,7 +156,6 @@ export function ProfilePage() {
   });
 
   const revoke = async (s: Session) => {
-    if (!window.confirm('Bạn có chắc muốn thu hồi phiên này?')) return;
     try {
       await apiFetch(`/auth/sessions/${s.id}`, { method: 'DELETE' });
       if (s.isCurrent) {
@@ -160,7 +168,6 @@ export function ProfilePage() {
   };
 
   const revokeAll = async () => {
-    if (!window.confirm('Bạn có chắc muốn thu hồi tất cả phiên?')) return;
     try {
       await apiFetch('/auth/sessions/revoke-all', { method: 'POST' });
       await logout();
@@ -168,6 +175,15 @@ export function ProfilePage() {
     } catch (error) {
       setMessage(getErrorMessage(error));
     }
+  };
+
+  // Hộp xác nhận trong giao diện thay cho window.confirm (không đúng giao diện, bị chặn ở một số trình duyệt nhúng; lint no-alert).
+  const [pendingRevoke, setPendingRevoke] = useState<Session | 'all' | null>(null);
+  const confirmRevoke = () => {
+    const target = pendingRevoke;
+    setPendingRevoke(null);
+    if (target === 'all') revokeAll();
+    else if (target) revoke(target);
   };
 
   const onKey = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {
@@ -389,7 +405,7 @@ export function ProfilePage() {
             </div>
             <button
               type="button"
-              onClick={revokeAll}
+              onClick={() => setPendingRevoke('all')}
               className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
             >
               <LogOut aria-hidden className="h-4 w-4" />
@@ -429,7 +445,11 @@ export function ProfilePage() {
                       </p>
                     </div>
                   </div>
-                  <button type="button" onClick={() => revoke(s)} className={dangerButton}>
+                  <button
+                    type="button"
+                    onClick={() => setPendingRevoke(s)}
+                    className={dangerButton}
+                  >
                     Thu hồi
                   </button>
                 </li>
@@ -438,6 +458,33 @@ export function ProfilePage() {
           )}
         </section>
       )}
+      <AlertDialog
+        open={pendingRevoke !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingRevoke(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pendingRevoke === 'all' ? 'Thu hồi tất cả phiên?' : 'Thu hồi phiên này?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingRevoke === 'all' || (pendingRevoke !== null && pendingRevoke.isCurrent)
+                ? 'Thiết bị này cũng bị đăng xuất, bạn sẽ cần đăng nhập lại.'
+                : 'Thiết bị đó sẽ bị đăng xuất ngay.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button type="button" variant="outline" onClick={() => setPendingRevoke(null)}>
+              Hủy
+            </Button>
+            <Button type="button" variant="destructive" onClick={confirmRevoke}>
+              Thu hồi
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 }
