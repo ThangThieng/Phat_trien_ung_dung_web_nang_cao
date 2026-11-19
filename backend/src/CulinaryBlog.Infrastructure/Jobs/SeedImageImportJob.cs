@@ -72,6 +72,11 @@ public sealed partial class SeedImageImportJob(
             return;
         }
 
+        if (recipe.Images.Count > 0 && SeedImageReplacements.IsOutdated(recipe.Slug, recipe.Instructions))
+        {
+            recipe = await RemoveOutdatedImageAsync(recipe, seed, cancellationToken).ConfigureAwait(false);
+        }
+
         if (recipe.Images.Count == 0)
         {
             // Công thức do nhóm biên soạn: chỉ gắn ảnh khi chưa ai sửa, vì phải thay Instructions bằng ghi công ảnh (§2.6.1).
@@ -106,6 +111,43 @@ public sealed partial class SeedImageImportJob(
         {
             await cache.InvalidateAsync(RecipeCacheKeys.ForContentChange(recipe.Slug, recipe.Status), cancellationToken).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>
+    /// <see cref="SeedImageReplacements"/>: xóa hẳn ảnh mẫu cũ (bản ghi và file trong MinIO) rồi trả ghi chú nguồn về dạng trước khi có
+    /// ảnh, để luồng nhập bên dưới gắn ảnh mới và ghi công đúng tác giả ảnh mới. Xóa cứng chứ không xóa mềm: ảnh xóa mềm được hiểu là
+    /// người dùng chủ động bỏ ảnh và seeder sẽ không gắn lại.
+    /// </summary>
+    private async Task<Recipe> RemoveOutdatedImageAsync(Recipe recipe, SeedRecipe? seed, CancellationToken cancellationToken)
+    {
+        var files = recipe.Images
+            .SelectMany(i => new[] { i.OriginalUrl, i.MediumUrl, i.ThumbnailUrl })
+            .OfType<string>()
+            .ToList();
+
+        // Công thức nhóm biên soạn: trả về tóm tắt gốc (luồng nhập chỉ gắn ảnh khi Instructions đúng tóm tắt). Wikibooks: ghi chú nguồn mới.
+        var instructions = recipe.Instructions;
+        if (seed is not null)
+        {
+            instructions = seed.Source is null ? RecipeSeedCatalog.InstructionsSummary(seed) : seed.Attribution;
+        }
+
+        await db.Set<RecipeImage>().IgnoreQueryFilters().Where(i => i.RecipeId == recipe.Id)
+            .ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
+        await db.Recipes.Where(r => r.Id == recipe.Id)
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.Instructions, instructions), cancellationToken)
+            .ConfigureAwait(false);
+
+        foreach (var file in files)
+        {
+            await storage.DeleteAsync(file, cancellationToken).ConfigureAwait(false);
+        }
+
+        LogReplacing(logger, recipe.Slug);
+        db.ChangeTracker.Clear();
+        return await db.Recipes.Include(r => r.Steps).Include(r => r.Ingredients).Include(r => r.Images)
+            .SingleAsync(r => r.Id == recipe.Id, cancellationToken)
+            .ConfigureAwait(false);
     }
 
     /// <returns>False khi dữ liệu nguồn không dùng được: thử lại cũng không khác nên dừng, công thức giữ nguyên không ảnh.</returns>
@@ -214,6 +256,9 @@ public sealed partial class SeedImageImportJob(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Seed image import rejected the downloaded file for recipe {Slug}")]
     private static partial void LogInvalidImage(ILogger logger, string slug, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Seed image for recipe {Slug} is outdated: old image removed, importing the new one")]
+    private static partial void LogReplacing(ILogger logger, string slug);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Seed image imported for recipe {Slug}")]
     private static partial void LogImported(ILogger logger, string slug);

@@ -164,6 +164,30 @@ public class DatabaseSeederTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
         Assert.Equal(RecipeSeedCatalog.Recipes.Count(r => r.Image is not null), scheduler.Calls.Count(c => c.PublishAt is not null));
     }
 
+    /// <summary>Công thức đã có ảnh vẫn được lên lịch khi ảnh đó là ảnh mẫu cũ đã thay (SeedImageReplacements) và chưa ai sửa ghi công.</summary>
+    [Fact]
+    public async Task ImportImages_SchedulesRecipeStillShowingAReplacedSampleImage()
+    {
+        await SeedAsync();
+        const string slug = "suon-xao-chua-ngot";
+        Guid outdatedId;
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
+            var outdated = await db.Recipes.FirstAsync(r => r.Slug == slug);
+            outdatedId = outdated.Id;
+            db.Add(outdated.AddImage("http://localhost/media/recipes/old.png", outdated.Title, isPrimary: true));
+            await db.SaveChangesAsync();
+            var credit = $"{RecipeSeedCatalog.SourceNotePrefix} Ảnh: Nguyen Thi Quynh Tram, CC BY 3.0, {SeedImageReplacements.OldImageBySlug[slug]}.";
+            await db.Recipes.Where(r => r.Id == outdatedId).ExecuteUpdateAsync(s => s.SetProperty(r => r.Instructions, credit));
+        }
+
+        var scheduler = new RecordingScheduler();
+        await SeedAsync(importImages: true, scheduler);
+
+        Assert.Contains(scheduler.Calls, c => c.RecipeId == outdatedId);
+    }
+
     [Fact]
     public async Task ImportImagesOff_SchedulesNothing()
     {

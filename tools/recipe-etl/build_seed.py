@@ -10,7 +10,7 @@ import json
 import re
 import sys
 
-from mediawiki import OUT
+from mediawiki import OUT, ROOT
 from transform import SEED_DATA, slugify
 from validate_translations import load_translations, validate_all
 
@@ -27,6 +27,8 @@ UNITS = {
     "gallon": "gallon", "clove": "tép", "can": "lon", "pinch": "nhúm", "dash": "chút", "stick": "thanh", "slice": "lát", "bunch": "bó", "sprig": "nhánh", "piece": "miếng",
     "head": "củ", "stalk": "cọng", "package": "gói", "pkg": "gói", "packet": "gói", "jar": "hũ", "bottle": "chai", "handful": "nắm", "drop": "giọt", "leaf": "lá", "leave": "lá", "mg": "mg",
 }
+
+IMAGE_OVERRIDES = ROOT / "image_overrides.json"
 
 
 def unit_vi(unit: str | None) -> str | None:
@@ -136,6 +138,11 @@ def main() -> None:
             print(error)
         raise SystemExit(f"Không ghi dữ liệu: {len(errors)} lỗi")
     recipes = json.loads((OUT / "recipes_en.json").read_text(encoding="utf-8"))
+    # Ảnh nhóm chọn thay ảnh đầu trang Wikibooks (kém hấp dẫn hoặc không rõ món); mỗi mục ghi lý do.
+    overrides = json.loads(IMAGE_OVERRIDES.read_text(encoding="utf-8"))
+    for recipe in recipes:
+        if str(recipe["pageId"]) in overrides:
+            recipe["image"] = overrides[str(recipe["pageId"])]
     entries = load_translations()
     built = [build_recipe(r, entries[r["pageId"]]) for r in recipes]
     built.sort(key=lambda r: slugify(r["title"]))
