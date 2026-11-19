@@ -63,5 +63,5 @@ test('an authenticated visitor with an external callback is sent to the safe fal
     });
   });
   await page.goto('/auth/login?callbackUrl=https%3A%2F%2Fevil.example');
-  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page).toHaveURL((url) => url.pathname === '/');
 });

@@ -6,6 +6,7 @@ import {
   Activity,
   BookOpen,
   FolderTree,
+  Home,
   LayoutDashboard,
   PenSquare,
   UserRound,
@@ -22,6 +23,8 @@ interface DashboardNavItem {
 
 /** SRS §5.1 — trang riêng tư của mọi người dùng đã đăng nhập. */
 export const AUTHOR_NAV: readonly DashboardNavItem[] = [
+  // 19/11/2026: lối về trang công khai — bảng điều khiển trước đó không có đường quay lại xem công thức.
+  { href: '/', label: 'Trang chủ', icon: Home },
   { href: '/dashboard', label: 'Tổng quan', icon: LayoutDashboard },
   { href: '/dashboard/recipes', label: 'Công thức của tôi', icon: BookOpen },
   { href: '/dashboard/recipes/new', label: 'Viết công thức', icon: PenSquare },
@@ -71,7 +74,7 @@ export default function DashboardSidebar({ roles, onNavigate }: DashboardSidebar
           aria-current={current ? 'page' : undefined}
           className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${
             current
-              ? 'bg-navy-2 text-gold ring-1 ring-gold ring-inset'
+              ? 'bg-navy-2 text-gold ring-gold ring-1 ring-inset'
               : 'text-cream hover:bg-navy-2 hover:text-gold'
           }`}
         >
@@ -89,7 +92,7 @@ export default function DashboardSidebar({ roles, onNavigate }: DashboardSidebar
         <div>
           <p
             id="dashboard-admin-nav"
-            className="px-3 text-xs font-semibold tracking-wide text-gold uppercase"
+            className="text-gold px-3 text-xs font-semibold tracking-wide uppercase"
           >
             Quản trị
           </p>

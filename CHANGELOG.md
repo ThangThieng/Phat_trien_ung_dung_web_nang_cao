@@ -10,6 +10,10 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
 
 ### Added
 
+- **Đăng nhập xong không còn bị đưa vào bảng điều khiển trống:** quay về đúng trang đang xem (nút Đăng nhập/Đăng ký mang `callbackUrl`),
+  không có thì về trang chủ — người đã đăng nhập vẫn có mọi quyền của khách (SRS §2.3). Trang đăng nhập/đăng ký có lối "Tiếp tục với tư cách
+  khách"; bảng điều khiển và menu tài khoản có mục **Trang chủ**; trang Tổng quan có nút "Viết công thức", "Xem công thức của mọi người" và
+  lời hướng dẫn cho tài khoản mới.
 - **Đăng nhập Google chạy ngay sau khi cài (FR-AUTH-003):** `.env.example`, `.env.production.example` và `tools/dev-setup.sh` có sẵn Client ID
   của nhóm (công khai, không phải bí mật — Client secret không dùng). Máy đã cài: chạy lại `dev-setup.sh` rồi build lại.
 

@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import {
   ChevronDown,
   FolderTree,
+  Home,
   LayoutDashboard,
   LogOut,
   UserRound,
@@ -23,6 +24,7 @@ interface MenuLink {
 }
 
 const USER_LINKS: readonly MenuLink[] = [
+  { href: '/', label: 'Trang chủ', icon: Home },
   { href: '/profile', label: 'Hồ sơ', icon: UserRound },
   { href: '/dashboard', label: 'Bảng điều khiển', icon: LayoutDashboard },
 ];
@@ -32,6 +34,12 @@ const ADMIN_LINKS: readonly MenuLink[] = [
   { href: '/dashboard/categories', label: 'Quản lý danh mục', icon: FolderTree },
   { href: '/dashboard/users', label: 'Người dùng', icon: Users },
 ];
+
+/** Đăng nhập/đăng ký xong quay về đúng trang đang xem (không quay về chính trang đăng nhập). */
+export function authHref(base: '/auth/login' | '/auth/register', pathname: string | null): string {
+  if (!pathname || pathname === '/' || pathname.startsWith('/auth')) return base;
+  return `${base}?callbackUrl=${encodeURIComponent(pathname)}`;
+}
 
 /** Hai chữ cái đầu của tên hiển thị — "Nguyễn Văn Lan" → "NL". */
 export function initialsOf(displayName: string): string {
@@ -90,22 +98,22 @@ export default function UserMenu() {
   }, [open, items]);
 
   if (!isReady) {
-    return <span aria-hidden className="block h-9 w-24 animate-pulse rounded-full bg-gold-soft" />;
+    return <span aria-hidden className="bg-gold-soft block h-9 w-24 animate-pulse rounded-full" />;
   }
 
   if (!user) {
     return (
       <div className="flex items-center gap-1">
         <Link
-          href="/auth/login"
-          className="rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap text-cream hover:text-gold"
+          href={authHref('/auth/login', pathname)}
+          className="text-cream hover:text-gold rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap"
         >
           Đăng nhập
         </Link>
         <Link
-          href="/auth/register"
+          href={authHref('/auth/register', pathname)}
           // 320 px: chỉ giữ "Đăng nhập" (trang đăng nhập có link đăng ký; menu điện thoại cũng có).
-          className="hidden rounded-md bg-gold px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-navy hover:bg-gold-soft sm:inline-block"
+          className="bg-gold text-navy hover:bg-gold-soft hidden rounded-md px-3 py-1.5 text-sm font-semibold whitespace-nowrap sm:inline-block"
         >
           Đăng ký
         </Link>
@@ -170,11 +178,11 @@ export default function UserMenu() {
             setOpen(true);
           }
         }}
-        className="flex items-center gap-2 rounded-full py-1 pr-2 pl-1 text-sm font-medium text-cream hover:bg-navy-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink"
+        className="text-cream hover:bg-navy-2 focus-visible:outline-gold-ink flex items-center gap-2 rounded-full py-1 pr-2 pl-1 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <span
           aria-hidden
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-gold text-xs font-semibold text-navy"
+          className="bg-gold text-navy flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold"
         >
           {initialsOf(user.displayName)}
         </span>
@@ -189,11 +197,11 @@ export default function UserMenu() {
           role="menu"
           aria-label="Tài khoản"
           onKeyDown={onMenuKeyDown}
-          className="absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border border-line bg-paper py-1 shadow-lg"
+          className="border-line bg-paper absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border py-1 shadow-lg"
         >
-          <li role="presentation" className="border-b border-line px-4 py-2">
-            <p className="truncate text-sm font-semibold text-ink">{user.displayName}</p>
-            <p className="truncate text-xs text-ink-soft">{user.email}</p>
+          <li role="presentation" className="border-line border-b px-4 py-2">
+            <p className="text-ink truncate text-sm font-semibold">{user.displayName}</p>
+            <p className="text-ink-soft truncate text-xs">{user.email}</p>
           </li>
           {links.map(({ href, label, icon: Icon }) => (
             <li key={href} role="presentation">
@@ -209,7 +217,7 @@ export default function UserMenu() {
               </Link>
             </li>
           ))}
-          <li role="presentation" className="mt-1 border-t border-line pt-1">
+          <li role="presentation" className="border-line mt-1 border-t pt-1">
             <button
               type="button"
               role="menuitem"
