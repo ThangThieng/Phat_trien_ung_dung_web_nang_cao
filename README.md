@@ -4,6 +4,8 @@ Blog ẩm thực & nấu ăn: người dùng đăng ký, viết công thức (ng
 **Công nghệ:** .NET 10 Minimal API (Clean Architecture + CQRS/MediatR) · Next.js 15 App Router · PostgreSQL 16 · Redis 7 · MinIO · Hangfire · Nginx · Docker Compose.
 **Tài liệu gốc:** [`SPEC/SRS_Culinary_Blog_v1.2.8.md`](SPEC/SRS_Culinary_Blog_v1.2.8.md) (yêu cầu) · [`SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md`](SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md) (kế hoạch đầy đủ) · [`SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md`](SPEC/SRS_MAU_THUAN_VA_GIAI_PHAP.md) (69 mâu thuẫn đã giải quyết).
 
+> **Muốn tải về và chạy web?** Xem [Phụ lục – Cài đặt & chạy dự án](#phụ-lục--cài-đặt--chạy-dự-án) ở cuối tài liệu.
+
 ## Thành viên
 
 | Vai trò | Thành viên | MSSV | Phụ trách | Nhánh Git (buổi n) |
@@ -1260,17 +1262,87 @@ Không đưa dữ liệu server vào Zustand.
 
 # Phụ lục – Cài đặt & chạy dự án
 
-**Chỉ để chạy hệ thống:** Docker Desktop 4.x (Compose v2) + Git Bash (Windows) hoặc shell bất kỳ (Linux/macOS).
-**Để phát triển:** thêm .NET SDK 10.0.x · Node.js 20+ (container dùng 22 LTS) · `dotnet tool install --global dotnet-ef`.
+## Tải web về và chạy lần đầu (cho người mới)
+
+### Vì sao tải code về chưa đủ
+
+GitHub chỉ giữ **code** và **dữ liệu mẫu dạng tệp**. Hai thứ không có trên GitHub, mỗi máy tự tạo khi cài:
+
+| Không có trên GitHub | Vì sao | Máy mới tự tạo bằng cách nào |
+|---|---|---|
+| Mật khẩu, khóa bí mật (`.env`) | NFR-SEC-007: *không bao giờ commit secrets*; repo công khai | `tools/dev-setup.sh` sinh ngẫu nhiên |
+| Database (bảng + dữ liệu) | CONS-006: database tạo từ code (EF Core migrations); dữ liệu thay đổi liên tục, không gộp được qua Git | API tự chạy migration rồi nạp dữ liệu mẫu ở lần chạy đầu |
+| Ảnh món ăn (~200 ảnh) | Ảnh thuộc Wikimedia/Flickr theo giấy phép mở, lưu trong kho MinIO của từng máy | Hangfire tự tải về theo danh sách địa chỉ trong code |
+
+Dữ liệu mẫu là **dữ liệu thật đã viết sẵn** (`backend/src/CulinaryBlog.Infrastructure/Persistence/Seed/Data/`): 100 công thức nhóm biên
+soạn, 101 công thức Wikibooks đã dịch (CC BY-SA 4.0), 26 danh mục, ảnh đúng món có giấy phép. Web chỉ **chép** vào database, không bịa
+nội dung. Phần duy nhất đặt tự động: 5 tài khoản tác giả mẫu (tên "Tác giả mẫu 1…5", ghi rõ không phải người thật), món nào thuộc tác
+giả nào, ngày xuất bản và trạng thái của 100 món nhóm biên soạn (để demo đủ Nháp / Đã xuất bản / Lưu trữ). Không có số dinh dưỡng giả.
+
+### Cần chuẩn bị
+
+- **Docker Desktop** 4.x đang chạy (biểu tượng cá voi ở khay hệ thống không còn xoay).
+- **Git** và **Git Bash** (Windows; cài cùng Git for Windows). Linux/macOS dùng terminal sẵn có.
+- **Internet** ở lần chạy đầu: tải image Docker và tải ảnh món ăn.
+- Trống cổng 80, 3000, 5000, 5432, 6379, 9000, 9001, 5341, 8025, 1025. Máy đã có PostgreSQL ở cổng 5432 → thêm `POSTGRES_HOST_PORT=5434` vào `.env`.
+
+### Các bước (mở Git Bash)
 
 ```bash
-git clone https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao.git culinary-blog && cd culinary-blog
-./tools/dev-setup.sh --up     # .env + bí mật ngẫu nhiên, nginx/.htpasswd, hook gitleaks, rồi dựng 8 service và chờ healthy
+git clone https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao.git culinary-blog
+cd culinary-blog
+git checkout develop          # bản mới nhất; main = bản đã phát hành (tag v1.0.0)
+./tools/dev-setup.sh --up     # tạo .env + mật khẩu ngẫu nhiên, nginx/.htpasswd, hook gitleaks, dựng 9 container, chờ 8 service healthy
 ```
 
-`tools/dev-setup.sh` không ghi đè `.env` đã có — chỉ điền các khóa bí mật còn trống — và in mật khẩu tài khoản mẫu một lần. Làm tay vẫn được:
-`cp .env.example .env` (điền `JWT_SIGNING_KEY`, `AUTH_SECRET`, `HANGFIRE_*`, `SEED_*`), `./nginx/generate-htpasswd.sh`,
+Script **in mật khẩu tài khoản mẫu một lần** — chép lại ngay. Quên thì xem `SEED_ADMIN_PASSWORD`, `SEED_AUTHOR_PASSWORD` trong `.env`.
+Lần đầu build mất 5 – 15 phút tùy mạng. Xong, mở http://localhost.
+
+### Lần đầu chạy, web tự làm gì
+
+1. **Tạo bảng** trong PostgreSQL (migration).
+2. **Nạp dữ liệu mẫu**: role Author/Admin, tài khoản `admin@culinaryblog.local`, `author1…5@culinaryblog.local`, 26 danh mục, 100 công
+   thức nhóm biên soạn (xem được ngay), 101 công thức Wikibooks ở dạng **Nháp**.
+3. **Tải ảnh** (Hangfire, job `SeedImageImportJob`): từng ảnh một, **cách nhau 10 giây** để tôn trọng giới hạn của Wikimedia → khoảng
+   **35 phút trở lên** cho ~200 ảnh. Mỗi công thức Wikibooks chỉ được **xuất bản sau khi có ảnh** (CR-2026-07), nên số món trên trang
+   tăng dần trong thời gian này. Theo dõi ở http://localhost/hangfire → *Jobs*. **Dựng máy demo trước buổi bảo vệ ít nhất 1 giờ.**
+4. Tạo ảnh thu nhỏ 300×300 và 800×600 cho từng ảnh (FR-JOB-002).
+
+Mỗi lần API khởi động, bước 2 chạy lại nhưng **chỉ bù phần còn thiếu**, không ghi đè dữ liệu người dùng đã sửa.
+
+### Tái tạo dữ liệu
+
+| Muốn | Lệnh | Mất gì |
+|---|---|---|
+| Bù dữ liệu mẫu bị thiếu (vô tình xóa danh mục, tài khoản mẫu…) | `docker compose --profile dev restart api` | Không mất gì |
+| Làm lại database từ đầu, giống máy vừa cài | `docker compose --profile dev down -v` rồi `docker compose --profile dev up -d` | **Mọi dữ liệu** trên máy này: tài khoản tự đăng ký, công thức tự viết, ảnh đã tải (tải lại ~35 phút) |
+| Đổi mật khẩu tài khoản mẫu | Sửa `.env`, rồi `down -v` + `up -d` (mật khẩu chỉ đặt khi tạo tài khoản) | Như dòng trên |
+
+`down -v` xóa cả 5 volume (`pgdata`, `redisdata`, `miniodata`, `seqdata`, `dpkeys`). Cần giữ dữ liệu thì sao lưu trước:
+`docker compose exec -T postgres pg_dump -U culinary -d culinaryblog -Fc > backup.dump`.
+
+### Kiểm tra nhanh sau khi cài
+
+1. `docker compose --profile dev ps`: 9 container `Up`, 8 có `(healthy)` (MailHog không có healthcheck).
+2. http://localhost mở được trang chủ; http://localhost/recipes có công thức.
+3. Đăng nhập `admin@culinaryblog.local` → http://localhost/dashboard, cột trái có mục **Quản trị → Người dùng**.
+4. Quên mật khẩu một tài khoản → thư xuất hiện ở http://localhost:8025.
+
+### Lỗi thường gặp
+
+| Triệu chứng | Nguyên nhân | Cách sửa |
+|---|---|---|
+| Có role Admin nhưng không đăng nhập được `admin@culinaryblog.local` | `.env` thiếu `SEED_ADMIN_PASSWORD` (chép tay `.env.example`) — log API: `Admin account … was NOT created` | Chạy `./tools/dev-setup.sh` (chỉ điền ô trống), rồi `docker compose --profile dev up -d api` (`restart` không đọc lại `.env`) |
+| Email chào mừng / đặt lại mật khẩu ở trạng thái **Scheduled** trong Hangfire | MailHog không chạy vì thiếu `--profile dev` — gửi thất bại, Hangfire hẹn thử lại sau 1, 5, 30 phút | `docker compose --profile dev up -d`; vào http://localhost/hangfire → *Scheduled* → chọn job → *Enqueue now* |
+| Ít hơn 201 món sau khi cài | Ảnh đang được tải (bước 3 ở trên) hoặc máy không có Internet | Đợi; xem tiến độ ở http://localhost/hangfire |
+| `Bind for 0.0.0.0:5432 failed` | Máy đã có PostgreSQL | Thêm `POSTGRES_HOST_PORT=5434` vào `.env` |
+
+### Cài tay (không dùng script)
+
+`cp .env.example .env` (điền `JWT_SIGNING_KEY`, `AUTH_SECRET`, `HANGFIRE_*`, `RENDER_GATE_SECRET`, `SEED_*`), `./nginx/generate-htpasswd.sh`,
 `git config core.hooksPath .githooks`, `docker compose --profile dev up -d --build`.
+
+**Để phát triển** (không cần chỉ để chạy): thêm .NET SDK 10.0.x · Node.js 20+ (container dùng 22 LTS) · `dotnet tool install --global dotnet-ef`.
 
 | Service | URL |
 |---|---|
@@ -1282,7 +1354,7 @@ git clone https://github.com/ThangThieng/Phat_trien_ung_dung_web_nang_cao.git cu
 | Seq (log, trace, metric) | http://localhost:5341 |
 | Mailhog | http://localhost:8025 |
 
-Tài khoản mẫu: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWORD`), `author1..5@culinaryblog.local` (`SEED_AUTHOR_PASSWORD`). Dữ liệu mẫu: 26 danh mục, 201 công thức (100 do nhóm biên soạn + 101 dịch từ Wikibooks Cookbook, CR-2026-07; 190 đã xuất bản), công thức nào cũng có ảnh giấy phép mở — API tự seed/bù khi khởi động, không cần xóa volume. Máy đã có PostgreSQL chiếm cổng 5432 → đặt `POSTGRES_HOST_PORT=5434`.
+Tài khoản và dữ liệu mẫu: xem "Lần đầu chạy, web tự làm gì" ở trên.
 
 **Môi trường khác (Buổi 7 – 8)** — cùng project `culinaryblog`, dừng bản dev trước (`docker compose --profile dev down`):
 
@@ -1291,18 +1363,6 @@ Tài khoản mẫu: `admin@culinaryblog.local` (mật khẩu `SEED_ADMIN_PASSWOR
 | Production (HTTPS, 3 bản sao API) | `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build` | chuẩn bị một lần: `.env.production`, `./nginx/generate-ssl-cert.sh` |
 | E2E giống production (Playwright) | `docker compose -f docker-compose.prod.yml -f docker-compose.e2e.yml --env-file .env.production up -d --build` | + MailHog, access token 1 phút, dữ liệu mẫu; rate limit thật |
 | Đo tải (k6) | `docker compose -f docker-compose.prod.yml -f docker-compose.loadtest.yml --env-file .env.production up -d --build` | nâng hạn mức rate limit — [`tests/load/README.md`](tests/load/README.md) |
-
-**Dựng máy mới (ví dụ để bảo vệ) — kiểm tra 4 điều trước khi demo:**
-
-1. Tạo `.env` bằng `./tools/dev-setup.sh` (không chép tay `.env.example`): script điền `SEED_ADMIN_PASSWORD`, `SEED_AUTHOR_PASSWORD`,
-   `RENDER_GATE_SECRET`… và in mật khẩu tài khoản mẫu. Thiếu `SEED_ADMIN_PASSWORD` thì **không có tài khoản Admin** — log API ghi
-   `Admin account … was NOT created`. Điền xong chạy `docker compose --profile dev up -d api` (tạo lại container để nhận biến mới — `restart` không đọc lại `.env`); seed chạy lại khi API khởi động, không cần xóa volume.
-2. Luôn chạy với **`--profile dev`**: `docker compose --profile dev up -d --build`. Thiếu profile thì MailHog không chạy, email chào mừng và
-   đặt lại mật khẩu thất bại rồi nằm ở trạng thái **Scheduled** (Hangfire chờ thử lại sau 1, 5, 30 phút). Bật MailHog xong, vào
-   http://localhost/hangfire → *Scheduled* → chọn job → *Enqueue now* để gửi ngay; thư xem ở http://localhost:8025.
-3. `docker compose --profile dev ps`: 9 container `Up`, 8 container có `(healthy)` (MailHog không có healthcheck). Healthcheck của
-   worker gọi `/health/ready` bên trong container — không có cổng mở ra máy.
-4. Đăng nhập `admin@culinaryblog.local` để mở trang Quản lý người dùng.
 
 **Bật đăng nhập Google (FR-AUTH-003)** — code đã có sẵn; thiếu Client ID thì nút Google tự ẩn, các cách đăng nhập khác vẫn chạy:
 

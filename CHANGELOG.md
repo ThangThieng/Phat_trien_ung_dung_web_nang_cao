@@ -10,6 +10,9 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
 
 ### Fixed
 
+- **Tác giả mẫu không còn mang tên người giả:** 5 tài khoản mẫu tên "Tác giả mẫu 1…5", giới thiệu ghi rõ không phải người thật (trước đó Bogus đặt
+  tên người Việt ngẫu nhiên như "Kim Quyên Vũ"). Database cũ được đổi tên khi API khởi động, trừ hồ sơ đã có người tự sửa.
+
 - **Trang trả 500 khi nhiều người (hoặc Googlebot) đọc nhanh (CR-2026-10, SRS v1.2.8, MT-73):** request nạp Data Cache của Frontend không mang
   IP người xem nên cả hệ thống chung hạn mức 100/phút của IP container Frontend. Nay có hạn mức render chung 1.000/phút qua bí mật nội bộ
   `RENDER_GATE_SECRET` (Nginx xóa header `X-Render-Gate` từ bên ngoài); 429 lúc render → `/too-many-requests` trả 429 + `Retry-After`.
