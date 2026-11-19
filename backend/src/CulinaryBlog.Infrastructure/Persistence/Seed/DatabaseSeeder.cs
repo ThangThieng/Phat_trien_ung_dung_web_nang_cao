@@ -397,12 +397,16 @@ public sealed partial class DatabaseSeeder(
             .Concat(RecipeSeedCatalog.LegacyImages.Keys)
             .ToList();
 
-        var pending = await db.Recipes.IgnoreQueryFilters().AsNoTracking()
-            .Where(r => !r.IsDeleted && slugs.Contains(r.Slug) && seedAuthorIds.Contains(r.AuthorId) && !r.Images.Any())
+        // Thêm công thức còn ảnh mẫu đã được thay (SeedImageReplacements): job xóa ảnh cũ rồi nhập ảnh mới.
+        var replaced = SeedImageReplacements.OldImageBySlug.Keys.ToList();
+        var pending = (await db.Recipes.IgnoreQueryFilters().AsNoTracking()
+            .Where(r => !r.IsDeleted && slugs.Contains(r.Slug) && seedAuthorIds.Contains(r.AuthorId) && (!r.Images.Any() || replaced.Contains(r.Slug)))
             .OrderBy(r => r.Slug)
-            .Select(r => new { r.Id, r.Slug, r.Status, r.PublishedAt })
+            .Select(r => new { r.Id, r.Slug, r.Status, r.PublishedAt, r.Instructions, HasImage = r.Images.Any() })
             .ToListAsync(cancellationToken)
-            .ConfigureAwait(false);
+            .ConfigureAwait(false))
+            .Where(r => !r.HasImage || SeedImageReplacements.IsOutdated(r.Slug, r.Instructions))
+            .ToList();
 
         foreach (var recipe in pending)
         {

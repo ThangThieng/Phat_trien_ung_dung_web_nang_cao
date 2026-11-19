@@ -203,6 +203,44 @@ public class SeedImageImportJobTests(CulinaryBlogApiFactory factory) : IAsyncLif
         Assert.Equal("Ghi chú do người dùng tự viết.", after.Instructions);
     }
 
+    /// <summary>
+    /// Database seed trước 19/11/2026 còn ảnh mẫu cũ của "Sườn xào chua ngọt" (ảnh mờ) kèm ghi công ảnh đó. Chạy job: ảnh cũ bị xóa hẳn,
+    /// ảnh mới được nhập và ghi công đổi theo ảnh mới (SeedImageReplacements).
+    /// </summary>
+    [Fact]
+    public async Task OutdatedSampleImage_IsReplaced_AndCreditFollowsTheNewImage()
+    {
+        const string slug = "suon-xao-chua-ngot";
+        var recipe = await RecipeAsync(slug);
+        await RunJobAsync(recipe.Id, publishAtUtc: null, Respond(HttpStatusCode.OK, JpegPhoto(), "image/jpeg"));
+        var oldImageId = Assert.Single((await RecipeAsync(slug)).Images).Id;
+        await SetInstructionsAsync(recipe.Id, $"{RecipeSeedCatalog.SourceNotePrefix} Ảnh: Nguyen Thi Quynh Tram, CC BY 3.0, {SeedImageReplacements.OldImageBySlug[slug]}.");
+
+        await RunJobAsync(recipe.Id, publishAtUtc: null, Respond(HttpStatusCode.OK, JpegPhoto(), "image/jpeg"));
+
+        var after = await RecipeAsync(slug);
+        Assert.NotEqual(oldImageId, Assert.Single(after.Images).Id);
+        Assert.Equal(RecipeSeedCatalog.LegacyImageCredit(RecipeSeedCatalog.LegacyImages[slug]), after.Instructions);
+        using var scope = factory.Services.CreateScope();
+        Assert.False(await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>().Set<RecipeImage>().IgnoreQueryFilters().AnyAsync(i => i.Id == oldImageId));
+    }
+
+    [Fact]
+    public async Task SampleImageWhoseCreditUserChanged_IsKept()
+    {
+        const string slug = "suon-xao-chua-ngot";
+        var recipe = await RecipeAsync(slug);
+        await RunJobAsync(recipe.Id, publishAtUtc: null, Respond(HttpStatusCode.OK, JpegPhoto(), "image/jpeg"));
+        var imageId = Assert.Single((await RecipeAsync(slug)).Images).Id;
+        await SetInstructionsAsync(recipe.Id, "Ảnh do người dùng tự chụp.");
+
+        await RunJobAsync(recipe.Id, publishAtUtc: null, Respond(HttpStatusCode.OK, JpegPhoto(), "image/jpeg"));
+
+        var after = await RecipeAsync(slug);
+        Assert.Equal(imageId, Assert.Single(after.Images).Id);
+        Assert.Equal("Ảnh do người dùng tự chụp.", after.Instructions);
+    }
+
     [Fact]
     public async Task DeletedRecipe_IsIgnored()
     {
@@ -236,6 +274,13 @@ public class SeedImageImportJobTests(CulinaryBlogApiFactory factory) : IAsyncLif
         using var scope = factory.Services.CreateScope();
         return await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>().Recipes
             .AsNoTracking().Include(r => r.Images).FirstAsync(r => r.Slug == slug);
+    }
+
+    private async Task SetInstructionsAsync(Guid recipeId, string instructions)
+    {
+        using var scope = factory.Services.CreateScope();
+        await scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>().Recipes.Where(r => r.Id == recipeId)
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.Instructions, instructions));
     }
 
     private async Task RunJobAsync(Guid recipeId, DateTime? publishAtUtc, Func<HttpRequestMessage, HttpResponseMessage> responder)

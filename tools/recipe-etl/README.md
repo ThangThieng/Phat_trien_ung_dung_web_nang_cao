@@ -39,7 +39,7 @@ Một trang được chọn khi đủ các điều kiện, theo thứ tự trong
 
 ## Ảnh
 
-`legacy_image_picks.json` là ảnh đã xem bằng mắt cho công thức cũ. Ảnh chỉ gần đúng món được ghi kèm lý do trong `legacy_image_notes.json` để người duyệt thay khi có ảnh tốt hơn. Không có ảnh gần đúng thì công thức giữ không ảnh. `legacy_image_external.json` là ảnh Flickr tải qua API Openverse; 4 ảnh trong đó có giấy phép phi thương mại, phải thay nếu dùng thương mại.
+`image_overrides.json` chọn ảnh khác ảnh đầu trang Wikibooks cho công thức nhóm thấy ảnh gốc kém hấp dẫn (theo `pageId`, kèm lý do); đổi ảnh của công thức đã seed thì thêm slug và trang mô tả ảnh cũ vào `SeedImageReplacements.cs`. `legacy_image_picks.json` là ảnh đã xem bằng mắt cho công thức cũ. Ảnh chỉ gần đúng món được ghi kèm lý do trong `legacy_image_notes.json` để người duyệt thay khi có ảnh tốt hơn. Không có ảnh gần đúng thì công thức giữ không ảnh. `legacy_image_external.json` là ảnh Flickr tải qua API Openverse; 4 ảnh trong đó có giấy phép phi thương mại, phải thay nếu dùng thương mại.
 
 ## Giấy phép
 
