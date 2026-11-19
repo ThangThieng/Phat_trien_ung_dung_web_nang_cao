@@ -7,7 +7,7 @@
 # Chạy bằng sh/bash (Linux, macOS, Git Bash trên Windows). Cần Docker đang chạy và openssl (Git Bash có sẵn).
 #
 # - .env đã có thì KHÔNG ghi đè giá trị nào; chỉ điền những khóa bí mật còn TRỐNG (JWT_SIGNING_KEY, AUTH_SECRET, REVALIDATE_SECRET,
-#   HANGFIRE_GATE_SECRET, HANGFIRE_DASHBOARD_PASSWORD, SEED_ADMIN_PASSWORD, SEED_AUTHOR_PASSWORD). Mật khẩu PostgreSQL/MinIO giữ giá trị
+#   HANGFIRE_GATE_SECRET, RENDER_GATE_SECRET, HANGFIRE_DASHBOARD_PASSWORD, SEED_ADMIN_PASSWORD, SEED_AUTHOR_PASSWORD). Mật khẩu PostgreSQL/MinIO giữ giá trị
 #   mẫu của .env.example (chỉ dùng cho máy dev) — volume dữ liệu đã khởi tạo với mật khẩu nào thì phải giữ mật khẩu đó.
 # - Mật khẩu tài khoản mẫu sinh ngẫu nhiên nhưng luôn đạt NFR-SEC-001 (≥ 8 ký tự, có hoa, thường, số, ký tự đặc biệt) và được in ra màn
 #   hình MỘT lần để đăng nhập thử. .env không bao giờ được commit (.gitignore + gitleaks — NFR-SEC-007).
@@ -53,6 +53,7 @@ fill JWT_SIGNING_KEY "$(random_b64 96 88)"
 fill AUTH_SECRET "$(random_b64 48 44)"
 fill REVALIDATE_SECRET "$(random_hex 24)"
 fill HANGFIRE_GATE_SECRET "$(random_hex 32)"
+fill RENDER_GATE_SECRET "$(random_hex 32)"
 fill HANGFIRE_DASHBOARD_PASSWORD "$(random_password)"
 fill SEED_ADMIN_PASSWORD "$admin_password"
 fill SEED_AUTHOR_PASSWORD "$author_password"

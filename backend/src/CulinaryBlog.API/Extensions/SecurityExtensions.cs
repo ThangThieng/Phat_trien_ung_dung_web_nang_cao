@@ -14,11 +14,20 @@ public sealed class SecurityRateLimits : IDisposable
 {
     public const string Auth = "auth";
     public const string Upload = "upload";
+
+    /// <summary>CR-2026-10: hạn mức chung của các lần Frontend render nạp Data Cache (xem <see cref="SecurityRateLimitingOptions.Render"/>).</summary>
+    public const string Render = "render";
+
+    /// <summary>Header Frontend gắn vào request render; Nginx xóa header này ở mọi request từ bên ngoài (api-proxy.conf).</summary>
+    public const string RenderGateHeader = "X-Render-Gate";
+
     private readonly SecurityRateLimitingOptions _options;
+    private readonly byte[] _renderGateSecret;
 
     public SecurityRateLimits(Microsoft.Extensions.Options.IOptions<SecurityRateLimitingOptions> options)
     {
         _options = options.Value;
+        _renderGateSecret = System.Text.Encoding.UTF8.GetBytes(_options.RenderGateSecret);
         var global = CreateLimiter("general", _options.General);
         var auth = CreateLimiter(Auth, _options.Auth);
         var upload = CreateLimiter(Upload, _options.Upload);
@@ -32,6 +41,11 @@ public sealed class SecurityRateLimits : IDisposable
         if (!_options.Enabled || IsExempt(context))
         {
             return ("none", 0, TimeSpan.Zero);
+        }
+
+        if (IsRenderRequest(context))
+        {
+            return (Render, _options.Render.PermitLimit, TimeSpan.FromSeconds(_options.Render.WindowSeconds));
         }
 
         var name = context.GetEndpoint()?.Metadata.GetMetadata<SecurityRateLimitMetadata>()?.Name;
@@ -55,6 +69,23 @@ public sealed class SecurityRateLimits : IDisposable
         (context.Request.Path.Value?.StartsWith("/health", StringComparison.OrdinalIgnoreCase) ?? false) ||
         context.Request.Path.StartsWithSegments("/hangfire");
 
+    /// <summary>
+    /// Request đọc công khai (GET, không thuộc nhóm auth/upload) mang đúng bí mật render. So sánh thời gian hằng để không dò được
+    /// bí mật qua thời gian phản hồi. Bí mật rỗng → luôn false.
+    /// </summary>
+    public bool IsRenderRequest(HttpContext context)
+    {
+        if (_renderGateSecret.Length == 0 || !HttpMethods.IsGet(context.Request.Method) ||
+            context.GetEndpoint()?.Metadata.GetMetadata<SecurityRateLimitMetadata>() is not null)
+        {
+            return false;
+        }
+
+        var presented = context.Request.Headers[RenderGateHeader].ToString();
+        return presented.Length > 0 && System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
+            System.Text.Encoding.UTF8.GetBytes(presented), _renderGateSecret);
+    }
+
     public void Dispose() => Limiter.Dispose();
 
     private PartitionedRateLimiter<HttpContext> CreateLimiter(string name, RateQuota quota) =>
@@ -64,6 +95,18 @@ public sealed class SecurityRateLimits : IDisposable
             if (!_options.Enabled || IsExempt(context) || (name != "general" && selected != name))
             {
                 return RateLimitPartition.GetNoLimiter("exempt");
+            }
+
+            if (IsRenderRequest(context))
+            {
+                // Một hạn mức chung cho mọi lần render — chỉ ở limiter "general"; auth/upload đã loại ở điều kiện trên.
+                return RateLimitPartition.GetFixedWindowLimiter(Render, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = _options.Render.PermitLimit,
+                    Window = TimeSpan.FromSeconds(_options.Render.WindowSeconds),
+                    QueueLimit = 0,
+                    AutoReplenishment = true,
+                });
             }
 
             var key = $"{name}:{context.Connection.RemoteIpAddress?.MapToIPv6()}";
@@ -186,7 +229,7 @@ public static class SecurityExtensions
     {
         services.AddOptions<SecurityRateLimitingOptions>().Bind(configuration.GetSection("RateLimiting"))
             .Validate(
-                options => new[] { options.Auth, options.General, options.Upload }.All(quota => quota.PermitLimit > 0 && quota.WindowSeconds > 0),
+                options => new[] { options.Auth, options.General, options.Upload, options.Render }.All(quota => quota.PermitLimit > 0 && quota.WindowSeconds > 0),
                 "Rate quotas require positive PermitLimit and WindowSeconds.")
             .ValidateOnStart();
         services.AddSingleton<SecurityRateLimits>();

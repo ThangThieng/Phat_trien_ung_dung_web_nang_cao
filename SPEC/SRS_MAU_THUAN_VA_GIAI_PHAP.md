@@ -1,10 +1,10 @@
 # PHÂN TÍCH MÂU THUẪN TRONG SRS & ĐỀ XUẤT GIẢI PHÁP
 
-**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.7.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
+**Tài liệu nguồn:** `SPEC/SRS_Culinary_Blog_v1.0.0.md` (chuyển đổi từ `SRS_Culinary_Blog_v1.0.0.pdf`, 71 trang) — lượt 1–3; SRS v1.1.0 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.8.md`, phần không mang dấu `[CR-2026-02]`) đối chiếu với code trên nhánh `main` và `SPEC/BAO_CAO_BUOI_2.md` — lượt 4
 **Ngày rà soát:** 16/09/2026 (lượt 1–3) · 19/09/2026 (lượt 4) · 21/09/2026 (lượt 5) · 29/09/2026 (lượt 6) · 12/10/2026 (lượt 7) · 21/10/2026 (lượt 8) · 26/10/2026 (bổ sung khi hiện thực Buổi 7 — ghi chú hiện thực ở MT-23, MT-57, MT-67, D-7 và đánh đổi O-8; không phát sinh mâu thuẫn SRS mới)
 **Phạm vi:** Toàn bộ 8 chương + các phụ lục; lượt 4 mở rộng sang **hệ thống đang chạy** (code, cấu hình Docker/Nginx, báo cáo Buổi 2)
 **Kết quả:** **72 mâu thuẫn / bất nhất** — 41 mục ở lượt 1–3 (4 do nhóm phát hiện trước, 37 phát hiện thêm), 16 mục ở lượt 4, 1 mục ở lượt 5, 5 mục ở lượt 6, 5 mục ở lượt 7, 1 mục ở lượt 8, 1 mục ở lượt 9, 1 mục ở lượt 10 và 1 mục ở lượt 11. Ngoài ra ghi nhận 18 điểm lệch giữa code Buổi 2 và SRS (§4) cùng 13 điểm xung đột giữa lộ trình / yêu cầu Lab và SRS (§5).
-**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026). MT-59 → MT-63 đã áp dụng vào **SRS v1.2.2** (CR-2026-04, 29/09/2026). MT-64 → MT-68 đã áp dụng vào **SRS v1.2.3** (CR-2026-05, 12/10/2026). MT-69 đã áp dụng vào **SRS v1.2.4** (CR-2026-06, 21/10/2026). MT-70 đã áp dụng vào **SRS v1.2.5** (CR-2026-07, 04/11/2026). MT-71 đã áp dụng vào **SRS v1.2.6** (CR-2026-08, 04/11/2026). MT-72 đã áp dụng vào **SRS v1.2.7** (CR-2026-09, 05/11/2026).
+**Trạng thái:** MT-01 → MT-41 đã áp dụng vào **SRS v1.1.0** (CR-2026, 17/09/2026). MT-42 → MT-57 đã áp dụng vào **SRS v1.2.0** (CR-2026-02, 19/09/2026). MT-58 đã áp dụng vào **SRS v1.2.1** (CR-2026-03, 21/09/2026). MT-59 → MT-63 đã áp dụng vào **SRS v1.2.2** (CR-2026-04, 29/09/2026). MT-64 → MT-68 đã áp dụng vào **SRS v1.2.3** (CR-2026-05, 12/10/2026). MT-69 đã áp dụng vào **SRS v1.2.4** (CR-2026-06, 21/10/2026). MT-70 đã áp dụng vào **SRS v1.2.5** (CR-2026-07, 04/11/2026). MT-71 đã áp dụng vào **SRS v1.2.6** (CR-2026-08, 04/11/2026). MT-72 đã áp dụng vào **SRS v1.2.7** (CR-2026-09, 05/11/2026). MT-73 đã áp dụng vào **SRS v1.2.8** (CR-2026-10, 19/11/2026).
 
 **Lịch sử rà soát**
 
@@ -21,6 +21,7 @@
 | 9 | **Rà soát dữ liệu mẫu** (Phụ lục B của kế hoạch): đo 3.801 trang Wikibooks và đối chiếu với §2.6.1, NFR-SEO-001 | MT-70 |
 | 10 | **Xem kết quả tìm kiếm trên dữ liệu thật** sau khi bổ sung 101 công thức | MT-71 |
 | 11 | **Rà soát ảnh dữ liệu mẫu** trên trang thật, tìm ảnh đúng món cho 58 công thức còn thiếu | MT-72 |
+| 12 | **Kiểm chứng sau phát hành v1.0.0**: đọc liên tục mọi trang công thức như một bộ thu thập, đối chiếu với NFR-SEC-003 | MT-73 |
 
 > Lượt 3 cho ra ít mục hơn nhưng **có mục nặng nhất toàn tài liệu là MT-34** — một lỗi rò rỉ dữ liệu giữa các tài khoản, sinh ra từ việc hai câu nằm cách nhau 5 dòng trong **cùng một FR** mà không ai đối chiếu.
 
@@ -116,6 +117,7 @@
 | MT-70 | §2.6.1 để Bogus sinh dinh dưỡng, dữ liệu mẫu không có ảnh nên không đạt NFR-SEO-001 | 🟡 | Bổ sung công thức Wikibooks đã dịch và có ảnh; bỏ dinh dưỡng ngẫu nhiên |
 | MT-71 | `SearchVector` không phân trọng số, bỏ dấu toàn bộ: `pho` trả "Welsh Rarebit" (phô mai) trên "Phở bò" | 🟡 | `Title` trọng số A, `Description` B; hàm `search_normalize` gộp từ ghép khác nghĩa; có đổi schema |
 | MT-72 | §2.6.1 đòi ảnh giấy phép mở, nhưng nhiều món Việt không có ảnh đúng món ở giấy phép cho phép thương mại | 🟢 | Cho phép CC BY-NC, CC BY-NC-SA khi vận hành phi thương mại; thay trước khi dùng thương mại |
+| MT-73 | Request render nạp Data Cache không mang IP người xem → cả hệ thống chung hạn mức 100/phút của IP container Frontend; vượt mức thì trang trả 500 | 🟡 | Hạn mức render chung 1.000/phút qua bí mật nội bộ `X-Render-Gate`; 429 lúc render → trang 429 thật |
 
 ---
 
@@ -1702,6 +1704,29 @@ Cách sửa (`lib/api-client.ts`, kiểm thử `api-client.server.test.ts`): req
 **➡️ Quyết định (v1.2.7, CR-2026-09 — trưởng nhóm duyệt 05/11/2026): Phương án B.** Sửa: §2.6.1 (+ ghi chú `[CR-2026-09 / MT-72]`), thêm Phụ lục L. Không đổi FR, endpoint, mã lỗi, schema. Bốn ảnh đang dùng giấy phép này: phở cuốn, lẩu riêu cua bắp bò, đậu hũ sốt cà chua, trứng cút lộn xào me.
 
 ---
+
+### MT-73 🟡 — Hạn mức theo IP biến thành hạn mức chung của cả hệ thống khi Frontend render
+
+**Hiện trạng (SRS v1.2.7)**
+
+| Vị trí | Quy định hoặc hiện trạng |
+| --- | --- |
+| NFR-SEC-003 | Hạn mức theo IP: 100 request/phút cho API chung; API lấy IP thật từ `X-Forwarded-For` |
+| Frontend (MT-67, Buổi 7) | Request render dùng Data Cache **không** mang IP người xem — header khác nhau làm khóa cache khác nhau, cache không bao giờ trúng |
+| Đo 18/11/2026 | API thấy IP container Frontend (`172.30.2.8`) cho mọi lần nạp cache → đọc 95 trang công thức khác nhau trong một phút là các trang sau trả **500** cho mọi người dùng; Googlebot hiểu là máy chủ hỏng |
+| App Router | Trang không đặt được mã 429 — lỗi 429 khi render luôn thành 500 |
+
+**Phương án**
+
+| Phương án | Nội dung | Đánh giá |
+| --- | --- | --- |
+| A | Nginx giới hạn số trang HTML mỗi IP | Không chữa gốc: request nạp cache vẫn chung một hạn mức; còn chặn cả lượt xem trúng cache — một lớp học dùng chung Wi-Fi (chung IP) bị chặn sớm hơn |
+| B | Chuyển tiếp IP người xem cả với request dùng Data Cache | Khóa cache khác nhau theo người xem → Data Cache vô tác dụng (đo Buổi 7) |
+| **C** | **Hạn mức render chung riêng (1.000/phút) cho request có bí mật nội bộ `X-Render-Gate`; Nginx xóa header từ bên ngoài; 429 lúc render → trang 429 thật** | Lượt xem của người dùng không còn tiêu hao lẫn nhau; số request nạp cache vẫn có trần; hạn mức theo IP của mọi request khác giữ nguyên |
+
+**➡️ Quyết định (v1.2.8, CR-2026-10 — trưởng nhóm duyệt 19/11/2026): Phương án C.** Sửa: NFR-SEC-003 (+ ghi chú `[CR-2026-10 / MT-73]`), thêm Phụ lục M. Không đổi FR, endpoint API, mã lỗi, schema. Đo lại: 190 trang công thức trong 17 giây đều trả 200, API không trả 429 lần nào.
+
+---
 ## 4. Xung đột giữa SRS và hiện trạng code Buổi 2 (nợ kỹ thuật)
 
 Các điểm dưới đây **không phải mâu thuẫn bên trong SRS** — SRS v1.2.0 đã nhất quán ở những điểm này — mà là chỗ **code đã chạy khác với SRS**, vì Buổi 2 được hiện thực theo SRS v1.0.0 (trước CR-2026). Mỗi điểm được kiểm chứng trực tiếp trong code. Kế hoạch hoàn trả chi tiết (buổi nào, dev nào, bước nào) nằm tại `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` §4.1; bảng này ghi lại để tài liệu mâu thuẫn có bức tranh đầy đủ.
@@ -1819,18 +1844,19 @@ MT-07, MT-13, MT-20, MT-24, MT-31, MT-33, MT-40 (MoSCoW), MT-41
 | --- | --- | --- | --- | --- |
 | **CR-2026** | 17/09/2026 | MT-01 → MT-41 (lượt 1–3) | SRS v1.1.0 — 36 FR, 37 endpoint, 24 mã lỗi (đã được v1.2.0 kế thừa toàn bộ; không lưu tệp riêng) | SRS Phụ lục D |
 | **CR-2026-02** | 19/09/2026 | MT-42 → MT-57 (lượt 4) | SRS v1.2.0 — **37 FR, 44 endpoint, 27 mã lỗi** (đã được v1.2.1 kế thừa toàn bộ) | SRS Phụ lục E |
-| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | SRS v1.2.1 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.7.md`) — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
+| **CR-2026-03** | 21/09/2026 | MT-58 (lượt 5) | SRS v1.2.1 (nay nằm trong `SPEC/SRS_Culinary_Blog_v1.2.8.md`) — §2.6.1 dữ liệu mẫu ≥ 20 danh mục / ≥ 100 công thức / ≥ 10 nguyên liệu / ≥ 5 bước; FR, endpoint, mã lỗi không đổi | SRS Phụ lục F |
 | **CR-2026-04** | 29/09/2026 | MT-59 → MT-63 (lượt 6) | SRS v1.2.2 — **37 FR, 45 endpoint, 29 mã lỗi**; §6.2 chỉnh phân tầng; không đổi schema (đã được v1.2.3 kế thừa toàn bộ) | SRS Phụ lục G |
 | **CR-2026-05** | 12/10/2026 | MT-64 → MT-68 (lượt 7) | SRS v1.2.3 — **39 FR, 48 endpoint, 30 mã lỗi**; thêm FR-AUTH-010/011, mở rộng bộ lọc `GET /recipes/search`; CSP nonce ↔ SSR + Data Cache (§5.1), header CORS (§5.2); không đổi schema (đã được v1.2.4 kế thừa toàn bộ) | SRS Phụ lục H |
-| **CR-2026-06** | 21/10/2026 | MT-69 (lượt 8) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi không đổi; bảng TTL NFR-PERF-003 chỉ xóa họ khóa công khai khi thay đổi chạm tới tập Published, FR-RCP-003 → 007 tham chiếu bảng; phát sinh từ đo tải Buổi 8 | SRS Phụ lục I |
-| **CR-2026-07** | 04/11/2026 | MT-70 (lượt 9) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi, schema không đổi; §2.6.1 bổ sung công thức Wikibooks đã dịch, bỏ dinh dưỡng ngẫu nhiên | SRS Phụ lục J |
-| **CR-2026-08** | 04/11/2026 | MT-71 (lượt 10) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi không đổi; **có đổi schema**: `SearchVector` có trọng số và hàm `search_normalize` | SRS Phụ lục K |
-| **CR-2026-09** | 05/11/2026 | MT-72 (lượt 11) | `SPEC/SRS_Culinary_Blog_v1.2.7.md` — FR, endpoint, mã lỗi, schema không đổi; §2.6.1 cho phép ảnh CC phi thương mại khi vận hành phi thương mại | SRS Phụ lục L |
+| **CR-2026-06** | 21/10/2026 | MT-69 (lượt 8) | `SPEC/SRS_Culinary_Blog_v1.2.8.md` — FR, endpoint, mã lỗi không đổi; bảng TTL NFR-PERF-003 chỉ xóa họ khóa công khai khi thay đổi chạm tới tập Published, FR-RCP-003 → 007 tham chiếu bảng; phát sinh từ đo tải Buổi 8 | SRS Phụ lục I |
+| **CR-2026-07** | 04/11/2026 | MT-70 (lượt 9) | `SPEC/SRS_Culinary_Blog_v1.2.8.md` — FR, endpoint, mã lỗi, schema không đổi; §2.6.1 bổ sung công thức Wikibooks đã dịch, bỏ dinh dưỡng ngẫu nhiên | SRS Phụ lục J |
+| **CR-2026-08** | 04/11/2026 | MT-71 (lượt 10) | `SPEC/SRS_Culinary_Blog_v1.2.8.md` — FR, endpoint, mã lỗi không đổi; **có đổi schema**: `SearchVector` có trọng số và hàm `search_normalize` | SRS Phụ lục K |
+| **CR-2026-09** | 05/11/2026 | MT-72 (lượt 11) | `SPEC/SRS_Culinary_Blog_v1.2.8.md` — FR, endpoint, mã lỗi, schema không đổi; §2.6.1 cho phép ảnh CC phi thương mại khi vận hành phi thương mại | SRS Phụ lục L |
+| **CR-2026-10** | 19/11/2026 | MT-73 (lượt 12) | `SPEC/SRS_Culinary_Blog_v1.2.8.md` — FR, endpoint API, mã lỗi, schema không đổi; NFR-SEC-003 thêm hạn mức render chung và trang 429 thật | SRS Phụ lục M |
 
-Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.7).
+Kế hoạch phát triển tương ứng: `SPEC/KE_HOACH_PHAT_TRIEN_8_BUOI.md` (làm theo SRS v1.2.8).
 
 > **Bài học quy trình từ lượt 4 — áp dụng cho mọi CR sau:** 7/16 mục của lượt 4 là **lỗi do chính CR-2026 đưa vào** (cấu hình Nginx, lệnh healthcheck, mã lỗi tự khóa, tên API .NET, cơ chế route, dạng ràng buộc DB, kiểu render). Chúng không thể phát hiện bằng cách đọc chéo các chương với nhau — chỉ lộ ra khi đối chiếu với hệ thống đang chạy. Vì vậy, từ CR-2026-02 trở đi, **mọi thay đổi chạm tới cấu hình hạ tầng, mã lỗi, ràng buộc cơ sở dữ liệu hoặc API của framework phải được kiểm chứng trên code/môi trường thật trước khi duyệt**.
 
 ---
 
-*Trạng thái tài liệu: toàn bộ 72 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1, MT-59 → MT-63 trong SRS v1.2.2, MT-64 → MT-68 trong SRS v1.2.3, MT-69 trong SRS v1.2.4, MT-70 trong SRS v1.2.5, MT-71 trong SRS v1.2.6, MT-72 trong SRS v1.2.7. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*
+*Trạng thái tài liệu: toàn bộ 73 mục đã được xử lý — MT-01 → MT-41 trong SRS v1.1.0, MT-42 → MT-57 trong SRS v1.2.0, MT-58 trong SRS v1.2.1, MT-59 → MT-63 trong SRS v1.2.2, MT-64 → MT-68 trong SRS v1.2.3, MT-69 trong SRS v1.2.4, MT-70 trong SRS v1.2.5, MT-71 trong SRS v1.2.6, MT-72 trong SRS v1.2.7, MT-73 trong SRS v1.2.8. Các điểm lệch giữa code Buổi 2 và SRS (§4) được hoàn trả theo `KE_HOACH_PHAT_TRIEN_8_BUOI.md`; các đánh đổi còn mở được ghi tại §6.*

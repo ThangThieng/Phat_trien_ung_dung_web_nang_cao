@@ -13,3 +13,6 @@ proxy_set_header X-Real-IP $remote_addr;
 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 proxy_set_header X-Forwarded-Proto $scheme;
 proxy_set_header X-Correlation-ID $correlation_id;
+# CR-2026-10: X-Render-Gate chỉ do container Frontend gắn khi gọi thẳng api:8080 để nạp Data Cache (hạn mức render chung).
+# Request từ bên ngoài đi qua đây không bao giờ được mang header này — xóa để không ai đoán bí mật hay né hạn mức theo IP.
+proxy_set_header X-Render-Gate "";

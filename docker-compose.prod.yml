@@ -48,6 +48,8 @@ x-api-env: &api-env
   Smtp__SiteUrl: ${SITE_URL:?}
   Cors__AllowedOrigins__0: ${SITE_URL:?}
   OpenApi__Enabled: "false"
+  # CR-2026-10: hạn mức render chung cho request nạp Data Cache của Frontend (cùng giá trị ở service frontend).
+  RateLimiting__RenderGateSecret: ${RENDER_GATE_SECRET:?Thiếu RENDER_GATE_SECRET - sinh bằng openssl rand -hex 32}
   # D-17: khóa DataProtection trên volume được mã hóa bằng chứng chỉ này (api và hangfire phải dùng CÙNG chứng chỉ).
   DataProtection__CertificatePath: /run/secrets/dataprotection.pfx
   DataProtection__CertificatePassword: ${DATAPROTECTION_CERT_PASSWORD:?Thiếu DATAPROTECTION_CERT_PASSWORD - chạy với --env-file .env.production}
@@ -192,6 +194,7 @@ services:
       AUTH_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       AUTH_TRUST_HOST: "true"
       REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      RENDER_GATE_SECRET: ${RENDER_GATE_SECRET:?Thiếu RENDER_GATE_SECRET - sinh bằng openssl rand -hex 32}
     depends_on:
       - api
     healthcheck:

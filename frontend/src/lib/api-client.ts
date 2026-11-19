@@ -48,6 +48,11 @@ export function configureAuthCallbacks(callbacks: AuthCallbacks | null) {
 interface ServerRequestContext {
   /** Giá trị `X-Forwarded-For` Nginx gắn cho request của trình duyệt (`null` khi không có, ví dụ gọi thẳng cổng 3000). */
   forwardedFor: () => Promise<string | null>;
+  /**
+   * CR-2026-10: API trả 429 khi đang render trên server → chuyển người xem sang trang báo 429 thật (kèm `Retry-After`) thay vì để
+   * lỗi thành trang 500. Không bao giờ trả về (ném lỗi điều hướng của Next.js).
+   */
+  onRateLimited?: (error: ApiError) => Promise<never>;
 }
 
 let serverRequestContext: ServerRequestContext | null = null;
@@ -184,6 +189,20 @@ const forwardClientAddress: BeforeRequestHook = async ({ request, options }) => 
  * MT-34 ở Frontend: code chạy trên server (Server Component, Route Handler) chỉ gọi endpoint công khai và KHÔNG BAO
  * GIỜ gửi token — token nằm ở trình duyệt; dữ liệu riêng tư chỉ đi qua Client Component.
  */
+/**
+ * CR-2026-10 (SRS v1.2.8, MT-73): request phía server dùng Data Cache KHÔNG mang IP người xem (giữ khóa cache ổn định), nên API
+ * thấy IP của container Frontend cho mọi người — trước đây cả hệ thống chia nhau hạn mức 100/phút của IP đó. Gắn bí mật dùng
+ * chung với API để các request này dùng hạn mức render riêng. Biến không có tiền tố NEXT_PUBLIC_ nên không bao giờ vào bundle
+ * trình duyệt; Nginx xóa header này ở mọi request từ bên ngoài.
+ */
+export const RENDER_GATE_HEADER = 'X-Render-Gate';
+
+const attachRenderGate: BeforeRequestHook = ({ request, options }) => {
+  const secret = process.env.RENDER_GATE_SECRET;
+  if (!isServer() || !secret || !contextOf(options).dataCache) return;
+  request.headers.set(RENDER_GATE_HEADER, secret);
+};
+
 const attachBearerToken: BeforeRequestHook = ({ request, options }) => {
   const token = authAttemptOf(options)?.token;
   if (isServer() || !token) request.headers.delete('Authorization');
@@ -264,7 +283,7 @@ const http = ky.create({
     },
   },
   hooks: {
-    beforeRequest: [attachCorrelationId, attachBearerToken, forwardClientAddress],
+    beforeRequest: [attachCorrelationId, attachBearerToken, forwardClientAddress, attachRenderGate],
     afterResponse: [refreshOnExpiredToken],
     beforeError: [toApiError],
   },
@@ -290,16 +309,24 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   let payload: { body: BodyInit } | { json: unknown } | undefined;
   if (body !== undefined) payload = isRawBody(body) ? { body } : { json: body };
 
-  const response = await http(path, {
-    prefix: getApiBaseUrl(),
-    method: options.method ?? 'GET',
-    headers: { Accept: 'application/json', ...options.headers },
-    ...payload,
-    next: options.next,
-    cache: options.cache,
-    signal: options.signal,
-    context: { auth, dataCache: usesDataCache(options) } satisfies RequestContext,
-  });
+  let response: Response;
+  try {
+    response = await http(path, {
+      prefix: getApiBaseUrl(),
+      method: options.method ?? 'GET',
+      headers: { Accept: 'application/json', ...options.headers },
+      ...payload,
+      next: options.next,
+      cache: options.cache,
+      signal: options.signal,
+      context: { auth, dataCache: usesDataCache(options) } satisfies RequestContext,
+    });
+  } catch (error) {
+    if (isServer() && error instanceof ApiError && error.status === 429 && serverRequestContext?.onRateLimited) {
+      return serverRequestContext.onRateLimited(error);
+    }
+    throw error;
+  }
 
   if (response.status === 204) return undefined as T;
   const text = await response.text();
