@@ -120,8 +120,16 @@ public sealed partial class DatabaseSeeder(
     private async Task SeedAdminAsync()
     {
         var seed = options.Value;
-        if (string.IsNullOrWhiteSpace(seed.AdminPassword) || await userManager.FindByEmailAsync(seed.AdminEmail).ConfigureAwait(false) is not null)
+        if (await userManager.FindByEmailAsync(seed.AdminEmail).ConfigureAwait(false) is not null)
         {
+            return;
+        }
+
+        // 19/11/2026: máy mới dựng từ .env.example (chưa chạy tools/dev-setup.sh) có role Admin mà không có tài khoản Admin, và
+        // không có dòng log nào giải thích. Ghi rõ lý do để người dựng máy biết phải đặt biến nào.
+        if (string.IsNullOrWhiteSpace(seed.AdminPassword))
+        {
+            LogAdminSkipped(logger, seed.AdminEmail);
             return;
         }
 
@@ -131,6 +139,11 @@ public sealed partial class DatabaseSeeder(
         if (result.Succeeded)
         {
             await userManager.AddToRolesAsync(admin, [Roles.Admin, Roles.Author]).ConfigureAwait(false);
+            LogAdminCreated(logger, seed.AdminEmail);
+        }
+        else
+        {
+            LogAdminFailed(logger, seed.AdminEmail, string.Join(", ", result.Errors.Select(error => error.Code)));
         }
     }
 
@@ -347,6 +360,15 @@ public sealed partial class DatabaseSeeder(
     }
 
     private sealed record ExistingRecipe(Guid Id, string Slug, string AuthorId, DateTime? UpdatedAt, int IngredientCount, int StepCount, bool IsDeleted);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Admin account {AdminEmail} was NOT created: Seed:AdminPassword is empty. Set SEED_ADMIN_PASSWORD in .env (or run tools/dev-setup.sh) and restart the api container")]
+    private static partial void LogAdminSkipped(ILogger logger, string adminEmail);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Admin account {AdminEmail} created")]
+    private static partial void LogAdminCreated(ILogger logger, string adminEmail);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Admin account {AdminEmail} could not be created ({Errors}). SEED_ADMIN_PASSWORD needs at least 8 characters with upper case, lower case, a digit and a symbol (NFR-SEC-001)")]
+    private static partial void LogAdminFailed(ILogger logger, string adminEmail, string errors);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Database seeded: {Categories} categories, {Authors} authors, {Created} recipes created, {Repaired} recipes repaired")]
     private static partial void LogSeeded(ILogger logger, int categories, int authors, int created, int repaired);

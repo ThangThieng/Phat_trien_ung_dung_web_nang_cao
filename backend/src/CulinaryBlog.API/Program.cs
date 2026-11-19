@@ -96,6 +96,8 @@ if (workerOnly)
     app.MapGet("/", () => Results.Ok(new { service = "CulinaryBlog.Hangfire", mode = "worker" }));
 
     // Buổi 8 — healthcheck của container hangfire (8 service healthy): worker không phục vụ được job khi mất PostgreSQL/Redis.
+    // 19/11/2026: thêm /health (tổng hợp) như container api — gọi /health trên worker từng trả 404, dễ bị hiểu là worker hỏng.
+    app.MapGet("/health", (HttpContext context, HealthCheckService healthChecks) => WriteHealthResponseAsync(context, healthChecks, _ => true));
     app.MapGet("/health/live", (HttpContext context, HealthCheckService healthChecks) => WriteLivenessResponseAsync(context, healthChecks));
     app.MapGet("/health/ready", (HttpContext context, HealthCheckService healthChecks) =>
         WriteHealthResponseAsync(context, healthChecks, check => check.Tags.Contains("ready")));
