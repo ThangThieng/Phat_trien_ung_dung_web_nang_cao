@@ -333,7 +333,7 @@
       ["Thêm trứng", "Đánh trứng và khuấy dần vào hỗn hợp đã nguội.", null],
       ["Giảm nhiệt", "Giảm nhiệt độ lò xuống 350°F (175°C).", null],
       ["Đổ nhân", "Đổ nhân vào vỏ bánh còn nóng.", null],
-      ["Đặt lại vào lò", "Đặt khuôn trên khay trở lại lò, ở giá thứ 3 từ dưới lên; nếu có vòng che viền bánh, hãy lắp vào để viền không quá vàng.", null],
+      ["Đặt lại vào lò", "Đặt khuôn trên khay trở lại lò, ở giá thuộc phần dưới cùng khi chia chiều cao lò làm 3 phần; nếu có vòng che viền bánh, hãy lắp vào để viền không quá vàng.", null],
       ["Nướng bánh", "Nướng ở 350°F (175°C) trong 45 phút, nhân vẫn hơi rung khi lấy ra khỏi lò.", 45],
       ["Để nguội", "Để bánh nguội trên vỉ 2–4 giờ. Bánh sẽ tiếp tục chín khi nguội.", 120],
       ["Dọn món", "Dùng ấm với kem tươi đánh bông hoặc kem vani.", null]
@@ -522,7 +522,7 @@
       ["muối", 1.0, "thìa cà phê", "hoặc vừa ăn, phần sốt"],
       ["oregano khô hoặc vài cành oregano tươi", 0.5, "thìa cà phê", "hoặc vừa ăn, phần sốt"],
       ["thì là Ai Cập xay", 1.0, "thìa cà phê", "hoặc vừa ăn, phần sốt"],
-      ["bạch đậu khấu đen xay", 1.0, "thìa cà phê", "Phần sốt"],
+      ["thảo quả xay (bạch đậu khấu đen)", 1.0, "thìa cà phê", "Phần sốt"],
       ["bánh pita", "vừa đủ", null, "Phần lắp ráp"],
       ["Quorn", "vừa đủ", null, "Phần lắp ráp"]
     ],
@@ -622,7 +622,7 @@
     "ingredients": [
       ["bơ (phần cốt bánh)", 4.0, "oz", "100 g"],
       ["đường nâu", 8.0, "oz", "225 g"],
-      ["sô-cô-la nguyên chất", 4.0, "oz", "100 g"],
+      ["sô-cô-la đen", 4.0, "oz", "100 g"],
       ["bột mì tự nở", 7.0, "oz", "200 g"],
       ["quế xay", 0.25, "thìa cà phê"],
       ["kem chua", 0.25, "pint"],

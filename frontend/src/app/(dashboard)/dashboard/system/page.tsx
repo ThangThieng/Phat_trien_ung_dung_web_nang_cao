@@ -34,9 +34,10 @@ function SystemHealthReport() {
     <div className="mx-auto max-w-5xl px-4 py-10">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-ink">Tình trạng hệ thống</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            Kết quả kiểm tra tình trạng của API, tự làm mới mỗi {HEALTH_POLL_INTERVAL_MS / 1_000} giây.
+          <h1 className="text-ink text-2xl font-bold">Tình trạng hệ thống</h1>
+          <p className="text-ink-soft mt-1 text-sm">
+            Kết quả kiểm tra tình trạng của API, tự làm mới mỗi {HEALTH_POLL_INTERVAL_MS / 1_000}{' '}
+            giây.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -45,7 +46,7 @@ function SystemHealthReport() {
             type="button"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="flex items-center gap-2 rounded-lg border border-line-strong px-3 py-1.5 text-sm font-medium text-ink hover:bg-paper disabled:opacity-60"
+            className="border-line-strong text-ink hover:bg-paper flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium disabled:opacity-60"
           >
             <RefreshCw aria-hidden className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
             Kiểm tra lại
@@ -54,7 +55,7 @@ function SystemHealthReport() {
       </div>
 
       {isPending && (
-        <p className="mt-8 flex items-center gap-2 text-sm text-ink-soft">
+        <p className="text-ink-soft mt-8 flex items-center gap-2 text-sm">
           <Loader2 aria-hidden className="h-4 w-4 animate-spin" /> Đang hỏi API…
         </p>
       )}
@@ -68,30 +69,30 @@ function SystemHealthReport() {
       {data && (
         <>
           <dl className="mt-6 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-xl border border-line bg-paper p-4">
-              <dt className="text-xs font-medium text-ink-soft uppercase">Tổng thể</dt>
-              <dd className="mt-1 font-semibold text-ink">{STATUS_LABEL[data.status]}</dd>
+            <div className="border-line bg-paper rounded-xl border p-4">
+              <dt className="text-ink-soft text-xs font-medium uppercase">Tổng thể</dt>
+              <dd className="text-ink mt-1 font-semibold">{STATUS_LABEL[data.status]}</dd>
             </div>
-            <div className="rounded-xl border border-line bg-paper p-4">
-              <dt className="text-xs font-medium text-ink-soft uppercase">
+            <div className="border-line bg-paper rounded-xl border p-4">
+              <dt className="text-ink-soft text-xs font-medium uppercase">
                 Tổng thời gian kiểm tra
               </dt>
-              <dd className="mt-1 font-semibold text-ink">
+              <dd className="text-ink mt-1 font-semibold">
                 {formatDuration(data.totalDurationMs)}
               </dd>
             </div>
-            <div className="rounded-xl border border-line bg-paper p-4">
-              <dt className="text-xs font-medium text-ink-soft uppercase">Lần kiểm tra gần nhất</dt>
-              <dd className="mt-1 font-semibold text-ink">
+            <div className="border-line bg-paper rounded-xl border p-4">
+              <dt className="text-ink-soft text-xs font-medium uppercase">Lần kiểm tra gần nhất</dt>
+              <dd className="text-ink mt-1 font-semibold">
                 {new Date(data.checkedAt).toLocaleTimeString('vi-VN')}
               </dd>
             </div>
           </dl>
 
-          <div className="mt-6 overflow-x-auto rounded-xl border border-line bg-paper">
-            <table className="min-w-full divide-y divide-line text-sm">
+          <div className="border-line bg-paper mt-6 overflow-x-auto rounded-xl border">
+            <table className="divide-line min-w-full divide-y text-sm">
               <caption className="sr-only">Trạng thái từng phụ thuộc của hệ thống</caption>
-              <thead className="bg-paper text-left text-xs font-semibold text-ink-soft uppercase">
+              <thead className="bg-paper text-ink-soft text-left text-xs font-semibold uppercase">
                 <tr>
                   <th scope="col" className="px-4 py-3">
                     Thành phần
@@ -110,12 +111,12 @@ function SystemHealthReport() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody className="divide-line divide-y">
                 {data.entries.map((entry) => (
                   <tr key={entry.name}>
                     <th
                       scope="row"
-                      className="px-4 py-3 text-left font-medium whitespace-nowrap text-ink"
+                      className="text-ink px-4 py-3 text-left font-medium whitespace-nowrap"
                     >
                       {DEPENDENCY_LABEL[entry.name] ?? entry.name}
                     </th>
@@ -130,15 +131,15 @@ function SystemHealthReport() {
                         {STATUS_LABEL[entry.status]}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-ink tabular-nums">
+                    <td className="text-ink px-4 py-3 tabular-nums">
                       {formatDuration(entry.durationMs)}
                     </td>
-                    <td className="px-4 py-3 text-ink-soft">
+                    <td className="text-ink-soft px-4 py-3">
                       {entry.tags.includes(READY_TAG)
                         ? 'API ngừng nhận yêu cầu (/health/ready trả 503)'
                         : 'Chỉ suy giảm — ảnh không tải lên/hiển thị được'}
                     </td>
-                    <td className="max-w-xs px-4 py-3 break-words text-ink-soft">
+                    <td className="text-ink-soft max-w-xs px-4 py-3 break-words">
                       {entry.description ?? '—'}
                     </td>
                   </tr>
@@ -148,7 +149,7 @@ function SystemHealthReport() {
           </div>
 
           {!data.apiReachable && (
-            <p className="mt-4 text-sm text-ink-soft">
+            <p className="text-ink-soft mt-4 text-sm">
               Không hỏi được API nên chưa biết trạng thái của PostgreSQL, Redis và MinIO.
             </p>
           )}
@@ -165,7 +166,7 @@ export default function SystemHealthPage() {
 
   if (!isReady) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-16 text-center text-ink-soft">
+      <div className="text-ink-soft mx-auto max-w-5xl px-4 py-16 text-center">
         <Loader2 aria-hidden className="mx-auto h-6 w-6 animate-spin" />
         <p className="mt-2 text-sm">Đang kiểm tra phiên đăng nhập…</p>
       </div>
@@ -176,10 +177,10 @@ export default function SystemHealthPage() {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Tình trạng hệ thống</h1>
-        <p className="mt-2 text-ink-soft">Bạn cần đăng nhập bằng tài khoản quản trị để tiếp tục.</p>
+        <p className="text-ink-soft mt-2">Bạn cần đăng nhập bằng tài khoản quản trị để tiếp tục.</p>
         <Link
           href="/auth/login?callbackUrl=/dashboard/system"
-          className="mt-6 inline-block rounded-lg bg-navy px-4 py-2 font-semibold text-white hover:bg-navy-2"
+          className="bg-navy hover:bg-navy-2 mt-6 inline-block rounded-lg px-4 py-2 font-semibold text-white"
         >
           Đăng nhập
         </Link>
@@ -191,11 +192,11 @@ export default function SystemHealthPage() {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Không có quyền truy cập</h1>
-        <p className="mt-2 text-ink-soft">
+        <p className="text-ink-soft mt-2">
           Trang tình trạng hệ thống chỉ dành cho quản trị viên. Tài khoản của bạn không có quyền
           này.
         </p>
-        <Link href="/" className="mt-6 inline-block text-gold-ink underline">
+        <Link href="/" className="text-gold-ink mt-6 inline-block underline">
           Về trang chủ
         </Link>
       </div>
