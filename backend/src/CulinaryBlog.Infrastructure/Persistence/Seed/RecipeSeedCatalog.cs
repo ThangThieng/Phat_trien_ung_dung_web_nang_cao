@@ -42,15 +42,23 @@ public sealed record SeedRecipe(
 /// Bộ dữ liệu mẫu theo SRS §2.6.1 (CR-2026-03, CR-2026-07): ≥ 20 danh mục, ≥ 100 công thức, mỗi công thức ≥ 10 nguyên liệu và
 /// ≥ 5 bước. Gồm 100 công thức do nhóm biên soạn (<c>recipes-0*.json</c>) và các công thức bổ sung từ Wikibooks Cookbook đã dịch
 /// (<c>recipes-wikibooks-*.json</c>, sinh bằng <c>tools/recipe-etl</c>, giấy phép CC BY-SA 4.0).
-/// Bogus chỉ sinh tác giả mẫu, phân công tác giả, trạng thái của công thức do nhóm biên soạn và ngày xuất bản
+/// Bogus chỉ sinh phân công tác giả, trạng thái của công thức do nhóm biên soạn và ngày xuất bản (tác giả mẫu mang tên "Tác giả mẫu 1…5")
 /// trong <see cref="DatabaseSeeder"/>; dinh dưỡng không còn sinh ngẫu nhiên.
 /// </summary>
 public static class RecipeSeedCatalog
 {
+    /// <summary>
+    /// Tên 5 tác giả mẫu (SRS §2.6.1). Từ 19/11/2026 ghi rõ là tài khoản mẫu — trước đó Bogus đặt tên người Việt ngẫu nhiên
+    /// ("Kim Quyên Vũ"…) khiến người xem tưởng là người thật, trái yêu cầu dữ liệu thật của trưởng nhóm.
+    /// </summary>
+    public const string SampleAuthorBio = "Tài khoản mẫu để trình diễn hệ thống — không phải người thật.";
+
     public const int MinCategories = 20;
     public const int MinRecipes = 100;
     public const int MinIngredientsPerRecipe = 10;
     public const int MinStepsPerRecipe = 5;
+
+    public static string SampleAuthorName(int index) => $"Tác giả mẫu {index}";
 
     /// <summary>Tiền tố của chuỗi ghi công trong cột Instructions; Frontend chỉ hiển thị khối nguồn khi có tiền tố này.</summary>
     public const string SourceNotePrefix = "Nguồn dữ liệu:";
