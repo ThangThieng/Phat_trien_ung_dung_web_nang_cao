@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import FormField from '@/components/shared/FormField';
 import { ApiError, getErrorMessage, mapProblemDetailsToForm } from '@/lib/api-client';
+import { toSafeInternalPath } from '@/lib/safe-redirect';
 import { useAuth } from '../auth-context';
 import { registerSchema, type RegisterFormValues } from '../schemas';
 
@@ -28,7 +29,9 @@ export default function RegisterForm() {
       toast.success(
         `Đăng ký thành công! Chào mừng ${user.displayName}. Email chào mừng đã được gửi.`,
       );
-      router.replace('/recipes');
+      router.replace(
+        toSafeInternalPath(new URLSearchParams(window.location.search).get('callbackUrl')),
+      );
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.code === 'AUTH_EMAIL_EXISTS') {
@@ -83,13 +86,13 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded-lg bg-navy px-4 py-2.5 font-semibold text-white transition hover:bg-navy-2 focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-2 disabled:opacity-60"
+        className="bg-navy hover:bg-navy-2 focus-visible:ring-gold-ink rounded-lg px-4 py-2.5 font-semibold text-white transition focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-60"
       >
         {isSubmitting ? 'Đang tạo tài khoản…' : 'Đăng ký'}
       </button>
-      <p className="text-center text-sm text-ink-soft">
+      <p className="text-ink-soft text-center text-sm">
         Đã có tài khoản?{' '}
-        <Link href="/auth/login" className="font-medium text-gold-ink hover:underline">
+        <Link href="/auth/login" className="text-gold-ink font-medium hover:underline">
           Đăng nhập
         </Link>
       </p>

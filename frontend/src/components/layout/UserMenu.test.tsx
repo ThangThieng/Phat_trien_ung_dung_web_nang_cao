@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import UserMenu, { initialsOf } from './UserMenu';
+import UserMenu, { authHref, initialsOf } from './UserMenu';
 
 jest.mock('next/navigation', () => ({ usePathname: () => '/' }));
 jest.mock('sonner', () => ({ toast: { info: jest.fn() } }));
@@ -31,7 +31,15 @@ describe('<UserMenu />', () => {
     expect(screen.getByRole('link', { name: 'Đăng ký' })).toHaveAttribute('href', '/auth/register');
   });
 
-  it('Author: menu có Hồ sơ, Bảng điều khiển, Đăng xuất — không có mục Admin', () => {
+  it.each([
+    ['/', '/auth/login'],
+    ['/recipes/pho-bo', '/auth/login?callbackUrl=%2Frecipes%2Fpho-bo'],
+    ['/auth/register', '/auth/login'],
+  ])('authHref từ %s → %s', (pathname, expected) => {
+    expect(authHref('/auth/login', pathname)).toBe(expected);
+  });
+
+  it('Author: menu có Trang chủ, Hồ sơ, Bảng điều khiển, Đăng xuất — không có mục Admin', () => {
     mockAuth = { isReady: true, user: author, logout: jest.fn() };
     render(<UserMenu />);
     const trigger = screen.getByRole('button', { name: /Tài khoản: Nguyễn Văn Lan/ });
@@ -40,7 +48,7 @@ describe('<UserMenu />', () => {
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
     const names = screen.getAllByRole('menuitem').map((item) => item.textContent);
-    expect(names).toEqual(['Hồ sơ', 'Bảng điều khiển', 'Đăng xuất']);
+    expect(names).toEqual(['Trang chủ', 'Hồ sơ', 'Bảng điều khiển', 'Đăng xuất']);
     expect(screen.getAllByRole('menuitem')[0]).toHaveFocus();
   });
 
