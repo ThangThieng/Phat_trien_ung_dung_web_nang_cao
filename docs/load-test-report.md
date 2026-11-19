@@ -154,3 +154,46 @@ Số công thức Published tăng từ 89 lên 190 và có ảnh, nên đo lại
 Tất cả vẫn đạt. Tăng nhẹ ở độ trễ và giảm nhẹ ở hit rate phù hợp với việc có nhiều khóa cache hơn. Bản nháp do k6 tạo (2.149 công thức) đã dọn bằng `tests/load/cleanup.sql`.
 
 **Đo lại sau CR-2026-08** (`SearchVector` có trọng số và hàm `search_normalize`, cùng ngày, cùng môi trường): 0 lỗi trên 34.359 request; p50 2,4 ms, p95 20,0 ms, p99 29,3 ms; hit rate 96,0 %. Nhóm tìm kiếm không chậm đi (p95 9,0 → 8,8 ms). Nhóm ghi chậm hơn (p95 25,5 → 31,7 ms, p99 36,3 → 52,8 ms), phù hợp với việc cột generated chạy thêm các biểu thức chính quy khi ghi; hai lượt đo một lần nên chưa đủ để kết luận mức tăng chính xác. Vẫn trong mục tiêu.
+
+## 9. Đo lại stress và chịu lỗi trên bản đã phát hành (19/11/2026)
+
+Bản `v1.0.0` (`develop` = `main`, đã gồm Buổi 8 của cả 4 thành viên và dữ liệu Wikibooks — 201 công thức, 190 Published), cùng môi trường §2,
+cùng kịch bản §4 – §5. Đây là hai phép đo kế hoạch còn ghi "chưa đo lại trên bản hợp nhất".
+
+**Stress** (`stress.js`, tới 1.000 người dùng):
+
+| Nấc | Request | req/s | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | Lỗi |
+|---|---|---|---|---|---|---|---|
+| 200 người dùng | 23.865 | 199 | 2,0 | 14,8 | 25,7 | 256 | 0 |
+| 400 người dùng | 47.752 | 398 | 2,2 | 15,3 | 26,0 | 214 | 0 |
+| 600 người dùng | 71.654 | 597 | 2,2 | 16,6 | 26,9 | 291 | 0 |
+| 800 người dùng | 95.502 | 796 | 2,4 | 17,5 | 28,0 | 285 | 0 |
+| 1.000 người dùng | 119.283 | 994 | 2,9 | 22,7 | 43,5 | 307 | 0 |
+| **Cả lượt** | **537.569** | **560** | **2,4** | **19,7** | **44,0** | **2.012** | **0** |
+
+Vẫn **không có ngưỡng gãy** tới 1.000 người dùng và kết quả gần như trùng lượt 30/10. Đợt chậm ngắn ở §4 lặp lại đúng chỗ: 257 request trên
+500 ms (0,05 %), đều trong giây 721 – 725, lúc bắt đầu tăng từ 800 lên 1.000 người dùng; tất cả vẫn thành công. Lặp lại ở cùng thời điểm nên
+nhiều khả năng do bước tăng tải đột ngột trên máy dùng chung CPU, không phải sự cố ngẫu nhiên — vẫn cần máy phát tải riêng để tách.
+Lượt chạy đầu tiên ngày 18/11 bị bỏ: máy ngủ giữa chừng (k6 ghi 12 giờ cho 11 phút kịch bản), số liệu đứt quãng.
+
+**Chịu lỗi** (`load.js` 100 người dùng; giây 151 dừng `redis`, giây 211 bật lại; giây 270 dừng `minio`, giây 315 bật lại):
+0 lỗi / 34.374 request; p50 2,3 ms, p95 14,0 ms, p99 25,2 ms, max 547 ms; hit rate Redis cả lượt 96,8 % (16.910 / 17.466).
+
+| Thời điểm | Đọc (`/recipes/{slug}`, `/categories`, `/recipes`) | `/health/ready` | `/health/live` | `POST /files/upload` |
+|---|---|---|---|---|
+| Trước sự cố | 200, 16 – 18 ms | 200 | 200 | 201, 98 ms |
+| Redis tắt | 200, 15 – 18 ms | **503** (đúng thiết kế) | 200 | 201, 34 ms |
+| Sau khi bật lại Redis | 200, 13 – 14 ms | 200 | 200 | 201, 47 ms |
+| MinIO tắt | 200, 13 ms | 200 | 200 | **503 sau 16,0 s** |
+| Sau khi bật lại MinIO | 200, 12 – 14 ms | 200 | 200 | 201, 49 ms |
+
+**Đạt** NFR-REL-002 như §5. **Phát hiện mới:** khi MinIO tắt, tải ảnh lên trả đúng 503 `FILE_STORAGE_UNAVAILABLE` nhưng **sau 16 giây** —
+`AWSSDK.S3` thử lại kết nối trước khi báo lỗi. SRS không quy định thời gian chờ; người dùng phải đợi lâu mới thấy thông báo. Ghi lại để
+cân nhắc giảm số lần thử lại/timeout của client S3 cho đường HTTP (job Hangfire vẫn cần thử lại).
+
+**Đã sửa (19/11/2026):** container MinIO dừng thì riêng việc tra tên `minio` mất ~7,3 s (Docker chuyển câu hỏi DNS ra ngoài), SDK thử lại
+thêm lần nữa. Mỗi thao tác với MinIO nay có hạn `MinIO:OperationTimeoutSeconds` (mặc định 5 s, tính cả tra DNS) và SDK thử lại tối đa 1 lần
+(`MaxErrorRetry = 1`, `Timeout = 10 s`). Đo lại trên Docker dev: `POST /files/upload` khi MinIO tắt → **503 sau 5,0 s** (3/3 lần; trước đó
+12 – 16 s); bật lại MinIO → 201 trong 38 ms. Kiểm thử: `MinioStorageTimeoutTests` (tải lên, xóa, đọc dừng đúng hạn; người gọi tự hủy vẫn là hủy).
+
+Đã dọn sau đo: 32.543 + 2.090 bản nháp "K6 thử tải …" (`tests/load/cleanup.sql`) và 4 tệp thử trong `uploads/` của MinIO.

@@ -175,6 +175,12 @@ public static class DependencyInjection
                 AuthenticationRegion = "us-east-1",
                 RequestChecksumCalculation = RequestChecksumCalculation.WHEN_REQUIRED,
                 ResponseChecksumValidation = ResponseChecksumValidation.WHEN_REQUIRED,
+
+                // NFR-REL-002 (đo 19/11/2026): mặc định SDK thử lại nhiều lần có backoff → MinIO tắt thì POST /files/upload chờ 16 giây
+                // mới trả 503. Thử lại tối đa 1 lần và giới hạn thời gian mỗi lần gọi: người dùng thấy lỗi sau vài giây. Job Hangfire
+                // không cần SDK thử lại thêm — Hangfire đã tự thử lại 3 lần (FR-FILE-002, FR-JOB-002).
+                MaxErrorRetry = 1,
+                Timeout = TimeSpan.FromSeconds(10),
             };
             return new AmazonS3Client(new BasicAWSCredentials(minio.AccessKey, minio.SecretKey), config);
         });
