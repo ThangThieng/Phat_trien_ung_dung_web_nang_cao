@@ -10,6 +10,8 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
 
 ### Fixed
 
+- **Bố cục `/recipes` nhảy khi mạng chậm (CLS 0,218 → 0):** font thân bài dùng `display: 'optional'`, không đổi font giữa chừng lượt xem.
+
 - **Tác giả mẫu không còn mang tên người giả:** 5 tài khoản mẫu tên "Tác giả mẫu 1…5", giới thiệu ghi rõ không phải người thật (trước đó Bogus đặt
   tên người Việt ngẫu nhiên như "Kim Quyên Vũ"). Database cũ được đổi tên khi API khởi động, trừ hồ sơ đã có người tự sửa.
 

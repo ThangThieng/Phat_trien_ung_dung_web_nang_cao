@@ -117,6 +117,20 @@ bị đổi thành đường dẫn Windows và mọi lời gọi API **từ trì
 (`API_INTERNAL_BASE_URL` không bị ảnh hưởng) nên ảnh, chữ và LCP đúng; phần JavaScript chạy sau hydrate có thể ít việc hơn thực tế. Build lại
 đúng (`MSYS_NO_PATHCONV=1`): E2E **49/49** trên stack production. Nên đo lại một lượt trên máy demo.
 
+**Sửa CLS ở `/recipes` (19/11/2026):** font thân bài Be Vietnam Pro chuyển `display: 'optional'` (`app/layout.tsx`) — chỉ dùng font nếu về kịp
+lần vẽ đầu (font được preload nên thường kịp), không kịp thì giữ chữ dự phòng đến hết lượt xem, không đổi font giữa chừng. Đo lại bằng
+`devtools` (mạng chậm thật), image build đúng:
+
+| Trang | LCP (3 lần) | CLS | TBT | Performance |
+|---|---|---|---|---|
+| `/` | 2,81 / 2,51 / 2,43 s (median 2,51) | **0** | 97 ms | 93 |
+| `/recipes` | 2,44 / 2,48 / 2,47 s (median 2,47) | **0** (trước 0,218) | 79 ms | 94 (trước 83) |
+| `/recipes/{slug}` | 8 lần: 2,49 – 2,88 s | **0** | 128 ms hoặc 390 – 452 ms | 81 – 92 |
+
+Trang chi tiết cho hai nhóm kết quả: TBT ~128 ms (LCP ~2,5 s) hoặc ~400 ms (LCP ~2,75 s) — phần JavaScript tải lười sau hydrate (thư viện ảnh,
+khẩu phần, in/chia sẻ, 290 KB) có lúc rơi vào cửa sổ đo. Các lượt trước ngày 19/11 cho TBT thấp hơn vì image khi đó không gọi được API từ trình
+duyệt (xem lưu ý trên). Chưa đạt ổn định LCP ≤ 2,5 s và First Load JS ≤ 200 KB ở trang chi tiết — việc còn lại: tách nhỏ JavaScript trang chi tiết.
+
 Hướng còn lại nếu cần đạt 2,5 s trên mobile: giảm bộ font (bớt độ đậm 500 hoặc 700 của Be Vietnam Pro, hoặc bỏ Playfair) — là thay đổi thiết kế,
 cần nhóm quyết định; và đo lại khi bộ tối ưu ảnh hoạt động.
 
