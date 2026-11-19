@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
 using Bogus;
+using CulinaryBlog.Application.Common.Caching;
 using CulinaryBlog.Application.Common.Interfaces;
 using CulinaryBlog.Application.Features.Categories;
+using CulinaryBlog.Application.Features.Recipes;
 using CulinaryBlog.Domain.Common;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Enums;
@@ -60,6 +62,9 @@ public sealed partial class DatabaseSeeder(
 {
     private const int SeedAuthorCount = 5;
 
+    /// <summary>Slug (cũ và mới) của công thức vừa được <see cref="ApplyTextCorrectionsAsync"/> sửa — xóa cache sau commit.</summary>
+    private readonly List<(string Slug, RecipeStatus Status)> correctedSlugs = [];
+
     /// <summary>Trả về true khi có danh mục/công thức được thêm hoặc sửa – nơi gọi dùng để xóa Output Cache công thức.</summary>
     public async Task<bool> SeedAsync(CancellationToken cancellationToken)
     {
@@ -95,6 +100,14 @@ public sealed partial class DatabaseSeeder(
         {
             await cache.RemoveAsync(CategoryCacheKeys.All, cancellationToken).ConfigureAwait(false);
         }
+
+        // Bản dịch vừa sửa phải hiện ngay, không chờ recipe:{slug} (5′) và recipes:list (2′) hết hạn; công thức đổi tên còn làm đổi sitemap.
+        foreach (var (slug, status) in correctedSlugs)
+        {
+            await cache.InvalidateAsync(RecipeCacheKeys.ForVisibilityChange(slug, status, status), cancellationToken).ConfigureAwait(false);
+        }
+
+        correctedSlugs.Clear();
 
         // Sau commit: job cần đọc được công thức. Lần khởi động sau tự bù phần ảnh còn thiếu.
         if (options.Value.ImportImages && authors.Count > 0)
@@ -223,6 +236,9 @@ public sealed partial class DatabaseSeeder(
     {
         var seedAuthorIds = authors.Select(a => a.Id).ToHashSet(StringComparer.Ordinal);
 
+        // Trước khi đối chiếu slug: công thức đổi tên ở đây sẽ mang slug mới, nên vòng tạo bên dưới không thêm bản trùng.
+        var corrected = await ApplyTextCorrectionsAsync(seedAuthorIds, cancellationToken).ConfigureAwait(false);
+
         // Unique index chỉ áp dụng cho dòng chưa xóa (D-3): một slug có thể vừa có bản đã xóa mềm vừa có bản đang hoạt động.
         // Ưu tiên bản đang hoạt động thay vì để ToDictionary ném lỗi lúc khởi động.
         var existing = (await db.Recipes.IgnoreQueryFilters()
@@ -290,7 +306,82 @@ public sealed partial class DatabaseSeeder(
         }
 
         await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        return (created, repaired, publishDates);
+        return (created, repaired + corrected, publishDates);
+    }
+
+    /// <summary>
+    /// Đưa <see cref="SeedTextCorrections"/> vào database đã seed từ trước. Cập nhật bằng ExecuteUpdate có điều kiện "giá trị hiện tại
+    /// đúng bằng văn bản cũ", nên bản người dùng đã sửa không bị ghi đè. Trả về số công thức đã đổi; khóa cache của chúng được xóa
+    /// sau khi transaction commit (<see cref="correctedSlugs"/>).
+    /// </summary>
+    private async Task<int> ApplyTextCorrectionsAsync(HashSet<string> seedAuthorIds, CancellationToken cancellationToken)
+    {
+        var changed = new HashSet<Guid>();
+        foreach (var group in SeedTextCorrections.All.GroupBy(c => c.PageId))
+        {
+            var marker = SeedTextCorrections.SourceMarker(group.Key);
+            var recipe = await db.Recipes.AsNoTracking()
+                .Where(r => r.Instructions != null && r.Instructions.Contains(marker) && seedAuthorIds.Contains(r.AuthorId))
+                .Select(r => new { r.Id, r.Slug, r.Status })
+                .FirstOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+            if (recipe is null)
+            {
+                continue;
+            }
+
+            var rows = 0;
+            foreach (var fix in group)
+            {
+                rows += await ApplyAsync(recipe.Id, fix, cancellationToken).ConfigureAwait(false);
+            }
+
+            if (rows > 0)
+            {
+                changed.Add(recipe.Id);
+                correctedSlugs.Add((recipe.Slug, recipe.Status));
+                var renamed = group.FirstOrDefault(c => c.Field == SeedTextField.Title);
+                if (renamed is not null)
+                {
+                    correctedSlugs.Add((SlugHelper.Generate(renamed.New), recipe.Status));
+                }
+            }
+        }
+
+        return changed.Count;
+    }
+
+    private async Task<int> ApplyAsync(Guid recipeId, SeedTextCorrection fix, CancellationToken cancellationToken)
+    {
+        switch (fix.Field)
+        {
+            case SeedTextField.Title:
+                var slug = SlugHelper.Generate(fix.New);
+                if (await db.Recipes.AnyAsync(r => r.Slug == slug, cancellationToken).ConfigureAwait(false))
+                {
+                    return 0;
+                }
+
+                return await db.Recipes.IgnoreQueryFilters()
+                    .Where(r => r.Id == recipeId && r.Title == fix.Old)
+                    .ExecuteUpdateAsync(s => s.SetProperty(r => r.Title, fix.New).SetProperty(r => r.Slug, slug), cancellationToken)
+                    .ConfigureAwait(false);
+            case SeedTextField.Description:
+                return await db.Recipes.IgnoreQueryFilters()
+                    .Where(r => r.Id == recipeId && r.Description.Contains(fix.Old))
+                    .ExecuteUpdateAsync(s => s.SetProperty(r => r.Description, r => r.Description.Replace(fix.Old, fix.New)), cancellationToken)
+                    .ConfigureAwait(false);
+            case SeedTextField.IngredientName:
+                return await db.Set<RecipeIngredient>().IgnoreQueryFilters()
+                    .Where(i => i.RecipeId == recipeId && i.Name == fix.Old)
+                    .ExecuteUpdateAsync(s => s.SetProperty(i => i.Name, fix.New), cancellationToken)
+                    .ConfigureAwait(false);
+            default:
+                return await db.Set<RecipeStep>().IgnoreQueryFilters()
+                    .Where(st => st.RecipeId == recipeId && st.Description.Contains(fix.Old))
+                    .ExecuteUpdateAsync(s => s.SetProperty(st => st.Description, st => st.Description.Replace(fix.Old, fix.New)), cancellationToken)
+                    .ConfigureAwait(false);
+        }
     }
 
     /// <summary>Chỉ công thức của tác giả mẫu, chưa có ảnh (kể cả ảnh đã bị xóa mềm: người dùng đã chủ động bỏ thì không gắn lại).</summary>

@@ -527,7 +527,7 @@
    },
    {
     "t": "Đặt lại vào lò",
-    "d": "Đặt khuôn trên khay trở lại lò, ở giá thứ 3 từ dưới lên; nếu có vòng che viền bánh, hãy lắp vào để viền không quá vàng."
+    "d": "Đặt khuôn trên khay trở lại lò, ở giá thuộc phần dưới cùng khi chia chiều cao lò làm 3 phần; nếu có vòng che viền bánh, hãy lắp vào để viền không quá vàng."
    },
    {
     "t": "Nướng bánh",
@@ -723,7 +723,7 @@
     "o": "hoặc vừa ăn, phần sốt"
    },
    {
-    "n": "bạch đậu khấu đen xay",
+    "n": "thảo quả xay (bạch đậu khấu đen)",
     "o": "Phần sốt"
    },
    {

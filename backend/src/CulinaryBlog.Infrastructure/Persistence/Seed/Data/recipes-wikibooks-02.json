@@ -143,7 +143,7 @@
       ["cải thìa hoặc bông cải xanh", 1.0, "pound"],
       ["nấm tươi", 0.5, "pound"],
       ["ớt chuông đỏ", 1.0, "quả"],
-      ["hành tím lớn", 0.5, "củ"],
+      ["hành tây tím", 0.5, "củ"],
       ["hành lá", 1.0, "cọng"],
       ["dầu thực vật để chiên", "vừa đủ", null],
       ["mè rang", 0.25, "cốc"],
@@ -166,9 +166,9 @@
       ["Chuẩn bị song song", "Có thể làm 3 bước sau trong lúc ướp seitan:", null],
       ["Pha nước sốt", "Trong tô nhỏ, hòa 1 thìa canh bột bắp với 4 thìa canh nước. Đánh đều nước lọc hoặc nước dùng rau với dầu hào, nước tương, muối, tiêu và hỗn hợp bột bắp, rồi để riêng.", null],
       ["Làm mềm mì", "Trụng mì trong nước muối sôi cho mềm. Ngâm vào nước lạnh để dừng chín rồi để thật ráo.", null],
-      ["Sơ chế rau", "Rửa sạch các loại rau. Cắt chéo cần tây và cải thìa thành miếng ½ inch. Nếu thay cải thìa bằng bông cải xanh, gọt thân đến khi hết xơ và thái chéo mỏng. Lau sạch nấm bằng khăn ẩm rồi thái lát. Bổ đôi ớt chuông, bỏ hạt và cắt miếng. Bóc vỏ và băm hành tím. Thái nhỏ hành lá.", null],
+      ["Sơ chế rau", "Rửa sạch các loại rau. Cắt chéo cần tây và cải thìa thành miếng ½ inch. Nếu thay cải thìa bằng bông cải xanh, gọt thân đến khi hết xơ và thái chéo mỏng. Lau sạch nấm bằng khăn ẩm rồi thái lát. Bổ đôi ớt chuông, bỏ hạt và cắt miếng. Bóc vỏ và băm hành tây tím. Thái nhỏ hành lá.", null],
       ["Chiên mì", "Đun nóng chảo sâu lòng hoặc chảo rán ở lửa vừa lớn đến lớn. Cho 2 thìa canh dầu. Khi dầu nóng, cho mì vào. Chiên từng mẻ đến khi vàng, rồi lấy mì ra.", null],
-      ["Xào seitan", "Đun nóng 2 thìa canh dầu. Cho hành tím và seitan vào, giữ lại phần nước ướp còn dư. Để seitan vàng sơ, rồi xào đến khi hết màu đỏ và gần chín. Lấy seitan và hành ra.", null],
+      ["Xào seitan", "Đun nóng 2 thìa canh dầu. Cho hành tây tím và seitan vào, giữ lại phần nước ướp còn dư. Để seitan vàng sơ, rồi xào đến khi hết màu đỏ và gần chín. Lấy seitan và hành ra.", null],
       ["Xào rau", "Xào riêng từng loại rau còn lại, trừ hành lá, có thể nêm chút muối khi xào. Khi nấu cải thìa hoặc bông cải, thêm ¼ cốc nước và đậy nắp. Xào xong loại nào lấy ra loại đó. Thêm dầu khi cần.", null],
       ["Hoàn thiện", "Khuấy nhanh lại nước sốt. Cho tất cả nguyên liệu trở lại chảo, chừa một khoảng trống ở giữa để đổ sốt. Đổ sốt và phần nước ướp còn dư vào, khuấy nhanh cho sánh. Trộn đều, khuấy hành lá vào. Đổ hỗn hợp rau và sốt lên mì. Rắc mè rang lên trên và dùng nóng.", null]
     ],
@@ -461,7 +461,7 @@
     "servings": 4,
     "difficulty": "Medium",
     "ingredients": [
-      ["đậu đen tách vỏ nguyên hạt (urad dal)", 1.0, "cốc"],
+      ["đậu urad (đậu đen Ấn Độ) tách vỏ nguyên hạt", 1.0, "cốc"],
       ["đậu thận khô (rajma)", 0.333, "cốc"],
       ["nước để nấu đậu", "5–6", "cốc"],
       ["muối (khi nấu đậu)", "vừa đủ", null],
@@ -483,8 +483,8 @@
       ["muối (nêm cuối)", "vừa ăn", null]
     ],
     "steps": [
-      ["Ngâm đậu", "Rửa và ngâm đậu đen cùng đậu thận qua đêm trong lượng nước ấm vừa đủ.", null],
-      ["Nấu đậu", "Nấu đậu đen, đậu thận và đậu gà đã ngâm trong 5–6 cốc nước với muối, ớt bột, nghệ và gừng bào đến khi mềm.", null],
+      ["Ngâm đậu", "Rửa và ngâm đậu urad cùng đậu thận qua đêm trong lượng nước ấm vừa đủ.", null],
+      ["Nấu đậu", "Nấu đậu urad, đậu thận và đậu gà đã ngâm trong 5–6 cốc nước với muối, ớt bột, nghệ và gừng bào đến khi mềm.", null],
       ["Để riêng", "Để phần đậu đã nấu sang một bên.", null],
       ["Phi gia vị", "Đun nóng dầu hoặc bơ trong chảo đáy dày. Cho hing, lá nguyệt quế, quế, đinh hương và hành băm vào, nấu đến khi vàng nhạt. Khi hành ngả nâu, thêm gừng tỏi xay và xào.", null],
       ["Thêm cà chua", "Cho cà chua băm vào xào, thêm bột hạt ngò. Xào đến khi cà chua nát hẳn.", null],
@@ -501,14 +501,14 @@
   {
     "title": "Dhokla (Bánh hấp đậu đen kiểu Gujarat)",
     "category": "Món hấp",
-    "description": "Dhokla là món ăn nhẹ của vùng Gujarat làm từ đậu đen. Không nên nhầm với khaman, biến thể làm từ besan (bột đậu gà). Món được dùng kèm bữa chính, thường có vị chua nhẹ và hơi ngọt.",
+    "description": "Dhokla là món ăn nhẹ của vùng Gujarat làm từ đậu urad (đậu đen Ấn Độ). Không nên nhầm với khaman, biến thể làm từ besan (bột đậu gà). Món được dùng kèm bữa chính, thường có vị chua nhẹ và hơi ngọt.",
     "prep": 1,
     "cook": 59,
     "servings": 4,
     "difficulty": "Easy",
     "ingredients": [
       ["gạo", 1.0, "cốc", "Phần bột"],
-      ["đậu đen tách vỏ (urad dal)", 0.25, "cốc", "Phần bột"],
+      ["đậu urad (đậu đen Ấn Độ) tách vỏ", 0.25, "cốc", "Phần bột"],
       ["sữa chua", 0.25, "cốc", "Phần bột"],
       ["nước ấm", 1.5, "cốc", "Phần bột"],
       ["muối", "vừa ăn", null, "Phần bột"],
@@ -625,9 +625,9 @@
     "attribution": "Nguồn dữ liệu: Wikibooks Cookbook, trang \"Cookbook:Fried Pickle\" (https://en.wikibooks.org/w/index.php?curid=238352&oldid=4515719), các tác giả Wikibooks, giấy phép CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/). Đã dịch sang tiếng Việt (có hỗ trợ AI) và chuyển đổi định dạng. Ảnh: Belinda Hankins Miller from U.S.A., CC BY 2.0, https://commons.wikimedia.org/wiki/File:FRIED_PICKLES,_HONEY.jpg."
   },
   {
-    "title": "Dürüm bữa sáng (Bánh cuốn trứng, khoai và bò)",
+    "title": "Dürüm bữa sáng (Bánh mì cuộn trứng, khoai và bò)",
     "category": "Ăn vặt",
-    "description": "Dürüm là món ăn nhanh Trung Đông, tương tự bánh cuốn. Biến thể này kết hợp trứng ốp lết rau bina và nấm, khoai bào áp chảo, hummus và thịt bò, tất cả cuộn trong bánh mì dẹt “lavash” hoặc “yufka” có vị bùi, tạo nên bữa sáng mang theo cay nồng và béo ngậy.",
+    "description": "Dürüm là món ăn nhanh Trung Đông, tương tự bánh mì cuộn (wrap). Biến thể này kết hợp trứng ốp lết rau bina và nấm, khoai bào áp chảo, hummus và thịt bò, tất cả cuộn trong bánh mì dẹt “lavash” hoặc “yufka” có vị bùi, tạo nên bữa sáng mang theo cay nồng và béo ngậy.",
     "prep": 57,
     "cook": 3,
     "servings": 1,
@@ -861,7 +861,7 @@
       ["Áo bột cá", "Cắt cá thành miếng dày, rồi nhúng vào bột.", null],
       ["Chiên cá", "Chiên ngập cá theo từng mẻ 5–6 phút, tùy kích cỡ. Vớt ra, để ráo trên giấy thấm.", 5],
       ["Bày đĩa", "Chuyển cá và khoai ra đĩa, trang trí múi chanh và nhánh mùi tây. Hoặc theo cách truyền thống vui mắt, đặt cá và khoai lên giấy nâu hoặc giấy báo.", null],
-      ["Nêm và dọn", "Rắc muối và/hoặc giấm lên trên. Thường thì múi chanh được vắt lên cá, giấm rưới lên khoai. Có thể dùng kèm dưa chua, hành muối, sốt tartar, trứng muối chua và đậu Hà Lan nghiền.", null]
+      ["Nêm và dọn", "Rắc muối và/hoặc giấm lên trên. Thường thì múi chanh được vắt lên cá, giấm rưới lên khoai. Có thể dùng kèm dưa chua, hành muối, sốt tartar, trứng ngâm giấm và đậu Hà Lan nghiền.", null]
     ],
     "nutrition": null,
     "source": {"pageId": 127879, "revisionId": 4524751, "title": "Cookbook:Fish and Chips"},
@@ -886,7 +886,7 @@
       ["nước", 6.0, "cốc"],
       ["viên nêm gà", 1.0, "viên"],
       ["chuối nấu lớn", 1.0, "quả"],
-      ["thịt bò bắp, giò heo hoặc da heo", 0.5, "pound", "tùy chọn"]
+      ["thịt nạm bò, giò heo hoặc da heo", 0.5, "pound", "tùy chọn"]
     ],
     "steps": [
       ["Ngâm đậu", "Rửa đậu và ngâm qua đêm với lượng nước gấp đôi thể tích đậu.", null],
@@ -941,7 +941,7 @@
       ["Cho vào lò", "Đặt gà tây vào lò, đổ 2 cốc nước dùng vào đáy khay.", null],
       ["Quay và rưới nước", "Quay gà tây 2½ giờ, cứ 30 phút rưới nước ở đáy khay lên khắp con gà. Khi đáy khay khô, thêm nước dùng, mỗi lần khoảng 1–2 cốc.", 30],
       ["Bỏ giấy nhôm", "Bỏ lớp giấy nhôm.", null],
-      ["Quay tiếp", "Quay đến khi thịt đạt 185°F và nhân đạt 165°F. Việc này mất khoảng 4 giờ. Nếu gà đã xong mà nhân chưa đạt, múc nhân ra và nướng riêng trong lò đến đúng nhiệt độ.", 240],
+      ["Quay tiếp", "Quay đến khi thịt đạt 185°F (85 °C) và nhân đạt 165°F (74 °C). Việc này mất khoảng 4 giờ. Nếu gà đã xong mà nhân chưa đạt, múc nhân ra và nướng riêng trong lò đến đúng nhiệt độ.", 240],
       ["Dọn món", "Dọn ngay.", null]
     ],
     "nutrition": null,
@@ -1056,16 +1056,16 @@
       ["cỏ xạ hương khô", 1.0, "thìa cà phê", "nguyên lá, gia vị"],
       ["hương thảo khô", 0.5, "thìa cà phê", "Gia vị"],
       ["nhục đậu khấu bào", 0.25, "thìa cà phê", "Gia vị"],
-      ["màng bọc dạ dày bò (beef caps)", 3.0, "cái", "hỏi tiệm làm xúc xích, phần vỏ"],
+      ["ruột bò làm vỏ dồi (beef caps)", 3.0, "cái", "hỏi tiệm làm xúc xích, phần vỏ"],
       ["giấm trắng chưng cất", 1.0, "cốc", "Phần vỏ"],
       ["muối để ngâm", 0.5, "thìa canh", "Phần vỏ"]
     ],
     "steps": [
       ["Ninh tim", "Cho tim bò vào nồi 4-quart (khoảng 3–3,5 lít) có nắp, đổ nước lạnh vừa ngập. Đậy nắp ninh 1 giờ 10 phút.", 70],
       ["Thêm gan và thịt", "Cho gan bò và thịt cừu vào, đậy nắp ninh 20 phút. Vớt tất cả ra để nguội. Giữ lại 1 cốc nước luộc. Xay thô toàn bộ thịt.", 20],
-      ["Trộn nhân", "Trong tô lớn, trộn tất cả nguyên liệu, trừ màng bọc, giấm và muối ngâm. Trộn đều và để riêng.", null],
-      ["Sơ chế vỏ", "Rửa màng bọc trong nước lạnh. Lộn trái và ngâm trong 2 quart nước lạnh với muối và giấm trong ½ giờ. Để ráo và rửa thật sạch cả trong lẫn ngoài.", null],
-      ["Nhồi và hấp", "Chia nhân làm ba phần. Nhồi vào màng bọc và buộc đầu bằng dây. Hai cái chỉ cần buộc một đầu, cái thứ ba buộc cả hai đầu. Dùng xiên ngô hoặc nĩa nhọn châm khắp haggis. Đặt vào nồi hấp và hấp 1 giờ 20 phút.", 80],
+      ["Trộn nhân", "Trong tô lớn, trộn tất cả nguyên liệu, trừ ruột bò, giấm và muối ngâm. Trộn đều và để riêng.", null],
+      ["Sơ chế vỏ", "Rửa ruột bò trong nước lạnh. Lộn trái và ngâm trong 2 quart nước lạnh với muối và giấm trong ½ giờ. Để ráo và rửa thật sạch cả trong lẫn ngoài.", null],
+      ["Nhồi và hấp", "Chia nhân làm ba phần. Nhồi vào ruột bò và buộc đầu bằng dây. Hai cái chỉ cần buộc một đầu, cái thứ ba buộc cả hai đầu. Dùng xiên ngô hoặc nĩa nhọn châm khắp haggis. Đặt vào nồi hấp và hấp 1 giờ 20 phút.", 80],
       ["Dọn món", "Thái lát haggis, dùng với nước sốt thịt bò hoặc cừu.", null]
     ],
     "nutrition": null,

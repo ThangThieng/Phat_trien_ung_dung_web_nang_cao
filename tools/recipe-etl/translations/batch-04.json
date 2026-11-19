@@ -5,7 +5,7 @@
   "description": "Dal makhani là món ngon của vùng Punjab, Ấn Độ. Theo truyền thống, món đậu này được nấu chậm hàng giờ trên than, tạo nên kết cấu béo mịn, có thêm “malai” (váng kem) hoặc bơ tươi. Khi nấu ở nhà ngày nay, người ta dùng lượng kem hoặc bơ vừa phải hơn. Ở nhà hàng, món được nấu chậm ở lửa nhỏ và thường có nhiều kem và bơ. Đậu lăng và đậu được ngâm qua đêm ít nhất 8 giờ, rồi ninh nhẹ ở lửa nhỏ cùng gừng, tỏi và một vài gia vị khác (garam masala). Sau đó, chúng được kết hợp với phần sốt masala chua nhẹ gồm hành tây, cà chua (băm hoặc xay), hoặc bột xoài khô, thậm chí cả hạt lựu. Vài thìa kem tươi và bơ tạo nên lớp béo cuối cùng. Món được trang trí bằng ngò rí băm nhuyễn và kem tươi. Đây là bữa ăn thịnh soạn và là món chủ lực ở Punjab và phần lớn miền Bắc Ấn Độ, thường ăn với roti, cơm hoặc bánh naan. Món đậu này giàu tinh bột và khoáng chất, được xem là hơi khó tiêu, nhưng gừng giúp món dễ tiêu hơn. Món rất được ưa chuộng không chỉ ở miền Bắc Ấn Độ mà cả nhiều nơi khác. Hôm sau hâm nóng lại vẫn rất ngon.",
   "ingredients": [
    {
-    "n": "đậu đen tách vỏ nguyên hạt (urad dal)"
+    "n": "đậu urad (đậu đen Ấn Độ) tách vỏ nguyên hạt"
    },
    {
     "n": "đậu thận khô (rajma)"
@@ -78,11 +78,11 @@
   "steps": [
    {
     "t": "Ngâm đậu",
-    "d": "Rửa và ngâm đậu đen cùng đậu thận qua đêm trong lượng nước ấm vừa đủ."
+    "d": "Rửa và ngâm đậu urad cùng đậu thận qua đêm trong lượng nước ấm vừa đủ."
    },
    {
     "t": "Nấu đậu",
-    "d": "Nấu đậu đen, đậu thận và đậu gà đã ngâm trong 5–6 cốc nước với muối, ớt bột, nghệ và gừng bào đến khi mềm."
+    "d": "Nấu đậu urad, đậu thận và đậu gà đã ngâm trong 5–6 cốc nước với muối, ớt bột, nghệ và gừng bào đến khi mềm."
    },
    {
     "t": "Để riêng",
@@ -215,14 +215,14 @@
  {
   "pageId": 263111,
   "title": "Dhokla (Bánh hấp đậu đen kiểu Gujarat)",
-  "description": "Dhokla là món ăn nhẹ của vùng Gujarat làm từ đậu đen. Không nên nhầm với khaman, biến thể làm từ besan (bột đậu gà). Món được dùng kèm bữa chính, thường có vị chua nhẹ và hơi ngọt.",
+  "description": "Dhokla là món ăn nhẹ của vùng Gujarat làm từ đậu urad (đậu đen Ấn Độ). Không nên nhầm với khaman, biến thể làm từ besan (bột đậu gà). Món được dùng kèm bữa chính, thường có vị chua nhẹ và hơi ngọt.",
   "ingredients": [
    {
     "n": "gạo",
     "o": "Phần bột"
    },
    {
-    "n": "đậu đen tách vỏ (urad dal)",
+    "n": "đậu urad (đậu đen Ấn Độ) tách vỏ",
     "o": "Phần bột"
    },
    {
@@ -988,7 +988,7 @@
    },
    {
     "t": "Nêm và dọn",
-    "d": "Rắc muối và/hoặc giấm lên trên. Thường thì múi chanh được vắt lên cá, giấm rưới lên khoai. Có thể dùng kèm dưa chua, hành muối, sốt tartar, trứng muối chua và đậu Hà Lan nghiền."
+    "d": "Rắc muối và/hoặc giấm lên trên. Thường thì múi chanh được vắt lên cá, giấm rưới lên khoai. Có thể dùng kèm dưa chua, hành muối, sốt tartar, trứng ngâm giấm và đậu Hà Lan nghiền."
    }
   ],
   "sourceHash": "8023e208295e775171fbf263a0d49be7d60b50485fb21776e8aa99604404e9d8"

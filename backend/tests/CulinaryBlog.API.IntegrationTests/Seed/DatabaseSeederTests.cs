@@ -174,6 +174,77 @@ public class DatabaseSeederTests(CulinaryBlogApiFactory factory) : IAsyncLifetim
         Assert.Empty(scheduler.Calls);
     }
 
+    /// <summary>
+    /// Database seed trước 19/11/2026 còn bản dịch cũ (kể cả tên cũ "Bánh cuốn" của món Dürüm). Seed lại: đưa bản sửa vào, đổi tên kèm
+    /// slug mà không thêm công thức trùng; giá trị người dùng đã tự sửa giữ nguyên.
+    /// </summary>
+    [Fact]
+    public async Task Reseed_AppliesTranslationCorrections_RenamesWithoutDuplicate_KeepsUserEdits()
+    {
+        await SeedAsync();
+        const string durumOld = "Dürüm bữa sáng (Bánh cuốn trứng, khoai và bò)";
+        var durumNew = CatalogRecipe(480539).Title;
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
+            var durum = await RecipeBySourceAsync(db, 480539);
+            await db.Recipes.Where(r => r.Id == durum)
+                .ExecuteUpdateAsync(s => s.SetProperty(r => r.Title, durumOld).SetProperty(r => r.Slug, SlugHelper.Generate(durumOld)));
+            var haggis = await RecipeBySourceAsync(db, 31180);
+            await db.Set<RecipeIngredient>().Where(i => i.RecipeId == haggis && i.Name == "ruột bò làm vỏ dồi (beef caps)")
+                .ExecuteUpdateAsync(s => s.SetProperty(i => i.Name, "màng bọc dạ dày bò (beef caps)"));
+            var chowMein = await RecipeBySourceAsync(db, 156848);
+            await db.Set<RecipeStep>().Where(st => st.RecipeId == chowMein && st.Description.Contains("Cho hành tây tím và seitan vào"))
+                .ExecuteUpdateAsync(s => s.SetProperty(st => st.Description, st => st.Description.Replace("Cho hành tây tím và seitan vào", "Cho hành tím và seitan vào")));
+            var frijoles = await RecipeBySourceAsync(db, 127705);
+            await db.Set<RecipeIngredient>().Where(i => i.RecipeId == frijoles && i.Name == "thịt nạm bò, giò heo hoặc da heo")
+                .ExecuteUpdateAsync(s => s.SetProperty(i => i.Name, "thịt do người dùng tự ghi"));
+        }
+
+        var countBefore = await CountAsync();
+        await SeedAsync();
+
+        Assert.Equal(countBefore, await CountAsync());
+        using var verify = factory.Services.CreateScope();
+        var check = verify.ServiceProvider.GetRequiredService<CulinaryBlogDbContext>();
+        var slugs = await check.Recipes.IgnoreQueryFilters().Select(r => r.Slug).ToListAsync();
+        Assert.Contains(SlugHelper.Generate(durumNew), slugs);
+        Assert.DoesNotContain(SlugHelper.Generate(durumOld), slugs);
+        var haggisId = await RecipeBySourceAsync(check, 31180);
+        Assert.True(await check.Set<RecipeIngredient>().AnyAsync(i => i.RecipeId == haggisId && i.Name == "ruột bò làm vỏ dồi (beef caps)"));
+        var chowMeinId = await RecipeBySourceAsync(check, 156848);
+        Assert.True(await check.Set<RecipeStep>().AnyAsync(st => st.RecipeId == chowMeinId && st.Description.Contains("Cho hành tây tím và seitan vào")));
+        var frijolesId = await RecipeBySourceAsync(check, 127705);
+        Assert.True(await check.Set<RecipeIngredient>().AnyAsync(i => i.RecipeId == frijolesId && i.Name == "thịt do người dùng tự ghi"));
+    }
+
+    /// <summary>Mọi chỗ sửa khớp catalog đã sửa: database mới (seed từ JSON) và database cũ (seed + sửa) cho cùng một kết quả.</summary>
+    [Fact]
+    public void TextCorrections_MatchTheCorrectedCatalog()
+    {
+        foreach (var fix in SeedTextCorrections.All)
+        {
+            var recipe = CatalogRecipe(fix.PageId);
+            string[] texts = fix.Field switch
+            {
+                SeedTextField.Title => [recipe.Title],
+                SeedTextField.Description => [recipe.Description],
+                SeedTextField.IngredientName => recipe.Ingredients.Select(i => i.Name).ToArray(),
+                _ => recipe.Steps.Select(s => s.Description).ToArray(),
+            };
+            Assert.Contains(texts, t => fix.Field is SeedTextField.Title or SeedTextField.IngredientName ? t == fix.New : t.Contains(fix.New, StringComparison.Ordinal));
+            Assert.DoesNotContain(texts, t => t.Contains(fix.Old, StringComparison.Ordinal));
+        }
+    }
+
+    private static SeedRecipe CatalogRecipe(long pageId) => RecipeSeedCatalog.Recipes.Single(r => r.Source?.PageId == pageId);
+
+    private static Task<Guid> RecipeBySourceAsync(CulinaryBlogDbContext db, long pageId)
+    {
+        var marker = SeedTextCorrections.SourceMarker(pageId);
+        return db.Recipes.IgnoreQueryFilters().Where(r => r.Instructions != null && r.Instructions.Contains(marker)).Select(r => r.Id).SingleAsync();
+    }
+
     private static HashSet<string> WikibooksSlugs() =>
         RecipeSeedCatalog.Recipes.Where(r => r.Source is not null).Select(r => SlugHelper.Generate(r.Title)).ToHashSet(StringComparer.Ordinal);
 
