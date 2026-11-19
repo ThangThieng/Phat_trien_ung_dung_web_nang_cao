@@ -7,7 +7,7 @@
 # Chạy bằng sh/bash (Linux, macOS, Git Bash trên Windows). Cần Docker đang chạy và openssl (Git Bash có sẵn).
 #
 # - .env đã có thì KHÔNG ghi đè giá trị nào; chỉ điền những khóa bí mật còn TRỐNG (JWT_SIGNING_KEY, AUTH_SECRET, REVALIDATE_SECRET,
-#   HANGFIRE_GATE_SECRET, RENDER_GATE_SECRET, HANGFIRE_DASHBOARD_PASSWORD, SEED_ADMIN_PASSWORD, SEED_AUTHOR_PASSWORD). Mật khẩu PostgreSQL/MinIO giữ giá trị
+#   HANGFIRE_GATE_SECRET, RENDER_GATE_SECRET, HANGFIRE_DASHBOARD_PASSWORD, GOOGLE_CLIENT_ID (Client ID công khai của nhóm), SEED_ADMIN_PASSWORD, SEED_AUTHOR_PASSWORD). Mật khẩu PostgreSQL/MinIO giữ giá trị
 #   mẫu của .env.example (chỉ dùng cho máy dev) — volume dữ liệu đã khởi tạo với mật khẩu nào thì phải giữ mật khẩu đó.
 # - Mật khẩu tài khoản mẫu sinh ngẫu nhiên nhưng luôn đạt NFR-SEC-001 (≥ 8 ký tự, có hoa, thường, số, ký tự đặc biệt) và được in ra màn
 #   hình MỘT lần để đăng nhập thử. .env không bao giờ được commit (.gitignore + gitleaks — NFR-SEC-007).
@@ -21,6 +21,9 @@ random_b64() { openssl rand -base64 "$1" | tr -d '\n=/+' | cut -c1-"$2"; }
 random_hex() { openssl rand -hex "$1"; }
 # Mật khẩu đạt chính sách Identity của hệ thống: tiền tố cố định bảo đảm đủ 4 loại ký tự, phần sau ngẫu nhiên.
 random_password() { printf 'Cb#9%s' "$(random_b64 24 14)"; }
+# FR-AUTH-003: Client ID Google của nhóm — công khai, không phải bí mật (giống giá trị trong .env.example). Điền vào .env cũ còn trống
+# để máy đã cài trước đó cũng có nút "Đăng nhập bằng Google" sau khi build lại.
+TEAM_GOOGLE_CLIENT_ID=621955829445-h01jimdlcdjut80e93umca9c5v95uk0t.apps.googleusercontent.com
 
 if ! docker info >/dev/null 2>&1; then
     echo "Docker chưa chạy — bật Docker Desktop rồi chạy lại." >&2
@@ -55,6 +58,7 @@ fill REVALIDATE_SECRET "$(random_hex 24)"
 fill HANGFIRE_GATE_SECRET "$(random_hex 32)"
 fill RENDER_GATE_SECRET "$(random_hex 32)"
 fill HANGFIRE_DASHBOARD_PASSWORD "$(random_password)"
+fill GOOGLE_CLIENT_ID "$TEAM_GOOGLE_CLIENT_ID"
 fill SEED_ADMIN_PASSWORD "$admin_password"
 fill SEED_AUTHOR_PASSWORD "$author_password"
 echo "Khóa đã sinh:${filled:- (không — .env đã đủ)}"

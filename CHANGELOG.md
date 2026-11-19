@@ -8,6 +8,11 @@ mỗi mục ghi buổi làm việc (B2 → B8) để truy ngược về `SPEC/KE
 
 ## [Unreleased]
 
+### Added
+
+- **Đăng nhập Google chạy ngay sau khi cài (FR-AUTH-003):** `.env.example`, `.env.production.example` và `tools/dev-setup.sh` có sẵn Client ID
+  của nhóm (công khai, không phải bí mật — Client secret không dùng). Máy đã cài: chạy lại `dev-setup.sh` rồi build lại.
+
 ### Fixed
 
 - **Bố cục `/recipes` nhảy khi mạng chậm (CLS 0,218 → 0):** font thân bài dùng `display: 'optional'`, không đổi font giữa chừng lượt xem.
