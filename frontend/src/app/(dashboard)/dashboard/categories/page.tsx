@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import CategoryFormDialog from '@/features/categories/components/CategoryFormDialog';
+import { revalidateCategories } from '@/features/categories/actions';
 import {
   CATEGORIES_QUERY_KEY,
   createCategory,
@@ -37,7 +38,11 @@ export default function CategoriesDashboardPage() {
     meta: { suppressGlobalError: true },
   });
 
-  const refreshCategories = () => queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+  // Xoá cả Data Cache của Next.js (trang công khai) lẫn cache TanStack Query (bảng quản lý) sau khi tạo/sửa/xoá — D-7.
+  const refreshCategories = async () => {
+    await revalidateCategories().catch(() => undefined);
+    await queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+  };
 
   const saveMutation = useMutation({
     mutationFn: (payload: CreateCategoryRequest) =>
